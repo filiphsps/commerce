@@ -1,6 +1,7 @@
 import 'server-only';
 
 import type { Payload } from 'payload';
+import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 
 // `Tenant._id` is stable for a given `Shop._id` once the post-save hook has
 // run (the upsert keys on `shopId`). Cache per Payload instance to avoid an
@@ -39,7 +40,7 @@ export const resolveTenantId = async (payload: Payload, shopId: string): Promise
     if (cached) return cached;
 
     const { docs } = await payload.find({
-        collection: 'tenants',
+        collection: LEGACY_TENANTS_SLUG,
         where: { shopId: { equals: shopId } },
         limit: 1,
         depth: 0,

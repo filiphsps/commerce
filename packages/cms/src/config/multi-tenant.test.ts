@@ -28,9 +28,9 @@ describe('buildMultiTenantPlugin', () => {
         };
     };
 
-    it('routes to the `tenants` collection for tenant resolution', async () => {
+    it('routes to the `shops` collection for tenant resolution (shop == tenant, keyed on the shop row id)', async () => {
         const args = await buildAndCapture();
-        expect(args.tenantsSlug).toBe('tenants');
+        expect(args.tenantsSlug).toBe('shops');
     });
 
     it('enrolls every tenant-scoped collection (matches the source-of-truth list)', async () => {

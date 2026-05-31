@@ -232,9 +232,9 @@ export const buildPayloadConfig = async ({
             defaultLocale,
             fallback: true,
             /**
-             * Narrow the admin's locale picker to the active tenant's
-             * `locales` field. Payload's global `locales` array is fixed at
-             * boot (we ship the full ISO 639-1 superset for that), but
+             * Narrow the admin's locale picker to the active tenant's allowed
+             * locales. Payload's global `locales` array is fixed at boot (we
+             * ship the full ISO 639-1 superset for that), but
              * `filterAvailableLocales` runs per-request and lets us hide
              * everything outside the current tenant's allow-list. The
              * multi-tenant plugin sets a `payload-tenant` cookie from the
@@ -242,25 +242,29 @@ export const buildPayloadConfig = async ({
              * routes) we return the full superset so the picker still has
              * options.
              *
-             * Tenant IDs default to MongoDB ObjectIDs — `'text'` for the
-             * `idType` argument expected by `getTenantFromCookie`.
+             * The tenant collection is `shops` (UNIFY-03), so the cookie holds
+             * a shop row id and the lookup reads `shops`. `shops` carries no
+             * top-level `locales` array — only `i18n.defaultLocale` — so the
+             * allow-list is derived from that single locale. Shop `_id`s are
+             * MongoDB ObjectIDs, hence `'text'` for the `idType` argument
+             * expected by `getTenantFromCookie`.
              */
             filterAvailableLocales: async ({ req, locales: available }) => {
                 const tenantId = getTenantFromCookie(req.headers, 'text');
                 if (!tenantId) return available;
                 try {
-                    const tenant = (await req.payload.findByID({
+                    const shop = (await req.payload.findByID({
                         id: String(tenantId),
-                        collection: 'tenants',
+                        collection: 'shops',
                         depth: 0,
                         req,
-                    })) as { locales?: string[] } | null;
-                    const allowed = tenant?.locales;
-                    if (!allowed || allowed.length === 0) return available;
-                    const filtered = available.filter((locale) => allowed.includes(locale.code));
+                    })) as { i18n?: { defaultLocale?: string } } | null;
+                    const defaultLocale = shop?.i18n?.defaultLocale;
+                    if (!defaultLocale) return available;
+                    const filtered = available.filter((locale) => locale.code === defaultLocale);
                     return filtered.length > 0 ? filtered : available;
                 } catch {
-                    // Tenant lookup failed (deleted, permission denied, etc.) —
+                    // Shop lookup failed (deleted, permission denied, etc.) —
                     // fail open with the full superset rather than locking the
                     // editor out of every locale.
                     return available;

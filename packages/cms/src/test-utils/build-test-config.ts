@@ -9,7 +9,7 @@ import { collectionMetadata } from '../collections/collection-metadata';
 import { media } from '../collections/media';
 import { pages } from '../collections/pages';
 import { productMetadata } from '../collections/product-metadata';
-import { tenants } from '../collections/tenants';
+import { shops } from '../collections/shops';
 import { users } from '../collections/users';
 
 /**
@@ -49,11 +49,11 @@ export const buildTestConfig = async ({
         secret: 'test',
         db: mongooseAdapter({ url: url.toString() }),
         editor: lexicalEditor({}),
-        collections: [tenants, users, media, pages, articles, productMetadata, collectionMetadata],
+        collections: [shops, users, media, pages, articles, productMetadata, collectionMetadata],
         localization: { locales, defaultLocale, fallback: true },
         plugins: [
             multiTenantPlugin({
-                tenantsSlug: 'tenants',
+                tenantsSlug: 'shops',
                 userHasAccessToAllTenants: (user: unknown) => (user as { role?: string } | null)?.role === 'admin',
                 collections: {
                     pages: {},

@@ -67,7 +67,6 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    tenants: Tenant;
     users: User;
     media: Media;
     shops: Shop;
@@ -87,7 +86,6 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    tenants: TenantsSelect<false> | TenantsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     shops: ShopsSelect<false> | ShopsSelect<true>;
@@ -146,23 +144,6 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants".
- */
-export interface Tenant {
-  id: string;
-  name: string;
-  slug: string;
-  defaultLocale: string;
-  locales: string[];
-  /**
-   * Source Shop._id from @nordcom/commerce-db
-   */
-  shopId?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -170,7 +151,7 @@ export interface User {
   role: 'admin' | 'editor';
   tenants?:
     | {
-        tenant: string | Tenant;
+        tenant: string | Shop;
         id?: string | null;
       }[]
     | null;
@@ -192,61 +173,6 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  tenant?: (string | null) | Tenant;
-  alt: string;
-  caption?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    feature?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -598,11 +524,66 @@ export interface FeatureFlag {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  tenant?: (string | null) | Shop;
+  alt: string;
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    feature?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
  */
 export interface Page {
   id: string;
-  tenant?: (string | null) | Tenant;
+  tenant?: (string | null) | Shop;
   title: string;
   slug: string;
   blocks?:
@@ -698,7 +679,7 @@ export interface BannerBlock {
  */
 export interface Article {
   id: string;
-  tenant?: (string | null) | Tenant;
+  tenant?: (string | null) | Shop;
   title: string;
   slug: string;
   author: string;
@@ -738,7 +719,7 @@ export interface Article {
  */
 export interface ProductMetadatum {
   id: string;
-  tenant?: (string | null) | Tenant;
+  tenant?: (string | null) | Shop;
   /**
    * Shopify product handle this CMS metadata overlays
    */
@@ -845,7 +826,7 @@ export interface MediaGridBlock {
  */
 export interface CollectionMetadatum {
   id: string;
-  tenant?: (string | null) | Tenant;
+  tenant?: (string | null) | Shop;
   shopifyHandle: string;
   descriptionOverride?: {
     root: {
@@ -943,7 +924,7 @@ export interface VendorsBlock {
  */
 export interface Review {
   id: string;
-  tenant?: (string | null) | Tenant;
+  tenant?: (string | null) | Shop;
   shop: string | Shop;
   updatedAt: string;
   createdAt: string;
@@ -954,7 +935,7 @@ export interface Review {
  */
 export interface Header {
   id: string;
-  tenant?: (string | null) | Tenant;
+  tenant?: (string | null) | Shop;
   logo?: (string | null) | Media;
   logoLink?: string | null;
   items?:
@@ -1092,7 +1073,7 @@ export interface Header {
  */
 export interface Footer {
   id: string;
-  tenant?: (string | null) | Tenant;
+  tenant?: (string | null) | Shop;
   sections?:
     | {
         title: string;
@@ -1147,7 +1128,7 @@ export interface Footer {
  */
 export interface BusinessDatum {
   id: string;
-  tenant?: (string | null) | Tenant;
+  tenant?: (string | null) | Shop;
   legalName?: string | null;
   supportEmail?: string | null;
   supportPhone?: string | null;
@@ -1195,10 +1176,6 @@ export interface PayloadKv {
 export interface PayloadLockedDocument {
   id: string;
   document?:
-    | ({
-        relationTo: 'tenants';
-        value: string | Tenant;
-      } | null)
     | ({
         relationTo: 'users';
         value: string | User;
@@ -1288,19 +1265,6 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants_select".
- */
-export interface TenantsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  defaultLocale?: T;
-  locales?: T;
-  shopId?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

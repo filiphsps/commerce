@@ -19,7 +19,12 @@ export const buildMultiTenantPlugin = (): Plugin => {
         tenantScopedCollections.map((slug) => [slug, { isGlobal: globals.includes(slug) }]),
     );
     return multiTenantPlugin({
-        tenantsSlug: 'tenants',
+        // Tenant collection is `shops`: the Payload `shops` slug and the Mongoose
+        // `Shop` model bind to the same physical Mongo collection with identical
+        // ObjectId `_id`s (UNIFY-01 spike), so the injected `tenant` relationship
+        // persists the shop row id directly. `shops` already supplies the plugin's
+        // only structural requirement (`admin.useAsTitle`).
+        tenantsSlug: 'shops',
         userHasAccessToAllTenants: (user: unknown) => (user as { role?: string } | null)?.role === 'admin',
         collections: collectionsConfig,
     });

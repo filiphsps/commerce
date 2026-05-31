@@ -1,5 +1,6 @@
 import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
+import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 import { defineCollectionEditor } from './manifest';
 import { revalidateForManifest, tenantWhere } from './revalidate';
 
@@ -20,7 +21,7 @@ const singletonManifest = defineCollectionEditor({
 });
 
 const sharedManifest = defineCollectionEditor({
-    collection: 'tenants',
+    collection: LEGACY_TENANTS_SLUG,
     routes: { label: { singular: 'Tenant', plural: 'Tenants' }, basePath: () => '/' as Route },
     tenant: { kind: 'shared', readableBy: 'admin' },
     access: { list: () => true, read: () => true, update: () => true },

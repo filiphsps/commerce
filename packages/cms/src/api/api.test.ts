@@ -1,5 +1,6 @@
 import type { Payload } from 'payload';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 import { getArticle } from './get-article';
 import { getArticles } from './get-articles';
 import { getPage } from './get-page';
@@ -23,7 +24,7 @@ const TENANT_ID = 'tenant-doc-1';
 
 const makePayload = (docs: unknown[] = []): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
     const find = vi.fn(async (args: FindArgs) => {
-        if (args.collection === 'tenants') {
+        if (args.collection === LEGACY_TENANTS_SLUG) {
             return {
                 docs: [{ id: TENANT_ID, shopId: 'shop-x' }],
                 totalDocs: 1,
@@ -117,7 +118,7 @@ describe('query API', () => {
             const { payload, find } = makePayload([]);
             await getPage({ shop: shop(), locale: { code: 'en-US' }, slug: 'a', __payload: payload });
             await getPage({ shop: shop(), locale: { code: 'en-US' }, slug: 'b', __payload: payload });
-            const tenantCalls = find.mock.calls.filter((c) => (c[0] as FindArgs).collection === 'tenants');
+            const tenantCalls = find.mock.calls.filter((c) => (c[0] as FindArgs).collection === LEGACY_TENANTS_SLUG);
             expect(tenantCalls).toHaveLength(1);
             __resetTenantIdCache(payload);
         });

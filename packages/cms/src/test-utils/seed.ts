@@ -1,4 +1,5 @@
 import type { Payload } from 'payload';
+import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 
 /**
  * Input for {@link seedTenant}.
@@ -40,8 +41,10 @@ export async function seedTenant({
     locales = ['en-US'],
 }: SeedTenantInput): Promise<{ id: string }> {
     const tenant = await payload.create({
-        collection: 'tenants',
-        data: { name, slug, defaultLocale, locales },
+        collection: LEGACY_TENANTS_SLUG,
+        // `as never`: the deleted `tenants` collection has no generated data type
+        // (see legacy-tenants-slug.ts). UNIFY-11 re-seeds against `shops`.
+        data: { name, slug, defaultLocale, locales } as never,
     });
     return { id: String(tenant.id) };
 }

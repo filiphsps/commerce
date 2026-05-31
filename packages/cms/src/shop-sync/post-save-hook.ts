@@ -1,4 +1,5 @@
 import type { Payload } from 'payload';
+import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 
 /**
  * Minimal shop shape the sync hook reads from a Mongoose `post('save', doc)`
@@ -46,29 +47,32 @@ export const syncShopToTenant = async (payload: Payload, shop: ShopForSync): Pro
     // predicate rejects the call and the sync silently leaves the Shop without
     // its mirrored tenant.
     const existing = await payload.find({
-        collection: 'tenants',
+        collection: LEGACY_TENANTS_SLUG,
         where: { shopId: { equals: shop.id } },
         limit: 1,
         overrideAccess: true,
     });
     const locales = shop.i18n.locales && shop.i18n.locales.length > 0 ? shop.i18n.locales : [shop.i18n.defaultLocale];
+    // `as never`: the deleted `tenants` collection has no generated data type, so
+    // this shape matches no `CollectionSlug` member. Cast preserves the upsert
+    // payload until UNIFY-05/06 removes this hook (see legacy-tenants-slug.ts).
     const data = {
         shopId: shop.id,
         name: shop.name,
         slug: shop.id,
         defaultLocale: shop.i18n.defaultLocale,
         locales,
-    };
+    } as never;
     if (existing.docs[0]) {
         await payload.update({
-            collection: 'tenants',
+            collection: LEGACY_TENANTS_SLUG,
             id: existing.docs[0].id,
             data,
             overrideAccess: true,
         });
         return;
     }
-    await payload.create({ collection: 'tenants', data, overrideAccess: true });
+    await payload.create({ collection: LEGACY_TENANTS_SLUG, data, overrideAccess: true });
 };
 
 /**

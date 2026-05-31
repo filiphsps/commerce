@@ -1,5 +1,6 @@
 import type { Payload } from 'payload';
 import { describe, expect, it, vi } from 'vitest';
+import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 import { getArticle } from './get-article';
 import { getArticles } from './get-articles';
 import { getBusinessData } from './get-business-data';
@@ -40,7 +41,7 @@ const TENANT_ID = 'tenant-doc-1';
  */
 const makePayload = (docs: unknown[] = []): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
     const find = vi.fn(async (args: FindArgs) => {
-        if (args.collection === 'tenants') {
+        if (args.collection === LEGACY_TENANTS_SLUG) {
             return {
                 docs: [{ id: TENANT_ID, shopId: 'shop-x' }],
                 totalDocs: 1,

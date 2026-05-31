@@ -1,5 +1,6 @@
 import type { Route } from 'next';
 import { describe, expect, it } from 'vitest';
+import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 import { defineCollectionEditor } from './manifest';
 import { docUrlSegment } from './url';
 
@@ -25,7 +26,7 @@ const tenantSingleton = defineCollectionEditor({
 });
 
 const shared = defineCollectionEditor({
-    collection: 'tenants',
+    collection: LEGACY_TENANTS_SLUG,
     routes: { label: { singular: 'Tenant', plural: 'Tenants' }, basePath: () => `/settings/tenants/` as Route },
     tenant: { kind: 'shared', readableBy: 'admin' },
     access: { list: () => true, read: () => true, update: () => true },

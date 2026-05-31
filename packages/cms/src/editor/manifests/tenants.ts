@@ -1,10 +1,11 @@
 import type { Route } from 'next';
+import { LEGACY_TENANTS_SLUG } from '../../legacy-tenants-slug';
 import { adminOnly } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
 /** Editor manifest for the `tenants` collection. Admin-only; cross-tenant (shared) read access. */
 export const tenantsEditor = defineCollectionEditor({
-    collection: 'tenants',
+    collection: LEGACY_TENANTS_SLUG,
     routes: {
         label: { singular: 'Tenant', plural: 'Tenants' },
         basePath: (domain) => `/${domain}/settings/tenants/` as Route,
