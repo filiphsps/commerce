@@ -9,12 +9,12 @@
 
 ## 0. TL;DR verdict
 
-**PROVISIONAL GO — pending a mandatory cloud re-run of the latency half.**
+**LATENCY AXIS NOT FIRMED — cloud re-run FAILS the cold-miss gate from this vantage (see §8). Cost axis remains PASS.** The mandatory cloud re-run was performed (2026-05-31, real Convex cloud dev deployment, real local→cloud network RTT). It did **not** upgrade the latency half to a FIRM GO: it surfaced a **vantage-attributable FAIL** (cold p99 193.77 ms @ 1k / 225.61 ms @ 10k) whose floor is ~110 ms of cross-region network RTT, not Convex server work. The gate stays **blocked on a production-edge-region re-measurement** before `CONVEXCORE-04` / `SFREAD-03` / `CMSDATA-01` commit. See §8.
 
 | Gate | Threshold | Measured / Projected | Pass? |
 |---|---|---|---|
-| AC1a — cold-miss p99 | ≤ 150 ms | **1.88 ms @ 1k / 5.81 ms @ 10k** (LOCAL — NOT representative of prod edge RTT) | PASS (provisional) |
-| AC1b — warm p50 | ≤ 40 ms | **0.00 ms** (cache-hit path, no Convex round-trip) (LOCAL) | PASS (provisional) |
+| AC1a — cold-miss p99 | ≤ 150 ms | **CLOUD: 193.77 ms @ 1k / 225.61 ms @ 10k** (real local→cloud RTT, this machine; LOCAL was 1.88/5.81 ms) | **FAIL from this vantage** (see §8) |
+| AC1b — warm p50 | ≤ 40 ms | **CLOUD: 0.00 ms** (cache-hit path, no Convex round-trip) | PASS |
 | AC2 — Convex calls/tenant/day | ≤ 50k | **~1,728 × P + ~170** where `P` = warm edge instances/tenant. PASS for `P ≤ ~28`; **breaches 50k at `P ≳ 29`** | PASS *with a flagged sensitivity* |
 
 - The **latency half is PROVISIONAL**: the local anonymous backend has ~0 network latency, so the sub-6 ms cold p99 proves the **index + query mechanism** is cheap, but says **nothing** about production edge round-trip time to a Convex cloud deployment. This spike **MUST be re-run against a real Convex cloud deployment** before `CONVEXCORE-04`, `SFREAD-03`, and `CMSDATA-01` commit.
@@ -177,19 +177,72 @@ At `P = 10`: `17,280 × 30 ≈ 518k calls/tenant/month`. The Pro tier's ~25M inc
 
 ## 6. GO / NO-GO
 
-**PROVISIONAL GO.**
+**Latency axis: NOT a FIRM GO — measured FAIL from this vantage; gate stays blocked pending an edge-region re-measurement (see §8). Cost axis: PASS (unchanged, §4).**
 
-- Mechanism (index + HTTP-client query) is fast and scales sub-linearly to 10k tenants. ✅
+- Mechanism (index + HTTP-client query) is fast and scales sub-linearly to 10k tenants. ✅ (server-side work is sub-6 ms — proven by the local run; the cloud floor is network RTT, not query cost)
 - Cost model passes the 50k/tenant/day budget at realistic edge fan-out, with a clearly bounded, mitigable sensitivity at high `P`. ✅ (flagged)
-- **This GO is conditional.** The program may proceed to scope `CONVEXCORE-04` / `SFREAD-03` / `CMSDATA-01`, but **MUST NOT commit** them until:
-  1. this latency spike is **re-run against a real Convex cloud deployment** and cold p99 ≤ 150 ms is confirmed with production-region RTT; and
-  2. the alt-domain lookup path is costed on the cloud backend; and
+- **Latency is the open axis.** The cloud re-run (§8) measured cold-miss p99 of **193.77 ms (1k) / 225.61 ms (10k)** — over the 150 ms gate. This does **not** prove the mechanism is too slow: the cloud p50 floor (~116–122 ms) is essentially pure cross-region network RTT from this machine's ISP to the Convex deployment region, since the same query measured **0.32 ms p50 / 5.81 ms p99 server-side** on the local backend. The FAIL is therefore **vantage-attributable, not mechanism-attributable**, but it is still a FAIL and the gate **cannot be firmed to GO** without a measurement from the production Vercel edge region (co-located with / peered to the Convex deployment region), where the network component collapses.
+- **The program MUST NOT commit** `CONVEXCORE-04` / `SFREAD-03` / `CMSDATA-01` until:
+  1. the latency spike is re-measured **from a Vercel edge function in (or peered to) the Convex deployment region** and cold p99 ≤ 150 ms is confirmed end-to-end; and
+  2. ~~the alt-domain lookup path is costed on the cloud backend~~ — **DONE (§8.3):** alt-domain resolution needs a denormalized `domainAliases` mapping table (Convex has no Mongo multikey array index); its latency is within noise of the canonical lookup; and
   3. production shadow-billing establishes the real `P` and confirms calls/tenant/day ≤ 50k.
 
-If the cloud re-run shows cold p99 > 150 ms, or shadow-billing shows `P ≳ 29` without mitigation #1/#2 (§4.5), this flips to **NO-GO** and the program halts before the heavy build.
+The earlier "if the cloud re-run shows cold p99 > 150 ms … this flips to NO-GO" trigger fired **as literally measured**, but the root cause is the measurement vantage (cross-continent RTT), not Convex. The honest disposition is: **HOLD — re-measure from the edge region before GO or NO-GO is declared.** A flat NO-GO would wrongly indict a mechanism the data shows is fast; a FIRM GO is unsupported because no number under 150 ms was observed.
 
 ---
 
 ## 7. Harness discarded
 
-The Convex schema, `findByDomain`/`seed`/`count` functions, the seed+benchmark script, the local-backend state (`.convex/`), and the generated `.env.local` were **all deleted** after capturing the numbers above. Only this findings doc is committed. `git status` shows the working tree pristine except for this file.
+The Convex schema, `findByDomain`/`seed`/`count` functions, the seed+benchmark script, the local-backend state (`.convex/`), and the generated `.env.local` were **all deleted** after capturing the numbers above. Only this findings doc is committed. `git status` shows the working tree pristine except for this file. The cloud re-run (§8) created a throwaway Convex project (`commerce-spike`, deployment `fantastic-possum-263`) and its harness/`.env.local`; all of it was likewise deleted, except the cloud project itself, which must be removed from the Convex dashboard manually (cannot be reliably deleted via CLI).
+
+---
+
+## 8. CLOUD RE-RUN — real network RTT (2026-05-31)
+
+**Vantage:** measured from **this developer machine (local workstation ISP) → Convex cloud dev deployment** at `https://fantastic-possum-263.convex.cloud` (project `commerce-spike`, team default region). This is **real network RTT** — NOT loopback — but it is **NOT the production Vercel edge region**. The storefront runs on Vercel edge/serverless, which deploys close to (and peers with) the Convex region; this workstation does not. Treat the network component below as an **upper bound**, not the production figure.
+
+**Method:** identical to §1 — `ConvexHttpClient` from `convex/browser` (the HTTP client the middleware uses), `by_domain` index lookup, TTL+LRU warm cache modeling `SHOP_RESOLUTION_TTL_MS = 60_000`. Iteration counts were trimmed from 5,000 → **800 cold / 3,000 warm** per phase because each cloud round-trip costs ~120 ms (5,000 × 4 phases × 2 counts ≈ 48 min/run was infeasible); 800 samples still resolve p99 to the 8th-worst observation.
+
+### 8.1 Raw output (evidence)
+
+```
+========== TENANT COUNT: 1000 ==========
+CONVEX_URL: https://fantastic-possum-263.convex.cloud
+shops in table: 1000
+COLD-MISS findByDomain (1000)              n=800 min=106.11 p50=116.58 p90=125.41 p99=193.77 max=262.03 mean=119.25 (ms)
+WARM (TTL+LRU cache) findByDomain (1000)   n=3000 min=0.00 p50=0.00 p90=0.00 p99=0.06 max=131.47 mean=0.79 (ms)
+ALT-DOMAIN findByAlias (1000)              n=800 min=105.57 p50=122.98 p90=131.05 p99=181.07 max=319.40 mean=124.98 (ms)
+ALT-DOMAIN findByDomainWithFallback (1000) n=800 min=104.25 p50=125.19 p90=133.97 p99=228.78 max=1535.06 mean=130.48 (ms)
+DONE
+
+========== TENANT COUNT: 10000 ==========
+CONVEX_URL: https://fantastic-possum-263.convex.cloud
+shops in table: 10000
+COLD-MISS findByDomain (10000)             n=800 min=110.56 p50=122.28 p90=130.18 p99=225.61 max=1980.55 mean=127.47 (ms)
+WARM (TTL+LRU cache) findByDomain (10000)  n=3000 min=0.00 p50=0.00 p90=0.00 p99=0.02 max=138.64 mean=0.82 (ms)
+ALT-DOMAIN findByAlias (10000)             n=800 min=113.94 p50=125.06 p90=133.53 p99=209.99 max=835.48 mean=129.14 (ms)
+ALT-DOMAIN findByDomainWithFallback (10000) n=800 min=112.02 p50=128.40 p90=136.73 p99=182.69 max=229.28 mean=129.94 (ms)
+DONE
+```
+
+### 8.2 AC1 re-evaluation against the 150 ms / 40 ms gate
+
+| Gate | Threshold | 1k | 10k | Pass? |
+|---|---|---|---|---|
+| AC1a — cold-miss p99 | ≤ 150 ms | **193.77 ms** | **225.61 ms** | **FAIL** (both) |
+| AC1a — cold-miss p50 | (context) | 116.58 ms | 122.28 ms | — |
+| AC1b — warm p50 | ≤ 40 ms | **0.00 ms** | **0.00 ms** | **PASS** (both) |
+
+- **Warm p50 PASSES decisively** — a TTL cache hit never touches Convex, exactly as in `shop-cache.ts`. Network distance is irrelevant on the warm path; this result is robust regardless of vantage.
+- **Cold-miss p99 FAILS at both tenant counts.** But decompose it: cloud cold p50 ≈ **116–122 ms** vs the local p50 of **0.32–1.49 ms** for the *same query on the same index*. The ~115 ms delta is **pure network RTT** from this workstation to the Convex region — a cross-continent hop. Server-side work is unchanged and tiny. Index scaling is still healthy (p50 1k→10k rose only ~6 ms; p99 tail is RTT jitter, not query cost). So the gate breach is **caused by the measurement vantage**, not by Convex's `findByDomain`.
+- **Vantage caveat (decisive):** the production storefront does not call Convex from this workstation. Vercel edge/serverless functions execute in regions adjacent to (and peered with) the Convex deployment, where RTT is typically single-digit-to-low-tens of ms. Adding a realistic ~10–30 ms edge→Convex RTT to the proven <6 ms server work lands cold p99 **well under 150 ms** — but that is a projection. **Because the only real-network number in hand FAILS, the gate is NOT firmed.** A final measurement from a Vercel function co-located with the Convex region is **mandatory** before GO.
+
+### 8.3 alternativeDomains finding (condition #2 — now resolved)
+
+- **Mechanism finding (new, important):** Convex has **no Mongo-style multikey array index.** The Mongoose query `$or: [{ domain }, { alternativeDomains: domain }]` relies on a multikey index over the `alternativeDomains` array; Convex's `.index('…', ['alternativeDomains'])` indexes the **array value as a whole**, so `q.eq('alternativeDomains', someString)` does not compile (type error: `string` not assignable to `string[]`) and would not match per-element even if coerced. The realistic Convex shape is a **denormalized `domainAliases` mapping table** (`{ alias, shopId }` with a `by_alias` index); the fallback is then an alias index lookup **plus a `db.get`** to fetch the owning shop — two reads instead of one.
+- **Latency:** the alt-domain paths are **within noise of the canonical lookup** at this vantage (network RTT dominates both): isolated alias lookup p99 **181.07 ms (1k) / 209.99 ms (10k)**; full `$or`-equivalent (canonical miss → alias lookup → `db.get`) p99 **228.78 ms (1k) / 182.69 ms (10k)**. The extra `db.get` adds no meaningful latency on top of the round-trip — both reads run server-side inside one query function, so the alt path costs **one** client round-trip, same as canonical.
+- **Cost:** because the fallback is **one Convex query call** (the `db.get` is in-function, not a second billed call), an alt-domain hit costs the **same one call/miss** as a canonical hit — it does **not** double the per-miss call count feared in §5. The denormalized `domainAliases` table adds 2 rows/tenant of storage (negligible vs the ~374 B shop doc) and must be kept in sync on shop writes (write-amplification of 2 alias upserts per shop edit — well within the build/write budget).
+
+### 8.4 Teardown
+
+The cloud harness (`schema.ts`, `spike.ts`, the scratch benchmark, `.env.local`, regenerated `_generated/`) was deleted and `_generated/` restored to HEAD. The throwaway **`commerce-spike` Convex project (deployment `fantastic-possum-263`) must be deleted manually from dashboard.convex.dev** — the CLI cannot reliably delete a cloud project. Only this doc is committed.
