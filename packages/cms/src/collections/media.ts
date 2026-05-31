@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
+import { localized, required, textField } from '../descriptors';
+import { toFieldConfigs } from '../field-config-bridge';
 
 /**
  * Payload collection config for `media`. Upload collection scoped to tenants
@@ -29,8 +31,5 @@ export const media: CollectionConfig = {
         ],
         focalPoint: true,
     },
-    fields: [
-        { name: 'alt', type: 'text', required: true },
-        { name: 'caption', type: 'text', localized: true },
-    ],
+    fields: toFieldConfigs(required(textField({ name: 'alt' })), localized(textField({ name: 'caption' }))),
 };

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
+import { checkboxField, groupField, localized, textField } from '../../descriptors';
 import { toFieldConfigs } from '../../field-config-bridge';
 import { imageField, linkField, topLevelNavItemField } from '../../fields';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
@@ -24,16 +25,12 @@ export const header: CollectionConfig = {
     },
     fields: toFieldConfigs(
         imageField({ name: 'logo' }),
-        { name: 'logoLink', type: 'text', defaultValue: '/' },
+        textField({ name: 'logoLink', defaultValue: '/' }),
         topLevelNavItemField({ depth: 6 }),
-        {
+        groupField({
             name: 'localeSwitcher',
-            type: 'group',
-            fields: [
-                { name: 'enabled', type: 'checkbox', defaultValue: true },
-                { name: 'label', type: 'text', localized: true },
-            ],
-        },
+            fields: [checkboxField({ name: 'enabled', defaultValue: true }), localized(textField({ name: 'label' }))],
+        }),
         linkField({ name: 'cta' }),
     ),
     // No explicit `tenant` index: @payloadcms/plugin-multi-tenant adds a unique

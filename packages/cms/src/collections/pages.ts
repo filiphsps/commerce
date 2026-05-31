@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { allBlocks } from '../blocks';
+import { localized, required, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 import { seoGroup } from '../fields';
 import { buildRevalidateHooks } from './_hooks/revalidate';
@@ -21,8 +22,11 @@ export const pages: CollectionConfig = {
         delete: adminOnly,
     },
     fields: toFieldConfigs(
-        { name: 'title', type: 'text', required: true, localized: true },
+        localized(required(textField({ name: 'title' }))),
+        // `index` is unmodeled by the descriptor DSL; raw field via the bridge.
         { name: 'slug', type: 'text', required: true, index: true },
+        // `allBlocks` are Payload block configs owned by the blocks module; the
+        // polymorphic field is passed through raw rather than re-wrapped.
         { name: 'blocks', type: 'blocks', blocks: allBlocks },
         seoGroup(),
     ),

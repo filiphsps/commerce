@@ -1,6 +1,7 @@
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
+import { localized, required, textareaField, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 import { imageField, seoGroup } from '../fields';
 import { buildRevalidateHooks } from './_hooks/revalidate';
@@ -22,14 +23,20 @@ export const articles: CollectionConfig = {
         delete: adminOnly,
     },
     fields: toFieldConfigs(
-        { name: 'title', type: 'text', required: true, localized: true },
+        localized(required(textField({ name: 'title' }))),
+        // `index` is a storage concern the descriptor DSL does not model; the raw
+        // Payload field is mixed through the bridge until the Convex rebuild.
         { name: 'slug', type: 'text', required: true, index: true },
-        { name: 'author', type: 'text', required: true },
+        required(textField({ name: 'author' })),
+        // `admin.date` picker config is Payload editor-presentation metadata the
+        // descriptor DSL intentionally omits.
         { name: 'publishedAt', type: 'date', admin: { date: { pickerAppearance: 'dayAndTime' } } },
         imageField({ name: 'cover' }),
-        { name: 'excerpt', type: 'textarea', localized: true },
+        localized(textareaField({ name: 'excerpt' })),
+        // `richText`/Lexical has no descriptor equivalent yet; kept raw with its
+        // `localized` flag intact so the localized-field set is preserved.
         { name: 'body', type: 'richText', localized: true, editor: lexicalEditor({}) },
-        { name: 'tags', type: 'text', hasMany: true },
+        textField({ name: 'tags', hasMany: true }),
         seoGroup(),
     ),
     indexes: [{ fields: ['tenant', 'slug'], unique: true }],

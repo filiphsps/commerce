@@ -3,6 +3,8 @@
 import { type FeatureFlagKind, isSectionFlagKey, SECTION_FLAG_PREFIX } from '@nordcom/commerce-db/lib/feature-flag';
 import type { CollectionConfig, TextFieldSingleValidation } from 'payload';
 import { validations } from 'payload';
+import { arrayField, jsonField, required, selectField, textareaField, textField } from '../descriptors';
+import { toFieldConfigs } from '../field-config-bridge';
 
 /**
  * Field-level validator for a feature flag `key`. Runs Payload's built-in text validation first
@@ -41,26 +43,25 @@ export const featureFlags: CollectionConfig = {
         update: ({ req }) => req.user?.role === 'admin',
         delete: ({ req }) => req.user?.role === 'admin',
     },
-    fields: [
+    fields: toFieldConfigs(
+        // `validate`/`unique`/`index` have no descriptor equivalent; raw field
+        // via the bridge so the section-key validator stays attached.
         { name: 'key', type: 'text', required: true, unique: true, index: true, validate: validateKey },
-        {
+        selectField({
             name: 'kind',
-            type: 'select',
             options: [
                 { label: 'Behavior', value: 'behavior' },
                 { label: 'Section', value: 'section' },
             ],
-        },
-        { name: 'description', type: 'textarea' },
-        { name: 'defaultValue', type: 'json', required: true },
-        {
+        }),
+        textareaField({ name: 'description' }),
+        required(jsonField({ name: 'defaultValue' })),
+        arrayField({
             name: 'options',
-            type: 'array',
-            fields: [
-                { name: 'label', type: 'text', required: true },
-                { name: 'value', type: 'json', required: true },
-            ],
-        },
+            fields: [required(textField({ name: 'label' })), required(jsonField({ name: 'value' }))],
+        }),
+        // `targeting.params` carries a JSON `defaultValue`, which the JSON
+        // descriptor does not model; the whole array is kept raw to preserve it.
         {
             name: 'targeting',
             type: 'array',
@@ -71,5 +72,5 @@ export const featureFlags: CollectionConfig = {
                 { name: 'description', type: 'text' },
             ],
         },
-    ],
+    ),
 };

@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { isAdmin } from '../access';
+import { required, textField } from '../descriptors';
+import { toFieldConfigs } from '../field-config-bridge';
 
 /**
  * Payload collection config for `tenants`. Required by
@@ -17,10 +19,13 @@ export const tenants: CollectionConfig = {
         update: isAdmin,
         delete: isAdmin,
     },
-    fields: [
-        { name: 'name', type: 'text', required: true },
+    fields: toFieldConfigs(
+        required(textField({ name: 'name' })),
+        // `unique`/`index` are storage concerns the descriptor DSL does not model.
         { name: 'slug', type: 'text', required: true, unique: true, index: true },
-        { name: 'defaultLocale', type: 'text', required: true, defaultValue: 'en-US' },
+        required(textField({ name: 'defaultLocale', defaultValue: 'en-US' })),
+        // A `hasMany` text default is an array; the descriptor's `defaultValue` is
+        // a single string, so this field is kept raw to preserve the array default.
         { name: 'locales', type: 'text', hasMany: true, required: true, defaultValue: ['en-US'] },
         {
             name: 'shopId',
@@ -28,5 +33,5 @@ export const tenants: CollectionConfig = {
             index: true,
             admin: { description: 'Source Shop._id from @nordcom/commerce-db' },
         },
-    ],
+    ),
 };

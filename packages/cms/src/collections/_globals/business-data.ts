@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
+import { arrayField, emailField, groupField, required, textField } from '../../descriptors';
+import { toFieldConfigs } from '../../field-config-bridge';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
 
 /**
@@ -18,32 +20,30 @@ export const businessData: CollectionConfig = {
         update: tenantScopedWrite,
         delete: adminOnly,
     },
-    fields: [
-        { name: 'legalName', type: 'text' },
-        { name: 'supportEmail', type: 'email' },
-        { name: 'supportPhone', type: 'text' },
-        {
+    fields: toFieldConfigs(
+        textField({ name: 'legalName' }),
+        emailField({ name: 'supportEmail' }),
+        textField({ name: 'supportPhone' }),
+        groupField({
             name: 'address',
-            type: 'group',
             fields: [
-                { name: 'line1', type: 'text' },
-                { name: 'line2', type: 'text' },
-                { name: 'city', type: 'text' },
-                { name: 'region', type: 'text' },
-                { name: 'postalCode', type: 'text' },
-                { name: 'country', type: 'text' },
+                textField({ name: 'line1' }),
+                textField({ name: 'line2' }),
+                textField({ name: 'city' }),
+                textField({ name: 'region' }),
+                textField({ name: 'postalCode' }),
+                textField({ name: 'country' }),
             ],
-        },
-        {
+        }),
+        arrayField({
             name: 'profiles',
-            type: 'array',
             fields: [
-                { name: 'platform', type: 'text', required: true },
-                { name: 'handle', type: 'text', required: true },
-                { name: 'url', type: 'text' },
+                required(textField({ name: 'platform' })),
+                required(textField({ name: 'handle' })),
+                textField({ name: 'url' }),
             ],
-        },
-    ],
+        }),
+    ),
     // No explicit `tenant` index: the multi-tenant plugin owns it for globals.
     hooks: buildRevalidateHooks({ collection: 'businessData' }),
 };

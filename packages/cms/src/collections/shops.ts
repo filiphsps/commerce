@@ -2,6 +2,8 @@
 // `server-only`, which the plain-tsx `cms:generate` cannot load.
 import { FONT_FAMILIES } from '@nordcom/commerce-db/lib/theme';
 import type { CollectionConfig } from 'payload';
+import { arrayField, groupField, numberField, required, selectField, textareaField, textField } from '../descriptors';
+import { toFieldConfigs } from '../field-config-bridge';
 import { rejectSecretWritesFromNonAdmins, stripSecretsOnRead } from './shops/secrets';
 
 /**
@@ -30,53 +32,57 @@ export const shops: CollectionConfig = {
         beforeChange: [rejectSecretWritesFromNonAdmins],
         beforeRead: [stripSecretsOnRead],
     },
-    fields: [
+    fields: toFieldConfigs(
         // ── Editable surface (mirrors shopBridge.fields) ──
-        { name: 'name', type: 'text', required: true },
-        { name: 'description', type: 'textarea' },
+        required(textField({ name: 'name' })),
+        textareaField({ name: 'description' }),
+        // `unique`/`index` are storage concerns the descriptor DSL does not model;
+        // these stay raw so the domain constraints survive.
         { name: 'domain', type: 'text', required: true, unique: true, index: true },
         { name: 'alternativeDomains', type: 'text', hasMany: true, index: true },
-        {
+        groupField({
             name: 'i18n',
-            type: 'group',
-            fields: [{ name: 'defaultLocale', type: 'text', defaultValue: 'en-US', required: true }],
-        },
-        {
+            fields: [required(textField({ name: 'defaultLocale', defaultValue: 'en-US' }))],
+        }),
+        groupField({
             name: 'design',
-            type: 'group',
             fields: [
-                {
+                groupField({
                     name: 'header',
-                    type: 'group',
                     fields: [
-                        {
+                        groupField({
                             name: 'logo',
-                            type: 'group',
                             fields: [
-                                { name: 'src', type: 'text', required: true },
-                                { name: 'alt', type: 'text', required: true },
-                                { name: 'width', type: 'number', required: true, defaultValue: 512 },
-                                { name: 'height', type: 'number', required: true, defaultValue: 512 },
+                                required(textField({ name: 'src' })),
+                                required(textField({ name: 'alt' })),
+                                required(numberField({ name: 'width', defaultValue: 512 })),
+                                required(numberField({ name: 'height', defaultValue: 512 })),
                             ],
-                        },
+                        }),
                     ],
-                },
-                {
+                }),
+                arrayField({
                     name: 'accents',
-                    type: 'array',
                     fields: [
-                        {
-                            name: 'type',
-                            type: 'select',
-                            options: ['primary', 'secondary'],
-                            required: true,
-                        },
-                        { name: 'color', type: 'text', required: true },
-                        { name: 'foreground', type: 'text', required: true },
+                        required(
+                            selectField({
+                                name: 'type',
+                                // Payload normalizes string options to `{ label, value }`
+                                // with label === value; the explicit object form here is
+                                // the descriptor-native equivalent of `['primary',
+                                // 'secondary']`.
+                                options: [
+                                    { label: 'primary', value: 'primary' },
+                                    { label: 'secondary', value: 'secondary' },
+                                ],
+                            }),
+                        ),
+                        required(textField({ name: 'color' })),
+                        required(textField({ name: 'foreground' })),
                     ],
-                },
+                }),
             ],
-        },
+        }),
 
         // Optional per-tenant theme tokens (mirrors `ShopBase.theme` / `ResolvedShopTheme`). Every
         // field is optional; an unset theme resolves to the platform defaults via `resolveTheme`, so
@@ -434,5 +440,5 @@ export const shops: CollectionConfig = {
                 { name: 'permissions', type: 'text', hasMany: true },
             ],
         },
-    ],
+    ),
 };

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
+import { arrayField, localized, required, selectField, textField } from '../../descriptors';
 import { toFieldConfigs } from '../../field-config-bridge';
 import { linkField } from '../../fields';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
@@ -20,38 +21,36 @@ export const footer: CollectionConfig = {
         update: tenantScopedWrite,
         delete: adminOnly,
     },
-    fields: [
-        {
+    fields: toFieldConfigs(
+        arrayField({
             name: 'sections',
-            type: 'array',
             fields: [
-                { name: 'title', type: 'text', localized: true, required: true },
-                { name: 'links', type: 'array', fields: toFieldConfigs(linkField({ name: 'link' })) },
+                localized(required(textField({ name: 'title' }))),
+                arrayField({ name: 'links', fields: [linkField({ name: 'link' })] }),
             ],
-        },
-        {
+        }),
+        arrayField({
             name: 'social',
-            type: 'array',
             fields: [
-                {
-                    name: 'platform',
-                    type: 'select',
-                    required: true,
-                    options: [
-                        { label: 'Instagram', value: 'instagram' },
-                        { label: 'Facebook', value: 'facebook' },
-                        { label: 'TikTok', value: 'tiktok' },
-                        { label: 'YouTube', value: 'youtube' },
-                        { label: 'X / Twitter', value: 'x' },
-                        { label: 'LinkedIn', value: 'linkedin' },
-                    ],
-                },
-                { name: 'url', type: 'text', required: true },
+                required(
+                    selectField({
+                        name: 'platform',
+                        options: [
+                            { label: 'Instagram', value: 'instagram' },
+                            { label: 'Facebook', value: 'facebook' },
+                            { label: 'TikTok', value: 'tiktok' },
+                            { label: 'YouTube', value: 'youtube' },
+                            { label: 'X / Twitter', value: 'x' },
+                            { label: 'LinkedIn', value: 'linkedin' },
+                        ],
+                    }),
+                ),
+                required(textField({ name: 'url' })),
             ],
-        },
-        { name: 'legal', type: 'array', fields: toFieldConfigs(linkField({ name: 'link' })) },
-        { name: 'copyrightLine', type: 'text', localized: true },
-    ],
+        }),
+        arrayField({ name: 'legal', fields: [linkField({ name: 'link' })] }),
+        localized(textField({ name: 'copyrightLine' })),
+    ),
     // No explicit `tenant` index: the multi-tenant plugin owns it for globals.
     hooks: buildRevalidateHooks({ collection: 'footer' }),
 };
