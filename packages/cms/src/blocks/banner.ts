@@ -1,4 +1,5 @@
 import type { Block } from 'payload';
+import { localized, required, selectField, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 import { imageField, linkField } from '../fields';
 
@@ -13,19 +14,18 @@ export const bannerBlock: Block = {
     slug: 'banner',
     interfaceName: 'BannerBlock',
     fields: toFieldConfigs(
-        { name: 'heading', type: 'text', localized: true, required: true },
-        { name: 'subheading', type: 'text', localized: true },
+        localized(required(textField({ name: 'heading' }))),
+        localized(textField({ name: 'subheading' })),
         imageField({ name: 'background', localized: true }),
         linkField({ name: 'cta' }),
-        {
+        selectField({
             name: 'alignment',
-            type: 'select',
             defaultValue: 'center',
             options: [
                 { label: 'Left', value: 'left' },
                 { label: 'Center', value: 'center' },
                 { label: 'Right', value: 'right' },
             ],
-        },
+        }),
     ),
 };

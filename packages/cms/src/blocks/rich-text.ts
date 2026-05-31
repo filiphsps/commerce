@@ -1,5 +1,7 @@
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { Block } from 'payload';
+import { checkboxField, condition, localized, textField } from '../descriptors';
+import { toFieldConfigs } from '../field-config-bridge';
 
 /**
  * Payload block definition for a localized Lexical rich-text body. Optionally
@@ -11,20 +13,15 @@ import type { Block } from 'payload';
 export const richTextBlock: Block = {
     slug: 'rich-text',
     interfaceName: 'RichTextBlock',
-    fields: [
+    fields: toFieldConfigs(
+        // `richText`/Lexical has no descriptor equivalent yet; kept raw with its
+        // `localized` flag intact so the localized-field set is preserved.
         { name: 'body', type: 'richText', localized: true, editor: lexicalEditor({}) },
-        { name: 'collapsible', type: 'checkbox', defaultValue: false },
-        {
-            name: 'collapsedByDefault',
-            type: 'checkbox',
-            defaultValue: false,
-            admin: { condition: (_d, sib) => sib?.collapsible === true },
-        },
-        {
-            name: 'collapseLabel',
-            type: 'text',
-            localized: true,
-            admin: { condition: (_d, sib) => sib?.collapsible === true },
-        },
-    ],
+        checkboxField({ name: 'collapsible', defaultValue: false }),
+        condition(
+            checkboxField({ name: 'collapsedByDefault', defaultValue: false }),
+            (_data, sibling) => sibling.collapsible === true,
+        ),
+        condition(localized(textField({ name: 'collapseLabel' })), (_data, sibling) => sibling.collapsible === true),
+    ),
 };

@@ -1,4 +1,6 @@
 import type { Block } from 'payload';
+import { selectField } from '../descriptors';
+import { toFieldConfigs } from '../field-config-bridge';
 
 const COLUMNS_BLOCK_SLUG = 'columns';
 
@@ -13,15 +15,21 @@ const buildColumnsBlock = (siblings: Block[]): Block => ({
     slug: COLUMNS_BLOCK_SLUG,
     interfaceName: 'ColumnsBlock',
     fields: [
+        // The `columns` row carries `minRows`/`maxRows` array bounds the DSL does
+        // not model, and its `content` embeds the sibling Payload block configs —
+        // which carry the `interfaceName` and runtime field shapes the descriptor
+        // `blocks` kind omits. So the array wrapper and `content` stay raw,
+        // exactly as the collections' `blocks` field, while the row's `width`
+        // choice goes through the descriptor bridge. Filtering out the columns
+        // block itself prevents infinite nesting.
         {
             name: 'columns',
             type: 'array',
             minRows: 1,
             maxRows: 4,
-            fields: [
-                {
+            fields: toFieldConfigs(
+                selectField({
                     name: 'width',
-                    type: 'select',
                     defaultValue: 'auto',
                     options: [
                         { label: 'Auto', value: 'auto' },
@@ -30,13 +38,13 @@ const buildColumnsBlock = (siblings: Block[]): Block => ({
                         { label: 'Two-thirds', value: '2/3' },
                         { label: 'Full', value: 'full' },
                     ],
-                },
+                }),
                 {
                     name: 'content',
                     type: 'blocks',
                     blocks: siblings.filter((b) => b.slug !== COLUMNS_BLOCK_SLUG),
                 },
-            ],
+            ),
         },
     ],
 });

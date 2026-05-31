@@ -1,4 +1,5 @@
 import type { Block } from 'payload';
+import { toFieldConfigs } from '../field-config-bridge';
 
 /**
  * Payload block definition for raw HTML injection. Create and update are
@@ -10,7 +11,11 @@ import type { Block } from 'payload';
 export const htmlBlock: Block = {
     slug: 'html',
     interfaceName: 'HtmlBlock',
-    fields: [
+    fields: toFieldConfigs(
+        // The `access` admin-role gate and `admin.language`/`admin.description`
+        // editor metadata are Payload runtime concerns the descriptor DSL omits,
+        // so the code field is mixed through the bridge raw. Unrestricted raw
+        // HTML is an XSS surface — hence create/update are admin-role only.
         {
             name: 'html',
             type: 'code',
@@ -24,5 +29,5 @@ export const htmlBlock: Block = {
                 update: ({ req }) => req?.user?.role === 'admin',
             },
         },
-    ],
+    ),
 };

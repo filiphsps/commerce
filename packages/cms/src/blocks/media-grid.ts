@@ -1,4 +1,5 @@
 import type { Block } from 'payload';
+import { arrayField, localized, required, selectField, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 import { imageField, linkField } from '../fields';
 
@@ -13,27 +14,27 @@ import { imageField, linkField } from '../fields';
 export const mediaGridBlock: Block = {
     slug: 'media-grid',
     interfaceName: 'MediaGridBlock',
-    fields: [
-        {
-            name: 'itemType',
-            type: 'select',
-            defaultValue: 'image',
-            required: true,
-            options: [
-                { label: 'Image', value: 'image' },
-                { label: 'Icon', value: 'icon' },
-            ],
-        },
+    fields: toFieldConfigs(
+        required(
+            selectField({
+                name: 'itemType',
+                defaultValue: 'image',
+                options: [
+                    { label: 'Image', value: 'image' },
+                    { label: 'Icon', value: 'icon' },
+                ],
+            }),
+        ),
+        // `min`/`max` numeric bounds are validation metadata the DSL does not model.
         { name: 'columns', type: 'number', defaultValue: 3, min: 1, max: 6 },
-        {
+        arrayField({
             name: 'items',
-            type: 'array',
             minRows: 1,
-            fields: toFieldConfigs(
+            fields: [
                 imageField({ name: 'image' }),
-                { name: 'caption', type: 'text', localized: true },
+                localized(textField({ name: 'caption' })),
                 linkField({ name: 'link' }),
-            ),
-        },
-    ],
+            ],
+        }),
+    ),
 };
