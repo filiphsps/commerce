@@ -1,4 +1,4 @@
-import type { Media, Tenant } from '@nordcom/commerce-cms/types';
+import type { Media } from '@nordcom/commerce-cms/types';
 import { describe, expect, it } from 'vitest';
 import { mockShop } from '@/utils/test/fixtures/shop';
 import { populatedMedia, tenantId, toShopRef } from './_cms';
@@ -44,7 +44,7 @@ describe('_cms utilities', () => {
 
     describe('tenantId', () => {
         it('returns the id from a populated Tenant', () => {
-            const t = { id: 'tnt-1', name: 'A' } as Tenant;
+            const t = { id: 'tnt-1' };
             expect(tenantId(t)).toBe('tnt-1');
         });
 
