@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 import { resolveBuildEnv } from '@nordcom/commerce-utils/env';
 
+import { buildContentSecurityPolicy } from './src/utils/csp.mjs';
+
 const { isDev, environment, gitSHA } = resolveBuildEnv(process.env);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -106,12 +108,21 @@ const config = {
         tsconfigPath: 'tsconfig.json',
     },
     async headers() {
+        const contentSecurityPolicy = buildContentSecurityPolicy({
+            convexUrl: process.env.NEXT_PUBLIC_CONVEX_URL,
+            isDev,
+        });
+
         return ['/', '/:path*'].map((source) => ({
             source,
             headers: [
                 {
                     key: 'X-Powered-By',
                     value: `Nordcom Commerce (${process.env.SERVICE_DOMAIN || 'unknown'})`,
+                },
+                {
+                    key: 'Content-Security-Policy',
+                    value: contentSecurityPolicy,
                 },
             ],
         }));
