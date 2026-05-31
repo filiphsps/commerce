@@ -21,6 +21,11 @@ env:
     CI: true
     MONGOMS_VERSION: 8.0.4
     MONGOMS_DOWNLOAD_DIR: /home/runner/.cache/mongodb-binaries
+    # Convex local-backend binary tag. Unlike the convex npm CLI, this is fetched remotely from
+    # version.convex.dev (NOT pinned by pnpm-lock.yaml), so pin + bump it explicitly here — same
+    # model as MONGOMS_VERSION. It also keys the backend-binary cache, so a bump invalidates stale
+    # binaries instead of silently re-downloading on every run.
+    CONVEX_LOCAL_BACKEND_VERSION: precompiled-2026-05-27-e85ff37
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     TURBO_REMOTE_CACHE_TIMEOUT: 120
@@ -204,6 +209,46 @@ jobs:
                   mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
                   save-turbo: 'true'
 
+    convex:
+        name: 🌐 Convex
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
+
+            - name: 🔎 Detect Convex changes
+              id: changes
+              uses: dorny/paths-filter@v3
+              with:
+                  filters: |
+                      convex:
+                          - 'packages/convex/**'
+
+            - name: 🚀 Bootstrap
+              id: bootstrap
+              uses: ./.github/common/bootstrap
+              with:
+                  turbo-cache: "false"
+
+            - name: 🌐 Deploy Convex to self-hosted backend
+              if: steps.changes.outputs.convex == 'true'
+              env:
+                  CONVEX_AGENT_MODE: anonymous
+              run: pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION"
+
+            - name: ⏭️ Skip Convex deploy (no packages/convex changes)
+              if: steps.changes.outputs.convex != 'true'
+              run: echo "No packages/convex/** changes detected; skipping the self-hosted Convex deploy."
+
+            - name: 💾 Save bootstrap caches
+              if: always()
+              uses: ./.github/common/bootstrap-save
+              with:
+                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+                  convex-backend-cache-hit: ${{ steps.bootstrap.outputs.convex-backend-cache-hit }}
+                  save-convex-backend: 'true'
+
     e2e:
         name: 🎭 E2E
         needs: build
@@ -329,7 +374,7 @@ jobs:
 
     dispatch:
         name: 🗣️ Dispatch
-        needs: [lint, typecheck, test, build, e2e]
+        needs: [lint, typecheck, test, build, convex, e2e]
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         timeout-minutes: 5
         runs-on: ubuntu-latest

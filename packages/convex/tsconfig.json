@@ -1,5 +1,10 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        // DOM lib supplies `console` and other Convex-runtime globals these functions rely on; it
+        // mirrors the Convex-scaffolded `convex/tsconfig.json` lib, which the root config omits.
+        "lib": ["ESNext", "DOM"]
+    },
     "include": ["./convex/**/*.ts"]
 }

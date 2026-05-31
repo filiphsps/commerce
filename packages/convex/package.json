@@ -16,6 +16,8 @@
     },
     "scripts": {
         "codegen": "convex codegen",
+        "convex:deploy": "convex deploy -y",
+        "convex:dev": "convex dev",
         "build": "node ./scripts/build.mjs",
         "clean": "rimraf -g .convex .turbo *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",

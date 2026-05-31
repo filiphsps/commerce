@@ -57,6 +57,8 @@
         "fallow:audit": "fallow audit",
         "cms:gen": "pnpm --filter @nordcom/commerce-cms cms:gen",
         "cms:gen:check": "pnpm --filter @nordcom/commerce-cms cms:gen:check",
+        "convex:deploy": "pnpm --filter @nordcom/commerce-convex convex:deploy",
+        "convex:dev": "pnpm --filter @nordcom/commerce-convex convex:dev",
         "docs:gen:check": "pnpm --filter @nordcom/commerce-docs docs:gen:check",
         "changeset": "changeset",
         "changeset:version": "changeset version",

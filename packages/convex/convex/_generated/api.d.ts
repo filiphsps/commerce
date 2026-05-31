@@ -29,6 +29,10 @@ export declare const api: {};
  * const myFunctionReference = internal.myModule.myFunction;
  * ```
  */
-export declare const internal: {};
+export declare const internal: {
+  crons: {
+    exportSnapshot: FunctionReference<"action", "internal", {}, any>;
+  };
+};
 
 export declare const components: {};

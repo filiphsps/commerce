@@ -13,6 +13,10 @@ inputs:
         description: 'Pass `steps.<bootstrap-id>.outputs.mongo-binary-cache-hit`.'
         required: false
         default: ''
+    convex-backend-cache-hit:
+        description: 'Pass `steps.<bootstrap-id>.outputs.convex-backend-cache-hit`.'
+        required: false
+        default: ''
     save-node-modules:
         description: 'Whether this job is the designated owner of the node_modules cache. Set true on exactly one job per workflow.'
         required: false
@@ -23,6 +27,10 @@ inputs:
         default: 'false'
     save-mongo-binary:
         description: 'Whether this job is the designated owner of the mongodb-memory-server binary cache. Set true on exactly one job per workflow.'
+        required: false
+        default: 'false'
+    save-convex-backend:
+        description: 'Whether this job is the designated owner of the Convex local-backend binary cache. Set true on exactly one job per workflow.'
         required: false
         default: 'false'
 
@@ -52,3 +60,10 @@ runs:
           with:
               path: /home/runner/.cache/mongodb-binaries
               key: ${{ runner.os }}-mongoms-${{ github.head_ref || github.ref_name }}-${{ env.MONGOMS_VERSION }}
+
+        - name: 💾 Save Convex local-backend binary
+          if: inputs.save-convex-backend == 'true' && inputs.convex-backend-cache-hit == 'false' && hashFiles('/home/runner/.cache/convex/binaries/**/*') != ''
+          uses: actions/cache/save@v5
+          with:
+              path: /home/runner/.cache/convex/binaries
+              key: ${{ runner.os }}-convex-backend-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}

@@ -16,6 +16,9 @@ outputs:
     mongo-binary-cache-hit:
         description: 'Whether the mongodb-memory-server binary cache was a hit on restore.'
         value: ${{ steps.cache-mongo-binary.outputs.cache-hit }}
+    convex-backend-cache-hit:
+        description: 'Whether the Convex local-backend binary cache was a hit on restore.'
+        value: ${{ steps.cache-convex-backend.outputs.cache-hit }}
 
 runs:
     using: 'composite'
@@ -73,3 +76,14 @@ runs:
                   ${{ runner.os }}-mongoms-${{ github.head_ref || github.ref_name }}-
                   ${{ runner.os }}-mongoms-master-
                   ${{ runner.os }}-mongoms-
+
+        - name: 💾 Restore Convex local-backend binary
+          id: cache-convex-backend
+          uses: actions/cache/restore@v5
+          with:
+              path: /home/runner/.cache/convex/binaries
+              key: ${{ runner.os }}-convex-backend-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}
+              restore-keys: |
+                  ${{ runner.os }}-convex-backend-${{ github.head_ref || github.ref_name }}-
+                  ${{ runner.os }}-convex-backend-master-
+                  ${{ runner.os }}-convex-backend-
