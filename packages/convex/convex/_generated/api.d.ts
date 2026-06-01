@@ -48,6 +48,26 @@ export declare const internal: {
         any
       >;
     };
+    notify: {
+      ackDelivery: FunctionReference<
+        "mutation",
+        "internal",
+        { pendingId: Id<"pendingRevalidations"> },
+        any
+      >;
+      loadDelivery: FunctionReference<
+        "query",
+        "internal",
+        { pendingId: Id<"pendingRevalidations"> },
+        any
+      >;
+      notify: FunctionReference<
+        "action",
+        "internal",
+        { pendingId: Id<"pendingRevalidations"> },
+        any
+      >;
+    };
   };
 };
 
