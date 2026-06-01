@@ -16,7 +16,7 @@ export const reviews: CollectionConfig = {
         delete: adminOnly,
     },
     fields: [
-        { name: 'shop', type: 'relationship', relationTo: 'shops' as never, required: true, index: true },
+        { name: 'shop', type: 'relationship', relationTo: 'shops', required: true, index: true },
         // `tenant` is injected automatically by @payloadcms/plugin-multi-tenant
         // because this collection is listed in `tenantScopedCollections`.
     ],
