@@ -1,5 +1,8 @@
 import type { TableDefinition } from 'convex/server';
 
+import { authTables } from './auth';
+import { reviewsTables } from './reviews';
+
 /**
  * Aggregation point for the schema's per-group table maps. `schema.ts` spreads the named groups
  * exported here into a single `defineSchema`, so adding a table group never edits `schema.ts`'s body
@@ -14,8 +17,15 @@ import type { TableDefinition } from 'convex/server';
 /**
  * Platform/core table groups (shops, identities, sessions, feature flags, reviews, …). Spread future
  * `tables/<group>.ts` maps in here, e.g. `...shopsTables`.
+ *
+ * `authTables` (users/sessions/identities) and `reviewsTables` are platform-global, NOT tenant-scoped,
+ * so they belong in this core group rather than any tenant grouping (auth rows live above any single
+ * shop; the review→shop link is an id ref, not a tenant partition).
  */
-export const coreTables: Record<string, TableDefinition> = {};
+export const coreTables: Record<string, TableDefinition> = {
+    ...authTables,
+    ...reviewsTables,
+};
 
 /**
  * Reserved extension point for CMS-owned table groups (pages, media, rich content, …). Kept distinct

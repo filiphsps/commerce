@@ -26,7 +26,127 @@ import type { GenericId } from "convex/values";
  * `mutationGeneric` to make them type-safe.
  */
 
-export type DataModel = {};
+export type DataModel = {
+  identities: {
+    document: {
+      accessToken?: string;
+      createdAt: number;
+      expiresAt?: number;
+      identity: string;
+      provider: string;
+      refreshToken?: string;
+      scope?: string;
+      updatedAt: number;
+      _id: Id<"identities">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "accessToken"
+      | "createdAt"
+      | "expiresAt"
+      | "identity"
+      | "provider"
+      | "refreshToken"
+      | "scope"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_provider_identity: ["provider", "identity", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  reviews: {
+    document: {
+      createdAt: number;
+      shopId: string;
+      updatedAt: number;
+      _id: Id<"reviews">;
+      _creationTime: number;
+    };
+    fieldPaths: "_creationTime" | "_id" | "createdAt" | "shopId" | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shopId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  sessions: {
+    document: {
+      createdAt: number;
+      expiresAt: number;
+      token: string;
+      updatedAt: number;
+      user: Id<"users">;
+      _id: Id<"sessions">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "expiresAt"
+      | "token"
+      | "updatedAt"
+      | "user";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_expiry: ["expiresAt", "_creationTime"];
+      by_token: ["token", "_creationTime"];
+      by_user: ["user", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  users: {
+    document: {
+      avatar?: string;
+      createdAt: number;
+      email: string;
+      emailVerified: number | null;
+      groups?: Array<string>;
+      identities: Array<{
+        accessToken?: string;
+        createdAt: number;
+        expiresAt?: number;
+        id: string;
+        identity: string;
+        provider: string;
+        refreshToken?: string;
+        scope?: string;
+        updatedAt: number;
+      }>;
+      name: string;
+      updatedAt: number;
+      _id: Id<"users">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "avatar"
+      | "createdAt"
+      | "email"
+      | "emailVerified"
+      | "groups"
+      | "identities"
+      | "name"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_email: ["email", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+};
 
 /**
  * The names of all of your Convex tables.
