@@ -1066,6 +1066,12 @@ importers:
 
   packages/convex:
     dependencies:
+      '@nordcom/commerce-cms':
+        specifier: workspace:*
+        version: link:../cms
+      '@tagtree/core':
+        specifier: workspace:*
+        version: link:../tagtree/core
       convex:
         specifier: 1.39.1
         version: 1.39.1(react@19.2.6)

@@ -56,6 +56,10 @@
             "./src/cache.ts",
             "./dist/cache.js"
         ],
+        "./cache-descriptor": [
+            "./src/cache-descriptor.ts",
+            "./dist/cache-descriptor.js"
+        ],
         "./api": [
             "./src/api/index.ts",
             "./dist/api/index.js"
