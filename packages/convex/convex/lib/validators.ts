@@ -1,4 +1,4 @@
-import { type Validator, v } from 'convex/values';
+import { type GenericValidator, type Infer, type Validator, v } from 'convex/values';
 
 /**
  * Brand-accent swatch validator, mirroring `AccentToken` from
@@ -199,6 +199,57 @@ export const resolvedShopThemeValidator = v.object({
     elevation: v.object({ card: v.string(), cardHover: v.string(), panel: v.string() }),
     productCard: productCardTokensValidator,
 });
+
+/**
+ * Recursive partial mirroring `DeepPartial` from `@nordcom/commerce-db`'s `lib/theme.ts` — the helper
+ * that derives the authored `ShopThemeTokens` from `ResolvedShopTheme`. Every object leaf becomes
+ * optional at every depth; arrays STOP the recursion and keep fully-required elements (a shop sets a
+ * whole accent swatch or none). Kept byte-identical to that source `DeepPartial` so the authored-theme
+ * contract cannot drift from the resolved one.
+ */
+type DeepPartial<T> =
+    T extends ReadonlyArray<infer U> ? U[] : T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
+
+/**
+ * Derives a deep-partial validator from an object validator: every field, at every object depth, is
+ * made optional, while array validators are returned untouched so their elements stay fully required —
+ * mirroring {@link DeepPartial}'s array-stops-recursion rule. Used to express
+ * `ShopThemeTokens = DeepPartial<ResolvedShopTheme>` from {@link resolvedShopThemeValidator} WITHOUT
+ * re-declaring the ~200-token tree, so the authored-override shape and the resolved shape share one
+ * source of truth and cannot drift apart.
+ *
+ * @param validator - Source validator; object validators are rebuilt field-by-field, every other kind
+ *   (string, number, array, union, …) is returned as-is.
+ * @returns A validator accepting any subset of the source object's tokens at any depth.
+ */
+const deepPartialValidator = (validator: GenericValidator): GenericValidator => {
+    if (validator.kind !== 'object') return validator;
+    const fields: Record<string, GenericValidator> = {};
+    for (const [key, field] of Object.entries(validator.fields)) {
+        fields[key] = v.optional(deepPartialValidator(field));
+    }
+    return v.object(fields);
+};
+
+/**
+ * Authored per-tenant theme token overrides, mirroring `ShopThemeTokens`
+ * (`DeepPartial<ResolvedShopTheme>`) from `@nordcom/commerce-db`'s `lib/theme.ts`. A shop may set any
+ * subset of tokens at any depth; absent tokens resolve to the platform defaults via `resolveTheme`, so
+ * an unset theme renders byte-identically to today. This is the optional `shops.theme` shape.
+ */
+export type ShopThemeTokens = DeepPartial<Infer<typeof resolvedShopThemeValidator>>;
+
+/**
+ * Runtime validator for {@link ShopThemeTokens}, DERIVED from {@link resolvedShopThemeValidator} via
+ * {@link deepPartialValidator} so the authored-override shape tracks the resolved shape exactly. Object
+ * validation still rejects unknown keys, so a stale or hand-edited token the storefront cannot consume
+ * fails closed.
+ */
+export const shopThemeTokensValidator = deepPartialValidator(resolvedShopThemeValidator) as Validator<
+    ShopThemeTokens,
+    'required',
+    string
+>;
 
 /**
  * JSON-serializable value mirroring `JsonValue` from `@nordcom/commerce-db`'s feature-flag model

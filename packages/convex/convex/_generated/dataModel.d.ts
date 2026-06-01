@@ -164,6 +164,71 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  featureFlags: {
+    document: {
+      createdAt: number;
+      defaultValue:
+        | null
+        | boolean
+        | number
+        | string
+        | Array<any>
+        | Record<string, any>;
+      description?: string;
+      key: string;
+      kind?: "behavior" | "section";
+      legacyId: string;
+      options?: Array<{
+        label: string;
+        value:
+          | null
+          | boolean
+          | number
+          | string
+          | Array<any>
+          | Record<string, any>;
+      }>;
+      targeting: Array<{
+        description?: string;
+        params: Record<
+          string,
+          null | boolean | number | string | Array<any> | Record<string, any>
+        >;
+        rule: string;
+        value:
+          | null
+          | boolean
+          | number
+          | string
+          | Array<any>
+          | Record<string, any>;
+      }>;
+      updatedAt: number;
+      _id: Id<"featureFlags">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "defaultValue"
+      | `defaultValue.${string}`
+      | "description"
+      | "key"
+      | "kind"
+      | "legacyId"
+      | "options"
+      | "targeting"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_key: ["key", "_creationTime"];
+      by_legacy_id: ["legacyId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   footer: {
     document: {
       copyrightLine?: string;
@@ -566,7 +631,7 @@ export type DataModel = {
   reviews: {
     document: {
       createdAt: number;
-      shopId: string;
+      shopId: Id<"shops">;
       updatedAt: number;
       _id: Id<"reviews">;
       _creationTime: number;
@@ -604,6 +669,466 @@ export type DataModel = {
       by_expiry: ["expiresAt", "_creationTime"];
       by_token: ["token", "_creationTime"];
       by_user: ["user", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  shopCollaborators: {
+    document: {
+      permissions: Array<string>;
+      shop: Id<"shops">;
+      user: Id<"users">;
+      _id: Id<"shopCollaborators">;
+      _creationTime: number;
+    };
+    fieldPaths: "_creationTime" | "_id" | "permissions" | "shop" | "user";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+      by_shop_user: ["shop", "user", "_creationTime"];
+      by_user: ["user", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  shopCredentials: {
+    document: {
+      clientSecret?: string;
+      shop: Id<"shops">;
+      token?: string;
+      _id: Id<"shopCredentials">;
+      _creationTime: number;
+    };
+    fieldPaths: "_creationTime" | "_id" | "clientSecret" | "shop" | "token";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  shopDomains: {
+    document: {
+      domain: string;
+      shop: Id<"shops">;
+      _id: Id<"shopDomains">;
+      _creationTime: number;
+    };
+    fieldPaths: "_creationTime" | "_id" | "domain" | "shop";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_domain: ["domain", "_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  shopFeatureFlags: {
+    document: {
+      flag: Id<"featureFlags">;
+      shop: Id<"shops">;
+      _id: Id<"shopFeatureFlags">;
+      _creationTime: number;
+    };
+    fieldPaths: "_creationTime" | "_id" | "flag" | "shop";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+      by_shop_flag: ["shop", "flag", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  shops: {
+    document: {
+      alternativeDomains?: Array<string>;
+      commerce?: { maxQuantity?: number; processingTimeInDays?: number };
+      commerceProvider:
+        | {
+            authentication: {
+              customers?: { clientId: string; id: string };
+              domain?: string;
+              publicToken: string;
+            };
+            domain: string;
+            id: string;
+            storefrontId: string;
+            type: "shopify";
+          }
+        | { authentication: {}; type: "stripe" };
+      createdAt: number;
+      description?: string;
+      design: {
+        accents: Array<{
+          color: string;
+          foreground: string;
+          type: "primary" | "secondary";
+        }>;
+        header: {
+          logo: { alt: string; height: number; src: string; width: number };
+        };
+      };
+      domain: string;
+      i18n?: { defaultLocale: string };
+      icons?: {
+        favicon?: { alt: string; height: number; src: string; width: number };
+      };
+      integrations?: { judgeme?: { publicToken?: string } };
+      legacyId: string;
+      name: string;
+      showProductVendor?: boolean;
+      theme?: {
+        colors?: {
+          accentPrimaryDark?: string;
+          accentPrimaryLight?: string;
+          accentSecondaryDark?: string;
+          accentSecondaryLight?: string;
+          accents?: Array<{
+            color: string;
+            foreground: string;
+            type: "primary" | "secondary";
+          }>;
+          background?: string;
+          border?: { default?: string; strong?: string };
+          focusRing?: string;
+          foreground?: string;
+          state?: {
+            danger?: string;
+            info?: string;
+            sale?: string;
+            success?: string;
+          };
+          surface?: { base?: string; raised?: string; sunken?: string };
+          text?: { default?: string; muted?: string };
+        };
+        elevation?: { card?: string; cardHover?: string; panel?: string };
+        productCard?: {
+          aspectHorizontal?: string;
+          aspectHorizontalSquare?: string;
+          aspectMicro?: string;
+          aspectVertical?: string;
+          bg?: string;
+          borderColor?: string;
+          borderWidth?: string;
+          chipActiveBg?: string;
+          chipActiveColor?: string;
+          chipBg?: string;
+          chipBorder?: string;
+          chipColor?: string;
+          chipPaddingX?: string;
+          chipPaddingY?: string;
+          compareColor?: string;
+          ctaBg?: string;
+          ctaColor?: string;
+          ctaHeight?: string;
+          ctaInlineStyle?: string;
+          ctaPaddingY?: string;
+          ctaPillIcon?: string;
+          ctaPillLabel?: string;
+          ctaPillPosition?: string;
+          ctaPillReveal?: string;
+          ctaPlacement?: string;
+          ctaRadius?: string;
+          eyebrowTracking?: string;
+          fastPathDot?: string;
+          fastPathSingleVariant?: string;
+          gap?: string;
+          gridAlign?: string;
+          imageFit?: string;
+          imageHoverSwap?: string;
+          imagePadding?: string;
+          imageRadius?: string;
+          imageSizes?: string;
+          maxWidth?: string;
+          minWidth?: string;
+          moreBg?: string;
+          moreColor?: string;
+          moreMinSize?: string;
+          moreSize?: string;
+          moreWeight?: number;
+          motionBase?: string;
+          motionEase?: string;
+          motionFast?: string;
+          motionHoverDuration?: string;
+          motionHoverEase?: string;
+          motionImageSwapDuration?: string;
+          motionOverlayInDuration?: string;
+          motionOverlayInEase?: string;
+          motionPickerIn?: string;
+          motionPickerOut?: string;
+          oosImageSaturate?: number;
+          oosOpacity?: number;
+          overlayBg?: string;
+          overlayBorderColor?: string;
+          overlayMaxHeight?: string;
+          overlayPadding?: string;
+          overlayRadius?: string;
+          overlayShadow?: string;
+          overlayWidth?: string;
+          padding?: string;
+          priceColor?: string;
+          priceSize?: string;
+          priceWeight?: number;
+          quickAddPresentation?: string;
+          radius?: string;
+          saleBadgeAllowOverlap?: boolean;
+          saleBadgeMinDiscount?: number;
+          saleBadgePosition?: string;
+          saleBadgeStyle?: string;
+          saleBadgeText?: string;
+          saleCurrentColor?: string;
+          saleShowSavingsLine?: string;
+          saleStrikeAngle?: string;
+          saleStrikeColor?: string;
+          saleStrikeExtend?: string;
+          saleStyle?: string;
+          searchImageWidth?: string;
+          shadow?: string;
+          shadowHover?: string;
+          swatchGap?: string;
+          swatchHitPadding?: string;
+          swatchRingColor?: string;
+          swatchSize?: string;
+          titleColor?: string;
+          titleLineClamp?: number;
+          titleSize?: string;
+          titleWeight?: number;
+          urgencyColor?: string;
+          urgencyThreshold?: number;
+          vendorColor?: string;
+          vendorSize?: string;
+        };
+        radii?: {
+          block?: string;
+          blockLarge?: string;
+          blockSmall?: string;
+          blockTiny?: string;
+        };
+        spacing?: { blockPadding?: string; blockSpacer?: string };
+        typography?: {
+          fontFamily?: string;
+          fontWeights?: {
+            bold?: number;
+            medium?: number;
+            normal?: number;
+            semibold?: number;
+          };
+          headingFamily?: string;
+          scale?: {
+            base?: string;
+            lg?: string;
+            sm?: string;
+            xl?: string;
+            xs?: string;
+          };
+        };
+      };
+      thirdParty?: { googleTagManager?: string; intercom?: string };
+      updatedAt: number;
+      _id: Id<"shops">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "alternativeDomains"
+      | "commerce"
+      | "commerce.maxQuantity"
+      | "commerce.processingTimeInDays"
+      | "commerceProvider"
+      | "commerceProvider.authentication"
+      | "commerceProvider.authentication.customers"
+      | "commerceProvider.authentication.customers.clientId"
+      | "commerceProvider.authentication.customers.id"
+      | "commerceProvider.authentication.domain"
+      | "commerceProvider.authentication.publicToken"
+      | "commerceProvider.domain"
+      | "commerceProvider.id"
+      | "commerceProvider.storefrontId"
+      | "commerceProvider.type"
+      | "createdAt"
+      | "description"
+      | "design"
+      | "design.accents"
+      | "design.header"
+      | "design.header.logo"
+      | "design.header.logo.alt"
+      | "design.header.logo.height"
+      | "design.header.logo.src"
+      | "design.header.logo.width"
+      | "domain"
+      | "i18n"
+      | "i18n.defaultLocale"
+      | "icons"
+      | "icons.favicon"
+      | "icons.favicon.alt"
+      | "icons.favicon.height"
+      | "icons.favicon.src"
+      | "icons.favicon.width"
+      | "integrations"
+      | "integrations.judgeme"
+      | "integrations.judgeme.publicToken"
+      | "legacyId"
+      | "name"
+      | "showProductVendor"
+      | "theme"
+      | "theme.colors"
+      | "theme.colors.accentPrimaryDark"
+      | "theme.colors.accentPrimaryLight"
+      | "theme.colors.accents"
+      | "theme.colors.accentSecondaryDark"
+      | "theme.colors.accentSecondaryLight"
+      | "theme.colors.background"
+      | "theme.colors.border"
+      | "theme.colors.border.default"
+      | "theme.colors.border.strong"
+      | "theme.colors.focusRing"
+      | "theme.colors.foreground"
+      | "theme.colors.state"
+      | "theme.colors.state.danger"
+      | "theme.colors.state.info"
+      | "theme.colors.state.sale"
+      | "theme.colors.state.success"
+      | "theme.colors.surface"
+      | "theme.colors.surface.base"
+      | "theme.colors.surface.raised"
+      | "theme.colors.surface.sunken"
+      | "theme.colors.text"
+      | "theme.colors.text.default"
+      | "theme.colors.text.muted"
+      | "theme.elevation"
+      | "theme.elevation.card"
+      | "theme.elevation.cardHover"
+      | "theme.elevation.panel"
+      | "theme.productCard"
+      | "theme.productCard.aspectHorizontal"
+      | "theme.productCard.aspectHorizontalSquare"
+      | "theme.productCard.aspectMicro"
+      | "theme.productCard.aspectVertical"
+      | "theme.productCard.bg"
+      | "theme.productCard.borderColor"
+      | "theme.productCard.borderWidth"
+      | "theme.productCard.chipActiveBg"
+      | "theme.productCard.chipActiveColor"
+      | "theme.productCard.chipBg"
+      | "theme.productCard.chipBorder"
+      | "theme.productCard.chipColor"
+      | "theme.productCard.chipPaddingX"
+      | "theme.productCard.chipPaddingY"
+      | "theme.productCard.compareColor"
+      | "theme.productCard.ctaBg"
+      | "theme.productCard.ctaColor"
+      | "theme.productCard.ctaHeight"
+      | "theme.productCard.ctaInlineStyle"
+      | "theme.productCard.ctaPaddingY"
+      | "theme.productCard.ctaPillIcon"
+      | "theme.productCard.ctaPillLabel"
+      | "theme.productCard.ctaPillPosition"
+      | "theme.productCard.ctaPillReveal"
+      | "theme.productCard.ctaPlacement"
+      | "theme.productCard.ctaRadius"
+      | "theme.productCard.eyebrowTracking"
+      | "theme.productCard.fastPathDot"
+      | "theme.productCard.fastPathSingleVariant"
+      | "theme.productCard.gap"
+      | "theme.productCard.gridAlign"
+      | "theme.productCard.imageFit"
+      | "theme.productCard.imageHoverSwap"
+      | "theme.productCard.imagePadding"
+      | "theme.productCard.imageRadius"
+      | "theme.productCard.imageSizes"
+      | "theme.productCard.maxWidth"
+      | "theme.productCard.minWidth"
+      | "theme.productCard.moreBg"
+      | "theme.productCard.moreColor"
+      | "theme.productCard.moreMinSize"
+      | "theme.productCard.moreSize"
+      | "theme.productCard.moreWeight"
+      | "theme.productCard.motionBase"
+      | "theme.productCard.motionEase"
+      | "theme.productCard.motionFast"
+      | "theme.productCard.motionHoverDuration"
+      | "theme.productCard.motionHoverEase"
+      | "theme.productCard.motionImageSwapDuration"
+      | "theme.productCard.motionOverlayInDuration"
+      | "theme.productCard.motionOverlayInEase"
+      | "theme.productCard.motionPickerIn"
+      | "theme.productCard.motionPickerOut"
+      | "theme.productCard.oosImageSaturate"
+      | "theme.productCard.oosOpacity"
+      | "theme.productCard.overlayBg"
+      | "theme.productCard.overlayBorderColor"
+      | "theme.productCard.overlayMaxHeight"
+      | "theme.productCard.overlayPadding"
+      | "theme.productCard.overlayRadius"
+      | "theme.productCard.overlayShadow"
+      | "theme.productCard.overlayWidth"
+      | "theme.productCard.padding"
+      | "theme.productCard.priceColor"
+      | "theme.productCard.priceSize"
+      | "theme.productCard.priceWeight"
+      | "theme.productCard.quickAddPresentation"
+      | "theme.productCard.radius"
+      | "theme.productCard.saleBadgeAllowOverlap"
+      | "theme.productCard.saleBadgeMinDiscount"
+      | "theme.productCard.saleBadgePosition"
+      | "theme.productCard.saleBadgeStyle"
+      | "theme.productCard.saleBadgeText"
+      | "theme.productCard.saleCurrentColor"
+      | "theme.productCard.saleShowSavingsLine"
+      | "theme.productCard.saleStrikeAngle"
+      | "theme.productCard.saleStrikeColor"
+      | "theme.productCard.saleStrikeExtend"
+      | "theme.productCard.saleStyle"
+      | "theme.productCard.searchImageWidth"
+      | "theme.productCard.shadow"
+      | "theme.productCard.shadowHover"
+      | "theme.productCard.swatchGap"
+      | "theme.productCard.swatchHitPadding"
+      | "theme.productCard.swatchRingColor"
+      | "theme.productCard.swatchSize"
+      | "theme.productCard.titleColor"
+      | "theme.productCard.titleLineClamp"
+      | "theme.productCard.titleSize"
+      | "theme.productCard.titleWeight"
+      | "theme.productCard.urgencyColor"
+      | "theme.productCard.urgencyThreshold"
+      | "theme.productCard.vendorColor"
+      | "theme.productCard.vendorSize"
+      | "theme.radii"
+      | "theme.radii.block"
+      | "theme.radii.blockLarge"
+      | "theme.radii.blockSmall"
+      | "theme.radii.blockTiny"
+      | "theme.spacing"
+      | "theme.spacing.blockPadding"
+      | "theme.spacing.blockSpacer"
+      | "theme.typography"
+      | "theme.typography.fontFamily"
+      | "theme.typography.fontWeights"
+      | "theme.typography.fontWeights.bold"
+      | "theme.typography.fontWeights.medium"
+      | "theme.typography.fontWeights.normal"
+      | "theme.typography.fontWeights.semibold"
+      | "theme.typography.headingFamily"
+      | "theme.typography.scale"
+      | "theme.typography.scale.base"
+      | "theme.typography.scale.lg"
+      | "theme.typography.scale.sm"
+      | "theme.typography.scale.xl"
+      | "theme.typography.scale.xs"
+      | "thirdParty"
+      | "thirdParty.googleTagManager"
+      | "thirdParty.intercom"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_legacy_id: ["legacyId", "_creationTime"];
     };
     searchIndexes: {};
     vectorIndexes: {};

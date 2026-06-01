@@ -7,16 +7,16 @@ import { type Infer, v } from 'convex/values';
  * with NO embedded shop snapshot. An id carries no masked/secret shop fields, so the public review
  * shape can never leak shop credentials; callers needing shop fields resolve the shop by this id.
  *
- * `shopId` is `v.string()` rather than `v.id('shops')` as a deliberate FORWARD-REFERENCE: the `shops`
- * table is added by CONVEXCORE-04 (a later, gated wave) and does not yet exist, so `v.id('shops')`
- * cannot resolve and would fail codegen/typecheck. Promote `shopId` to `v.id('shops')` once that
- * table lands; the migrated value (a Mongo shop row id string) is id-compatible either way.
+ * `shopId` is now a resolved `v.id('shops')`: CONVEXCORE-04 has landed the `shops` table in this same
+ * schema, so the former forward-reference `v.string()` is promoted to a real branded reference (the
+ * migration remaps each legacy Mongo shop id to its `shops` row id). This is the reference shape
+ * CONVEXCORE-05 specifies for `reviews`.
  *
  * `createdAt`/`updatedAt` are explicit numeric (epoch-ms) fields preserving the Mongo `timestamps`
  * pair, since Convex's `_creationTime` reflects the migration insert, not the original creation.
  */
 export const reviewValidator = v.object({
-    shopId: v.string(),
+    shopId: v.id('shops'),
     createdAt: v.number(),
     updatedAt: v.number(),
 });
@@ -28,10 +28,9 @@ export const reviewValidator = v.object({
 export type ReviewBase = Infer<typeof reviewValidator>;
 
 /**
- * Review table. `by_shop` scans every review for a shop by its id ref. Reviews are conceptually
- * tenant-scoped, but the shop reference is a forward-referenced `v.string()` (see
- * {@link reviewValidator}) rather than a resolved `v.id('shops')`, so this uses the plain `by_shop`
- * scan name; it adopts the `by_shop_<field>` convention once `shopId` becomes a real id reference.
+ * Review table. `by_shop` scans every review for a shop by its `v.id('shops')` reference (see
+ * {@link reviewValidator}). The index keys on the single `shopId` foreign key, so the plain `by_shop`
+ * name fits the multi-tenant convention without a trailing field.
  */
 const reviewsTable = defineTable(reviewValidator).index('by_shop', ['shopId']);
 

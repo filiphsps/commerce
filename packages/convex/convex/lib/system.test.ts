@@ -6,10 +6,11 @@ import schema from '../schema';
 import { systemMutation, systemQuery } from './system';
 
 /**
- * A {@link systemMutation} that writes a user, a session for that user, and a review in one
- * transaction — three DIFFERENT tables with no `shop`/tenant scoping — proving the system tier's
- * writer reaches the raw `ctx.db` across the whole db. The real constructor (its no-op ctx
- * customization plus the handler) is the code under test.
+ * A {@link systemMutation} that writes a user, a session for that user, a shop, and a review for that
+ * shop in one transaction — four DIFFERENT tables with no `shop`/tenant scoping — proving the system
+ * tier's writer reaches the raw `ctx.db` across the whole db. The shop is seeded so the review's
+ * `shopId` (`v.id('shops')`) references a real row. The real constructor (its no-op ctx customization
+ * plus the handler) is the code under test.
  */
 const seedAcrossDb = systemMutation({
     args: {},
@@ -30,12 +31,24 @@ const seedAcrossDb = systemMutation({
             createdAt: now,
             updatedAt: now,
         });
-        const reviewId = await ctx.db.insert('reviews', {
-            shopId: 'shop_system_tier',
+        const shopId = await ctx.db.insert('shops', {
+            legacyId: 'shop_system_tier',
+            name: 'System Tier',
+            domain: 'system-tier.example.com',
+            design: {
+                header: { logo: { width: 512, height: 512, src: 'https://cdn/logo.png', alt: 'System Tier' } },
+                accents: [],
+            },
+            commerceProvider: { type: 'stripe', authentication: {} },
             createdAt: now,
             updatedAt: now,
         });
-        return { userId, sessionId, reviewId };
+        const reviewId = await ctx.db.insert('reviews', {
+            shopId,
+            createdAt: now,
+            updatedAt: now,
+        });
+        return { userId, sessionId, shopId, reviewId };
     },
 });
 
@@ -94,7 +107,7 @@ describe('systemQuery / systemMutation', () => {
         expect(all.reviews).toHaveLength(1);
         const [review] = all.reviews;
         expect(review?._id).toBe(ids.reviewId);
-        expect(review?.shopId).toBe('shop_system_tier');
+        expect(review?.shopId).toBe(ids.shopId);
 
         // DEFERRED (CONVEXCORE-06/07 + the G1 RLS exit-suite, CONVEXCORE-12): the second half of this
         // contract — "the tenant RLS rules would DENY this read/write, yet systemQuery/systemMutation

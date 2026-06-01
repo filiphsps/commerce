@@ -3,6 +3,7 @@ import type { TableDefinition } from 'convex/server';
 import { authTables } from './auth';
 import { cmsContentTables } from './cms';
 import { reviewsTables } from './reviews';
+import { shopTables } from './shops';
 
 /**
  * Aggregation point for the schema's per-group table maps. `schema.ts` spreads the named groups
@@ -21,11 +22,14 @@ import { reviewsTables } from './reviews';
  *
  * `authTables` (users/sessions/identities) and `reviewsTables` are platform-global, NOT tenant-scoped,
  * so they belong in this core group rather than any tenant grouping (auth rows live above any single
- * shop; the review→shop link is an id ref, not a tenant partition).
+ * shop; the review→shop link is an id ref, not a tenant partition). `shopTables` carries the collapsed
+ * shop==tenant `shops` row plus its credential/domain/collaborator/feature-flag side tables and the
+ * platform-global `featureFlags` — its tenant-scoped members enforce the `by_shop` index convention.
  */
 export const coreTables: Record<string, TableDefinition> = {
     ...authTables,
     ...reviewsTables,
+    ...shopTables,
 };
 
 /**
