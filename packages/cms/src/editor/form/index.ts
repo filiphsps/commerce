@@ -16,6 +16,13 @@
  */
 
 export { FieldsContext, type FieldsContextValue, FormContext, type FormContextValue } from './context';
+export {
+    FieldShell,
+    type FieldShellProps,
+    fieldControlClassName,
+    registerScalarFieldWidgets,
+    useEditorField,
+} from './fields';
 export { Form, type FormProps } from './form';
 export {
     type UseFieldResult,
