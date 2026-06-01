@@ -25,13 +25,16 @@ afterAll(async () => {
 });
 
 describe('seedCms', () => {
-    it('creates the canonical CMS docs scoped to the Payload tenant resolved from the shopId', async () => {
+    it('scopes the canonical CMS docs directly to the shop row id (no separate tenant doc)', async () => {
         await seedCms(handle.uri, { shopId });
 
         const conn = await mongoose.createConnection(handle.uri).asPromise();
-        const tenant = await conn.collection('tenants').findOne({ shopId });
-        expect(tenant).toBeTruthy();
-        const tenantObjectId = tenant?._id as mongoose.Types.ObjectId;
+        // UNIFY-09: the multi-tenant plugin keys on `shops` (shop == tenant), so
+        // every tenant-scoped doc's `tenant` field holds the shop row's own
+        // ObjectId. The seed no longer creates a separate `tenants` document —
+        // reads scope straight to the shop id, which is what `resolveTenantId`
+        // returns at runtime.
+        const tenantObjectId = new mongoose.Types.ObjectId(shopId);
         // Payload's `mongooseAdapter` pluralizes collection slugs by default
         // (`header` → `headers`, `businessData` → `businessdatas`). The test
         // talks directly to MongoDB so we have to use Mongo's collection
@@ -47,6 +50,12 @@ describe('seedCms', () => {
         expect(business).toHaveLength(1);
         expect(pages.length).toBeGreaterThan(0);
         expect(articles.length).toBeGreaterThan(0);
+
+        // The unified `shops` collection is the only tenant collection — the
+        // legacy dedicated `tenants` collection is never created by the seed.
+        const db = conn.getClient().db(conn.name);
+        const tenantCollections = await db.listCollections({ name: 'tenants' }).toArray();
+        expect(tenantCollections).toHaveLength(0);
         await conn.close();
     });
 
@@ -55,14 +64,13 @@ describe('seedCms', () => {
         await seedCms(handle.uri, { shopId });
 
         const conn = await mongoose.createConnection(handle.uri).asPromise();
-        const tenant = await conn.collection('tenants').findOne({ shopId });
-        const tenantObjectId = tenant?._id as mongoose.Types.ObjectId;
+        const tenantObjectId = new mongoose.Types.ObjectId(shopId);
+        const header = await conn.collection('headers').find({ tenant: tenantObjectId }).toArray();
         const pages = await conn.collection('pages').find({ tenant: tenantObjectId }).toArray();
-        const tenantsAfter = await conn.collection('tenants').find({ shopId }).toArray();
-        // Tenant doc is upserted, never duplicated.
-        expect(tenantsAfter).toHaveLength(1);
-        // Pages collection is rewritten each run — the count matches the
-        // fixture, not the number of seed invocations.
+        // Tenant-scoped collections are rewritten each run, so the globally
+        // singular `header` stays at one doc and pages match the fixture count —
+        // never multiplied by the number of seed invocations.
+        expect(header).toHaveLength(1);
         expect(pages.length).toBeGreaterThan(0);
         await conn.close();
     });

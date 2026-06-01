@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { register } from 'node:module';
 
+import { NotFoundError } from '@nordcom/commerce-errors';
 import { seedCanonical } from '@nordcom/commerce-test-mongo';
 import mongoose, { type Model, Schema } from 'mongoose';
 import { encode } from 'next-auth/jwt';
@@ -112,12 +113,11 @@ export default async function globalSetup(): Promise<void> {
         // every request to the "Choose a Shop" picker. `collaborators` is now a
         // de-embedded join whose `user` is a string id ref (UNIFY-11), so seed
         // the string id — `findByCollaborator` no longer casts to an ObjectId.
+        const shop = await conn.collection('shops').findOne({ domain: 'nordcom-demo-shop.com' });
+        if (!shop) throw new NotFoundError('demo shop (nordcom-demo-shop.com)');
         await conn
             .collection('shops')
-            .updateOne(
-                { domain: 'nordcom-demo-shop.com' },
-                { $set: { collaborators: [{ user: userId, permissions: ['admin'] }] } },
-            );
+            .updateOne({ _id: shop._id }, { $set: { collaborators: [{ user: userId, permissions: ['admin'] }] } });
 
         // Matching Payload user so getAuthedPayloadCtx can resolve the
         // NextAuth session to a Payload principal — without this every
@@ -126,14 +126,13 @@ export default async function globalSetup(): Promise<void> {
             conn.models['payload-users'] ??
             conn.model<PayloadUserDoc>('payload-users', PayloadUserSchema, 'payload-users');
 
-        // seedCanonical inserts a Payload Tenant doc with the slug below;
-        // the test user needs that tenant in its `tenants` array for
-        // collection-edit pages to grant write access.
-        const tenantDoc = await conn.collection('tenants').findOne({ slug: 'nordcom-demo-shop' });
-        if (!tenantDoc) throw new Error('[admin global-setup] expected the seeded payload tenant');
+        // UNIFY-03 unified the multi-tenant tenant collection onto `shops`
+        // (shop == tenant), so the tenant key IS the shop row id — there is no
+        // separate `tenants` document. The test user needs that id in its
+        // `tenants` array for collection-edit pages to grant write access.
         const tenantLink = {
-            tenant: tenantDoc._id as mongoose.Types.ObjectId,
-            id: String(tenantDoc._id),
+            tenant: shop._id as mongoose.Types.ObjectId,
+            id: String(shop._id),
         };
 
         await PayloadUserModel.updateOne(

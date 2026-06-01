@@ -9,8 +9,10 @@ import { pageFixtures } from './fixtures/pages';
 import { productMetadataFixtures } from './fixtures/product-metadata';
 
 /**
- * Options for {@link seedCms}. Carries the Mongo `_id` of the Shop that the
- * newly created Payload Tenant doc will be bound to.
+ * Options for {@link seedCms}. Carries the Mongo `_id` of the Shop. Under the
+ * unified tenant model (UNIFY-03) the shop row id IS the multi-tenant tenant
+ * key, so every tenant-scoped CMS doc is scoped directly to this id — there is
+ * no separate Payload tenant document to bind back to.
  *
  * @example
  * ```ts
@@ -31,9 +33,6 @@ const TENANT_COLLECTIONS = [
     'collectionMetadata',
 ] as const;
 
-const DEMO_TENANT_SLUG = 'nordcom-demo-shop';
-const DEMO_TENANT_NAME = 'Nordcom Demo Shop';
-
 /**
  * Resets and re-creates the canonical CMS docs for the given Shop via the
  * real Payload local API. The fixtures live under `./fixtures/` so the data
@@ -44,15 +43,16 @@ const DEMO_TENANT_NAME = 'Nordcom Demo Shop';
  * belt-and-braces for the production runtime where the seed runs against an
  * already-known URI; Vitest beforeAll blocks set it explicitly.
  *
- * The Payload multi-tenant plugin keys tenant-scoped docs by the Payload
- * `tenants` document `_id`, NOT the source Shop `_id`. The seed creates the
- * Shop directly via Mongoose (bypassing Payload), so it also creates the
- * Tenant doc here and uses its `_id` for every tenant-scoped insert. Without
- * this step `resolveTenantId(shop.id)` returns `null` and every storefront
- * CMS read hits the 404 path.
+ * UNIFY-03 unified the multi-tenant tenant collection onto `shops` (shop ==
+ * tenant, keyed on the shop row id), so the plugin writes the shop row's own
+ * `_id` into every tenant-scoped doc's `tenant` field. The seed therefore
+ * scopes every insert directly to `shopId` — no separate tenant document is
+ * created. `resolveTenantId(shop.id)` confirms that shop row exists and returns
+ * the same id, so storefront CMS reads (`where: { tenant: { equals: shopId } }`)
+ * match these docs instead of hitting the 404 path.
  *
  * @param uri - MongoDB connection string Payload should bind to.
- * @param opts - Source Shop `_id` to bind the Tenant doc back to.
+ * @param opts - Source Shop `_id`, used directly as the tenant scope.
  */
 export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<void> {
     if (!process.env.MONGODB_URI) process.env.MONGODB_URI = uri;
@@ -61,52 +61,13 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
     const payload = await getPayloadInstance();
     console.info(`[seedCms] Payload ready in ${Date.now() - payloadStartedAt}ms`);
 
-    // Keyed by slug (the unique constraint on `tenants.slug`) so a previous
-    // run's tenant doc is reused even if the Shop._id was regenerated since
-    // — without this we'd hit "slug must be unique" on every re-seed. The
-    // `shopId` field is patched onto the existing doc so `resolveTenantId`
-    // still finds the right tenant for the freshly-seeded Shop.
-    console.info(`[seedCms] upserting CMS tenant slug=${DEMO_TENANT_SLUG} → shopId=${shopId}`);
-    const existingTenant = await payload.find({
-        collection: 'tenants',
-        where: { slug: { equals: DEMO_TENANT_SLUG } },
-        limit: 1,
-        depth: 0,
-        overrideAccess: true,
-    });
-    let tenantId: string;
-    if (existingTenant.docs[0]?.id) {
-        tenantId = String(existingTenant.docs[0].id);
-        await payload.update({
-            collection: 'tenants',
-            id: tenantId,
-            data: { name: DEMO_TENANT_NAME, defaultLocale: 'en-US', locales: ['en-US'], shopId } as never,
-            overrideAccess: true,
-            disableTransaction: true,
-        });
-        console.info(`[seedCms] reused tenant (id=${tenantId}); patched shopId=${shopId}`);
-    } else {
-        const created = await payload.create({
-            collection: 'tenants',
-            data: {
-                name: DEMO_TENANT_NAME,
-                slug: DEMO_TENANT_SLUG,
-                defaultLocale: 'en-US',
-                locales: ['en-US'],
-                shopId,
-            } as never,
-            overrideAccess: true,
-            disableTransaction: true,
-        });
-        tenantId = String(created.id);
-        console.info(`[seedCms] created tenant (id=${tenantId})`);
-    }
+    console.info(`[seedCms] scoping CMS docs to shop row id=${shopId} (shop == tenant)`);
 
     for (const collection of TENANT_COLLECTIONS) {
-        console.info(`[seedCms] resetting ${collection} for tenant ${tenantId}`);
+        console.info(`[seedCms] resetting ${collection} for tenant ${shopId}`);
         await payload.delete({
             collection: collection as never,
-            where: { tenant: { equals: tenantId } } as never,
+            where: { tenant: { equals: shopId } } as never,
             overrideAccess: true,
             disableTransaction: true,
         });
@@ -123,7 +84,7 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
     await payload.create({
         collection: 'header',
         data: {
-            tenant: tenantId,
+            tenant: shopId,
             logoLink: '/',
             items: headerData.items,
             localeSwitcher: { enabled: true, label: 'Region' },
@@ -140,7 +101,7 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
     await payload.create({
         collection: 'footer',
         data: {
-            tenant: tenantId,
+            tenant: shopId,
             ...footerData,
             _status: 'published',
         } as never,
@@ -152,7 +113,7 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
     await payload.create({
         collection: 'businessData',
         data: {
-            tenant: tenantId,
+            tenant: shopId,
             ...businessDataFixture,
             _status: 'published',
         } as never,
@@ -165,7 +126,7 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
         await payload.create({
             collection: 'pages',
             data: {
-                tenant: tenantId,
+                tenant: shopId,
                 slug: page.slug,
                 title: page.title,
                 blocks: page.blocks,
@@ -182,7 +143,7 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
         await payload.create({
             collection: 'articles',
             data: {
-                tenant: tenantId,
+                tenant: shopId,
                 slug: article.slug,
                 title: article.title,
                 author: article.author,
@@ -205,7 +166,7 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
         await payload.create({
             collection: 'productMetadata',
             data: {
-                tenant: tenantId,
+                tenant: shopId,
                 shopifyHandle: product.shopifyHandle,
                 descriptionOverride: product.descriptionOverride,
                 blocks: product.blocks,
@@ -224,7 +185,7 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
         await payload.create({
             collection: 'collectionMetadata',
             data: {
-                tenant: tenantId,
+                tenant: shopId,
                 shopifyHandle: collection.shopifyHandle,
                 descriptionOverride: collection.descriptionOverride,
                 blocks: collection.blocks,
