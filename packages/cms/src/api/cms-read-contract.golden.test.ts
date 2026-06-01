@@ -1,6 +1,5 @@
 import type { Payload } from 'payload';
 import { describe, expect, it, vi } from 'vitest';
-import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 import { getArticle } from './get-article';
 import { getArticles } from './get-articles';
 import { getBusinessData } from './get-business-data';
@@ -15,35 +14,39 @@ import { __resetTenantIdCache, resolveTenantId } from './resolve-tenant-id';
 
 // SFREAD-01 — output-side freeze of the storefront CMS read contract.
 //
-// Sibling gate `tenant-filter-contract.test.ts` (UNIFY-02) froze the INPUT
-// side: the `where` predicates, the never-drop sentinel, and the tenant
-// resolution path. This file freezes the OUTPUT side: the exact runtime SHAPE
-// each of the 11 getters returns for the canonical seed, the depth-N populate
-// passthrough (the getter does not transform the doc — populated relations
-// arrive as nested objects and are returned untouched), and the
-// null-on-missing contract (a missing doc resolves to `null`, never throws,
-// so the host page is not 404'd). The Convex re-point (CUTOVER-04/05/06) must
-// keep every assertion below byte-identical behind unchanged signatures.
+// Sibling gate `tenant-filter-contract.test.ts` froze the INPUT side: the
+// `where` predicates, the never-drop sentinel, and the tenant resolution path.
+// This file freezes the OUTPUT side: the exact runtime SHAPE each of the 11
+// getters returns for the canonical seed, the depth-N populate passthrough (the
+// getter does not transform the doc — populated relations arrive as nested
+// objects and are returned untouched), and the null-on-missing contract (a
+// missing doc resolves to `null`, never throws, so the host page is not 404'd).
+// The Convex re-point (CUTOVER-04/05/06) must keep every assertion below
+// byte-identical behind unchanged signatures.
+//
+// Since UNIFY-03 repointed `tenantsSlug` to `shops`, the tenant key IS the shop
+// row id: `resolveTenantId` confirms the shop exists in the unified `shops`
+// collection and returns that id (identity over the shop id). Every OUTPUT
+// shape below is unchanged.
 
 type FindArgs = Parameters<Payload['find']>[0];
 
-/** Tenant document `_id` the mocked `tenants` lookup resolves to. */
-const TENANT_ID = 'tenant-doc-1';
+const SHOP_ID = 'shop-x';
 
 /**
- * Build a Payload test double whose `find` resolves the `tenants` collection
- * to a single tenant doc (so `resolveTenantId` succeeds) and echoes the
- * supplied docs verbatim for any content collection — proving the getter
- * passes Payload's populated document straight through without reshaping it.
+ * Build a Payload test double whose `find` resolves the `shops` collection to a
+ * single shop doc (so `resolveTenantId` succeeds) and echoes the supplied docs
+ * verbatim for any content collection — proving the getter passes Payload's
+ * populated document straight through without reshaping it.
  *
- * @param docs - Documents returned for non-`tenants` collections.
+ * @param docs - Documents returned for non-`shops` collections.
  * @returns The fake Payload instance plus the underlying `find` spy.
  */
 const makePayload = (docs: unknown[] = []): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
     const find = vi.fn(async (args: FindArgs) => {
-        if (args.collection === LEGACY_TENANTS_SLUG) {
+        if (args.collection === 'shops') {
             return {
-                docs: [{ id: TENANT_ID, shopId: 'shop-x' }],
+                docs: [{ id: SHOP_ID }],
                 totalDocs: 1,
                 totalPages: 1,
                 page: 1,
@@ -68,13 +71,13 @@ const makePayload = (docs: unknown[] = []): { payload: Payload; find: ReturnType
 };
 
 /**
- * Build a Payload test double whose `tenants` lookup returns no docs, so every
- * getter exercises the unresolved-tenant branch (`null` for the singletons /
+ * Build a Payload test double whose `shops` lookup returns no docs, so every
+ * getter exercises the unresolved-shop branch (`null` for the singletons /
  * single-doc getters, the never-drop sentinel for the list getters).
  *
  * @returns The fake Payload instance plus the underlying `find` spy.
  */
-const makePayloadWithoutTenant = (): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
+const makePayloadWithoutShop = (): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
     const find = vi.fn(async () => ({
         docs: [],
         totalDocs: 0,
@@ -89,7 +92,7 @@ const makePayloadWithoutTenant = (): { payload: Payload; find: ReturnType<typeof
 };
 
 /** Minimal shop reference accepted by every getter. */
-const shop = () => ({ id: 'shop-x', domain: 'x.test', i18n: { defaultLocale: 'en-US' } });
+const shop = () => ({ id: SHOP_ID, domain: 'x.test', i18n: { defaultLocale: 'en-US' } });
 
 const locale = { code: 'en-US' };
 
@@ -271,8 +274,8 @@ describe('CMS read contract — golden output shapes (11 getters)', () => {
                 __resetTenantIdCache(payload);
             });
 
-            it(`${name} returns null when the tenant is unsynced`, async () => {
-                const { payload } = makePayloadWithoutTenant();
+            it(`${name} returns null when the shop is unresolved`, async () => {
+                const { payload } = makePayloadWithoutShop();
                 await expect(run(payload)).resolves.toBeNull();
                 __resetTenantIdCache(payload);
             });
@@ -301,15 +304,15 @@ describe('CMS read contract — golden output shapes (11 getters)', () => {
             __resetTenantIdCache(payload);
         });
 
-        it('getPages returns an empty doc list (never throws) when the tenant is unsynced', async () => {
-            const { payload } = makePayloadWithoutTenant();
+        it('getPages returns an empty doc list (never throws) when the shop is unresolved', async () => {
+            const { payload } = makePayloadWithoutShop();
             const result = await getPages({ shop: shop(), locale, __payload: payload });
             expect(result.docs).toEqual([]);
             __resetTenantIdCache(payload);
         });
 
-        it('getArticles returns an empty doc list (never throws) when the tenant is unsynced', async () => {
-            const { payload } = makePayloadWithoutTenant();
+        it('getArticles returns an empty doc list (never throws) when the shop is unresolved', async () => {
+            const { payload } = makePayloadWithoutShop();
             const result = await getArticles({ shop: shop(), locale, __payload: payload });
             expect(result.docs).toEqual([]);
             __resetTenantIdCache(payload);
@@ -346,15 +349,15 @@ describe('CMS read contract — golden output shapes (11 getters)', () => {
         });
     });
 
-    describe('resolveTenantId — Shop._id → Tenant._id bridge', () => {
-        it('returns the resolved tenant id', async () => {
+    describe('resolveTenantId — identity over the shop id', () => {
+        it('returns the shop id for an existing shop', async () => {
             const { payload } = makePayload([]);
-            await expect(resolveTenantId(payload, 'shop-x')).resolves.toBe(TENANT_ID);
+            await expect(resolveTenantId(payload, SHOP_ID)).resolves.toBe(SHOP_ID);
             __resetTenantIdCache(payload);
         });
-        it('returns null (never throws) when no tenant exists', async () => {
-            const { payload } = makePayloadWithoutTenant();
-            await expect(resolveTenantId(payload, 'shop-x')).resolves.toBeNull();
+        it('returns null (never throws) when no shop row matches', async () => {
+            const { payload } = makePayloadWithoutShop();
+            await expect(resolveTenantId(payload, SHOP_ID)).resolves.toBeNull();
             __resetTenantIdCache(payload);
         });
     });

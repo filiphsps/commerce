@@ -22,8 +22,8 @@ export type GetCollectionMetadataArgs = {
 
 /**
  * Fetch the CMS metadata record for a Shopify collection identified by its
- * handle. Returns `null` when the tenant is unsynced, the handle does not
- * match any record, or the shop id is missing.
+ * handle. Returns `null` when the handle does not match any record for this
+ * shop.
  *
  * @param args - Shop, locale, Shopify collection handle, optional flags.
  * @returns The collection-metadata document at depth 2, or `null`.

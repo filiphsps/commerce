@@ -16,7 +16,7 @@ export type GetHeaderArgs = { shop: ShopRef; locale: LocaleRef; draft?: boolean;
 
 /**
  * Fetch the `header` singleton for the given shop and locale. Returns `null`
- * when the tenant is unsynced or the shop id is missing.
+ * when no header exists for this shop.
  *
  * @param args - Shop, locale, optional `draft` flag, and optional `__payload`.
  * @returns The header document at depth 2, or `null` when not found.

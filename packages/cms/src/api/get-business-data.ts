@@ -16,7 +16,7 @@ export type GetBusinessDataArgs = { shop: ShopRef; locale: LocaleRef; draft?: bo
 
 /**
  * Fetch the `businessData` singleton for the given shop and locale. Returns
- * `null` when the tenant is unsynced or the shop id is missing.
+ * `null` when no business data exists for this shop.
  *
  * @param args - Shop, locale, optional `draft` flag, and optional `__payload`.
  * @returns The business data document at depth 1, or `null` when not found.

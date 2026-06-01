@@ -39,8 +39,7 @@ export type GetPageArgs = {
 
 /**
  * Fetch a single page by slug for the given shop and locale. Returns `null`
- * when the slug does not exist, the tenant is unsynced, or the shop id is
- * missing.
+ * when no page with that slug exists for this shop.
  *
  * @param args - Shop, locale, page slug, optional `draft` flag, optional `__payload`.
  * @returns The page document at depth 2, or `null` when not found.

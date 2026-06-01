@@ -21,11 +21,12 @@ export type GetPagesArgs = {
     __payload?: Payload;
 };
 
-// Sentinel for shops whose Tenant doc hasn't been synced yet. Using a string
-// that cannot collide with a real Payload ObjectId returns an empty result
-// without dropping the tenant predicate (dropping it would leak cross-tenant
-// pages). Preserves the helper's narrow return type so callers can still
-// access `.docs[i].slug` without TS widening the doc union.
+// Sentinel for when `resolveTenantId` returns null — i.e. no shop row matches
+// `shop.id`. Substituting a string that cannot collide with a real Payload
+// ObjectId returns an empty result without dropping the tenant predicate
+// (dropping it would leak cross-tenant pages). Preserves the helper's narrow
+// return type so callers can still access `.docs[i].slug` without TS widening
+// the doc union.
 const TENANT_RESOLUTION_FAILED = '__cms_no_tenant_resolved__';
 
 /**

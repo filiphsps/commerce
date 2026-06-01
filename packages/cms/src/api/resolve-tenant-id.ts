@@ -1,37 +1,40 @@
 import 'server-only';
 
 import type { Payload } from 'payload';
-import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 
-// `Tenant._id` is stable for a given `Shop._id` once the post-save hook has
-// run (the upsert keys on `shopId`). Cache per Payload instance to avoid an
-// extra Mongo round-trip on every CMS query. WeakMap so test harnesses that
-// spin up fresh Payload mocks get a fresh cache and never see stale entries.
+// A shop's existence is stable within a process once observed. Cache per
+// Payload instance to avoid re-hitting Mongo on every CMS query. WeakMap so
+// test harnesses that spin up fresh Payload mocks get a fresh cache and never
+// see stale entries.
 const tenantIdCache = new WeakMap<Payload, Map<string, string>>();
 
 /**
- * Translates `Shop._id` (from `@nordcom/commerce-db`) to the Payload-generated
- * Tenant document `_id` used by `@payloadcms/plugin-multi-tenant`.
+ * Resolves a `Shop._id` (from `@nordcom/commerce-db`) to the tenant key used by
+ * `@payloadcms/plugin-multi-tenant` for `where: { tenant: { equals } }` scoping.
  *
- * The multi-tenant plugin auto-injects a `tenant` field on tenant-scoped
- * collections (pages, articles, header, footer, businessData, …) and writes
- * the Tenant document's own `_id` into it — NOT the source Shop._id. The
- * tenants collection carries a `shopId` field that points back to the Shop
- * (see `shop-sync/post-save-hook.ts`), so this helper bridges between them.
+ * UNIFY-03 repointed `tenantsSlug` from the dedicated `tenants` collection onto
+ * `shops` (shop == tenant, keyed on the shop row id), so the plugin now writes
+ * the shop row's own `_id` into every tenant-scoped doc's `tenant` field. The
+ * tenant key therefore IS the shop id — this resolver collapses from the old
+ * shop-to-tenant-document translation down to identity over the shop id. It
+ * confirms the shop row exists (the unified `shops` collection backs both the
+ * Mongoose model and the Payload tenant) and returns that same id; the prior
+ * indirection through a separate tenant document is gone.
  *
- * Without this translation, storefront filters using
- * `where: { tenant: { equals: shop.id } }` never match anything.
- *
- * @param payload - Active Payload instance; used as the WeakMap key so each
- *   test harness gets its own isolated cache.
+ * @param payload - Active Payload instance; used to confirm the shop row exists
+ *   and as the per-instance cache key so each test harness gets its own cache.
  * @param shopId - The `Shop._id` from `@nordcom/commerce-db`.
- * @returns The matching Tenant document `_id`, or `null` when no tenant exists
- *   for the given shop. Callers should treat `null` as "no content."
+ * @returns The shop id for an existing shop, or `null` when `shopId` is empty or
+ *   no shop row matches. Callers treat `null` as "no scope — return no content"
+ *   and must never broaden the predicate, which would leak cross-tenant docs.
  *
  * @example
  * const tenantId = await resolveTenantId(payload, shop.id);
  * if (!tenantId) return [];
- * const { docs } = await payload.find({ collection: 'pages', where: { tenant: { equals: tenantId } } });
+ * const { docs } = await payload.find({
+ *     collection: 'pages',
+ *     where: { tenant: { equals: tenantId } },
+ * });
  */
 export const resolveTenantId = async (payload: Payload, shopId: string): Promise<string | null> => {
     if (!shopId) return null;
@@ -40,28 +43,28 @@ export const resolveTenantId = async (payload: Payload, shopId: string): Promise
     if (cached) return cached;
 
     const { docs } = await payload.find({
-        collection: LEGACY_TENANTS_SLUG,
-        where: { shopId: { equals: shopId } },
+        collection: 'shops',
+        where: { id: { equals: shopId } },
         limit: 1,
         depth: 0,
         overrideAccess: true,
     });
 
-    const tenantId = typeof docs[0]?.id === 'string' ? docs[0].id : null;
-    if (tenantId) {
+    const resolved = typeof docs[0]?.id === 'string' ? docs[0].id : null;
+    if (resolved) {
         let cache = tenantIdCache.get(payload);
         if (!cache) {
             cache = new Map();
             tenantIdCache.set(payload, cache);
         }
-        cache.set(shopId, tenantId);
+        cache.set(shopId, resolved);
     }
-    return tenantId;
+    return resolved;
 };
 
 /**
- * Wipe the per-Payload tenant-id cache. Test-only — call between test cases
- * that share a Payload instance to prevent cross-test cache hits.
+ * Wipe the per-Payload shop-resolution cache. Test-only — call between test
+ * cases that share a Payload instance to prevent cross-test cache hits.
  *
  * @param payload - The Payload instance whose cache entry to remove.
  */

@@ -1,6 +1,5 @@
 import type { Payload } from 'payload';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
+import { describe, expect, it, vi } from 'vitest';
 import { getArticle } from './get-article';
 import { getArticles } from './get-articles';
 import { getPage } from './get-page';
@@ -12,68 +11,55 @@ import { __resetTenantIdCache } from './resolve-tenant-id';
 // depth, limit, sort, draft). The underlying `payload.find` is mocked so we
 // don't pay Payload's ~5s boot cost per assertion.
 //
-// Every helper now resolves `shop.id` → `Tenant._id` (via the `tenants`
-// collection's `shopId` field) before filtering, because the multi-tenant
-// plugin writes the Tenant doc's own `_id` into the auto-injected `tenant`
-// field — not `shop.id`. The mock returns a tenant doc on the first
-// `tenants` query and the requested docs on subsequent calls.
+// Since UNIFY-03 repointed `tenantsSlug` to `shops`, the plugin writes the shop
+// row id into the auto-injected `tenant` field, so `resolveTenantId` confirms
+// the shop row exists in the unified `shops` collection and returns that same
+// id (identity over the shop id). The mock returns the shop doc on the first
+// `shops` query and the requested docs on subsequent calls.
 
 type FindArgs = Parameters<Payload['find']>[0];
 
-const TENANT_ID = 'tenant-doc-1';
+const SHOP_ID = 'shop-x';
 
 const makePayload = (docs: unknown[] = []): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
     const find = vi.fn(async (args: FindArgs) => {
-        if (args.collection === LEGACY_TENANTS_SLUG) {
-            return {
-                docs: [{ id: TENANT_ID, shopId: 'shop-x' }],
-                totalDocs: 1,
-                hasNextPage: false,
-                hasPrevPage: false,
-            };
+        if (args.collection === 'shops') {
+            return { docs: [{ id: SHOP_ID }], totalDocs: 1, hasNextPage: false, hasPrevPage: false };
         }
         return { docs, totalDocs: docs.length, hasNextPage: false, hasPrevPage: false };
     });
     return { payload: { find } as unknown as Payload, find };
 };
 
-const makePayloadWithoutTenant = (): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
+const makePayloadWithoutShop = (): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
     const find = vi.fn(async () => ({ docs: [], totalDocs: 0, hasNextPage: false, hasPrevPage: false }));
     return { payload: { find } as unknown as Payload, find };
 };
 
-const shop = () => ({ id: 'shop-x', domain: 'x.test', i18n: { defaultLocale: 'en-US' } });
-
-// Calls that take the same Payload instance share a WeakMap cache —
-// reset between tests so each assertion sees a fresh resolution path.
-afterEach(() => {
-    // The cache key is the Payload instance; throwing away the instance is
-    // enough, but tests that reuse one would otherwise see cache hits.
-    // No-op when nothing was cached.
-});
+const shop = () => ({ id: SHOP_ID, domain: 'x.test', i18n: { defaultLocale: 'en-US' } });
 
 describe('query API', () => {
     describe('getPage', () => {
-        it('queries pages by (tenant, slug) using the resolved tenant id, with locale + fallback', async () => {
+        it('queries pages by (tenant, slug) using the shop id, with locale + fallback', async () => {
             const { payload, find } = makePayload([{ id: 'p1', title: 'Home EN' }]);
             const page = await getPage({ shop: shop(), locale: { code: 'en-US' }, slug: 'home', __payload: payload });
 
             expect(page).toMatchObject({ id: 'p1', title: 'Home EN' });
-            // First call resolves shop.id → tenant._id via the tenants collection.
+            // First call confirms the shop row exists in the unified collection.
             expect(find).toHaveBeenNthCalledWith(
                 1,
                 expect.objectContaining({
-                    collection: 'tenants',
-                    where: { shopId: { equals: 'shop-x' } },
+                    collection: 'shops',
+                    where: { id: { equals: SHOP_ID } },
                     limit: 1,
                 }),
             );
-            // Second call filters pages by the resolved tenant id, not shop.id.
+            // Second call filters pages by the shop id (the tenant key).
             expect(find).toHaveBeenNthCalledWith(
                 2,
                 expect.objectContaining({
                     collection: 'pages',
-                    where: { and: [{ tenant: { equals: TENANT_ID } }, { slug: { equals: 'home' } }] },
+                    where: { and: [{ tenant: { equals: SHOP_ID } }, { slug: { equals: 'home' } }] },
                     locale: 'en-US',
                     fallbackLocale: 'en-US',
                     depth: 2,
@@ -96,14 +82,14 @@ describe('query API', () => {
             __resetTenantIdCache(payload);
         });
 
-        it('returns null when no Tenant exists for the shop (sync not yet run)', async () => {
-            const { payload, find } = makePayloadWithoutTenant();
+        it('returns null when no shop row exists', async () => {
+            const { payload, find } = makePayloadWithoutShop();
             const page = await getPage({ shop: shop(), locale: { code: 'en-US' }, slug: 'home', __payload: payload });
             expect(page).toBeNull();
-            // Only the tenant resolution call — the helper short-circuits before
+            // Only the shop resolution call — the helper short-circuits before
             // touching the pages collection, so we don't leak cross-tenant docs.
             expect(find).toHaveBeenCalledTimes(1);
-            expect(find).toHaveBeenCalledWith(expect.objectContaining({ collection: 'tenants' }));
+            expect(find).toHaveBeenCalledWith(expect.objectContaining({ collection: 'shops' }));
             __resetTenantIdCache(payload);
         });
 
@@ -114,18 +100,18 @@ describe('query API', () => {
             __resetTenantIdCache(payload);
         });
 
-        it('caches tenant resolution per Payload instance — multiple calls hit the tenants collection once', async () => {
+        it('caches shop resolution per Payload instance — multiple calls hit the shops collection once', async () => {
             const { payload, find } = makePayload([]);
             await getPage({ shop: shop(), locale: { code: 'en-US' }, slug: 'a', __payload: payload });
             await getPage({ shop: shop(), locale: { code: 'en-US' }, slug: 'b', __payload: payload });
-            const tenantCalls = find.mock.calls.filter((c) => (c[0] as FindArgs).collection === LEGACY_TENANTS_SLUG);
-            expect(tenantCalls).toHaveLength(1);
+            const shopCalls = find.mock.calls.filter((c) => (c[0] as FindArgs).collection === 'shops');
+            expect(shopCalls).toHaveLength(1);
             __resetTenantIdCache(payload);
         });
     });
 
     describe('getArticle', () => {
-        it('queries articles by (tenant, slug) using the resolved tenant id', async () => {
+        it('queries articles by (tenant, slug) using the shop id', async () => {
             const { payload, find } = makePayload([{ id: 'a1', author: 'A' }]);
             const article = await getArticle({
                 shop: shop(),
@@ -138,7 +124,7 @@ describe('query API', () => {
             expect(find).toHaveBeenLastCalledWith(
                 expect.objectContaining({
                     collection: 'articles',
-                    where: { and: [{ tenant: { equals: TENANT_ID } }, { slug: { equals: 'hello' } }] },
+                    where: { and: [{ tenant: { equals: SHOP_ID } }, { slug: { equals: 'hello' } }] },
                     depth: 2,
                     limit: 1,
                 }),
@@ -148,7 +134,7 @@ describe('query API', () => {
     });
 
     describe('getArticles', () => {
-        it('paginates with tenant scoping (resolved id) and sort by -publishedAt', async () => {
+        it('paginates with tenant scoping (shop id) and sort by -publishedAt', async () => {
             const { payload, find } = makePayload([{ id: 'a1' }]);
             const list = await getArticles({ shop: shop(), locale: { code: 'en-US' }, limit: 10, __payload: payload });
 
@@ -156,7 +142,7 @@ describe('query API', () => {
             expect(find).toHaveBeenLastCalledWith(
                 expect.objectContaining({
                     collection: 'articles',
-                    where: { tenant: { equals: TENANT_ID } },
+                    where: { tenant: { equals: SHOP_ID } },
                     limit: 10,
                     page: 1,
                     sort: '-publishedAt',
@@ -170,16 +156,16 @@ describe('query API', () => {
             await getArticles({ shop: shop(), locale: { code: 'en-US' }, tag: 'news', __payload: payload });
             const articlesCall = find.mock.calls.find((c) => (c[0] as FindArgs).collection === 'articles');
             expect((articlesCall?.[0] as FindArgs | undefined)?.where).toEqual({
-                and: [{ tenant: { equals: TENANT_ID } }, { tags: { in: ['news'] } }],
+                and: [{ tenant: { equals: SHOP_ID } }, { tags: { in: ['news'] } }],
             });
             __resetTenantIdCache(payload);
         });
 
-        it('falls back to a tenant sentinel that matches nothing when no Tenant exists — never drops the tenant predicate', async () => {
-            const { payload, find } = makePayloadWithoutTenant();
+        it('falls back to a tenant sentinel that matches nothing when no shop row exists — never drops the tenant predicate', async () => {
+            const { payload, find } = makePayloadWithoutShop();
             const list = await getArticles({ shop: shop(), locale: { code: 'en-US' }, __payload: payload });
             expect(list.docs).toEqual([]);
-            // Tenant resolution + articles query, never an unscoped find.
+            // Shop resolution + articles query, never an unscoped find.
             expect(find).toHaveBeenCalledTimes(2);
             const articlesCall = find.mock.calls.find((c) => (c[0] as FindArgs).collection === 'articles');
             expect((articlesCall?.[0] as FindArgs | undefined)?.where).toEqual({
@@ -190,7 +176,7 @@ describe('query API', () => {
     });
 
     describe('getPages', () => {
-        it('paginates with tenant scoping (resolved id) and locale + fallback', async () => {
+        it('paginates with tenant scoping (shop id) and locale + fallback', async () => {
             const { payload, find } = makePayload([{ id: 'p1', slug: 'home', updatedAt: '2026-01-01T00:00:00.000Z' }]);
             const list = await getPages({ shop: shop(), locale: { code: 'en-US' }, limit: 100, __payload: payload });
 
@@ -198,7 +184,7 @@ describe('query API', () => {
             expect(find).toHaveBeenLastCalledWith(
                 expect.objectContaining({
                     collection: 'pages',
-                    where: { tenant: { equals: TENANT_ID } },
+                    where: { tenant: { equals: SHOP_ID } },
                     locale: 'en-US',
                     fallbackLocale: 'en-US',
                     limit: 100,
@@ -217,11 +203,11 @@ describe('query API', () => {
             __resetTenantIdCache(payload);
         });
 
-        it('falls back to a tenant sentinel that matches nothing when no Tenant exists — never drops the tenant predicate', async () => {
-            const { payload, find } = makePayloadWithoutTenant();
+        it('falls back to a tenant sentinel that matches nothing when no shop row exists — never drops the tenant predicate', async () => {
+            const { payload, find } = makePayloadWithoutShop();
             const list = await getPages({ shop: shop(), locale: { code: 'en-US' }, __payload: payload });
             expect(list.docs).toEqual([]);
-            // Tenant resolution + pages query, never an unscoped find.
+            // Shop resolution + pages query, never an unscoped find.
             expect(find).toHaveBeenCalledTimes(2);
             const pagesCall = find.mock.calls.find((c) => (c[0] as FindArgs).collection === 'pages');
             expect((pagesCall?.[0] as FindArgs | undefined)?.where).toEqual({

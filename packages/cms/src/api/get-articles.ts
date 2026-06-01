@@ -22,16 +22,16 @@ export type GetArticlesArgs = {
     __payload?: Payload;
 };
 
-// Sentinel for shops whose Tenant doc hasn't been synced yet. See
-// `get-pages.ts` for the full rationale — TL;DR: never drop the tenant
-// predicate, but keep the helper's return type narrow.
+// Defensive fallback for a falsy tenant resolution. See `get-pages.ts` for the
+// full rationale — TL;DR: never drop the tenant predicate, but keep the
+// helper's return type narrow.
 const TENANT_RESOLUTION_FAILED = '__cms_no_tenant_resolved__';
 
 /**
  * Fetch a paginated list of articles for the given shop and locale. Optionally
- * filter by an exact tag value. The tenant predicate is always applied, so an
- * unsynced tenant returns an empty result set rather than leaking other tenants'
- * articles.
+ * filter by an exact tag value. The tenant predicate (the shop id) is always
+ * applied, so a shop with no articles returns an empty result set rather than
+ * leaking other tenants' articles.
  *
  * @param args - Shop, locale, optional `limit`/`page`/`tag`/`draft`, and an
  *   optional `__payload` instance for testing.

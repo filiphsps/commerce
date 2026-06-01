@@ -16,8 +16,7 @@ export type GetArticleArgs = Omit<GetPageArgs, 'slug'> & { slug: string };
 
 /**
  * Fetch a single article by slug for the given shop and locale. Returns `null`
- * when the slug does not exist, the tenant has not been synced yet, or the
- * shop id is invalid.
+ * when no article with that slug exists for this shop.
  *
  * @param args - Shop, locale, slug, optional `draft` flag, and an optional
  *   `__payload` instance for testing without booting a second singleton.

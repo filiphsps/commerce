@@ -16,7 +16,7 @@ export type GetFooterArgs = { shop: ShopRef; locale: LocaleRef; draft?: boolean;
 
 /**
  * Fetch the `footer` singleton for the given shop and locale. Returns `null`
- * when the tenant is unsynced or the shop id is missing.
+ * when no footer exists for this shop.
  *
  * @param args - Shop, locale, optional `draft` flag, and optional `__payload`.
  * @returns The footer document at depth 2, or `null` when not found.

@@ -1,6 +1,5 @@
 import type { Payload } from 'payload';
 import { describe, expect, it, vi } from 'vitest';
-import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
 import { getArticle } from './get-article';
 import { getArticles } from './get-articles';
 import { getBusinessData } from './get-business-data';
@@ -12,59 +11,40 @@ import { getPages } from './get-pages';
 import { getProductMetadata } from './get-product-metadata';
 import { __resetTenantIdCache } from './resolve-tenant-id';
 
-// Phase-0 regression gate for the Mongo→Convex migration (UNIFY-04/UNIFY-06).
-// Before the schema is unified — collapsing the three shop representations and
-// re-keying reviews onto `shopId` — every CMS read getter MUST keep emitting
-// the exact `where` predicate it emits today. These are CHARACTERIZATION tests:
-// they pin the CURRENT behavior (resolved Tenant._id scoping, the never-drop
-// sentinel, and null-on-missing), not an idealized one. If a refactor changes
-// any shape below, this gate fails loudly instead of silently leaking or
-// dropping tenant-scoped content.
+// Phase-0 regression gate for the Mongo→Convex migration. Every CMS read getter
+// MUST keep emitting the exact `where` predicate SHAPE it emits today. These are
+// CHARACTERIZATION tests: they pin the CURRENT behavior (shop-id tenant scoping,
+// the never-drop sentinel, and null-on-missing), not an idealized one. If a
+// refactor changes any shape below, this gate fails loudly instead of silently
+// leaking or dropping tenant-scoped content.
+//
+// Since UNIFY-03 repointed `tenantsSlug` to `shops`, the tenant key IS the shop
+// row id: `resolveTenantId` confirms the shop exists in the unified `shops`
+// collection and returns that id, and every getter filters by it. The `where`
+// SHAPE is unchanged; only the value's source moved from a translated
+// Tenant._id to the shop id itself.
 
 type FindArgs = Parameters<Payload['find']>[0];
 
-/** Tenant document `_id` returned by the mocked `tenants` lookup. */
-const TENANT_ID = 'tenant-doc-1';
+const SHOP_ID = 'shop-x';
 
-/** Sentinel the never-drop getters substitute for an unresolved tenant. */
-const TENANT_SENTINEL = '__cms_no_tenant_resolved__';
-
-/**
- * Build a Payload test double whose `find` resolves the `tenants` collection to
- * a single tenant doc (so `resolveTenantId` succeeds) and returns the supplied
- * docs for any content collection.
- *
- * @param docs - Documents returned for non-`tenants` collections.
- * @returns The fake Payload instance plus the underlying `find` spy.
- */
 const makePayload = (docs: unknown[] = []): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
     const find = vi.fn(async (args: FindArgs) => {
-        if (args.collection === LEGACY_TENANTS_SLUG) {
-            return {
-                docs: [{ id: TENANT_ID, shopId: 'shop-x' }],
-                totalDocs: 1,
-                hasNextPage: false,
-                hasPrevPage: false,
-            };
+        if (args.collection === 'shops') {
+            return { docs: [{ id: SHOP_ID }], totalDocs: 1, hasNextPage: false, hasPrevPage: false };
         }
         return { docs, totalDocs: docs.length, hasNextPage: false, hasPrevPage: false };
     });
     return { payload: { find } as unknown as Payload, find };
 };
 
-/**
- * Build a Payload test double whose `find` never resolves a tenant — the
- * `tenants` lookup returns no docs, exercising the unresolved-tenant branch.
- *
- * @returns The fake Payload instance plus the underlying `find` spy.
- */
-const makePayloadWithoutTenant = (): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
+const makePayloadWithoutShop = (): { payload: Payload; find: ReturnType<typeof vi.fn> } => {
     const find = vi.fn(async () => ({ docs: [], totalDocs: 0, hasNextPage: false, hasPrevPage: false }));
     return { payload: { find } as unknown as Payload, find };
 };
 
 /** Minimal shop reference accepted by every getter. */
-const shop = () => ({ id: 'shop-x', domain: 'x.test', i18n: { defaultLocale: 'en-US' } });
+const shop = () => ({ id: SHOP_ID, domain: 'x.test', i18n: { defaultLocale: 'en-US' } });
 
 const locale = { code: 'en-US' };
 
@@ -79,50 +59,50 @@ const whereFor = (find: ReturnType<typeof vi.fn>, collection: string): unknown =
     (find.mock.calls.find((c) => (c[0] as FindArgs).collection === collection)?.[0] as FindArgs | undefined)?.where;
 
 describe('CMS getter tenant-filter contract (characterization)', () => {
-    describe('tenant-scoped where shape on a resolved tenant', () => {
-        it('getPage filters pages by (resolved tenant, slug)', async () => {
+    describe('tenant-scoped where shape filters by the shop id', () => {
+        it('getPage filters pages by (shop id, slug)', async () => {
             const { payload, find } = makePayload([{ id: 'p1' }]);
             await getPage({ shop: shop(), locale, slug: 'home', __payload: payload });
             expect(whereFor(find, 'pages')).toEqual({
-                and: [{ tenant: { equals: TENANT_ID } }, { slug: { equals: 'home' } }],
+                and: [{ tenant: { equals: SHOP_ID } }, { slug: { equals: 'home' } }],
             });
             __resetTenantIdCache(payload);
         });
 
-        it('getPages filters pages by the resolved tenant only', async () => {
+        it('getPages filters pages by the shop id only', async () => {
             const { payload, find } = makePayload([{ id: 'p1' }]);
             await getPages({ shop: shop(), locale, __payload: payload });
-            expect(whereFor(find, 'pages')).toEqual({ tenant: { equals: TENANT_ID } });
+            expect(whereFor(find, 'pages')).toEqual({ tenant: { equals: SHOP_ID } });
             __resetTenantIdCache(payload);
         });
 
-        it('getHeader filters the header singleton by the resolved tenant', async () => {
+        it('getHeader filters the header singleton by the shop id', async () => {
             const { payload, find } = makePayload([{ id: 'h1' }]);
             await getHeader({ shop: shop(), locale, __payload: payload });
-            expect(whereFor(find, 'header')).toEqual({ tenant: { equals: TENANT_ID } });
+            expect(whereFor(find, 'header')).toEqual({ tenant: { equals: SHOP_ID } });
             __resetTenantIdCache(payload);
         });
 
-        it('getFooter filters the footer singleton by the resolved tenant', async () => {
+        it('getFooter filters the footer singleton by the shop id', async () => {
             const { payload, find } = makePayload([{ id: 'f1' }]);
             await getFooter({ shop: shop(), locale, __payload: payload });
-            expect(whereFor(find, 'footer')).toEqual({ tenant: { equals: TENANT_ID } });
+            expect(whereFor(find, 'footer')).toEqual({ tenant: { equals: SHOP_ID } });
             __resetTenantIdCache(payload);
         });
 
-        it('getArticle filters articles by (resolved tenant, slug)', async () => {
+        it('getArticle filters articles by (shop id, slug)', async () => {
             const { payload, find } = makePayload([{ id: 'a1' }]);
             await getArticle({ shop: shop(), locale, slug: 'hello', __payload: payload });
             expect(whereFor(find, 'articles')).toEqual({
-                and: [{ tenant: { equals: TENANT_ID } }, { slug: { equals: 'hello' } }],
+                and: [{ tenant: { equals: SHOP_ID } }, { slug: { equals: 'hello' } }],
             });
             __resetTenantIdCache(payload);
         });
 
-        it('getArticles filters articles by the resolved tenant only when no tag is supplied', async () => {
+        it('getArticles filters articles by the shop id only when no tag is supplied', async () => {
             const { payload, find } = makePayload([{ id: 'a1' }]);
             await getArticles({ shop: shop(), locale, __payload: payload });
-            expect(whereFor(find, 'articles')).toEqual({ tenant: { equals: TENANT_ID } });
+            expect(whereFor(find, 'articles')).toEqual({ tenant: { equals: SHOP_ID } });
             __resetTenantIdCache(payload);
         });
 
@@ -130,67 +110,67 @@ describe('CMS getter tenant-filter contract (characterization)', () => {
             const { payload, find } = makePayload([{ id: 'a1' }]);
             await getArticles({ shop: shop(), locale, tag: 'news', __payload: payload });
             expect(whereFor(find, 'articles')).toEqual({
-                and: [{ tenant: { equals: TENANT_ID } }, { tags: { in: ['news'] } }],
+                and: [{ tenant: { equals: SHOP_ID } }, { tags: { in: ['news'] } }],
             });
             __resetTenantIdCache(payload);
         });
 
-        it('getBusinessData filters the businessData singleton by the resolved tenant', async () => {
+        it('getBusinessData filters the businessData singleton by the shop id', async () => {
             const { payload, find } = makePayload([{ id: 'b1' }]);
             await getBusinessData({ shop: shop(), locale, __payload: payload });
-            expect(whereFor(find, 'businessData')).toEqual({ tenant: { equals: TENANT_ID } });
+            expect(whereFor(find, 'businessData')).toEqual({ tenant: { equals: SHOP_ID } });
             __resetTenantIdCache(payload);
         });
 
-        it('getCollectionMetadata filters by (resolved tenant, shopifyHandle)', async () => {
+        it('getCollectionMetadata filters by (shop id, shopifyHandle)', async () => {
             const { payload, find } = makePayload([{ id: 'c1' }]);
             await getCollectionMetadata({ shop: shop(), locale, shopifyHandle: 'sale', __payload: payload });
             expect(whereFor(find, 'collectionMetadata')).toEqual({
-                and: [{ tenant: { equals: TENANT_ID } }, { shopifyHandle: { equals: 'sale' } }],
+                and: [{ tenant: { equals: SHOP_ID } }, { shopifyHandle: { equals: 'sale' } }],
             });
             __resetTenantIdCache(payload);
         });
 
-        it('getProductMetadata filters by (resolved tenant, shopifyHandle)', async () => {
+        it('getProductMetadata filters by (shop id, shopifyHandle)', async () => {
             const { payload, find } = makePayload([{ id: 'm1' }]);
             await getProductMetadata({ shop: shop(), locale, shopifyHandle: 'my-product', __payload: payload });
             expect(whereFor(find, 'productMetadata')).toEqual({
-                and: [{ tenant: { equals: TENANT_ID } }, { shopifyHandle: { equals: 'my-product' } }],
+                and: [{ tenant: { equals: SHOP_ID } }, { shopifyHandle: { equals: 'my-product' } }],
             });
             __resetTenantIdCache(payload);
         });
     });
 
-    describe('unresolved-tenant branch — never drops the tenant predicate', () => {
+    describe('unresolved-shop branch — never drops the tenant predicate', () => {
         it('getPages substitutes the sentinel and still queries pages', async () => {
-            const { payload, find } = makePayloadWithoutTenant();
+            const { payload, find } = makePayloadWithoutShop();
             const list = await getPages({ shop: shop(), locale, __payload: payload });
             expect(list.docs).toEqual([]);
             expect(find).toHaveBeenCalledTimes(2);
-            expect(whereFor(find, 'pages')).toEqual({ tenant: { equals: TENANT_SENTINEL } });
+            expect(whereFor(find, 'pages')).toEqual({ tenant: { equals: '__cms_no_tenant_resolved__' } });
             __resetTenantIdCache(payload);
         });
 
         it('getArticles substitutes the sentinel and still queries articles', async () => {
-            const { payload, find } = makePayloadWithoutTenant();
+            const { payload, find } = makePayloadWithoutShop();
             const list = await getArticles({ shop: shop(), locale, __payload: payload });
             expect(list.docs).toEqual([]);
             expect(find).toHaveBeenCalledTimes(2);
-            expect(whereFor(find, 'articles')).toEqual({ tenant: { equals: TENANT_SENTINEL } });
+            expect(whereFor(find, 'articles')).toEqual({ tenant: { equals: '__cms_no_tenant_resolved__' } });
             __resetTenantIdCache(payload);
         });
 
         it('getArticles still applies the sentinel alongside a tag filter', async () => {
-            const { payload, find } = makePayloadWithoutTenant();
+            const { payload, find } = makePayloadWithoutShop();
             await getArticles({ shop: shop(), locale, tag: 'news', __payload: payload });
             expect(whereFor(find, 'articles')).toEqual({
-                and: [{ tenant: { equals: TENANT_SENTINEL } }, { tags: { in: ['news'] } }],
+                and: [{ tenant: { equals: '__cms_no_tenant_resolved__' } }, { tags: { in: ['news'] } }],
             });
             __resetTenantIdCache(payload);
         });
     });
 
-    describe('unresolved-tenant branch — short-circuits to null without an unscoped query', () => {
+    describe('unresolved-shop branch — short-circuits to null without an unscoped query', () => {
         it.each([
             {
                 name: 'getPage',
@@ -227,14 +207,14 @@ describe('CMS getter tenant-filter contract (characterization)', () => {
                 collection: 'productMetadata',
                 run: (p: Payload) => getProductMetadata({ shop: shop(), locale, shopifyHandle: 'h', __payload: p }),
             },
-        ])('$name returns null and never queries its collection when the tenant is unresolved', async ({
+        ])('$name returns null and never queries its collection when the shop is unresolved', async ({
             run,
             collection,
         }) => {
-            const { payload, find } = makePayloadWithoutTenant();
+            const { payload, find } = makePayloadWithoutShop();
             const result = await run(payload);
             expect(result).toBeNull();
-            // Only the `tenants` resolution call fires — the content collection is never touched.
+            // Only the `shops` resolution call fires — the content collection is never touched.
             expect(find).toHaveBeenCalledTimes(1);
             expect(whereFor(find, collection)).toBeUndefined();
             __resetTenantIdCache(payload);

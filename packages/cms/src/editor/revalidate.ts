@@ -12,7 +12,7 @@ import type { CollectionEditorManifest } from './manifest';
  * - `singleton-by-domain`: OR of `domain` and `alternativeDomains` contains
  *   (matches `Shop.findByDomain`'s semantics so the shop edit URL works for
  *   both the canonical domain and any alt domain)
- * - `shared`: keyField equality only (cross-tenant collections like `tenants`)
+ * - `shared`: keyField equality only (cross-tenant collections not scoped by shop)
  *
  * @param manifest - Editor manifest describing the collection's tenant scoping strategy.
  * @param tenant - Resolved tenant document for the current request, or `null` on cross-tenant routes.

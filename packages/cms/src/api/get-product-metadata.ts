@@ -22,8 +22,7 @@ export type GetProductMetadataArgs = {
 
 /**
  * Fetch the CMS metadata record for a Shopify product identified by its handle.
- * Returns `null` when the tenant is unsynced, the handle does not match, or
- * the shop id is missing.
+ * Returns `null` when the handle does not match any record for this shop.
  *
  * @param args - Shop, locale, Shopify product handle, optional flags.
  * @returns The product-metadata document at depth 2, or `null`.
