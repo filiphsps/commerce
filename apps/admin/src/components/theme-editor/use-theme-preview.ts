@@ -1,6 +1,6 @@
 'use client';
 
-import { type AccentToken, resolveTheme, serializeThemeToCssVars, type ThemeBranding } from '@nordcom/commerce-db';
+import { type AccentToken, resolveTheme, serializeThemeToCssVars, type ThemeBranding } from '@nordcom/commerce-db/lib/theme';
 import { useFormFields } from '@payloadcms/ui';
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';

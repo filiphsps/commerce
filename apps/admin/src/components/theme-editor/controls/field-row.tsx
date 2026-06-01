@@ -1,4 +1,4 @@
-import type { ThemeTokenMeta } from '@nordcom/commerce-db';
+import type { ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
 import { RotateCcw } from 'lucide-react';
 import type { ReactNode } from 'react';
 

@@ -1,6 +1,7 @@
 'use client';
 
-import { FONT_FAMILIES, type ThemeTokenMeta, type ValueKind } from '@nordcom/commerce-db';
+import { FONT_FAMILIES } from '@nordcom/commerce-db/lib/theme';
+import type { ThemeTokenMeta, ValueKind } from '@nordcom/commerce-db/lib/theme-catalog';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ColorControl } from './controls/color-control';

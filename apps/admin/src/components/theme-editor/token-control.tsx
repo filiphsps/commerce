@@ -1,6 +1,7 @@
 'use client';
 
-import { THEME_DEFAULTS, type ThemeTokenMeta } from '@nordcom/commerce-db';
+import { THEME_DEFAULTS } from '@nordcom/commerce-db/lib/theme';
+import type { ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
 import { useField } from '@payloadcms/ui';
 
 import { resolveControl } from './control-registry';

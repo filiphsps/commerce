@@ -1,4 +1,4 @@
-import type { ShopThemeTokens } from '@nordcom/commerce-db';
+import type { ShopThemeTokens } from '@nordcom/commerce-db/lib/theme';
 
 /**
  * A single flattened form-state value. The Payload editor stores every leaf at

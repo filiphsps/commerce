@@ -1,6 +1,6 @@
 'use client';
 
-import type { ThemeTokenMeta } from '@nordcom/commerce-db';
+import type { ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
 import { useField, useForm, useFormFields } from '@payloadcms/ui';
 import { Plus, Trash2 } from 'lucide-react';
 

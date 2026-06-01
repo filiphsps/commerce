@@ -1,6 +1,6 @@
 'use client';
 
-import { deriveCatalog, type ThemeGroup, type ThemeTokenMeta } from '@nordcom/commerce-db';
+import { deriveCatalog, type ThemeGroup, type ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
