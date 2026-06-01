@@ -1,0 +1,127 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`transform — golden output > matches the golden snapshot 1`] = `
+{
+  "featureFlags": [
+    {
+      "document": {
+        "createdAt": 1714435200000,
+        "defaultValue": false,
+        "key": "checkout.express",
+        "kind": "behavior",
+        "legacyId": "6630f1a2b3c4d5e6f7a8b9e2",
+        "targeting": [],
+        "updatedAt": 1714435200000,
+      },
+      "payloadId": "pfqezm49bcwr9f96ryap0wac44qqs5wq",
+    },
+  ],
+  "reviews": [
+    {
+      "document": {
+        "createdAt": 1714435200000,
+        "shopId": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+        "updatedAt": 1714435200000,
+      },
+      "payloadId": "yfnv7n2qkecmm7m000bre72p046tdmcq",
+    },
+  ],
+  "shopCollaborators": [
+    {
+      "document": {
+        "permissions": [
+          "admin",
+        ],
+        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+        "user": "458w8z66n874fenyxj1fc1q6h3xpbh93",
+      },
+      "payloadId": "n5q3s48zjq3ebxgytesmgwq9v0b6e3t7",
+    },
+  ],
+  "shopCredentials": [
+    {
+      "document": {
+        "clientSecret": "SECRET_CS",
+        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+        "token": "shpat_SECRET",
+      },
+      "payloadId": "tpnmxjptramwxg6eygvmbfvcqwmz51tw",
+    },
+  ],
+  "shopDomains": [
+    {
+      "document": {
+        "domain": "www.nordcom-demo-shop.com",
+        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+      },
+      "payloadId": "8capjhb5kan7he0z8w6a54sgx8gg2t3y",
+    },
+    {
+      "document": {
+        "domain": "nordcom-demo-shop.com",
+        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+      },
+      "payloadId": "f5r1dm7vj3zkfhns1adyjk6rm67wvffw",
+    },
+  ],
+  "shopFeatureFlags": [
+    {
+      "document": {
+        "flag": "pfqezm49bcwr9f96ryap0wac44qqs5wq",
+        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+      },
+      "payloadId": "tcdrz5p0arv1y2q8k1vxmm2tsfqvy24j",
+    },
+  ],
+  "shops": [
+    {
+      "document": {
+        "alternativeDomains": [
+          "www.nordcom-demo-shop.com",
+          "nordcom-demo-shop.com",
+        ],
+        "commerceProvider": {
+          "authentication": {
+            "customers": {
+              "clientId": "client-1",
+              "id": "cust-1",
+            },
+            "domain": "demo.myshopify.com",
+            "publicToken": "pub_TOKEN",
+          },
+          "domain": "demo.myshopify.com",
+          "id": "gid://shopify/Shop/1",
+          "storefrontId": "sf-1",
+          "type": "shopify",
+        },
+        "createdAt": 1714435200000,
+        "design": {
+          "accents": [
+            {
+              "color": "#000000",
+              "foreground": "#ffffff",
+              "type": "primary",
+            },
+          ],
+          "header": {
+            "logo": {
+              "alt": "Logo",
+              "height": 512,
+              "src": "https://cdn/logo.png",
+              "width": 512,
+            },
+          },
+        },
+        "domain": "nordcom-demo-shop.com",
+        "i18n": {
+          "defaultLocale": "en-US",
+        },
+        "legacyId": "6630f1a2b3c4d5e6f7a8b9c0",
+        "name": "Nordcom Demo",
+        "updatedAt": 1714521600000,
+      },
+      "payloadId": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+    },
+  ],
+}
+`;
