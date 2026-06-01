@@ -76,10 +76,6 @@
             "./src/test-utils/index.ts",
             "./dist/test-utils/index.js"
         ],
-        "./shop-sync": [
-            "./src/shop-sync/index.ts",
-            "./dist/shop-sync/index.js"
-        ],
         "./server-functions": [
             "./src/server-functions/index.ts",
             "./dist/server-functions/index.js"

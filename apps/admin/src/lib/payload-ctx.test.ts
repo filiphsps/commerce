@@ -71,19 +71,19 @@ const USER_DOC = {
     role: 'admin',
 };
 
-const TENANT_DOC = {
-    id: 'tenant-doc-1',
-    slug: 'acme',
-    name: 'Acme Store',
-};
-
 const SHOP = { id: 'shop-1', domain: SHOP_DOMAIN };
 
-function makePayload(overrides?: { userDocs?: unknown[]; tenantDocs?: unknown[] }): { find: ReturnType<typeof vi.fn> } {
-    const { userDocs = [USER_DOC], tenantDocs = [TENANT_DOC] } = overrides ?? {};
+// Post-unification the tenant IS the shop document itself, resolved against
+// the `shops` collection by id. `shops` persists only `i18n.defaultLocale`
+// (no `slug` field, no `locales` array), so the authed context derives the
+// tenant slug from the shop id and the locale list from the single default.
+const SHOP_DOC = { id: SHOP.id, name: 'Acme Store', i18n: { defaultLocale: 'en-US' } };
+
+function makePayload(overrides?: { userDocs?: unknown[]; shopDocs?: unknown[] }): { find: ReturnType<typeof vi.fn> } {
+    const { userDocs = [USER_DOC], shopDocs = [SHOP_DOC] } = overrides ?? {};
     const find = vi.fn().mockImplementation(({ collection }: { collection: string }) => {
         if (collection === 'users') return Promise.resolve({ docs: userDocs });
-        if (collection === 'tenants') return Promise.resolve({ docs: tenantDocs });
+        if (collection === 'shops') return Promise.resolve({ docs: shopDocs });
         return Promise.resolve({ docs: [] });
     });
     return { find };
@@ -128,9 +128,9 @@ describe('getAuthedPayloadCtx', () => {
         expect(mockFindByDomain).toHaveBeenCalledWith(SHOP_DOMAIN);
     });
 
-    it('calls notFound() when tenant document is missing for the resolved shop', async () => {
+    it('calls notFound() when the shop document is missing for the resolved domain', async () => {
         mockAuth.mockResolvedValue(SESSION);
-        mockGetPayload.mockResolvedValue(makePayload({ tenantDocs: [] }));
+        mockGetPayload.mockResolvedValue(makePayload({ shopDocs: [] }));
         mockFindByDomain.mockResolvedValue(SHOP);
 
         await expect(getAuthedPayloadCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_NOT_FOUND');
@@ -149,13 +149,13 @@ describe('getAuthedPayloadCtx', () => {
             id: String(USER_DOC.id),
             email: USER_DOC.email,
             role: 'admin',
-            tenants: [{ tenant: String(TENANT_DOC.id) }],
+            tenants: [{ tenant: String(SHOP_DOC.id) }],
             collection: 'users',
         });
         expect(ctx.tenant).toEqual({
-            id: String(TENANT_DOC.id),
-            slug: String(TENANT_DOC.slug),
-            name: String(TENANT_DOC.name),
+            id: String(SHOP_DOC.id),
+            slug: SHOP.id,
+            name: SHOP_DOC.name,
             defaultLocale: 'en-US',
             locales: ['en-US'],
         });
@@ -170,7 +170,7 @@ describe('getAuthedPayloadCtx', () => {
             expect.objectContaining({ collection: 'users', overrideAccess: true }),
         );
         expect(payload.find).toHaveBeenCalledWith(
-            expect.objectContaining({ collection: 'tenants', overrideAccess: true }),
+            expect.objectContaining({ collection: 'shops', overrideAccess: true }),
         );
     });
 
@@ -181,7 +181,7 @@ describe('getAuthedPayloadCtx', () => {
         // test would assert on a code path that never returns.
         mockGetPayload.mockResolvedValue(
             makePayload({
-                userDocs: [{ ...USER_DOC, role: 'editor', tenants: [{ tenant: TENANT_DOC.id }] }],
+                userDocs: [{ ...USER_DOC, role: 'editor', tenants: [{ tenant: SHOP_DOC.id }] }],
             }),
         );
         mockFindByDomain.mockResolvedValue(SHOP);
@@ -191,17 +191,15 @@ describe('getAuthedPayloadCtx', () => {
         expect(ctx.user.role).toBe('editor');
     });
 
-    it('falls back to shop.id for slug and domain for name when tenant doc omits them', async () => {
+    it('falls back to shop.id for slug and domain for name when the shop doc omits them', async () => {
         mockAuth.mockResolvedValue(SESSION);
-        mockGetPayload.mockResolvedValue(
-            makePayload({ tenantDocs: [{ id: TENANT_DOC.id, slug: undefined, name: undefined }] }),
-        );
+        mockGetPayload.mockResolvedValue(makePayload({ shopDocs: [{ id: SHOP.id, name: undefined }] }));
         mockFindByDomain.mockResolvedValue(SHOP);
 
         const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
 
         expect(ctx.tenant).toEqual({
-            id: String(TENANT_DOC.id),
+            id: SHOP.id,
             slug: SHOP.id,
             name: SHOP_DOMAIN,
             defaultLocale: 'en-US',
@@ -233,7 +231,7 @@ describe('getAuthedPayloadCtx', () => {
                         // Editor belongs to a different tenant — must NOT
                         // be granted access to the one resolved from the
                         // current domain.
-                        tenants: [{ tenant: 'tenant-doc-OTHER' }],
+                        tenants: [{ tenant: 'shop-OTHER' }],
                     },
                 ],
             }),
@@ -251,7 +249,7 @@ describe('getAuthedPayloadCtx', () => {
                     {
                         ...USER_DOC,
                         role: 'editor',
-                        tenants: [{ tenant: TENANT_DOC.id }],
+                        tenants: [{ tenant: SHOP_DOC.id }],
                     },
                 ],
             }),
@@ -261,7 +259,7 @@ describe('getAuthedPayloadCtx', () => {
         const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
 
         expect(ctx.user.role).toBe('editor');
-        expect(ctx.tenant?.id).toBe(String(TENANT_DOC.id));
+        expect(ctx.tenant?.id).toBe(String(SHOP_DOC.id));
     });
 
     it('returns ctx for admins regardless of their tenants list (admins are not gated)', async () => {
@@ -285,14 +283,14 @@ describe('getAuthedPayloadCtx', () => {
         const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
 
         expect(ctx.user.role).toBe('admin');
-        expect(ctx.tenant?.id).toBe(String(TENANT_DOC.id));
+        expect(ctx.tenant?.id).toBe(String(SHOP_DOC.id));
     });
 
-    it('projects tenant.defaultLocale and tenant.locales from the tenant doc', async () => {
+    it('projects tenant.defaultLocale from the shop doc i18n and derives locales from it', async () => {
         mockAuth.mockResolvedValue(SESSION);
         mockGetPayload.mockResolvedValue(
             makePayload({
-                tenantDocs: [{ ...TENANT_DOC, defaultLocale: 'de', locales: ['de', 'en'] }],
+                shopDocs: [{ ...SHOP_DOC, i18n: { defaultLocale: 'de' } }],
             }),
         );
         mockFindByDomain.mockResolvedValue(SHOP);
@@ -300,29 +298,14 @@ describe('getAuthedPayloadCtx', () => {
         const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
 
         expect(ctx.tenant?.defaultLocale).toBe('de');
-        expect(ctx.tenant?.locales).toEqual(['de', 'en']);
+        expect(ctx.tenant?.locales).toEqual(['de']);
     });
 
-    it('falls back tenant.locales to [defaultLocale] when the tenant doc has empty locales', async () => {
+    it('falls back tenant.defaultLocale to "en-US" when the shop doc omits i18n', async () => {
         mockAuth.mockResolvedValue(SESSION);
         mockGetPayload.mockResolvedValue(
             makePayload({
-                tenantDocs: [{ ...TENANT_DOC, defaultLocale: 'sv', locales: [] }],
-            }),
-        );
-        mockFindByDomain.mockResolvedValue(SHOP);
-
-        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
-
-        expect(ctx.tenant?.defaultLocale).toBe('sv');
-        expect(ctx.tenant?.locales).toEqual(['sv']);
-    });
-
-    it('falls back tenant.defaultLocale to "en-US" when the tenant doc omits it', async () => {
-        mockAuth.mockResolvedValue(SESSION);
-        mockGetPayload.mockResolvedValue(
-            makePayload({
-                tenantDocs: [{ ...TENANT_DOC, defaultLocale: undefined, locales: ['en-US', 'fr'] }],
+                shopDocs: [{ id: SHOP.id, name: 'Acme Store' }],
             }),
         );
         mockFindByDomain.mockResolvedValue(SHOP);
@@ -330,6 +313,6 @@ describe('getAuthedPayloadCtx', () => {
         const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
 
         expect(ctx.tenant?.defaultLocale).toBe('en-US');
-        expect(ctx.tenant?.locales).toEqual(['en-US', 'fr']);
+        expect(ctx.tenant?.locales).toEqual(['en-US']);
     });
 });

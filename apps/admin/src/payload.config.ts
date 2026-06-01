@@ -3,10 +3,7 @@ import 'server-only';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildPayloadConfig } from '@nordcom/commerce-cms/config';
-import { attachShopSync } from '@nordcom/commerce-cms/shop-sync';
-import { Shop } from '@nordcom/commerce-db';
 import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
-import { getPayload } from 'payload';
 import sharp from 'sharp';
 import { nextAuthStrategy } from '@/lib/nextauth-strategy';
 
@@ -87,11 +84,5 @@ const configPromise = buildPayloadConfig({
     // "sharp not installed" on every boot otherwise.
     sharp,
 });
-
-// Attach the Shop -> tenant sync listener synchronously so a Shop save during
-// admin startup (seed scripts, webhook racing module load, etc.) can't slip in
-// before the post-save hook is registered. The Payload instance is resolved
-// lazily on first fire — by then `configPromise` will have settled.
-attachShopSync(Shop.model as never, () => getPayload({ config: configPromise }));
 
 export default configPromise;

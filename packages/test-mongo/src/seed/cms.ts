@@ -45,10 +45,9 @@ const DEMO_TENANT_NAME = 'Nordcom Demo Shop';
  * already-known URI; Vitest beforeAll blocks set it explicitly.
  *
  * The Payload multi-tenant plugin keys tenant-scoped docs by the Payload
- * `tenants` document `_id`, NOT the source Shop `_id`. In production the
- * `shop-sync/post-save-hook` does that translation; the seed creates the
- * Shop directly via Mongoose (bypassing Payload), so we have to create the
- * Tenant doc here and use its `_id` for every tenant-scoped insert. Without
+ * `tenants` document `_id`, NOT the source Shop `_id`. The seed creates the
+ * Shop directly via Mongoose (bypassing Payload), so it also creates the
+ * Tenant doc here and uses its `_id` for every tenant-scoped insert. Without
  * this step `resolveTenantId(shop.id)` returns `null` and every storefront
  * CMS read hits the 404 path.
  *

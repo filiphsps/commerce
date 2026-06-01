@@ -18,9 +18,9 @@ import payloadConfig from '@/payload.config';
  *   field Payload's access predicates expect. Pass this verbatim to every
  *   `payload.local` call as `user: ...` so access checks see the same
  *   principal that gated the route.
- * - `tenant`: resolved from `domain` via `Shop.findByDomain` → tenant
- *   lookup by `shopId`. `null` only when `domain` was omitted (admin
- *   routes that operate cross-tenant).
+ * - `tenant`: resolved from `domain` via `Shop.findByDomain` → `shops`
+ *   document lookup by id (shop == tenant post-unification). `null` only
+ *   when `domain` was omitted (admin routes that operate cross-tenant).
  *
  * Replaces the NextAuth → Payload bridge that lived in
  * `packages/cms/src/auth/nextauth-strategy.ts`. That bridge did the same
@@ -101,35 +101,34 @@ export async function getAuthedPayloadCtx(domain?: string): Promise<AuthedPayloa
             if (CommerceError.isNotFound(err)) notFound();
             throw err;
         }
-        const { docs: tenantDocs } = await payload.find({
-            collection: 'tenants',
-            where: { shopId: { equals: shop.id } },
+        // Post-unification the shop IS the tenant: the multi-tenant plugin's
+        // tenancy collection was repointed to `shops` and the mirror `tenants`
+        // collection deleted, so resolve directly against the shop document
+        // whose Payload id equals the Mongoose shop id.
+        const { docs: shopDocs } = await payload.find({
+            collection: 'shops',
+            where: { id: { equals: shop.id } },
             limit: 1,
             overrideAccess: true,
         });
-        const tenantDoc = tenantDocs[0];
-        if (!tenantDoc) {
-            // Shop exists but tenant mirror doesn't. `attachShopSync` should
-            // have created it on Shop save; if we're here the post-save
-            // hook silently dropped the create. Treat as not-found rather
-            // than rendering a broken edit form.
+        const shopDoc = shopDocs[0];
+        if (!shopDoc) {
+            // The shop resolved from the domain has no Payload document — treat
+            // as not-found rather than rendering a broken edit form.
             notFound();
         }
-        const tenantDefaultLocale =
-            typeof (tenantDoc as unknown as { defaultLocale?: unknown }).defaultLocale === 'string'
-                ? String((tenantDoc as unknown as { defaultLocale: string }).defaultLocale)
-                : 'en-US';
-        const rawLocales = (tenantDoc as unknown as { locales?: unknown }).locales;
-        const tenantLocales =
-            Array.isArray(rawLocales) && rawLocales.length > 0
-                ? rawLocales.filter((l): l is string => typeof l === 'string')
-                : [tenantDefaultLocale];
+        // `shops` persists only `i18n.defaultLocale`; the storefront reconstructs
+        // the full locale list from the commerce provider, so the authed context
+        // surfaces the single default locale. The cast guards legacy documents
+        // predating the `i18n` group.
+        const rawDefaultLocale = (shopDoc.i18n as { defaultLocale?: string } | undefined)?.defaultLocale;
+        const tenantDefaultLocale = rawDefaultLocale && rawDefaultLocale.length > 0 ? rawDefaultLocale : 'en-US';
         tenant = {
-            id: String(tenantDoc.id),
-            slug: String(tenantDoc.slug ?? shop.id),
-            name: String(tenantDoc.name ?? domain),
+            id: String(shopDoc.id),
+            slug: shop.id,
+            name: shopDoc.name || domain,
             defaultLocale: tenantDefaultLocale,
-            locales: tenantLocales,
+            locales: [tenantDefaultLocale],
         };
     }
 
