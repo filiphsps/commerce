@@ -34,6 +34,32 @@ export declare const internal: {
     exportSnapshot: FunctionReference<"action", "internal", {}, any>;
   };
   revalidate: {
+    delivery: {
+      emitDeadLetterAlert: FunctionReference<
+        "action",
+        "internal",
+        { collection: string; error: string; runId: string; tenantId: string },
+        any
+      >;
+      enqueueDelivery: FunctionReference<
+        "mutation",
+        "internal",
+        { pendingId: Id<"pendingRevalidations"> },
+        any
+      >;
+      onDeliveryComplete: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          result:
+            | { returnValue: any; type: "success" }
+            | { error: string; type: "failed" }
+            | { type: "canceled" };
+          runId: string;
+        },
+        any
+      >;
+    };
     idempotency: {
       coalesce: FunctionReference<
         "mutation",
@@ -71,4 +97,6 @@ export declare const internal: {
   };
 };
 
-export declare const components: {};
+export declare const components: {
+  actionRetrier: import("@convex-dev/action-retrier/_generated/component.js").ComponentApi<"actionRetrier">;
+};

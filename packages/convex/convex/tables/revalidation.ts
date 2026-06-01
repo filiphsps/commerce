@@ -54,16 +54,78 @@ export const pendingRevalidationValidator = v.object({
 export type PendingRevalidation = Infer<typeof pendingRevalidationValidator>;
 
 /**
+ * In-flight context for a single retrier-managed delivery, keyed by the action-retrier `runId`. The
+ * retrier's `onComplete` callback (BRIDGE-07) receives ONLY `{ runId, result }` — never the action's
+ * arguments — so the durable-delivery layer snapshots everything a terminal-failure dead-letter row
+ * needs (the originating `pendingId` plus the tenant/collection/tags being delivered) into this row
+ * when the run is enqueued, then resolves it back by `runId` once the run completes. The snapshot is
+ * taken at enqueue time rather than re-read from `pendingRevalidations` at completion because a
+ * concurrent ack may have drained the pending row by then; snapshotting keeps the dead-letter record
+ * complete regardless. Rows are deleted the moment the run completes (success, exhausted failure, or
+ * cancellation), so this table holds only deliveries currently in flight.
+ *
+ * `runId` is the action-retrier's opaque string handle (a branded string on the client, stored here as
+ * a plain `v.string()`); the `by_run_id` index makes the completion-time lookup a point read.
+ */
+export const revalidationDeliveryValidator = v.object({
+    runId: v.string(),
+    pendingId: v.id('pendingRevalidations'),
+    tenantId: v.string(),
+    collection: v.string(),
+    tags: v.array(v.string()),
+});
+
+/**
+ * Inferred row shape for an in-flight retrier delivery. See {@link revalidationDeliveryValidator}.
+ */
+export type RevalidationDelivery = Infer<typeof revalidationDeliveryValidator>;
+
+/**
+ * Dead-letter record for a revalidation delivery that exhausted every action-retrier attempt without
+ * a 2xx ack (BRIDGE-07). One row is written exactly once, by the retrier's `onComplete` callback, when
+ * a run terminates in the `failed` state — at which point the poison `pendingRevalidations` row is
+ * dropped (it can never deliver) and an alert is fired. The row carries the full delivery context
+ * snapshot so an operator can diagnose or hand-replay the bust: `tenantId`/`collection`/`tags` identify
+ * exactly which cache bust was lost, `error` is the retrier's terminal failure message, and `runId`
+ * ties the record back to the retrier run for cross-referencing.
+ *
+ * `pendingId` is the originating coalescing row's id, retained for traceability even though that row is
+ * deleted on dead-letter (it stays valid as a historical reference). `by_tenant_collection` mirrors the
+ * coalescing buffer's index so the dead-letter history for a (tenant, collection) pair is a point scan.
+ */
+export const revalidationDeadLetterValidator = v.object({
+    pendingId: v.id('pendingRevalidations'),
+    tenantId: v.string(),
+    collection: v.string(),
+    tags: v.array(v.string()),
+    error: v.string(),
+    runId: v.string(),
+    deadLetteredAt: v.number(),
+});
+
+/**
+ * Inferred row shape for a dead-lettered revalidation delivery. See {@link revalidationDeadLetterValidator}.
+ */
+export type RevalidationDeadLetter = Infer<typeof revalidationDeadLetterValidator>;
+
+/**
  * The revalidation bridge's infrastructure tables. `revalidationEvents` is keyed for dedup by
- * `by_eventId`; `pendingRevalidations` is keyed for coalescing by `by_tenant_collection`. Both are
- * platform-global bridge infrastructure (written only by the server-trusted system tier), so they are
- * spread into `coreTables` via `tables/index.ts`, then into `defineSchema`. Their indexes intentionally
- * deviate from the `by_shop` tenant convention: the bridge operates on the string tenant id from the
- * publish payload, not a `v.id('shops')` foreign key.
+ * `by_eventId`; `pendingRevalidations` is keyed for coalescing by `by_tenant_collection`;
+ * `revalidationDeliveries` tracks in-flight retrier runs by `by_run_id`; `revalidationDeadLetters`
+ * records exhausted deliveries by `by_tenant_collection`. All are platform-global bridge infrastructure
+ * (written only by the server-trusted system tier), so they are spread into `coreTables` via
+ * `tables/index.ts`, then into `defineSchema`. Their indexes intentionally deviate from the `by_shop`
+ * tenant convention: the bridge operates on the string tenant id from the publish payload, not a
+ * `v.id('shops')` foreign key.
  */
 export const revalidationTables = {
     revalidationEvents: defineTable(revalidationEventValidator).index('by_eventId', ['eventId']),
     pendingRevalidations: defineTable(pendingRevalidationValidator).index('by_tenant_collection', [
+        'tenantId',
+        'collection',
+    ]),
+    revalidationDeliveries: defineTable(revalidationDeliveryValidator).index('by_run_id', ['runId']),
+    revalidationDeadLetters: defineTable(revalidationDeadLetterValidator).index('by_tenant_collection', [
         'tenantId',
         'collection',
     ]),

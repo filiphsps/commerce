@@ -52,6 +52,7 @@
         "convex"
     ],
     "dependencies": {
+        "@convex-dev/action-retrier": "0.3.0",
         "@nordcom/commerce-cms": "workspace:*",
         "@tagtree/core": "workspace:*",
         "convex": "1.39.1",

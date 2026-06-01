@@ -652,6 +652,62 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  revalidationDeadLetters: {
+    document: {
+      collection: string;
+      deadLetteredAt: number;
+      error: string;
+      pendingId: Id<"pendingRevalidations">;
+      runId: string;
+      tags: Array<string>;
+      tenantId: string;
+      _id: Id<"revalidationDeadLetters">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "collection"
+      | "deadLetteredAt"
+      | "error"
+      | "pendingId"
+      | "runId"
+      | "tags"
+      | "tenantId";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_tenant_collection: ["tenantId", "collection", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  revalidationDeliveries: {
+    document: {
+      collection: string;
+      pendingId: Id<"pendingRevalidations">;
+      runId: string;
+      tags: Array<string>;
+      tenantId: string;
+      _id: Id<"revalidationDeliveries">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "collection"
+      | "pendingId"
+      | "runId"
+      | "tags"
+      | "tenantId";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_run_id: ["runId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   revalidationEvents: {
     document: {
       eventId: string;

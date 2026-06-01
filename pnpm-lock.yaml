@@ -1066,6 +1066,9 @@ importers:
 
   packages/convex:
     dependencies:
+      '@convex-dev/action-retrier':
+        specifier: 0.3.0
+        version: 0.3.0(convex@1.39.1(react@19.2.6))
       '@nordcom/commerce-cms':
         specifier: workspace:*
         version: link:../cms
@@ -1958,6 +1961,11 @@ packages:
     engines: {node: '>=20.0.0'}
     peerDependencies:
       vite: 4.x || 5.x || 6.x
+
+  '@convex-dev/action-retrier@0.3.0':
+    resolution: {integrity: sha512-opBNsgOPSuVY3qSARNub98XqPzSpSS7Jga0oGeWFhO+DcWBMt2gD3ssUeEA1Gi7wTNiZBX+T6OBfBnqMfv6Tuw==}
+    peerDependencies:
+      convex: ^1.24.8
 
   '@corex/deepmerge@4.0.43':
     resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
@@ -8789,6 +8797,10 @@ snapshots:
       '@codecov/bundler-plugin-core': 2.0.1
       unplugin: 1.16.1
       vite: 8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.3)(yaml@2.9.0)
+
+  '@convex-dev/action-retrier@0.3.0(convex@1.39.1(react@19.2.6))':
+    dependencies:
+      convex: 1.39.1(react@19.2.6)
 
   '@corex/deepmerge@4.0.43': {}
 
