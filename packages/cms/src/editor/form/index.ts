@@ -17,9 +17,14 @@
 
 export { FieldsContext, type FieldsContextValue, FormContext, type FormContextValue } from './context';
 export {
+    ArrayField,
+    CollapsibleField,
+    ConditionalField,
     FieldShell,
     type FieldShellProps,
     fieldControlClassName,
+    GroupField,
+    registerCompositeFieldWidgets,
     registerScalarFieldWidgets,
     useEditorField,
 } from './fields';
