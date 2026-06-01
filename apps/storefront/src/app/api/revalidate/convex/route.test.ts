@@ -150,6 +150,32 @@ describe('app/api/revalidate/convex', () => {
             expect(res.status).toBe(200);
             expect(invalidateRawMock).toHaveBeenCalledWith(payload.tags);
         });
+
+        it('rejects a previous-secret signature once the rotation window is closed (_PREVIOUS unset)', async () => {
+            // beforeEach leaves _PREVIOUS unset; closing the window must drop the
+            // dual-accept fallback so an old-secret delivery no longer verifies.
+            const payload = makePayload();
+            const body = canonicalizeRevalidatePayload(payload);
+
+            const res = await POST(makeRequest(body, sign(body, PREVIOUS)));
+
+            expect(res.status).toBe(401);
+            expect(invalidateRawMock).not.toHaveBeenCalled();
+            expect(invalidateTenantMock).not.toHaveBeenCalled();
+            expect(evictApolloClientMock).not.toHaveBeenCalled();
+        });
+
+        it('always accepts a current-secret signature regardless of the rotation window', async () => {
+            const payload = makePayload();
+            const body = canonicalizeRevalidatePayload(payload);
+
+            const closed = await POST(makeRequest(body, sign(body, CURRENT)));
+            expect(closed.status).toBe(200);
+
+            process.env.CONVEX_REVALIDATE_SECRET_PREVIOUS = PREVIOUS;
+            const open = await POST(makeRequest(body, sign(body, CURRENT)));
+            expect(open.status).toBe(200);
+        });
     });
 
     describe('malformed input (valid signature)', () => {
