@@ -10,7 +10,7 @@ import { ConvexError } from 'convex/values';
 const moduleDir = dirname(fileURLToPath(import.meta.url));
 const requireFromHere = createRequire(import.meta.url);
 
-/** Default cloud port the persistent dev backend pins, mirroring `convex dev`'s own default. */
+/** Max time to wait for the local backend's `/instance_name` readiness probe to succeed before failing the boot. */
 const DEFAULT_READY_TIMEOUT_MS = 60_000;
 /** Interval between `/instance_name` readiness probes while the backend boots. */
 const READY_POLL_INTERVAL_MS = 250;

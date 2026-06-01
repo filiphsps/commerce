@@ -81,6 +81,9 @@ jobs:
               id: bootstrap
               uses: ./.github/common/bootstrap
 
+            - name: 🧬 CMS codegen drift gate
+              run: pnpm cms:gen:check
+
             - name: ✨ Generate
               run: pnpm run generate
 
