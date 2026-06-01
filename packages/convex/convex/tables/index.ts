@@ -1,6 +1,7 @@
 import type { TableDefinition } from 'convex/server';
 
 import { authTables } from './auth';
+import { cmsContentTables } from './cms';
 import { reviewsTables } from './reviews';
 
 /**
@@ -31,5 +32,11 @@ export const coreTables: Record<string, TableDefinition> = {
  * Reserved extension point for CMS-owned table groups (pages, media, rich content, …). Kept distinct
  * from {@link coreTables} so CMS table-group tasks (CMSDATA-*, CMSMEDIA-01, CMSRICH-01) wire their
  * `tables/<group>.ts` maps in here without touching the core slot or `schema.ts`.
+ *
+ * `cmsContentTables` is generated from the CMS field descriptors by `pnpm cms:gen`
+ * (`tables/cms.ts`); never edit that file by hand — the `cms:gen:check` drift gate fails on
+ * uncommitted divergence.
  */
-export const cmsTables: Record<string, TableDefinition> = {};
+export const cmsTables: Record<string, TableDefinition> = {
+    ...cmsContentTables,
+};

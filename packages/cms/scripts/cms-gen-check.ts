@@ -1,40 +1,49 @@
 /**
- * CI drift check for `pnpm cms:gen`.
+ * Drift gate for `pnpm cms:gen` (`pnpm cms:gen:check`).
  *
- * Regenerates each file to memory and compares against what's currently
- * committed under `apps/admin/src/lib/cms-actions/_generated/`. Exits non-zero
- * on any mismatch so CI can fail the build.
+ * Regenerates every CMS codegen artifact to memory via the same
+ * {@link collectGeneratedOutputs} the writer (`cms-gen.ts`) uses, then diffs each
+ * against the committed file on disk — the admin editor-action wrappers, the
+ * storefront read-contract types (`payload-types.ts`), and the Convex CMS
+ * content-table validators (`tables/cms.ts`). Exits non-zero on any missing or
+ * divergent file so CI fails when a descriptor changed without re-running
+ * `pnpm cms:gen`. No Payload runtime, no Mongo adapter.
+ *
+ * Sharing {@link collectGeneratedOutputs} guarantees the gate can never disagree
+ * with the writer about what's generated or where it lands.
  */
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateActionWrapper } from './cms-gen.js';
+import { collectGeneratedOutputs } from './codegen/outputs';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = path.resolve(__dirname, '../../..');
-const OUTPUT_DIR = path.join(REPO_ROOT, 'apps/admin/src/lib/cms-actions/_generated');
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
-const slugToCamel = (slug: string): string => slug.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
-
+/**
+ * Regenerates every artifact and reports any that are missing or have drifted
+ * from the committed file on disk.
+ *
+ * @returns Exits the process non-zero (with a printed diff summary) on drift;
+ *   resolves silently when every file is up to date.
+ */
 const main = async (): Promise<void> => {
-    const { allManifests } = await import('../src/editor/manifests/index.js');
+    const outputs = await collectGeneratedOutputs();
     const failures: string[] = [];
-    for (const manifest of allManifests) {
-        const slug = String(manifest.collection);
-        const importName = `${slugToCamel(slug)}Editor`;
-        const expected = generateActionWrapper({ slug, importName });
-        const filePath = path.join(OUTPUT_DIR, `${slug}.ts`);
+
+    for (const { path: filePath, content } of outputs) {
+        const rel = path.relative(REPO_ROOT, filePath);
         let actual: string;
         try {
             actual = await readFile(filePath, 'utf-8');
         } catch {
-            failures.push(`MISSING: ${filePath} — run \`pnpm cms:gen\``);
+            failures.push(`MISSING: ${rel} — run \`pnpm cms:gen\``);
             continue;
         }
-        if (actual !== expected) {
-            failures.push(`DRIFT: ${filePath} — run \`pnpm cms:gen\``);
+        if (actual !== content) {
+            failures.push(`DRIFT: ${rel} — run \`pnpm cms:gen\``);
         }
     }
+
     if (failures.length > 0) {
         console.error(failures.join('\n'));
         process.exit(1);

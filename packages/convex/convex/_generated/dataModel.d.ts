@@ -27,6 +27,402 @@ import type { GenericId } from "convex/values";
  */
 
 export type DataModel = {
+  articles: {
+    document: {
+      author: string;
+      body?: any;
+      cover?: string;
+      createdAt: number;
+      excerpt?: string;
+      publishedAt?: string;
+      seo?: {
+        description?: string;
+        image?: string;
+        keywords?: Array<string>;
+        noindex?: boolean;
+        title?: string;
+      };
+      shop: string;
+      slug: string;
+      tags?: Array<string>;
+      title: string;
+      updatedAt: number;
+      _id: Id<"articles">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "author"
+      | "body"
+      | "cover"
+      | "createdAt"
+      | "excerpt"
+      | "publishedAt"
+      | "seo"
+      | "seo.description"
+      | "seo.image"
+      | "seo.keywords"
+      | "seo.noindex"
+      | "seo.title"
+      | "shop"
+      | "slug"
+      | "tags"
+      | "title"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  businessData: {
+    document: {
+      address?: {
+        city?: string;
+        country?: string;
+        line1?: string;
+        line2?: string;
+        postalCode?: string;
+        region?: string;
+      };
+      createdAt: number;
+      legalName?: string;
+      profiles?: Array<{ handle: string; platform: string; url?: string }>;
+      shop: string;
+      supportEmail?: string;
+      supportPhone?: string;
+      updatedAt: number;
+      _id: Id<"businessData">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "address"
+      | "address.city"
+      | "address.country"
+      | "address.line1"
+      | "address.line2"
+      | "address.postalCode"
+      | "address.region"
+      | "createdAt"
+      | "legalName"
+      | "profiles"
+      | "shop"
+      | "supportEmail"
+      | "supportPhone"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  collectionMetadata: {
+    document: {
+      blocks?: Array<any>;
+      createdAt: number;
+      descriptionOverride?: any;
+      seo?: {
+        description?: string;
+        image?: string;
+        keywords?: Array<string>;
+        noindex?: boolean;
+        title?: string;
+      };
+      shop: string;
+      shopifyHandle: string;
+      updatedAt: number;
+      _id: Id<"collectionMetadata">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "blocks"
+      | "createdAt"
+      | "descriptionOverride"
+      | "seo"
+      | "seo.description"
+      | "seo.image"
+      | "seo.keywords"
+      | "seo.noindex"
+      | "seo.title"
+      | "shop"
+      | "shopifyHandle"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  footer: {
+    document: {
+      copyrightLine?: string;
+      createdAt: number;
+      legal?: Array<{
+        link?: {
+          article?: string;
+          collectionRef?: string;
+          kind?:
+            | "page"
+            | "article"
+            | "product"
+            | "collection"
+            | "external"
+            | "anchor";
+          label?: string;
+          openInNewTab?: boolean;
+          page?: string;
+          product?: string;
+          url?: string;
+        };
+      }>;
+      sections?: Array<{
+        links?: Array<{
+          link?: {
+            article?: string;
+            collectionRef?: string;
+            kind?:
+              | "page"
+              | "article"
+              | "product"
+              | "collection"
+              | "external"
+              | "anchor";
+            label?: string;
+            openInNewTab?: boolean;
+            page?: string;
+            product?: string;
+            url?: string;
+          };
+        }>;
+        title: string;
+      }>;
+      shop: string;
+      social?: Array<{
+        platform:
+          | "instagram"
+          | "facebook"
+          | "tiktok"
+          | "youtube"
+          | "x"
+          | "linkedin";
+        url: string;
+      }>;
+      updatedAt: number;
+      _id: Id<"footer">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "copyrightLine"
+      | "createdAt"
+      | "legal"
+      | "sections"
+      | "shop"
+      | "social"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  header: {
+    document: {
+      createdAt: number;
+      cta?: {
+        article?: string;
+        collectionRef?: string;
+        kind?:
+          | "page"
+          | "article"
+          | "product"
+          | "collection"
+          | "external"
+          | "anchor";
+        label?: string;
+        openInNewTab?: boolean;
+        page?: string;
+        product?: string;
+        url?: string;
+      };
+      items?: Array<{
+        backgroundColor?: string;
+        description?: string;
+        image?: string;
+        items?: Array<{
+          backgroundColor?: string;
+          description?: string;
+          image?: string;
+          items?: Array<{
+            backgroundColor?: string;
+            description?: string;
+            image?: string;
+            items?: Array<{
+              backgroundColor?: string;
+              description?: string;
+              image?: string;
+              items?: Array<{
+                backgroundColor?: string;
+                description?: string;
+                image?: string;
+                items?: Array<{
+                  backgroundColor?: string;
+                  description?: string;
+                  image?: string;
+                  link?: {
+                    article?: string;
+                    collectionRef?: string;
+                    kind?:
+                      | "page"
+                      | "article"
+                      | "product"
+                      | "collection"
+                      | "external"
+                      | "anchor";
+                    label?: string;
+                    openInNewTab?: boolean;
+                    page?: string;
+                    product?: string;
+                    url?: string;
+                  };
+                }>;
+                link?: {
+                  article?: string;
+                  collectionRef?: string;
+                  kind?:
+                    | "page"
+                    | "article"
+                    | "product"
+                    | "collection"
+                    | "external"
+                    | "anchor";
+                  label?: string;
+                  openInNewTab?: boolean;
+                  page?: string;
+                  product?: string;
+                  url?: string;
+                };
+              }>;
+              link?: {
+                article?: string;
+                collectionRef?: string;
+                kind?:
+                  | "page"
+                  | "article"
+                  | "product"
+                  | "collection"
+                  | "external"
+                  | "anchor";
+                label?: string;
+                openInNewTab?: boolean;
+                page?: string;
+                product?: string;
+                url?: string;
+              };
+            }>;
+            link?: {
+              article?: string;
+              collectionRef?: string;
+              kind?:
+                | "page"
+                | "article"
+                | "product"
+                | "collection"
+                | "external"
+                | "anchor";
+              label?: string;
+              openInNewTab?: boolean;
+              page?: string;
+              product?: string;
+              url?: string;
+            };
+          }>;
+          link?: {
+            article?: string;
+            collectionRef?: string;
+            kind?:
+              | "page"
+              | "article"
+              | "product"
+              | "collection"
+              | "external"
+              | "anchor";
+            label?: string;
+            openInNewTab?: boolean;
+            page?: string;
+            product?: string;
+            url?: string;
+          };
+        }>;
+        link?: {
+          article?: string;
+          collectionRef?: string;
+          kind?:
+            | "page"
+            | "article"
+            | "product"
+            | "collection"
+            | "external"
+            | "anchor";
+          label?: string;
+          openInNewTab?: boolean;
+          page?: string;
+          product?: string;
+          url?: string;
+        };
+        variant?: "editorial-columns" | "compact-list" | "featured-promo";
+      }>;
+      localeSwitcher?: { enabled?: boolean; label?: string };
+      logo?: string;
+      logoLink?: string;
+      shop: string;
+      updatedAt: number;
+      _id: Id<"header">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "cta"
+      | "cta.article"
+      | "cta.collectionRef"
+      | "cta.kind"
+      | "cta.label"
+      | "cta.openInNewTab"
+      | "cta.page"
+      | "cta.product"
+      | "cta.url"
+      | "items"
+      | "localeSwitcher"
+      | "localeSwitcher.enabled"
+      | "localeSwitcher.label"
+      | "logo"
+      | "logoLink"
+      | "shop"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   identities: {
     document: {
       accessToken?: string;
@@ -55,6 +451,114 @@ export type DataModel = {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
       by_provider_identity: ["provider", "identity", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  media: {
+    document: {
+      alt: string;
+      caption?: string;
+      createdAt: number;
+      shop: string;
+      updatedAt: number;
+      _id: Id<"media">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "alt"
+      | "caption"
+      | "createdAt"
+      | "shop"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  pages: {
+    document: {
+      blocks?: Array<any>;
+      createdAt: number;
+      seo?: {
+        description?: string;
+        image?: string;
+        keywords?: Array<string>;
+        noindex?: boolean;
+        title?: string;
+      };
+      shop: string;
+      slug: string;
+      title: string;
+      updatedAt: number;
+      _id: Id<"pages">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "blocks"
+      | "createdAt"
+      | "seo"
+      | "seo.description"
+      | "seo.image"
+      | "seo.keywords"
+      | "seo.noindex"
+      | "seo.title"
+      | "shop"
+      | "slug"
+      | "title"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  productMetadata: {
+    document: {
+      blocks?: Array<any>;
+      createdAt: number;
+      descriptionOverride?: any;
+      seo?: {
+        description?: string;
+        image?: string;
+        keywords?: Array<string>;
+        noindex?: boolean;
+        title?: string;
+      };
+      shop: string;
+      shopifyHandle: string;
+      updatedAt: number;
+      _id: Id<"productMetadata">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "blocks"
+      | "createdAt"
+      | "descriptionOverride"
+      | "seo"
+      | "seo.description"
+      | "seo.image"
+      | "seo.keywords"
+      | "seo.noindex"
+      | "seo.title"
+      | "shop"
+      | "shopifyHandle"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
     };
     searchIndexes: {};
     vectorIndexes: {};

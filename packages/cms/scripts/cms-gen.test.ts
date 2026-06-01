@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateActionWrapper } from './cms-gen';
+import { generateActionWrapper } from './codegen/outputs';
 
 describe('generateActionWrapper', () => {
     it('emits a use-server file with seven exports for businessData', () => {
