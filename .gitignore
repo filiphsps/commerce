@@ -90,3 +90,6 @@ packages/**/docs/api
 .worktrees/
 worktrees/
 *.png
+
+# Claude Code runtime lock — machine-local, must not be tracked.
+.claude/scheduled_tasks.lock
