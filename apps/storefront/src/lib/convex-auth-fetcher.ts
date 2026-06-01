@@ -60,7 +60,9 @@ export const fetchConvexTokenFromSession: ConvexTokenSource = async ({ forceRefr
  * @param source - The token source to refresh from; defaults to {@link fetchConvexTokenFromSession}.
  * @returns An {@link AuthTokenFetcher} suitable for `setAuth`.
  */
-export function createConvexAuthTokenFetcher(source: ConvexTokenSource = fetchConvexTokenFromSession): AuthTokenFetcher {
+export function createConvexAuthTokenFetcher(
+    source: ConvexTokenSource = fetchConvexTokenFromSession,
+): AuthTokenFetcher {
     let cachedToken: string | null = null;
 
     return async ({ forceRefreshToken }) => {

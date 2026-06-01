@@ -1,6 +1,6 @@
-import { convexTest } from 'convex-test';
 import { makeFunctionReference } from 'convex/server';
 import { ConvexError } from 'convex/values';
+import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Id } from '../_generated/dataModel';
@@ -52,7 +52,7 @@ async function expectedSignature(body: string, secret: string): Promise<string> 
  */
 async function seedDelivery(
     t: ReturnType<typeof convexTest>,
-    shop: { domain: string; alternativeDomains?: string[] }
+    shop: { domain: string; alternativeDomains?: string[] },
 ): Promise<Id<'pendingRevalidations'>> {
     return t.run(async (ctx) => {
         await ctx.db.insert('shops', {

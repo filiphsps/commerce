@@ -1,6 +1,6 @@
 import { register as registerActionRetrier } from '@convex-dev/action-retrier/test';
-import { convexTest } from 'convex-test';
 import { makeFunctionReference } from 'convex/server';
+import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Id } from '../_generated/dataModel';

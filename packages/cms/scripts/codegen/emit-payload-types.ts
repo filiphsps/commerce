@@ -95,7 +95,7 @@ const JSON_TYPE = '{ [k: string]: unknown } | unknown[] | string | number | bool
 
 /** Lexical rich-text document shape Payload emits for `richText` fields. */
 const RICHTEXT_TYPE =
-    "{ root: { type: string; children: { type: any; version: number; [k: string]: unknown }[]; " +
+    '{ root: { type: string; children: { type: any; version: number; [k: string]: unknown }[]; ' +
     "direction: ('ltr' | 'rtl') | null; format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''; " +
     'indent: number; version: number }; [k: string]: unknown } | null';
 
@@ -185,9 +185,7 @@ const emitProperty = (field: EmitField, level: number): string => {
         case 'upload': {
             const target = RELATION_INTERFACE[field.relationTo ?? ''] ?? 'string';
             if (field.hasMany) {
-                return req
-                    ? `${p}${name}: (string | ${target})[];`
-                    : `${p}${name}?: (string | ${target})[] | null;`;
+                return req ? `${p}${name}: (string | ${target})[];` : `${p}${name}?: (string | ${target})[] | null;`;
             }
             return req ? `${p}${name}: string | ${target};` : `${p}${name}?: (string | null) | ${target};`;
         }
@@ -203,9 +201,7 @@ const emitProperty = (field: EmitField, level: number): string => {
             return req ? `${p}${name}: ${row};` : `${p}${name}?: ${row} | null;`;
         }
         case 'blocks': {
-            const union = (field.blocks ?? [])
-                .map((b) => b.interfaceName ?? b.slug)
-                .join(' | ');
+            const union = (field.blocks ?? []).map((b) => b.interfaceName ?? b.slug).join(' | ');
             return req ? `${p}${name}: Array<${union}>;` : `${p}${name}?: Array<${union}> | null;`;
         }
         default:
@@ -262,7 +258,8 @@ const USERS_AUTH = [
     `${INDENT}collection: 'users';`,
 ];
 
-const MEDIA_SIZE = '{ url?: string | null; width?: number | null; height?: number | null; mimeType?: string | null; filesize?: number | null; filename?: string | null }';
+const MEDIA_SIZE =
+    '{ url?: string | null; width?: number | null; height?: number | null; mimeType?: string | null; filesize?: number | null; filename?: string | null }';
 
 const MEDIA_UPLOAD = [
     `${INDENT}url?: string | null;`,

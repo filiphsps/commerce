@@ -103,7 +103,11 @@ const cmdReset = (args: string[]): void => {
  * @returns Resolves once seeding completes; resolves to `1` when `--url` is missing.
  */
 const cmdSeed = async (args: string[]): Promise<number> => {
-    const { url, adminKey, dataDir = '.convex-dev' } = argsFor(args, {
+    const {
+        url,
+        adminKey,
+        dataDir = '.convex-dev',
+    } = argsFor(args, {
         url: { type: 'string' },
         adminKey: { type: 'string' },
         dataDir: { type: 'string' },
@@ -153,7 +157,9 @@ export async function runCli(argv: string[]): Promise<number> {
         case 'seed':
             return cmdSeed(rest);
         default:
-            console.error('usage: test-convex {start|stop|reset|seed} [--dataDir path] [--port n] [--url ...] [--adminKey ...]');
+            console.error(
+                'usage: test-convex {start|stop|reset|seed} [--dataDir path] [--port n] [--url ...] [--adminKey ...]',
+            );
             return 1;
     }
 }

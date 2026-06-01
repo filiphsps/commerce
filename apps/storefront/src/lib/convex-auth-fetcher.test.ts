@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createConvexAuthTokenFetcher, type ConvexTokenSource } from './convex-auth-fetcher';
+import { type ConvexTokenSource, createConvexAuthTokenFetcher } from './convex-auth-fetcher';
 
 describe('createConvexAuthTokenFetcher', () => {
     it('caches the first token and only round-trips the source when a refresh is forced', async () => {
-        const source = vi.fn<ConvexTokenSource>(async ({ forceRefresh }) => (forceRefresh ? 'token-refreshed' : 'token-initial'));
+        const source = vi.fn<ConvexTokenSource>(async ({ forceRefresh }) =>
+            forceRefresh ? 'token-refreshed' : 'token-initial',
+        );
         const fetchToken = createConvexAuthTokenFetcher(source);
 
         // First call mints and caches.

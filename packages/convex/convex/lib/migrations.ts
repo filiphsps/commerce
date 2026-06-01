@@ -67,8 +67,11 @@ export type BackfillBatchResult = {
  */
 type MigrateOne<Table extends TableNamesInDataModel<DataModel>> = (
     ctx: MutationCtx,
-    doc: DocumentByName<DataModel, Table>
-) => Partial<DocumentByName<DataModel, Table>> | undefined | Promise<Partial<DocumentByName<DataModel, Table>> | undefined>;
+    doc: DocumentByName<DataModel, Table>,
+) =>
+    | Partial<DocumentByName<DataModel, Table>>
+    | undefined
+    | Promise<Partial<DocumentByName<DataModel, Table>> | undefined>;
 
 /**
  * Builds a generic, paginating, idempotent backfill mutation over one table — the data half of an

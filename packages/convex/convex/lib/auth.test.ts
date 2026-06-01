@@ -1,6 +1,6 @@
-import { convexTest } from 'convex-test';
 import { makeFunctionReference } from 'convex/server';
 import { v } from 'convex/values';
+import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import schema from '../schema';
@@ -95,7 +95,11 @@ describe('resolveAdminShopId', () => {
         const t = convexTest(schema, modules);
         const { firstShopId } = await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 1 });
 
-        const asOperator = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|1', email: 'operator@example.com' });
+        const asOperator = t.withIdentity({
+            issuer: TRUSTED_ISSUER,
+            subject: 'github|1',
+            email: 'operator@example.com',
+        });
         const shopId = await asOperator.query(resolveShopIdRef, {});
 
         expect(shopId).toBe(firstShopId);
@@ -138,7 +142,11 @@ describe('resolveAdminShopId', () => {
         const t = convexTest(schema, modules);
         await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 2 });
 
-        const asOperator = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|1', email: 'operator@example.com' });
+        const asOperator = t.withIdentity({
+            issuer: TRUSTED_ISSUER,
+            subject: 'github|1',
+            email: 'operator@example.com',
+        });
 
         await expect(asOperator.query(resolveShopIdRef, {})).rejects.toMatchObject({
             data: { code: AuthErrorCode.AMBIGUOUS_SHOP_MEMBERSHIP },

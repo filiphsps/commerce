@@ -1,9 +1,8 @@
 // @vitest-environment happy-dom
 import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-
-import type { FieldDescriptor } from '../../../descriptors/types';
 import { checkboxField, condition, groupField, textField } from '../../../descriptors';
+import type { FieldDescriptor } from '../../../descriptors/types';
 import { Form } from '../form';
 import { useFormFields } from '../hooks';
 import { createFieldRegistry, RenderFields } from '../registry';

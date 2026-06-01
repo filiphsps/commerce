@@ -184,7 +184,10 @@ export const generateConvexCmsTables = (): string => {
     const tables = CMS_CONTENT_COLLECTIONS.map((slug) => {
         const fields = bySlug.get(slug);
         if (!fields) {
-            throw new UnknownCollectionSlugError(slug, 'cms codegen: CMS content collection not found in allCollections');
+            throw new UnknownCollectionSlugError(
+                slug,
+                'cms codegen: CMS content collection not found in allCollections',
+            );
         }
         return emitTable(slug, fields);
     });

@@ -1,15 +1,7 @@
 import type { ProjectionType, QueryFilter, QueryOptions, UpdateQuery } from 'mongoose';
 
 import type { BaseDocument } from '../db';
-import type {
-    FeatureFlagBase,
-    IdentityBase,
-    OnlineShop,
-    ReviewBase,
-    SessionBase,
-    ShopBase,
-    UserBase,
-} from '../models';
+import type { FeatureFlagBase, IdentityBase, OnlineShop, ReviewBase, SessionBase, ShopBase, UserBase } from '../models';
 import type { FeatureFlag } from './feature-flag';
 import type { Identity } from './identity';
 import type { Review } from './review';
@@ -82,7 +74,9 @@ export type ServiceSeamContractSnapshot = [
     // implementation signature is not part of the method's public type) returns
     // `Promise<DocType[]>`; `findById`/`findOneAndUpdate` resolve to
     // `DocType | null`.
-    Expect<Equal<(typeof Identity)['create'], (input: Omit<IdentityBase, keyof BaseDocument>) => Promise<IdentityBase>>>,
+    Expect<
+        Equal<(typeof Identity)['create'], (input: Omit<IdentityBase, keyof BaseDocument>) => Promise<IdentityBase>>
+    >,
     Expect<(typeof Identity)['find'] extends (args: { id: string }) => Promise<IdentityBase> ? true : false>,
     Expect<Equal<Awaited<ReturnType<(typeof Identity)['find']>>, IdentityBase[]>>,
     Expect<
@@ -105,7 +99,6 @@ export type ServiceSeamContractSnapshot = [
             ) => Promise<IdentityBase | null>
         >
     >,
-
     Expect<Equal<(typeof Session)['create'], (input: Omit<SessionBase, keyof BaseDocument>) => Promise<SessionBase>>>,
     Expect<(typeof Session)['find'] extends (args: { id: string }) => Promise<SessionBase> ? true : false>,
     Expect<Equal<Awaited<ReturnType<(typeof Session)['find']>>, SessionBase[]>>,
@@ -129,7 +122,6 @@ export type ServiceSeamContractSnapshot = [
             ) => Promise<SessionBase | null>
         >
     >,
-
     Expect<Equal<(typeof User)['create'], (input: Omit<UserBase, keyof BaseDocument>) => Promise<UserBase>>>,
     Expect<(typeof User)['find'] extends (args: { id: string }) => Promise<UserBase> ? true : false>,
     Expect<Equal<Awaited<ReturnType<(typeof User)['find']>>, UserBase[]>>,
@@ -153,7 +145,6 @@ export type ServiceSeamContractSnapshot = [
             ) => Promise<UserBase | null>
         >
     >,
-
     // --- `ShopService`: extends `Service<ShopBase, …>` and overrides
     // `findById` to always resolve `OnlineShop` (or throw) rather than return
     // `null`. Read methods return the masked `OnlineShop` shape by default;
@@ -176,30 +167,29 @@ export type ServiceSeamContractSnapshot = [
         >
     >,
     Expect<
-        (typeof Shop)['findByDomain'] extends (
-            domain: string,
-            options?: FindOptions,
-        ) => Promise<OnlineShop | ShopBase>
+        (typeof Shop)['findByDomain'] extends (domain: string, options?: FindOptions) => Promise<OnlineShop | ShopBase>
             ? true
             : false
     >,
     Expect<Equal<ReturnType<(typeof Shop)['findByDomain']>, Promise<OnlineShop | ShopBase>>>,
     Expect<
-        Equal<(typeof Shop)['findById'], (id: string, ..._rest: never[]) => Promise<OnlineShop> & Promise<ShopBase | null>>
+        Equal<
+            (typeof Shop)['findById'],
+            (id: string, ..._rest: never[]) => Promise<OnlineShop> & Promise<ShopBase | null>
+        >
     >,
     Expect<Equal<(typeof Shop)['findByCollaborator'], (args: { collaboratorId: string }) => Promise<OnlineShop[]>>>,
     Expect<Equal<(typeof Shop)['findAll'], () => Promise<OnlineShop[]>>>,
-
     // --- `ReviewService`: standalone (no `Service` base). `findByShop` caps via
     // an optional `{ count }`; `findAll` filters via an optional `{ tenant }`.
-    Expect<Equal<(typeof Review)['findByShop'], (shopId: string, options?: { count?: number }) => Promise<ReviewBase[]>>>,
+    Expect<
+        Equal<(typeof Review)['findByShop'], (shopId: string, options?: { count?: number }) => Promise<ReviewBase[]>>
+    >,
     Expect<Equal<(typeof Review)['findAll'], (options?: { tenant?: string }) => Promise<ReviewBase[]>>>,
-
     // --- `FeatureFlagService`: standalone. `findByKey` resolves `null` on a
     // miss (no throw); `findAll` returns every flag.
     Expect<Equal<(typeof FeatureFlag)['findByKey'], (key: string) => Promise<FeatureFlagBase | null>>>,
     Expect<Equal<(typeof FeatureFlag)['findAll'], () => Promise<FeatureFlagBase[]>>>,
-
     // --- Public return shapes. Freeze the load-bearing members of the three
     // types these services hand to ~183 importers so a re-home cannot silently
     // reshape them: every record carries a string `id`, shop domains stay

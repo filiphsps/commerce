@@ -45,7 +45,7 @@ function runConfigDryRun(): number {
     const configured = Boolean(process.env.CONVEX_DEPLOYMENT || process.env.CONVEX_DEPLOY_KEY);
     if (!configured && process.env.CONVEX_AGENT_MODE !== 'anonymous') {
         console.info(
-            '[deploy-dry-run] No deployment configured; skipping `convex deploy --dry-run`. Live-row tightening checks passed.'
+            '[deploy-dry-run] No deployment configured; skipping `convex deploy --dry-run`. Live-row tightening checks passed.',
         );
         return 0;
     }

@@ -1,5 +1,5 @@
-import { convexTest } from 'convex-test';
 import { makeFunctionReference } from 'convex/server';
+import { convexTest } from 'convex-test';
 import { describe, expect, it } from 'vitest';
 
 import schema from '../schema';
@@ -46,7 +46,7 @@ const backfillRef = makeFunctionReference<
  * @returns The total rows migrated and the number of batches the sweep took.
  */
 async function runBackfillToCompletion(
-    runOne: (cursor: string | null) => Promise<BackfillBatchResult>
+    runOne: (cursor: string | null) => Promise<BackfillBatchResult>,
 ): Promise<{ migrated: number; batches: number }> {
     let cursor: string | null = null;
     let isDone = false;

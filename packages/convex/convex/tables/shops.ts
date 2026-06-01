@@ -307,7 +307,9 @@ const shopFeatureFlagsTable = defineTable(shopFeatureFlagValidator)
  * Global feature-flag table. `by_key` backs key lookup (the source's unique index; uniqueness enforced
  * in the mutation layer), and `by_legacy_id` resolves the migrated Mongo id for `shopFeatureFlags.flag`.
  */
-const featureFlagsTable = defineTable(featureFlagValidator).index('by_key', ['key']).index('by_legacy_id', ['legacyId']);
+const featureFlagsTable = defineTable(featureFlagValidator)
+    .index('by_key', ['key'])
+    .index('by_legacy_id', ['legacyId']);
 
 /**
  * The shop-family table group: the collapsed shop==tenant `shops` row, its split-out `shopCredentials`,

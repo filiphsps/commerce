@@ -1,8 +1,8 @@
+import { act, render, waitFor } from '@testing-library/react';
 import { preloadQuery } from 'convex/nextjs';
 import { cookies, draftMode, headers } from 'next/headers';
 import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { act, render, waitFor } from '@testing-library/react';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PdpAvailabilityIsland } from '@/components/convex/pdp-availability-island';

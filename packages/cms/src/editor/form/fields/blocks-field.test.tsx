@@ -2,12 +2,12 @@
 import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { BLOCK_TYPES, allBlockDescriptors } from '../../../blocks/registry';
+import { allBlockDescriptors, BLOCK_TYPES } from '../../../blocks/registry';
 import { blocksField } from '../../../descriptors';
 import type { BlocksFieldDescriptor } from '../../../descriptors/types';
 import { Form } from '../form';
 import { useFormFields } from '../hooks';
-import { RenderFields, createFieldRegistry } from '../registry';
+import { createFieldRegistry, RenderFields } from '../registry';
 import { reduceFieldsToValues } from '../state';
 import type { FormState } from '../types';
 import { registerCompositeFieldWidgets, registerScalarFieldWidgets } from './index';

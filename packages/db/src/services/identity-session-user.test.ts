@@ -53,8 +53,8 @@ import type { Model } from 'mongoose';
 
 import type { BaseDocument } from '../db';
 import { Identity } from './identity';
-import { Session } from './session';
 import type { Service } from './service';
+import { Session } from './session';
 import { User } from './user';
 
 beforeEach(() => {

@@ -1,10 +1,9 @@
-import { convexTest } from 'convex-test';
 import { makeFunctionReference } from 'convex/server';
 import { v } from 'convex/values';
+import { convexTest } from 'convex-test';
 import { describe, expect, it, vi } from 'vitest';
-
-import schema from '../schema';
 import { systemMutation } from '../lib/system';
+import schema from '../schema';
 import { coalescePending, isStale } from './idempotency';
 
 /**

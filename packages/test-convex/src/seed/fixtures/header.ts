@@ -215,11 +215,7 @@ const items: TopLevelNavItem[] = [
     {
         link: externalLink('Help', '/contact/'),
         variant: 'compact-list',
-        items: [
-            leaf('Contact', '/contact/'),
-            leaf('About us', '/about/'),
-            leaf('Sustainability', '/sustainability/'),
-        ],
+        items: [leaf('Contact', '/contact/'), leaf('About us', '/about/'), leaf('Sustainability', '/sustainability/')],
     },
 ];
 

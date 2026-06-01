@@ -1,9 +1,8 @@
 // @vitest-environment happy-dom
 import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-
-import type { FieldDescriptor } from '../../../descriptors/types';
 import { arrayField, collapsibleField, groupField, localized, textareaField, textField } from '../../../descriptors';
+import type { FieldDescriptor } from '../../../descriptors/types';
 import { topLevelNavItemField } from '../../../fields';
 import { Form } from '../form';
 import { useFormFields } from '../hooks';

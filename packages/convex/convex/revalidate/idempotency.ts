@@ -85,7 +85,7 @@ export type CoalesceResult = {
  */
 export async function coalescePending(
     ctx: MutationCtx,
-    args: { tenantId: string; collection: string; tags: string[] }
+    args: { tenantId: string; collection: string; tags: string[] },
 ): Promise<CoalesceResult> {
     const existing = await ctx.db
         .query('pendingRevalidations')

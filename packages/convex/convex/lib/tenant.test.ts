@@ -1,6 +1,6 @@
-import { convexTest } from 'convex-test';
 import { makeFunctionReference } from 'convex/server';
 import { v } from 'convex/values';
+import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import schema from '../schema';

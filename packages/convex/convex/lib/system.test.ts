@@ -1,5 +1,5 @@
-import { convexTest } from 'convex-test';
 import { makeFunctionReference } from 'convex/server';
+import { convexTest } from 'convex-test';
 import { describe, expect, it } from 'vitest';
 
 import schema from '../schema';

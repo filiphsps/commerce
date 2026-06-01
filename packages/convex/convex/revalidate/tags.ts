@@ -1,4 +1,4 @@
-import { cmsCacheSchema, type CmsTenant, cmsTenantRootTags } from '@nordcom/commerce-cms/cache-descriptor';
+import { type CmsTenant, cmsCacheSchema, cmsTenantRootTags } from '@nordcom/commerce-cms/cache-descriptor';
 import { computeFanout } from '@tagtree/core';
 
 /**

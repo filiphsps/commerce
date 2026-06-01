@@ -1,9 +1,4 @@
-import type {
-    GenericDatabaseReader,
-    GenericDatabaseWriter,
-    GenericMutationCtx,
-    GenericQueryCtx,
-} from 'convex/server';
+import type { GenericDatabaseReader, GenericDatabaseWriter, GenericMutationCtx, GenericQueryCtx } from 'convex/server';
 import { type Rules, wrapDatabaseReader, wrapDatabaseWriter } from 'convex-helpers/server/rowLevelSecurity';
 
 import type { DataModel, Id } from '../_generated/dataModel';

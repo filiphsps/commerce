@@ -1,4 +1,4 @@
-import { coerceObjectId, deriveId, type Doc, remapObjectId } from './id-remap';
+import { coerceObjectId, type Doc, deriveId, remapObjectId } from './id-remap';
 
 export type { Doc } from './id-remap';
 
@@ -145,7 +145,8 @@ const sanitizeCommerceProvider = (
     const provider = raw as Doc;
     if (provider.type !== 'shopify') return { provider, token: undefined, clientSecret: undefined };
 
-    const auth = provider.authentication && typeof provider.authentication === 'object' ? (provider.authentication as Doc) : {};
+    const auth =
+        provider.authentication && typeof provider.authentication === 'object' ? (provider.authentication as Doc) : {};
     const token = typeof auth.token === 'string' ? auth.token : undefined;
     const customers = auth.customers && typeof auth.customers === 'object' ? (auth.customers as Doc) : undefined;
     const clientSecret = customers && typeof customers.clientSecret === 'string' ? customers.clientSecret : undefined;
@@ -153,7 +154,11 @@ const sanitizeCommerceProvider = (
     const sanitizedAuth = pick(auth, ['publicToken', 'domain']);
     if (customers) sanitizedAuth.customers = pick(customers, ['id', 'clientId']);
 
-    const sanitizedProvider: Doc = { type: 'shopify', authentication: sanitizedAuth, ...pick(provider, ['storefrontId', 'domain', 'id']) };
+    const sanitizedProvider: Doc = {
+        type: 'shopify',
+        authentication: sanitizedAuth,
+        ...pick(provider, ['storefrontId', 'domain', 'id']),
+    };
     return { provider: sanitizedProvider, token, clientSecret };
 };
 
@@ -182,7 +187,10 @@ export const transformShop = (raw: Doc): ShopFamily | null => {
     const credentialDocument: Doc = { shop: payloadId };
     if (token !== undefined) credentialDocument.token = token;
     if (clientSecret !== undefined) credentialDocument.clientSecret = clientSecret;
-    const credentials: TransformedDoc = { payloadId: deriveId('shopCredentials', payloadId), document: credentialDocument };
+    const credentials: TransformedDoc = {
+        payloadId: deriveId('shopCredentials', payloadId),
+        document: credentialDocument,
+    };
 
     const domains: TransformedDoc[] = [];
     const seenDomains = new Set<string>();
@@ -221,7 +229,10 @@ export const transformShop = (raw: Doc): ShopFamily | null => {
             const flagHex = coerceObjectId((entry as Doc).flag);
             if (!flagHex) continue;
             const flag = remapObjectId('featureFlags', flagHex);
-            featureFlags.push({ payloadId: deriveId('shopFeatureFlags', payloadId, flag), document: { shop: payloadId, flag } });
+            featureFlags.push({
+                payloadId: deriveId('shopFeatureFlags', payloadId, flag),
+                document: { shop: payloadId, flag },
+            });
         }
     }
 
@@ -229,7 +240,16 @@ export const transformShop = (raw: Doc): ShopFamily | null => {
 };
 
 /** Global feature-flag fields carried through verbatim (in schema order), minus `legacyId`. */
-const FEATURE_FLAG_PASSTHROUGH_KEYS = ['key', 'kind', 'description', 'defaultValue', 'options', 'targeting', 'createdAt', 'updatedAt'] as const;
+const FEATURE_FLAG_PASSTHROUGH_KEYS = [
+    'key',
+    'kind',
+    'description',
+    'defaultValue',
+    'options',
+    'targeting',
+    'createdAt',
+    'updatedAt',
+] as const;
 
 /**
  * Transforms one source `featureFlags` document into a global `featureFlags` row, or `null` when it
@@ -265,7 +285,10 @@ export const transformReview = (raw: Doc): TransformedDoc | null => {
     const shopHex = coerceObjectId(doc.shop);
     if (!shopHex) return null;
     const shopId = remapObjectId('shops', shopHex);
-    return { payloadId: remapObjectId('reviews', legacyId), document: { shopId, ...pick(doc, ['createdAt', 'updatedAt']) } };
+    return {
+        payloadId: remapObjectId('reviews', legacyId),
+        document: { shopId, ...pick(doc, ['createdAt', 'updatedAt']) },
+    };
 };
 
 /**

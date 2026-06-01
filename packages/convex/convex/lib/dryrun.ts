@@ -1,5 +1,5 @@
-import { validate } from 'convex-helpers/validators';
 import type { Validator } from 'convex/values';
+import { validate } from 'convex-helpers/validators';
 
 /**
  * The pure, runtime-agnostic core of the expand → backfill → contract deploy gate: given a PROPOSED
@@ -82,7 +82,10 @@ export function findRejectedRows(validator: TighteningCheck['validator'], rows: 
  * @returns `findings` (only tables with at least one rejected row) and `safe` (`true` when no live row
  *   would be rejected by any tightening).
  */
-export function evaluateTightening(checks: ReadonlyArray<TighteningCheck>): { findings: DryRunFinding[]; safe: boolean } {
+export function evaluateTightening(checks: ReadonlyArray<TighteningCheck>): {
+    findings: DryRunFinding[];
+    safe: boolean;
+} {
     const findings = checks
         .map((check) => ({ table: check.table, rejected: findRejectedRows(check.validator, check.rows) }))
         .filter((finding) => finding.rejected.length > 0);
@@ -108,7 +111,7 @@ export function runDryRun(checks: ReadonlyArray<TighteningCheck>, configDryRun: 
     if (!safe) {
         for (const finding of findings) {
             console.error(
-                `[deploy-dry-run] ${finding.table}: ${finding.rejected.length} live row(s) violate the tightened validator; refusing to promote.`
+                `[deploy-dry-run] ${finding.table}: ${finding.rejected.length} live row(s) violate the tightened validator; refusing to promote.`,
             );
         }
         return 1;

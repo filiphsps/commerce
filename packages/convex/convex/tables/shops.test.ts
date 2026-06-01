@@ -122,9 +122,9 @@ describe('shop-family side tables', () => {
     });
 
     it('validates a collaborator join row', () => {
-        expect(
-            validate(shopCollaboratorValidator, { shop: 'shop-id', user: 'user-id', permissions: ['admin'] }),
-        ).toBe(true);
+        expect(validate(shopCollaboratorValidator, { shop: 'shop-id', user: 'user-id', permissions: ['admin'] })).toBe(
+            true,
+        );
     });
 
     it('validates a feature-flag join row', () => {

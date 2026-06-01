@@ -71,7 +71,7 @@ export const enqueueDelivery = systemMutation({
             ctx,
             internal.revalidate.notify.notify,
             { pendingId },
-            { onComplete: internal.revalidate.delivery.onDeliveryComplete as OnDeliveryCompleteRef }
+            { onComplete: internal.revalidate.delivery.onDeliveryComplete as OnDeliveryCompleteRef },
         );
 
         await ctx.db.insert('revalidationDeliveries', {

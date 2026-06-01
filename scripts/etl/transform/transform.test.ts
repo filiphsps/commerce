@@ -74,7 +74,9 @@ describe('normalizeExtendedJson', () => {
     });
 
     it('resolves $date to epoch-ms', () => {
-        expect(normalizeExtendedJson({ $date: '2024-04-30T00:00:00.000Z' })).toBe(Date.parse('2024-04-30T00:00:00.000Z'));
+        expect(normalizeExtendedJson({ $date: '2024-04-30T00:00:00.000Z' })).toBe(
+            Date.parse('2024-04-30T00:00:00.000Z'),
+        );
     });
 
     it('resolves $numberLong/$numberInt to a number', () => {
@@ -135,14 +137,24 @@ describe('acceptance #2 — every shop carries legacyId, and shop.id resolves to
 
     it('shreds the masked credentials off the shop row into shopCredentials', () => {
         const shop = result.shops[0];
-        const provider = shop?.document.commerceProvider as { authentication: { token?: unknown; publicToken?: unknown; customers?: { clientSecret?: unknown; id?: unknown } } };
+        const provider = shop?.document.commerceProvider as {
+            authentication: {
+                token?: unknown;
+                publicToken?: unknown;
+                customers?: { clientSecret?: unknown; id?: unknown };
+            };
+        };
         expect(provider.authentication.token).toBeUndefined();
         expect(provider.authentication.customers?.clientSecret).toBeUndefined();
         expect(provider.authentication.publicToken).toBe('pub_TOKEN');
         expect(provider.authentication.customers?.id).toBe('cust-1');
 
         const credentials = result.shopCredentials[0];
-        expect(credentials?.document).toEqual({ shop: shop?.payloadId, token: 'shpat_SECRET', clientSecret: 'SECRET_CS' });
+        expect(credentials?.document).toEqual({
+            shop: shop?.payloadId,
+            token: 'shpat_SECRET',
+            clientSecret: 'SECRET_CS',
+        });
     });
 
     it('feature-flag join refs resolve to the global flag row payloadId', () => {
@@ -183,7 +195,11 @@ describe('acceptance #3 — alternativeDomains normalize to one shopDomains row 
     it('de-embeds the collaborator into a join row with a surrogate user ref', () => {
         const shop = result.shops[0];
         const collaborator = result.shopCollaborators[0];
-        expect(collaborator?.document).toEqual({ shop: shop?.payloadId, user: remapObjectId('users', USER_ID), permissions: ['admin'] });
+        expect(collaborator?.document).toEqual({
+            shop: shop?.payloadId,
+            user: remapObjectId('users', USER_ID),
+            permissions: ['admin'],
+        });
     });
 });
 
