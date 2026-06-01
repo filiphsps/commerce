@@ -240,12 +240,29 @@ describe('Shop.findAll (Mongoose-backed)', () => {
 });
 
 describe('Shop.findByCollaborator (Mongoose-backed)', () => {
-    const mockShopForCollab = { ...mockShop, id: 'shop-99', domain: 'collab.test' };
+    // Post de-embed: `collaborators` is a join of `{ user, permissions }` rows where `user` is a
+    // plain user id string ref, not an embedded user document.
+    const mockShopForCollab = {
+        ...mockShop,
+        id: 'shop-99',
+        domain: 'collab.test',
+        collaborators: [{ user: 'user-123', permissions: ['admin'] }],
+    };
 
-    it('queries with a collaborators.user filter', async () => {
+    it('queries the de-embedded collaborators.user id ref', async () => {
         mockQuery.exec.mockResolvedValueOnce([mockShopForCollab]);
         await Shop.findByCollaborator({ collaboratorId: 'user-123' });
         expect(ShopModel.find).toHaveBeenCalledWith({ 'collaborators.user': 'user-123' });
+    });
+
+    it('resolves the seeded collaborator as an id-ref join row (no embedded user)', async () => {
+        mockQuery.exec.mockResolvedValueOnce([mockShopForCollab]);
+        const result = await Shop.findByCollaborator({ collaboratorId: 'user-123' });
+        const collaborators = (result[0] as { collaborators?: Array<{ user: unknown; permissions: unknown }> })
+            ?.collaborators;
+        expect(collaborators).toEqual([{ user: 'user-123', permissions: ['admin'] }]);
+        // `user` is a string id, never a nested user document.
+        expect(typeof collaborators?.[0]?.user).toBe('string');
     });
 
     it('strips auth tokens from results', async () => {

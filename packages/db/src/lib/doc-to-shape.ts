@@ -71,6 +71,11 @@ export const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> & 
  *   request `sensitiveData: true` on the service method, which routes
  *   around this masking while still removing `_id`/`__v` via
  *   `stripInternals`.
+ * - `collaborators` is a de-embedded join: each row is `{ user, permissions }`
+ *   where `user` is a plain string id ref (see `ShopCollaborator`), not a
+ *   nested user document. The recursive strip therefore only removes the
+ *   per-row `_id` Mongoose adds to array subdocs — there is no embedded user to
+ *   descend into and no user field to mask.
  */
 export const docToOnlineShop = (doc: Doc): OnlineShop => {
     const stripped = stripInternals(doc);

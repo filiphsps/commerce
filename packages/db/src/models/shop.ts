@@ -5,7 +5,6 @@ import type { BaseDocument, DocumentExtras } from '../db';
 import { db } from '../db';
 import type { AccentToken, ShopThemeTokens } from '../lib/theme';
 import type { FeatureFlagBase } from './feature-flag';
-import type { UserBase } from './user';
 
 // TODO: Remove this.
 /**
@@ -121,6 +120,28 @@ export interface FeatureFlagRef {
 }
 
 /**
+ * Canonical join row relating a shop to one collaborating user. De-embedded from the prior shape
+ * that nested the full `UserBase` document inside the array: a collaborator now references its user
+ * by id string (`user`) — the same id-ref pattern `ReviewBase['shop']` adopted in the shop==tenant
+ * collapse — paired with the permissions granted on this shop. The shop side of the relation is the
+ * parent document, so a row carries only the user-side id plus its permissions and never embeds a
+ * user document (so it can leak no user fields). This is the canonical join shape CONVEXCORE-04
+ * mirrors on the Convex side as a `shopCollaborators` table keyed by `{ shop, user }`.
+ *
+ * @example
+ * ```ts
+ * import type { ShopCollaborator } from '@nordcom/commerce-db';
+ * function collaboratorIds(collaborators: ShopCollaborator[]): string[] {
+ *     return collaborators.map((c) => c.user);
+ * }
+ * ```
+ */
+export interface ShopCollaborator {
+    user: string;
+    permissions: string[];
+}
+
+/**
  * Raw document shape for a multi-tenant shop record as stored in MongoDB. Extends `BaseDocument`
  * with all tenant-specific configuration fields including domain routing, commerce provider
  * credentials, design tokens, and feature flags. Use `OnlineShop` for client-facing work since it
@@ -183,15 +204,7 @@ export interface ShopBase extends BaseDocument {
 
     commerceProvider: CommerceProvider;
 
-    collaborators: [
-        {
-            type: {
-                user: UserBase;
-                permissions: string[];
-            };
-            default: [];
-        },
-    ];
+    collaborators: ShopCollaborator[];
 
     integrations?: {
         judgeme?: {
@@ -593,12 +606,16 @@ export const ShopSchema = new Schema<ShopBase>(
             },
         },
 
+        // De-embedded join: each row references its user by string id (`user`) rather than the
+        // prior `Schema.Types.ObjectId, ref: 'User'` that pulled in the full user via populate.
+        // Stored as a String id like `ReviewSchema.shop`; existing ObjectId-valued arrays are
+        // backfilled to string ids in UNIFY-08. `findByCollaborator` matches `collaborators.user`.
         collaborators: {
             type: [
                 {
                     user: {
-                        type: Schema.Types.ObjectId,
-                        ref: 'User',
+                        type: Schema.Types.String,
+                        required: true,
                     },
                     permissions: [
                         {

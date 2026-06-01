@@ -81,10 +81,13 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
     }
 
     /**
-     * Returns all shops where the given user is listed as a collaborator.
+     * Returns all shops where the given user is listed as a collaborator. Matches against the
+     * de-embedded `collaborators[].user` join key — a plain user id string ref (see
+     * {@link ShopCollaborator}), not an embedded user document — so the query shape is unchanged
+     * while the row it resolves no longer nests a full user.
      *
-     * @param options.collaboratorId - The user's MongoDB `_id` string matched against
-     *   `collaborators.user` in the shop document.
+     * @param options.collaboratorId - The user's id string matched against the `collaborators.user`
+     *   id ref on each shop document.
      * @returns Shops the collaborator has access to; empty array when none.
      * @example
      * ```ts

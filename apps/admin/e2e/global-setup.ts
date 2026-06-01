@@ -109,12 +109,14 @@ export default async function globalSetup(): Promise<void> {
 
         // `/${domain}/...` routes call `getShopsForUser` which queries
         // `shops.collaborators.user`. Without this entry the shell bounces
-        // every request to the "Choose a Shop" picker.
+        // every request to the "Choose a Shop" picker. `collaborators` is now a
+        // de-embedded join whose `user` is a string id ref (UNIFY-11), so seed
+        // the string id — `findByCollaborator` no longer casts to an ObjectId.
         await conn
             .collection('shops')
             .updateOne(
                 { domain: 'nordcom-demo-shop.com' },
-                { $set: { collaborators: [{ user: new mongoose.Types.ObjectId(userId), permissions: ['admin'] }] } },
+                { $set: { collaborators: [{ user: userId, permissions: ['admin'] }] } },
             );
 
         // Matching Payload user so getAuthedPayloadCtx can resolve the
