@@ -2,6 +2,7 @@ import type { TableDefinition } from 'convex/server';
 
 import { authTables } from './auth';
 import { cmsContentTables } from './cms';
+import { revalidationTables } from './revalidation';
 import { reviewsTables } from './reviews';
 import { shopTables } from './shops';
 
@@ -25,9 +26,15 @@ import { shopTables } from './shops';
  * shop; the review→shop link is an id ref, not a tenant partition). `shopTables` carries the collapsed
  * shop==tenant `shops` row plus its credential/domain/collaborator/feature-flag side tables and the
  * platform-global `featureFlags` — its tenant-scoped members enforce the `by_shop` index convention.
+ *
+ * `revalidationTables` (the Convex→Next revalidation bridge's dedup ledger + per-(tenant,collection)
+ * coalescing buffer) is platform-global bridge infrastructure written only by the server-trusted
+ * system tier, so it belongs here rather than in any tenant grouping; it keys on the string tenant id
+ * from the publish payload, not a `v.id('shops')` foreign key.
  */
 export const coreTables: Record<string, TableDefinition> = {
     ...authTables,
+    ...revalidationTables,
     ...reviewsTables,
     ...shopTables,
 };

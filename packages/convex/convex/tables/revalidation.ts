@@ -1,0 +1,70 @@
+import { defineTable } from 'convex/server';
+import { type Infer, v } from 'convex/values';
+
+/**
+ * Stored row for the revalidation-event dedup ledger. Each row records that a Convex→Next publish
+ * event with a given `eventId` has been observed, so a redelivery of the SAME event is a verified
+ * no-op rather than a second cache bust (the at-least-once delivery of a webhook/scheduler can replay
+ * the same event). The dedup key is the opaque `eventId` from the shared publish-event payload
+ * (BRIDGE-01); membership is tested via the `by_eventId` index.
+ *
+ * `seenAt` is the epoch-ms time the event was first recorded. It exists so a later reaper cron can
+ * prune dedup keys older than the replay window (the same window {@link isStale} enforces on the
+ * read side): an `eventId` can only be replayed within that window, so keys beyond it are dead weight.
+ */
+export const revalidationEventValidator = v.object({
+    eventId: v.string(),
+    seenAt: v.number(),
+});
+
+/**
+ * Inferred row shape for a deduped revalidation event. See {@link revalidationEventValidator}.
+ */
+export type RevalidationEvent = Infer<typeof revalidationEventValidator>;
+
+/**
+ * Stored row for the per-(tenant, collection) coalescing buffer. One row holds the UNION of cache
+ * tags accumulated by every publish for that pair during a single debounce window, plus the handle
+ * of the single delivery the window scheduled. Keeping one row per pair is what lets a burst of rapid
+ * publishes collapse into one notify: subsequent publishes merge their tags into the existing row
+ * instead of arming a second delivery (see `coalescePending` in `revalidate/idempotency.ts`).
+ *
+ * `tenantId` is the STRING tenant identifier carried end-to-end by the bridge payload (BRIDGE-01/03),
+ * NOT a `v.id('shops')` reference — the publish event derives its tags from this string id without a
+ * shop-by-domain lookup, so the buffer keys on the same string rather than the tenant `by_shop`
+ * convention. `collection` is the CMS collection the publish targeted; the `by_tenant_collection`
+ * index makes the (tenant, collection) lookup a point read.
+ *
+ * `scheduledJobId` is the `_scheduled_functions` handle of the delivery armed for this window, present
+ * once a caller has scheduled it. It both reports that a notify is already in flight (so the next
+ * publish coalesces rather than re-schedules) and lets the caller cancel/observe that delivery. The
+ * delivery MUST remove this row when it fires, re-arming the next window's first publish to schedule
+ * afresh.
+ */
+export const pendingRevalidationValidator = v.object({
+    tenantId: v.string(),
+    collection: v.string(),
+    tags: v.array(v.string()),
+    scheduledJobId: v.optional(v.id('_scheduled_functions')),
+});
+
+/**
+ * Inferred row shape for a coalesced pending revalidation. See {@link pendingRevalidationValidator}.
+ */
+export type PendingRevalidation = Infer<typeof pendingRevalidationValidator>;
+
+/**
+ * The revalidation bridge's infrastructure tables. `revalidationEvents` is keyed for dedup by
+ * `by_eventId`; `pendingRevalidations` is keyed for coalescing by `by_tenant_collection`. Both are
+ * platform-global bridge infrastructure (written only by the server-trusted system tier), so they are
+ * spread into `coreTables` via `tables/index.ts`, then into `defineSchema`. Their indexes intentionally
+ * deviate from the `by_shop` tenant convention: the bridge operates on the string tenant id from the
+ * publish payload, not a `v.id('shops')` foreign key.
+ */
+export const revalidationTables = {
+    revalidationEvents: defineTable(revalidationEventValidator).index('by_eventId', ['eventId']),
+    pendingRevalidations: defineTable(pendingRevalidationValidator).index('by_tenant_collection', [
+        'tenantId',
+        'collection',
+    ]),
+};

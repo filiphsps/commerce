@@ -587,6 +587,30 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  pendingRevalidations: {
+    document: {
+      collection: string;
+      scheduledJobId?: Id<"_scheduled_functions">;
+      tags: Array<string>;
+      tenantId: string;
+      _id: Id<"pendingRevalidations">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "collection"
+      | "scheduledJobId"
+      | "tags"
+      | "tenantId";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_tenant_collection: ["tenantId", "collection", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   productMetadata: {
     document: {
       blocks?: Array<any>;
@@ -624,6 +648,22 @@ export type DataModel = {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
       by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  revalidationEvents: {
+    document: {
+      eventId: string;
+      seenAt: number;
+      _id: Id<"revalidationEvents">;
+      _creationTime: number;
+    };
+    fieldPaths: "_creationTime" | "_id" | "eventId" | "seenAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_eventId: ["eventId", "_creationTime"];
     };
     searchIndexes: {};
     vectorIndexes: {};

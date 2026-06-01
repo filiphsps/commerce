@@ -33,6 +33,22 @@ export declare const internal: {
   crons: {
     exportSnapshot: FunctionReference<"action", "internal", {}, any>;
   };
+  revalidate: {
+    idempotency: {
+      coalesce: FunctionReference<
+        "mutation",
+        "internal",
+        { collection: string; tags: Array<string>; tenantId: string },
+        any
+      >;
+      recordEvent: FunctionReference<
+        "mutation",
+        "internal",
+        { eventId: string },
+        any
+      >;
+    };
+  };
 };
 
 export declare const components: {};
