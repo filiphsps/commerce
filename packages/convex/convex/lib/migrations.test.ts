@@ -16,7 +16,7 @@ import { type BackfillBatchResult, makeBackfill } from './migrations';
  */
 const backfillReviewTimestamps = makeBackfill({
     table: 'reviews',
-    migrateOne: (_ctx, doc) => (doc.updatedAt === 0 ? { updatedAt: doc.createdAt } : undefined),
+    migrateOne: (...[, doc]) => (doc.updatedAt === 0 ? { updatedAt: doc.createdAt } : undefined),
 });
 
 /**

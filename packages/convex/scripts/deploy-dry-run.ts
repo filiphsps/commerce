@@ -8,14 +8,14 @@ import { runDryRun, type TighteningCheck } from '../convex/lib/dryrun.ts';
 
 /**
  * Node entrypoint for the expand/contract deploy dry-run gate (`pnpm convex:deploy:dry-run`). The
- * inspectable decision logic lives in `convex/lib/dry-run.ts` (Node-free, so it typechecks under the
+ * inspectable decision logic lives in `convex/lib/dryrun.ts` (Node-free, so it typechecks under the
  * Convex isolate config and is unit-tested there); this file supplies only the Node-side pieces — CLI
  * resolution, spawning `convex deploy --dry-run`, and process exit-code wiring.
  *
  * Sandbox note: a real `convex deploy --dry-run` needs a reachable deployment, which is not available
  * in CI / a fresh checkout, so {@link runConfigDryRun} skips the CLI (treated as success) unless a
  * deployment is configured. The live-row tightening validation it guards is proven independently by
- * the unit tests for `convex/lib/dry-run.ts`.
+ * the unit tests for `convex/lib/dryrun.ts`.
  */
 
 /**
