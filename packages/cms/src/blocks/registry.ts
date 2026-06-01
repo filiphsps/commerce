@@ -1,5 +1,22 @@
 import { TypeError } from '@nordcom/commerce-errors';
 import type { Block } from 'payload';
+import {
+    arrayField,
+    type BlockDescriptor,
+    blocksField,
+    checkboxField,
+    codeField,
+    condition,
+    type FieldDescriptor,
+    jsonField,
+    localized,
+    numberField,
+    required,
+    selectField,
+    textareaField,
+    textField,
+} from '../descriptors';
+import { imageField, linkField } from '../fields';
 import { alertBlock } from './alert';
 import { bannerBlock } from './banner';
 import { collectionBlock } from './collection';
@@ -99,3 +116,210 @@ export function resolveBlockType(value: string): BlockType {
 
     throw new TypeError(`Unknown CMS block type "${value}"`);
 }
+
+/**
+ * Field descriptors for the `alert` block. Mirrors `alertBlock`'s field set in
+ * the editor's native descriptor DSL.
+ */
+const alertFields: FieldDescriptor[] = [
+    required(
+        selectField({
+            name: 'severity',
+            defaultValue: 'info',
+            options: [
+                { label: 'Info', value: 'info' },
+                { label: 'Success', value: 'success' },
+                { label: 'Warning', value: 'warning' },
+                { label: 'Error', value: 'error' },
+            ],
+        }),
+    ),
+    localized(required(textField({ name: 'title' }))),
+    localized(textareaField({ name: 'body' })),
+    checkboxField({ name: 'dismissible', defaultValue: false }),
+];
+
+/**
+ * Field descriptors for the `banner` block. Mirrors `bannerBlock`.
+ */
+const bannerFields: FieldDescriptor[] = [
+    localized(required(textField({ name: 'heading' }))),
+    localized(textField({ name: 'subheading' })),
+    imageField({ name: 'background', localized: true }),
+    linkField({ name: 'cta' }),
+    selectField({
+        name: 'alignment',
+        defaultValue: 'center',
+        options: [
+            { label: 'Left', value: 'left' },
+            { label: 'Center', value: 'center' },
+            { label: 'Right', value: 'right' },
+        ],
+    }),
+];
+
+/**
+ * Field descriptors for the `collection` block. Mirrors `collectionBlock`; the
+ * raw `handle`/`limit` Payload fields are re-expressed through the DSL (the
+ * editor-only `admin.description` and numeric `min`/`max` bounds drop, exactly
+ * as the descriptor builders model them elsewhere).
+ */
+const collectionFields: FieldDescriptor[] = [
+    required(textField({ name: 'handle' })),
+    localized(textField({ name: 'title' })),
+    selectField({
+        name: 'layout',
+        defaultValue: 'grid',
+        options: [
+            { label: 'Grid', value: 'grid' },
+            { label: 'Carousel', value: 'carousel' },
+        ],
+    }),
+    numberField({ name: 'limit', defaultValue: 8 }),
+];
+
+/**
+ * Field descriptors for the `html` block. Mirrors `htmlBlock`; the Payload
+ * `access` admin-role gate is a server-side concern the editor descriptor omits.
+ */
+const htmlFields: FieldDescriptor[] = [required(codeField({ name: 'html', language: 'html' }))];
+
+/**
+ * Field descriptors for the `media-grid` block. Mirrors `mediaGridBlock`.
+ */
+const mediaGridFields: FieldDescriptor[] = [
+    required(
+        selectField({
+            name: 'itemType',
+            defaultValue: 'image',
+            options: [
+                { label: 'Image', value: 'image' },
+                { label: 'Icon', value: 'icon' },
+            ],
+        }),
+    ),
+    numberField({ name: 'columns', defaultValue: 3 }),
+    arrayField({
+        name: 'items',
+        minRows: 1,
+        fields: [imageField({ name: 'image' }), localized(textField({ name: 'caption' })), linkField({ name: 'link' })],
+    }),
+];
+
+/**
+ * Field descriptors for the `overview` block. Mirrors `overviewBlock`,
+ * including the `collectionHandle` visibility condition.
+ */
+const overviewFields: FieldDescriptor[] = [
+    required(
+        selectField({
+            name: 'source',
+            defaultValue: 'collection',
+            options: [
+                { label: 'Collection', value: 'collection' },
+                { label: 'Latest products', value: 'latest' },
+                { label: 'Featured', value: 'featured' },
+            ],
+        }),
+    ),
+    condition(textField({ name: 'collectionHandle' }), (_data, sibling) => sibling.source === 'collection'),
+    localized(textField({ name: 'title' })),
+    numberField({ name: 'limit', defaultValue: 12 }),
+];
+
+/**
+ * Field descriptors for the `rich-text` block. Mirrors `richTextBlock`; the
+ * Lexical body has no descriptor kind yet, so it is modeled as a localized
+ * `json` field (a Lexical document is a serializable JSON tree) until a
+ * dedicated rich-text widget lands.
+ */
+const richTextFields: FieldDescriptor[] = [
+    localized(jsonField({ name: 'body' })),
+    checkboxField({ name: 'collapsible', defaultValue: false }),
+    condition(
+        checkboxField({ name: 'collapsedByDefault', defaultValue: false }),
+        (_data, sibling) => sibling.collapsible === true,
+    ),
+    condition(localized(textField({ name: 'collapseLabel' })), (_data, sibling) => sibling.collapsible === true),
+];
+
+/**
+ * Field descriptors for the `vendors` block. Mirrors `vendorsBlock`.
+ */
+const vendorsFields: FieldDescriptor[] = [
+    localized(textField({ name: 'title' })),
+    numberField({ name: 'maxVendors', defaultValue: 12 }),
+];
+
+/**
+ * The eight non-columns block descriptors a `columns` block may embed in its
+ * nested `content`. Excludes `columns` itself, mirroring `buildColumnsBlock`'s
+ * sibling filter so a columns block can never nest another columns block.
+ */
+const columnsContentBlocks: BlockDescriptor[] = [
+    { slug: 'alert', fields: alertFields },
+    { slug: 'banner', fields: bannerFields },
+    { slug: 'collection', fields: collectionFields },
+    { slug: 'html', fields: htmlFields },
+    { slug: 'media-grid', fields: mediaGridFields },
+    { slug: 'overview', fields: overviewFields },
+    { slug: 'rich-text', fields: richTextFields },
+    { slug: 'vendors', fields: vendorsFields },
+];
+
+/**
+ * Field descriptors for the `columns` block. Mirrors `buildColumnsBlock`: a
+ * 1–4 row `columns` array, each row carrying a `width` choice and a nested
+ * `content` blocks field that embeds every sibling block — the recursion the
+ * blocks widget walks back through {@link RenderFields}.
+ */
+const columnsFields: FieldDescriptor[] = [
+    arrayField({
+        name: 'columns',
+        minRows: 1,
+        maxRows: 4,
+        fields: [
+            selectField({
+                name: 'width',
+                defaultValue: 'auto',
+                options: [
+                    { label: 'Auto', value: 'auto' },
+                    { label: 'One-third', value: '1/3' },
+                    { label: 'One-half', value: '1/2' },
+                    { label: 'Two-thirds', value: '2/3' },
+                    { label: 'Full', value: 'full' },
+                ],
+            }),
+            blocksField({ name: 'content', blocks: columnsContentBlocks }),
+        ],
+    }),
+];
+
+/**
+ * Editor-native counterpart to {@link allBlocks}: maps every {@link BlockType}
+ * to the {@link BlockDescriptor} the native form engine renders. The blocks
+ * field widget resolves a row's `blockType` against this set and recurses each
+ * block's `fields` through the field registry; the columns block nests the
+ * other eight as siblings.
+ *
+ * `Record<BlockType, …>` is the CI-enforced exhaustiveness guard — adding a
+ * member to {@link BLOCK_TYPES} fails `tsc --noEmit` here until the new type is
+ * given a descriptor, mirroring the `CMS_BLOCKS` guard for the render registry.
+ */
+export const BLOCK_DESCRIPTORS: Record<BlockType, BlockDescriptor> = {
+    columns: { slug: 'columns', fields: columnsFields },
+    alert: { slug: 'alert', fields: alertFields },
+    banner: { slug: 'banner', fields: bannerFields },
+    collection: { slug: 'collection', fields: collectionFields },
+    html: { slug: 'html', fields: htmlFields },
+    'media-grid': { slug: 'media-grid', fields: mediaGridFields },
+    overview: { slug: 'overview', fields: overviewFields },
+    'rich-text': { slug: 'rich-text', fields: richTextFields },
+    vendors: { slug: 'vendors', fields: vendorsFields },
+};
+
+/**
+ * Every {@link BlockDescriptor} in canonical {@link BLOCK_TYPES} order. Feed to
+ * a `blocksField` to allow authoring any block type, including `columns`.
+ */
+export const allBlockDescriptors: BlockDescriptor[] = BLOCK_TYPES.map((type) => BLOCK_DESCRIPTORS[type]);
