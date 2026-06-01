@@ -1,3 +1,8 @@
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
+
+import { startConvex } from './start';
+
 /**
  * Configuration for the persistent `pnpm dev:convex` daemon process managed by {@link runDaemon}.
  *
@@ -26,16 +31,51 @@ export interface DaemonOptions {
 }
 
 /**
- * Long-running foreground process: spins up a Convex backend via `startConvex`,
- * writes PID, URL, and admin-key marker files, and idles until SIGTERM/SIGINT.
- * Intended for `pnpm dev:convex` and the detached spawner behind `pnpm dev`.
+ * Long-running foreground process: spins up a Convex backend via
+ * {@link startConvex}, writes PID, URL, and admin-key marker files, and idles
+ * until SIGTERM/SIGINT. Intended for `pnpm dev:convex` and the detached spawner
+ * behind `pnpm dev`; the storefront and e2e harness re-attach by reading the
+ * URL marker.
+ *
+ * `startConvex` already installs orphan-proof signal handlers that stop the
+ * backend; the additional handler here only removes the on-disk marker files so
+ * the next dev run sees a clean state. Passing `dataDir` makes the backend
+ * persistent, so its state directory survives a daemon restart for re-attach.
  *
  * @param opts - Data directory, port, and marker-file paths the daemon manages.
  * @returns Never resolves under normal operation; the process is terminated by a signal.
- * @throws Always until HARNESS-02 implements the daemon lifecycle.
+ * @throws {ConvexError} When the backend fails to boot (propagated from {@link startConvex}).
  */
-export async function runDaemon(opts: DaemonOptions): Promise<void> {
-    throw new Error(
-        `@nordcom/commerce-test-convex: runDaemon(${JSON.stringify(opts)}) is not implemented yet (HARNESS-02).`,
-    );
+export async function runDaemon({ dataDir, port, pidFile, urlFile, adminKeyFile }: DaemonOptions): Promise<void> {
+    console.info(`[test-convex-daemon] starting (pid ${process.pid}) — dataDir=${dataDir} port=${port}`);
+    mkdirSync(dataDir, { recursive: true });
+    mkdirSync(dirname(pidFile), { recursive: true });
+
+    const startedAt = Date.now();
+    console.info('[test-convex-daemon] calling startConvex() — this may download the backend binary on first run');
+    const { url, adminKey } = await startConvex({ dataDir, port });
+    console.info(`[test-convex-daemon] startConvex() resolved in ${Date.now() - startedAt}ms — url=${url}`);
+
+    writeFileSync(pidFile, String(process.pid));
+    writeFileSync(urlFile, url);
+    writeFileSync(adminKeyFile, adminKey);
+    console.info(`[test-convex-daemon] wrote ${pidFile}, ${urlFile}, and ${adminKeyFile}`);
+
+    const cleanupMarkers = (): void => {
+        console.info('[test-convex-daemon] received shutdown signal — removing pid/url/admin-key markers');
+        for (const file of [pidFile, urlFile, adminKeyFile]) {
+            try {
+                rmSync(file, { force: true });
+            } catch {
+                // Best-effort: a leftover marker is reconciled on the next start.
+            }
+        }
+    };
+
+    process.once('SIGTERM', cleanupMarkers);
+    process.once('SIGINT', cleanupMarkers);
+    process.once('beforeExit', cleanupMarkers);
+
+    console.info(`[test-convex-daemon] backend ready at ${url} (pid ${process.pid}); idling until SIGTERM/SIGINT`);
+    await new Promise(() => {});
 }
