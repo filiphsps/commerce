@@ -13,17 +13,17 @@ exports[`transform — golden output > matches the golden snapshot 1`] = `
         "targeting": [],
         "updatedAt": 1714435200000,
       },
-      "payloadId": "pfqezm49bcwr9f96ryap0wac44qqs5wq",
+      "payloadId": "2kd5x33dxyrcr0whpbsekhknjvf40kaf",
     },
   ],
   "reviews": [
     {
       "document": {
         "createdAt": 1714435200000,
-        "shopId": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+        "shopId": "29zgrejgvr0de83ntn8mq9cfde6fydzv",
         "updatedAt": 1714435200000,
       },
-      "payloadId": "yfnv7n2qkecmm7m000bre72p046tdmcq",
+      "payloadId": "ye0msc77906b53faq4xtzrqa85j42am0",
     },
   ],
   "shopCollaborators": [
@@ -32,45 +32,45 @@ exports[`transform — golden output > matches the golden snapshot 1`] = `
         "permissions": [
           "admin",
         ],
-        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
-        "user": "458w8z66n874fenyxj1fc1q6h3xpbh93",
+        "shop": "29zgrejgvr0de83ntn8mq9cfde6fydzv",
+        "user": "3qhfwak20rwavfchzddz78py0vgxwqrc",
       },
-      "payloadId": "n5q3s48zjq3ebxgytesmgwq9v0b6e3t7",
+      "payloadId": "wppw6mbwrppm89a3ajmfe4xwcs18anrz",
     },
   ],
   "shopCredentials": [
     {
       "document": {
         "clientSecret": "SECRET_CS",
-        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+        "shop": "29zgrejgvr0de83ntn8mq9cfde6fydzv",
         "token": "shpat_SECRET",
       },
-      "payloadId": "tpnmxjptramwxg6eygvmbfvcqwmz51tw",
+      "payloadId": "s9t3y7bdf1vxf9cwnanh1jw9y5n39can",
     },
   ],
   "shopDomains": [
     {
       "document": {
         "domain": "www.nordcom-demo-shop.com",
-        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+        "shop": "29zgrejgvr0de83ntn8mq9cfde6fydzv",
       },
-      "payloadId": "8capjhb5kan7he0z8w6a54sgx8gg2t3y",
+      "payloadId": "6b88vn4zte05chpaep0jeaj4hsjssty6",
     },
     {
       "document": {
         "domain": "nordcom-demo-shop.com",
-        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+        "shop": "29zgrejgvr0de83ntn8mq9cfde6fydzv",
       },
-      "payloadId": "f5r1dm7vj3zkfhns1adyjk6rm67wvffw",
+      "payloadId": "e49wpfk1tq2kyy3fxw1ffgrj58g7vhvc",
     },
   ],
   "shopFeatureFlags": [
     {
       "document": {
-        "flag": "pfqezm49bcwr9f96ryap0wac44qqs5wq",
-        "shop": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+        "flag": "2kd5x33dxyrcr0whpbsekhknjvf40kaf",
+        "shop": "29zgrejgvr0de83ntn8mq9cfde6fydzv",
       },
-      "payloadId": "tcdrz5p0arv1y2q8k1vxmm2tsfqvy24j",
+      "payloadId": "nxfsw4v3zr6m3mc3b8p0430w4vpsj9jy",
     },
   ],
   "shops": [
@@ -120,7 +120,7 @@ exports[`transform — golden output > matches the golden snapshot 1`] = `
         "name": "Nordcom Demo",
         "updatedAt": 1714521600000,
       },
-      "payloadId": "mant1c4ebs75j0ntmmfzbm60r4gk8mhf",
+      "payloadId": "29zgrejgvr0de83ntn8mq9cfde6fydzv",
     },
   ],
 }
