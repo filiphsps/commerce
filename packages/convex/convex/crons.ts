@@ -34,4 +34,15 @@ const crons = cronJobs();
 
 crons.daily('export-snapshot', { hourUTC: 8, minuteUTC: 0 }, internal.crons.exportSnapshot, {});
 
+/**
+ * Low-frequency reconciliation pass for the Convex→Next revalidation bridge (BRIDGE-08). Self-heals
+ * permanently-lost revalidation events — windows that coalesced but whose durable delivery never fired —
+ * by replaying ONLY the unacked-since-cursor windows aged past the staleness bound through the existing
+ * notify/retrier path (see `revalidate/reconcile.ts`). Scheduled hourly rather than at the bridge's
+ * sub-second live cadence on purpose: it is a backstop for the rare lost event, not the primary delivery
+ * path, and its per-pass fan-out is rate-limited so a backlog drains across passes. Runs at minute 30 to
+ * sit off the top-of-hour where other scheduled work clusters.
+ */
+crons.hourly('revalidation-reconcile', { minuteUTC: 30 }, internal.revalidate.reconcile.reconcile, {});
+
 export default crons;

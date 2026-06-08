@@ -132,6 +132,15 @@ export declare const internal: {
         any
       >;
     };
+    reconcile: {
+      listLostWindows: FunctionReference<
+        "query",
+        "internal",
+        { limit: number; now: number; staleAfterMs: number },
+        any
+      >;
+      reconcile: FunctionReference<"action", "internal", {}, any>;
+    };
   };
 };
 
