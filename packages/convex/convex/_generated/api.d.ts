@@ -34,6 +34,14 @@ export declare const api: {
         any
       >;
     };
+    list: {
+      list: FunctionReference<
+        "query",
+        "public",
+        { collection: string; page?: number; pageSize?: number },
+        any
+      >;
+    };
     versions: {
       list: FunctionReference<
         "query",

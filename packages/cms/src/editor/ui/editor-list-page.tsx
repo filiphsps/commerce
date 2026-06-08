@@ -27,11 +27,15 @@ export type EditorListPageProps<TSlug extends CollectionSlug = CollectionSlug> =
 
 /**
  * Server Component that renders the collection list view. Resolves the locale
- * (redirecting when absent), enforces list access, fetches a paginated doc
- * list, and renders the runtime's `Table` (or `EmptyState` when zero docs).
+ * (redirecting when absent), enforces list access, fetches a page-bounded doc
+ * list, surfaces the aggregate `totalDocs` count, and renders the runtime's
+ * `Table` (or `EmptyState` when zero docs). A page requested past the last
+ * addressable page is refused with `notFound()` rather than rendering a
+ * silently-empty window — the UI mirror of the bounded list query's typed
+ * `CMS_LIST_PAGE_OUT_OF_RANGE` refusal.
  *
  * @param props - {@link EditorListPageProps} carrying manifest, runtime, params, and search params.
- * @returns The rendered list page with a page header, optional new-doc link, and table.
+ * @returns The rendered list page with a page header, document count, optional new-doc link, and table.
  * @throws {MissingListConfigError} When the manifest has no `list` config.
  */
 export async function EditorListPage<TSlug extends CollectionSlug>({
@@ -68,7 +72,7 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
     const where = manifest.tenant.kind === 'scoped' && ctx.tenant ? { tenant: { equals: ctx.tenant.id } } : undefined;
 
     const page = Number(searchParams.page) || 1;
-    const { docs } = await ctx.payload.find({
+    const { docs, totalDocs, totalPages } = await ctx.payload.find({
         collection: manifest.collection as never,
         where: where as never,
         sort: manifest.list.sortBy ?? '-updatedAt',
@@ -77,6 +81,13 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
         user: ctx.user as never,
         overrideAccess: false,
     });
+
+    // Refuse a page past the last addressable page instead of rendering an empty window — the UI
+    // counterpart to the bounded list query's `CMS_LIST_PAGE_OUT_OF_RANGE`. Guarded on a known,
+    // positive page count so an unpaginated source (no `totalPages`) renders untouched.
+    if (typeof totalPages === 'number' && totalPages > 0 && page > totalPages) {
+        notFound();
+    }
 
     const keyField = manifest.routes.keyField ?? 'id';
     return (
@@ -99,6 +110,11 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
                     ) : null
                 }
             />
+            {typeof totalDocs === 'number' ? (
+                <p className="text-muted-foreground text-sm">
+                    {totalDocs} {totalDocs === 1 ? manifest.routes.label.singular : manifest.routes.label.plural}
+                </p>
+            ) : null}
             {docs.length === 0 && manifest.list.emptyState ? (
                 <runtime.EmptyState
                     label={manifest.list.emptyState.label}
