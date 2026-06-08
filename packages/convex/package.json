@@ -5,6 +5,10 @@
     "private": true,
     "type": "module",
     "exports": {
+        "./constructors": {
+            "types": "./convex/_constructors.ts",
+            "default": "./convex/_constructors.ts"
+        },
         "./_generated/api": {
             "types": "./convex/_generated/api.d.ts",
             "default": "./convex/_generated/api.js"
