@@ -3,6 +3,7 @@ import { customCtx, customMutation, customQuery } from 'convex-helpers/server/cu
 import { mutation, query } from '../_generated/server';
 import { resolveAdminShopId } from './auth';
 import { wrapTenantDatabaseReader, wrapTenantDatabaseWriter } from './rls';
+import { tenantSubscriptionRegistry } from './subscription_registry';
 
 /**
  * Public, tenant-scoped query constructor. The companion to {@link systemQuery} (lib/system.ts): where
@@ -26,6 +27,13 @@ import { wrapTenantDatabaseReader, wrapTenantDatabaseWriter } from './rls';
  * later task; this constructor ships the admin/identity provenance, which is the one expressible as a
  * server-trusted `ctx` derivation today.
  *
+ * It also admits each invocation through the in-isolate {@link tenantSubscriptionRegistry}: the resolved
+ * tenant's open-subscription count drives a per-tenant circuit breaker, so once a shop saturates its live
+ * budget further reads surface `ctx.subscriptionMode === 'snapshot'` (a one-shot the handler is expected to
+ * poll) instead of a live subscription. The admission is purely additive context — it never relaxes the
+ * RLS scope, so the tenant-isolation contract is unchanged. `ctx.releaseSubscription` returns the live slot
+ * (a no-op when degraded), letting a one-shot handler reset the breaker as it completes.
+ *
  * @throws {ConvexError} Any auth-resolution failure from {@link resolveAdminShopId} (`UNAUTHENTICATED`,
  *   `FORGED_IDENTITY`, `IDENTITY_WITHOUT_EMAIL`, `UNKNOWN_USER`, `NO_SHOP_MEMBERSHIP`,
  *   `AMBIGUOUS_SHOP_MEMBERSHIP`).
@@ -34,7 +42,13 @@ export const tenantQuery = customQuery(
     query,
     customCtx(async (ctx) => {
         const shopId = await resolveAdminShopId(ctx);
-        return { shopId, db: wrapTenantDatabaseReader(ctx, ctx.db, shopId) };
+        const subscription = tenantSubscriptionRegistry.open(shopId);
+        return {
+            shopId,
+            subscriptionMode: subscription.mode,
+            releaseSubscription: subscription.release,
+            db: wrapTenantDatabaseReader(ctx, ctx.db, shopId),
+        };
     }),
 );
 
@@ -49,6 +63,10 @@ export const tenantQuery = customQuery(
  * mutating). As with {@link tenantQuery}, the scope comes only from `ctx`, so a client-supplied `shopId`
  * arg cannot redirect the write.
  *
+ * It admits through the same in-isolate {@link tenantSubscriptionRegistry} as {@link tenantQuery}, exposing
+ * `ctx.subscriptionMode` and `ctx.releaseSubscription` for symmetry and the per-tenant cost/usage metric;
+ * the admission is additive context only and never widens the RLS write scope.
+ *
  * @throws {ConvexError} Any auth-resolution failure from {@link resolveAdminShopId} (`UNAUTHENTICATED`,
  *   `FORGED_IDENTITY`, `IDENTITY_WITHOUT_EMAIL`, `UNKNOWN_USER`, `NO_SHOP_MEMBERSHIP`,
  *   `AMBIGUOUS_SHOP_MEMBERSHIP`).
@@ -57,6 +75,12 @@ export const tenantMutation = customMutation(
     mutation,
     customCtx(async (ctx) => {
         const shopId = await resolveAdminShopId(ctx);
-        return { shopId, db: wrapTenantDatabaseWriter(ctx, ctx.db, shopId) };
+        const subscription = tenantSubscriptionRegistry.open(shopId);
+        return {
+            shopId,
+            subscriptionMode: subscription.mode,
+            releaseSubscription: subscription.release,
+            db: wrapTenantDatabaseWriter(ctx, ctx.db, shopId),
+        };
     }),
 );
