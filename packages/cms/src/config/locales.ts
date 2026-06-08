@@ -205,6 +205,40 @@ export const resolveCmsDefaultLocale = (env: Record<string, string | undefined> 
 };
 
 /**
+ * Narrows a boot-time locale list to the subset a single tenant is configured
+ * for. Payload's global `localization.locales` array is fixed at boot (the full
+ * superset above), so per-tenant scoping happens per request via Payload's
+ * `filterAvailableLocales` hook — this is the pure, testable core that hook
+ * calls with the active tenant's configured locales.
+ *
+ * Locales live on the unified `shops` row (Phase-0 / UNIFY-03), not a separate
+ * `tenants` doc. Fails OPEN: when the tenant configures no locales, or none of
+ * its locales overlap the available list, the full `available` list is returned
+ * unchanged rather than leaving the editor with an empty picker.
+ *
+ * @typeParam TLocale - The available-locale element shape; only its `code` is read.
+ * @param available - The boot-time locale options Payload registered.
+ * @param tenantLocales - The active tenant's configured locale codes (e.g. from
+ *   `shop.i18n`); `undefined`/empty fails open to `available`.
+ * @returns The narrowed list, or `available` when narrowing would empty it.
+ *
+ * @example
+ * filterAvailableLocales(
+ *   [{ code: 'en-US' }, { code: 'de-DE' }, { code: 'sv-SE' }],
+ *   ['de-DE'],
+ * ); // [{ code: 'de-DE' }]
+ */
+export const filterAvailableLocales = <TLocale extends { code: string }>(
+    available: readonly TLocale[],
+    tenantLocales: readonly string[] | undefined,
+): TLocale[] => {
+    if (!tenantLocales || tenantLocales.length === 0) return [...available];
+    const allowed = new Set(tenantLocales);
+    const filtered = available.filter((locale) => allowed.has(locale.code));
+    return filtered.length > 0 ? filtered : [...available];
+};
+
+/**
  * Process-level locale superset computed once from `process.env` at module
  * load. Import directly for zero-cost access in non-test code; in tests call
  * {@link resolveCmsLocales} with a custom `env` map to exercise both branches.

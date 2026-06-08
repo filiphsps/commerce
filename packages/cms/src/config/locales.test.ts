@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
     BCP47_REGION_TAGGED_LOCALES,
+    filterAvailableLocales,
     ISO_639_1_LOCALES,
     isValidLocale,
     resolveCmsDefaultLocale,
@@ -77,6 +78,23 @@ describe('cms localization defaults', () => {
     it('rejects malformed default-locale env, falling back to en-US', () => {
         expect(resolveCmsDefaultLocale({ NORDCOM_CMS_DEFAULT_LOCALE: '../etc/passwd' })).toBe('en-US');
         expect(resolveCmsDefaultLocale({ NORDCOM_CMS_DEFAULT_LOCALE: ' de ' })).toBe('en-US');
+    });
+
+    it('filterAvailableLocales narrows the available list to a tenant locales', () => {
+        const available = [{ code: 'en-US' }, { code: 'de-DE' }, { code: 'sv-SE' }];
+        expect(filterAvailableLocales(available, ['de-DE'])).toEqual([{ code: 'de-DE' }]);
+        expect(filterAvailableLocales(available, ['de-DE', 'sv-SE'])).toEqual([{ code: 'de-DE' }, { code: 'sv-SE' }]);
+    });
+
+    it('filterAvailableLocales fails open when the tenant configures no locales', () => {
+        const available = [{ code: 'en-US' }, { code: 'de-DE' }];
+        expect(filterAvailableLocales(available, undefined)).toEqual(available);
+        expect(filterAvailableLocales(available, [])).toEqual(available);
+    });
+
+    it('filterAvailableLocales fails open when no tenant locale overlaps the available list', () => {
+        const available = [{ code: 'en-US' }, { code: 'de-DE' }];
+        expect(filterAvailableLocales(available, ['fr-FR'])).toEqual(available);
     });
 
     it('isValidLocale accepts IETF + POSIX styles, rejects junk', () => {
