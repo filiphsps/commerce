@@ -45,6 +45,15 @@ export type DraftPublishToolbarProps = {
     lastSavedAt?: Date | string;
     /** Whether an autosave is currently in flight — shown next to the timestamp. */
     isSaving?: boolean;
+    /**
+     * Client-side gate run ONLY before publish. Returns a human-readable message
+     * describing the first validation failure, or a falsy value when the form is
+     * publishable. A draft save never consults it — that asymmetry is what lets a
+     * partially-filled draft persist while a publish of the same doc fails closed,
+     * mirroring the Convex draft mutation's server-trusted `assertPublishable`
+     * contract. Omit it (or return a falsy value) to let publish proceed.
+     */
+    validate?: () => string | null | undefined;
 };
 
 /**
@@ -58,12 +67,14 @@ export type DraftPublishToolbarProps = {
  * @param props.publishAction - Server action that publishes the form.
  * @param props.lastSavedAt - Timestamp of the last save; undefined if never saved.
  * @param props.isSaving - When true, shows a "Saving…" indicator next to the timestamp.
+ * @param props.validate - Optional publish-only validation gate; a returned message blocks the publish.
  */
 export function DraftPublishToolbar({
     saveDraftAction,
     publishAction,
     lastSavedAt,
     isSaving,
+    validate,
 }: DraftPublishToolbarProps) {
     const [isDraftPending, startDraftTransition] = useTransition();
     const [isPublishPending, startPublishTransition] = useTransition();
@@ -96,6 +107,13 @@ export function DraftPublishToolbar({
     };
 
     const handlePublish = () => {
+        // Publish enforces full validation; draft deliberately does not. A
+        // failed gate blocks the action and surfaces the message inline.
+        const message = validate?.();
+        if (message) {
+            setErrorMessage(message);
+            return;
+        }
         runAction(publishAction, 'Failed to publish.', startPublishTransition);
     };
 

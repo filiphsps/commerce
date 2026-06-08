@@ -74,3 +74,27 @@ export const pickByFieldNames = (
     }
     return out;
 };
+
+/**
+ * Serialize a nested field-value object into the `_payload` `FormData` blob the
+ * editor's draft/publish server actions parse with {@link parseFormPayload} —
+ * the exact inverse of that parse step. Runs {@link pickByFieldNames} first, so
+ * any key not declared on the collection descriptor is dropped BEFORE the blob
+ * is built. The autosave loop posts through here, which is why an attacker key
+ * injected into the client form state never reaches the round-trip.
+ *
+ * @param values - Nested field values (e.g. `useForm().getData()`); may carry attacker-injected top-level keys.
+ * @param fields - The collection's top-level Payload field descriptors used to build the allowed-key set.
+ * @returns A `FormData` whose single `_payload` key holds the sanitized JSON blob.
+ * @example
+ * ```ts
+ * const formData = serializeFormPayload(getData(), manifest.fields);
+ * await saveDraftAction(domain, id, formData, locale);
+ * ```
+ */
+export const serializeFormPayload = (values: Record<string, unknown>, fields: readonly Field[]): FormData => {
+    const safe = pickByFieldNames(values, fields);
+    const formData = new FormData();
+    formData.set('_payload', JSON.stringify(safe));
+    return formData;
+};

@@ -142,6 +142,53 @@ describe('DraftPublishToolbar', () => {
         consoleError.mockRestore();
     });
 
+    it('saves a draft without consulting validation (draft skips required validation)', async () => {
+        const saveDraftAction = vi.fn().mockResolvedValue(undefined);
+        const validate = vi.fn().mockReturnValue('Title is required');
+
+        render(<DraftPublishToolbar saveDraftAction={saveDraftAction} publishAction={vi.fn()} validate={validate} />);
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', { name: /save draft/i }));
+        });
+
+        await vi.waitFor(() => {
+            expect(saveDraftAction).toHaveBeenCalledTimes(1);
+        });
+        expect(validate).not.toHaveBeenCalled();
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
+    it('blocks publish and surfaces the message when validation fails (publish enforces full validation)', async () => {
+        const publishAction = vi.fn().mockResolvedValue(undefined);
+        const validate = vi.fn().mockReturnValue('Title is required');
+
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={publishAction} validate={validate} />);
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', { name: /publish/i }));
+        });
+
+        expect(validate).toHaveBeenCalledTimes(1);
+        expect(publishAction).not.toHaveBeenCalled();
+        expect(screen.getByRole('alert')).toHaveTextContent('Title is required');
+    });
+
+    it('lets publish proceed when validation passes', async () => {
+        const publishAction = vi.fn().mockResolvedValue(undefined);
+        const validate = vi.fn().mockReturnValue(null);
+
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={publishAction} validate={validate} />);
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', { name: /publish/i }));
+        });
+
+        await vi.waitFor(() => {
+            expect(publishAction).toHaveBeenCalledTimes(1);
+        });
+    });
+
     it('shows "Saving…" when isSaving is true', () => {
         render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={vi.fn()} isSaving />);
 

@@ -1,6 +1,6 @@
 import type { Field } from 'payload';
 import { describe, expect, it } from 'vitest';
-import { parseFormPayload, pickByFieldNames } from './form-payload';
+import { parseFormPayload, pickByFieldNames, serializeFormPayload } from './form-payload';
 
 const fdWith = (entries: Record<string, string>): FormData => {
     const fd = new FormData();
@@ -48,5 +48,23 @@ describe('pickByFieldNames', () => {
         expect(pickByFieldNames({ design: { logo: '/a', extra: 'keep' } }, fields)).toEqual({
             design: { logo: '/a', extra: 'keep' },
         });
+    });
+});
+
+describe('serializeFormPayload', () => {
+    const fields: Field[] = [
+        { name: 'name', type: 'text' },
+        { name: 'domain', type: 'text' },
+    ];
+
+    it('round-trips through parseFormPayload', () => {
+        const fd = serializeFormPayload({ name: 'X', domain: 'a.test' }, fields);
+        expect(parseFormPayload(fd)).toEqual({ name: 'X', domain: 'a.test' });
+    });
+
+    it('drops an injected non-field key before building the blob', () => {
+        const fd = serializeFormPayload({ name: 'X', injected: 'evil' }, fields);
+        expect(parseFormPayload(fd)).toEqual({ name: 'X' });
+        expect(String(fd.get('_payload'))).not.toContain('injected');
     });
 });
