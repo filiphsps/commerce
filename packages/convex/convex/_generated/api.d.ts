@@ -19,7 +19,37 @@ import type { GenericId as Id } from "convex/values";
  * const myFunctionReference = api.myModule.myFunction;
  * ```
  */
-export declare const api: {};
+export declare const api: {
+  cms: {
+    documents: {
+      save: FunctionReference<
+        "mutation",
+        "public",
+        {
+          collection: string;
+          data: any;
+          documentId?: Id<"cmsDocuments">;
+          status: "draft" | "published";
+        },
+        any
+      >;
+    };
+    versions: {
+      list: FunctionReference<
+        "query",
+        "public",
+        { documentId: Id<"cmsDocuments"> },
+        any
+      >;
+      restore: FunctionReference<
+        "mutation",
+        "public",
+        { versionId: Id<"cmsVersions"> },
+        any
+      >;
+    };
+  };
+};
 
 /**
  * A utility for referencing Convex functions in your app's internal API.

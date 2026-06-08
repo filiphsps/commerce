@@ -2,6 +2,7 @@ import type { TableDefinition } from 'convex/server';
 
 import { authTables } from './auth';
 import { cmsContentTables } from './cms';
+import { cmsVersionTables } from './cmsVersions';
 import { revalidationTables } from './revalidation';
 import { reviewsTables } from './reviews';
 import { shopTables } from './shops';
@@ -31,9 +32,16 @@ import { shopTables } from './shops';
  * coalescing buffer) is platform-global bridge infrastructure written only by the server-trusted
  * system tier, so it belongs here rather than in any tenant grouping; it keys on the string tenant id
  * from the publish payload, not a `v.id('shops')` foreign key.
+ *
+ * `cmsVersionTables` (the Convex-native drafts/version-history/restore model — `cmsDocuments` +
+ * `cmsVersions`) belongs in this core slot, not `cmsTables`: both tables carry a real
+ * `v.id('shops')` foreign key, so they join the `v.id('shops')`-keyed tenant tier the RLS rule set
+ * (`lib/rls.ts`) range-scopes, rather than the forward-referenced `shop: v.string()` descriptor
+ * tables.
  */
 export const coreTables: Record<string, TableDefinition> = {
     ...authTables,
+    ...cmsVersionTables,
     ...revalidationTables,
     ...reviewsTables,
     ...shopTables,

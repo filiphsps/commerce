@@ -101,6 +101,22 @@ export function tenantRules(shopId: Id<'shops'>): Rules<TenantRuleCtx, DataModel
             modify: ownedByShopId,
             insert: ownedByShopId,
         },
+        // The Convex-native drafts/version-history tables (CMSDATA-01). Unlike the descriptor-generated
+        // CMS content tables (which key on a forward-referenced `shop: v.string()` and stay rule-less),
+        // both carry a real `v.id('shops')` foreign key, so they join this `v.id('shops')`-keyed tenant
+        // tier: read+write predicates assert `shopId === shopId` so the wrapped writer can persist a
+        // tenant's own drafts/versions under `defaultPolicy: 'deny'` while a cross-tenant read/restore
+        // is denied.
+        cmsDocuments: {
+            read: ownedByShopId,
+            modify: ownedByShopId,
+            insert: ownedByShopId,
+        },
+        cmsVersions: {
+            read: ownedByShopId,
+            modify: ownedByShopId,
+            insert: ownedByShopId,
+        },
     };
 }
 

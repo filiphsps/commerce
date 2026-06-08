@@ -123,6 +123,66 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  cmsDocuments: {
+    document: {
+      collection: string;
+      createdAt: number;
+      data: any;
+      latestVersionId?: Id<"cmsVersions">;
+      shopId: Id<"shops">;
+      status: "draft" | "published";
+      updatedAt: number;
+      _id: Id<"cmsDocuments">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "collection"
+      | "createdAt"
+      | "data"
+      | "latestVersionId"
+      | "shopId"
+      | "status"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shopId", "_creationTime"];
+      by_shop_collection: ["shopId", "collection", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  cmsVersions: {
+    document: {
+      collection: string;
+      createdAt: number;
+      documentId: Id<"cmsDocuments">;
+      shopId: Id<"shops">;
+      snapshot: any;
+      status: "draft" | "published";
+      _id: Id<"cmsVersions">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "collection"
+      | "createdAt"
+      | "documentId"
+      | "shopId"
+      | "snapshot"
+      | "status";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_document: ["documentId", "_creationTime"];
+      by_shop: ["shopId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   collectionMetadata: {
     document: {
       blocks?: Array<any>;
