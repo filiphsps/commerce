@@ -1,7 +1,7 @@
 import type { Route } from 'next';
-import type { FormState, Payload, PayloadRequest } from 'payload';
+import type { Payload } from 'payload';
 import type { ComponentType, ReactNode } from 'react';
-import type { PayloadFieldShellProps } from '../ui';
+import type { FormState } from './form/types';
 import type { CollectionEditorManifest, EditorAccessCtx, EditorListColumn } from './manifest';
 
 /**
@@ -21,9 +21,15 @@ export type AuthedUser = {
 };
 
 /**
- * Resolved Payload context including the authenticated user and tenant after
- * the admin app's `getAuthedPayloadCtx` call. Passed to every editor
- * primitive as the first argument to `runtime.toAccessCtx`.
+ * Resolved auth context including the authenticated user and tenant after the
+ * admin app's `getAuthedPayloadCtx` call. Passed to every editor primitive as
+ * the first argument to `runtime.toAccessCtx`.
+ *
+ * `payload` is the LAST Payload-typed handle on the runtime seam: the editor
+ * pages still read documents through `payload.find` and the collection config
+ * until the Convex read seam replaces them (CMSDATA-07's shell rebind). The
+ * write path no longer touches it — all seven editor actions post through
+ * {@link EditorConvexBridge}.
  *
  * @example
  * const ctx: AuthedPayloadCtx = await runtime.getCtx(domain);
@@ -44,19 +50,18 @@ export type AuthedPayloadCtx = {
 };
 
 /**
- * Arguments consumed by `EditorRuntime.buildFormState`. Drives Payload's
- * `buildFormState` call that converts a raw doc into the `FormState` shape
- * the `<Form>` component reads.
+ * Arguments consumed by `EditorRuntime.buildFormState` — the native CMSFORM-01
+ * replacement for Payload's `buildFormState` argument bag. The runtime derives
+ * the dotted-path {@link FormState} from `data` alone; the schema-driven extras
+ * Payload required (permissions, preferences, a `PayloadRequest`) are gone.
  *
  * @example
  * const { state } = await runtime.buildFormState({
  *     collectionSlug: 'pages',
  *     data: doc,
+ *     id: doc.id,
  *     operation: 'update',
- *     docPermissions: { create: true, fields: true, read: true, update: true },
- *     docPreferences: { fields: {} },
- *     req,
- *     schemaPath: 'pages',
+ *     locale: 'en-US',
  * });
  */
 export type BuildFormStateArgs = {
@@ -64,29 +69,61 @@ export type BuildFormStateArgs = {
     data: Record<string, unknown>;
     id?: string;
     operation: 'create' | 'update';
-    docPermissions: {
-        create: boolean;
-        fields: true;
-        read: boolean;
-        readVersions?: boolean;
-        update: boolean;
-    };
-    docPreferences: { fields: Record<string, unknown> };
     locale?: string;
-    req: PayloadRequest;
-    schemaPath: string;
-    skipValidation?: boolean;
 };
 
 /**
- * Full prop bag the admin's `<DocumentForm>` forwards to `<PayloadFieldShell>`.
- * Built per render by `EditorRuntime.getShellProps`. Excludes `children` —
- * those are supplied at the `<DocumentForm>` render site.
+ * Opaque prop bag the admin's `<DocumentForm>` shell consumes. Built per render
+ * by `EditorRuntime.getShellProps` and forwarded UNTOUCHED by every editor
+ * primitive — the runtime seam deliberately knows nothing about its members so
+ * the admin can keep serving the legacy Payload-shaped providers to
+ * not-yet-rebuilt shells until CMSDATA-07 deletes them.
  *
  * @example
  * const shellProps: ShellProps = await runtime.getShellProps(domain, locale);
  */
-export type ShellProps = Omit<PayloadFieldShellProps, 'children'>;
+export type ShellProps = Record<string, unknown>;
+
+/**
+ * Document-addressing target the bridge forwards to Convex's `cms/actions.ts` save mutations: a
+ * literal `cmsDocuments` id, a content-key pair (`keyField`/`keyValue`) for keyField-routed
+ * collections, or nothing for tenant singletons (server-side singleton upsert).
+ */
+export type EditorDocumentTarget = {
+    documentId?: string;
+    keyField?: string;
+    keyValue?: string;
+};
+
+/**
+ * The Convex transport the editor server actions post through — the same injected-callback seam as
+ * the CMSFORM-05 autosave `save` prop, lifted to all seven operations. The admin app binds each
+ * method to the matching `cms/actions.ts` mutation over a `ConvexHttpClient` authenticated with the
+ * operator's CONVEXCORE-14/16 bearer token, so the Convex side resolves the tenant and enforces
+ * access from the trusted identity; nothing in this contract lets the client pick a tenant or relax
+ * enforcement (there is no `overrideAccess`).
+ *
+ * `locale` rides along on the save-shaped calls for the CMSDATA-10 localized write seam. The
+ * CMSDATA-06 admin transport deliberately does NOT forward it to the `cms/actions.ts` mutations —
+ * they accept no `locale` argument yet and treat `data` as the already-serialized field map.
+ * CMSDATA-10 is the consuming task: it adds the localized field-bucket routing and starts reading
+ * this value.
+ */
+export type EditorConvexBridge = {
+    saveDraft: (
+        args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
+    ) => Promise<{ documentId: string }>;
+    publish: (
+        args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
+    ) => Promise<{ documentId: string }>;
+    create: (args: { collection: string; data: Record<string, unknown>; locale: string }) => Promise<{
+        documentId: string;
+    }>;
+    deleteDocument: (args: { documentId: string }) => Promise<void>;
+    bulkDelete: (args: { documentIds: string[] }) => Promise<void>;
+    bulkPublish: (args: { documentIds: string[] }) => Promise<void>;
+    restoreVersion: (args: { versionId: string }) => Promise<void>;
+};
 
 /**
  * Props the runtime's `DocumentForm` shell receives. Carries the resolved
@@ -120,9 +157,9 @@ export type DocumentFormShellProps = {
  */
 export type CollectionTableShellProps = {
     /**
-     * Payload always populates `id` on a returned doc, and the table uses it
-     * for row keys and aria labels — encode that in the type so consumers
-     * can't accidentally drop it.
+     * Every persisted doc carries a public `id`, and the table uses it for row
+     * keys and aria labels — encode that in the type so consumers can't
+     * accidentally drop it.
      */
     rows: Array<Record<string, unknown> & { id: string | number }>;
     columns: Array<EditorListColumn>;
@@ -148,7 +185,7 @@ export type EditorToolbarShellProps = {
 
 /**
  * Per-render dependency bundle the admin app supplies to every editor
- * primitive. Built once at app boot in `apps/admin/src/lib/editor-runtime.ts`.
+ * primitive. Built once at app boot in `apps/admin/src/lib/editor-runtime.tsx`.
  *
  * @example
  * // In a Next.js route component:
@@ -157,14 +194,23 @@ export type EditorToolbarShellProps = {
 export type EditorRuntime = {
     getCtx: (domain: string | null) => Promise<AuthedPayloadCtx>;
     toAccessCtx: (ctx: AuthedPayloadCtx, domain: string | null) => EditorAccessCtx;
+    /**
+     * Resolve the native {@link FormState} that seeds the CMSFORM-01 `<Form>`
+     * for a document — the Payload `buildFormState` replacement.
+     */
     buildFormState: (args: BuildFormStateArgs) => Promise<{ state: FormState }>;
     /**
      * Returns the full shell prop bag the admin's `<DocumentForm>` expects.
-     * The admin builds it via its own `getCmsShellProps(domain)` helper, which
-     * internally calls `getClientConfig`, resolves the theme, language options,
-     * permissions, and so on. Editor primitives forward the result opaquely.
+     * The admin builds it via its own `getCmsShellProps(domain)` helper;
+     * editor primitives forward the result opaquely.
      */
     getShellProps: (domain: string | null, locale?: string) => Promise<ShellProps>;
+    /**
+     * The CMSDATA-05 Convex write transport. Optional only so test substrates
+     * can omit it; `createCollectionEditorActions` fails loud
+     * (`MissingConvexBridgeError`) when an action runs without one.
+     */
+    convex?: EditorConvexBridge;
     DocumentForm: ComponentType<DocumentFormShellProps>;
     /** Render the empty-state for a list. The list page passes label/action props.
      *  The admin app wires this to `<EmptyState>` from its shell. */

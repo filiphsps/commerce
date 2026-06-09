@@ -7,7 +7,9 @@ import { notFound } from 'next/navigation';
 import { parseFormPayload } from './form-payload';
 import type { CollectionEditorManifest, EditorAccess } from './manifest';
 import { revalidateForManifest } from './revalidate';
-import type { EditorRuntime } from './runtime';
+import type { EditorConvexBridge, EditorDocumentTarget, EditorRuntime } from './runtime';
+
+export type { EditorConvexBridge, EditorDocumentTarget } from './runtime';
 
 /**
  * Seven server-action methods generated per collection by `pnpm cms:gen`.
@@ -27,45 +29,6 @@ export type EditorActions = {
     bulkDelete: (domain: string | null, ids: string[]) => Promise<void>;
     bulkPublish: (domain: string | null, ids: string[]) => Promise<void>;
     restoreVersion: (domain: string | null, id: string, versionId: string) => Promise<void>;
-};
-
-/**
- * Document-addressing target the bridge forwards to Convex's `cms/actions.ts` save mutations: a
- * literal `cmsDocuments` id, a content-key pair (`keyField`/`keyValue`) for keyField-routed
- * collections, or nothing for tenant singletons (server-side singleton upsert).
- */
-export type EditorDocumentTarget = {
-    documentId?: string;
-    keyField?: string;
-    keyValue?: string;
-};
-
-/**
- * The Convex transport the editor server actions post through — the same injected-callback seam as
- * the CMSFORM-05 autosave `save` prop, lifted to all seven operations. The admin app binds each
- * method to the matching `cms/actions.ts` mutation over a `ConvexHttpClient` authenticated with the
- * operator's CONVEXCORE-14/16 bearer token, so the Convex side resolves the tenant and enforces
- * access from the trusted identity; nothing in this contract lets the client pick a tenant or relax
- * enforcement (there is no `overrideAccess`).
- *
- * `locale` rides along on the save-shaped calls so the transport can route localized field buckets
- * once the CMSDATA-10 localized write seam consumes it; the document mutations themselves treat
- * `data` as the already-serialized field map.
- */
-export type EditorConvexBridge = {
-    saveDraft: (
-        args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
-    ) => Promise<{ documentId: string }>;
-    publish: (
-        args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
-    ) => Promise<{ documentId: string }>;
-    create: (args: { collection: string; data: Record<string, unknown>; locale: string }) => Promise<{
-        documentId: string;
-    }>;
-    deleteDocument: (args: { documentId: string }) => Promise<void>;
-    bulkDelete: (args: { documentIds: string[] }) => Promise<void>;
-    bulkPublish: (args: { documentIds: string[] }) => Promise<void>;
-    restoreVersion: (args: { versionId: string }) => Promise<void>;
 };
 
 /**
@@ -109,7 +72,7 @@ const targetFor = (manifest: CollectionEditorManifest, id: string): EditorDocume
  */
 export const createCollectionEditorActions = (
     manifest: CollectionEditorManifest,
-    runtime: EditorRuntime & { convex?: EditorConvexBridge },
+    runtime: EditorRuntime,
 ): EditorActions => {
     /**
      * Returns the wired Convex transport, failing loud when the runtime was built without one —

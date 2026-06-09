@@ -83,6 +83,71 @@ function setDeep(target: Record<string, unknown>, path: string, value: unknown):
 }
 
 /**
+ * Whether a value is a plain data object (not an array). The flatten step
+ * recurses only through these; class instances never appear in the
+ * JSON-serialized documents this builder consumes.
+ *
+ * @param value - Candidate value.
+ * @returns `true` for a non-null, non-array `object`.
+ */
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Flatten one value into `state` under `path` — the recursive worker behind
+ * {@link buildInitialFormState}.
+ *
+ * @param state - The state map being built; mutated in place.
+ * @param path - Dotted path for `value`.
+ * @param value - The document value at `path`.
+ */
+function flattenIntoState(state: FormState, path: string, value: unknown): void {
+    if (isPlainObject(value) && Object.keys(value).length > 0) {
+        for (const [key, child] of Object.entries(value)) {
+            flattenIntoState(state, `${path}.${key}`, child);
+        }
+        return;
+    }
+    if (Array.isArray(value) && value.length > 0 && value.every(isPlainObject)) {
+        value.forEach((row, index) => {
+            flattenIntoState(state, `${path}.${index}`, row);
+        });
+        return;
+    }
+    state[path] = { value, initialValue: value };
+}
+
+/**
+ * Build the {@link FormState} that seeds the native `<Form>` from a document's
+ * serialized data — the CMSFORM-01 replacement for Payload's server-side
+ * `buildFormState`, and the exact inverse of {@link reduceFieldsToValues}:
+ * plain objects and arrays-of-objects recurse into dotted/indexed leaf paths
+ * (the shape `useField`, the array widgets' row derivation, and the `_payload`
+ * serializer all operate on), while everything else — primitives, `null`,
+ * primitive lists (`hasMany` text/select values), EMPTY arrays/objects, and
+ * mixed arrays — stays a single leaf so it round-trips byte-identical through
+ * a save.
+ *
+ * Deliberately schema-blind: every key in `data` is flattened, including
+ * server-managed fields (`id`, timestamps, tenant keys). Those entries are
+ * inert — the editor renders only manifest-declared fields, and Convex's
+ * `cms/actions.ts` pins the tenant from the trusted identity, so a smuggled
+ * key in the round-tripped payload is plain content. A descriptor-driven
+ * builder can replace this once the field surface is fully native (CMSDATA-07).
+ *
+ * @param data - The document's serialized field map (`{}` for a create form).
+ * @returns The dotted-path state map, each leaf seeded with `value === initialValue`.
+ */
+export function buildInitialFormState(data: Record<string, unknown>): FormState {
+    const state: FormState = {};
+    for (const [key, value] of Object.entries(data)) {
+        flattenIntoState(state, key, value);
+    }
+    return state;
+}
+
+/**
  * Reduce a {@link FormState} to its values and unflatten the dotted paths into
  * the nested object Payload's `<Form>` posts as the JSON `_payload` blob.
  * Fields flagged `disableFormData` are skipped — they hold no value of their

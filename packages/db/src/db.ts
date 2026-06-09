@@ -79,6 +79,46 @@ function getConvexClient(): ConvexHttpClient {
 }
 
 /**
+ * Constructs a FRESH Convex client for identity-authenticated calls — the CONVEXCORE-16 seam the
+ * admin app's editor bridge drives. Deliberately NOT the cached module client used by the
+ * server-secret transports: an identity client carries a per-request operator bearer token via
+ * `setAuth`, so sharing one instance across requests could leak a stale identity between
+ * operators. Callers construct one per request, authenticate it (e.g. through
+ * `authenticateConvexClient` in the admin app), and discard it.
+ *
+ * @returns A new, unauthenticated `ConvexHttpClient` for this deployment.
+ * @throws {MissingEnvironmentVariableError} When neither `CONVEX_URL` nor `NEXT_PUBLIC_CONVEX_URL`
+ *   is set.
+ */
+export function createConvexIdentityClient(): ConvexHttpClient {
+    const url = process.env.CONVEX_URL || process.env.NEXT_PUBLIC_CONVEX_URL;
+    if (!url) {
+        throw new MissingEnvironmentVariableError('CONVEX_URL');
+    }
+    return new ConvexHttpClient(url);
+}
+
+/**
+ * Calls a deployed Convex mutation by path on an identity-authenticated client — the bearer-token
+ * companion to {@link convexServerMutation}. No `serverSecret` is injected: the callee is expected
+ * to be a tenant-tier function that derives its scope from the validated identity the client's
+ * `setAuth` token carries, never from a shared-trust argument.
+ *
+ * @param client - An authenticated client from {@link createConvexIdentityClient}.
+ * @param name - The Convex function path in `module/path:function` form.
+ * @param args - The function's args.
+ * @returns The function's result.
+ */
+export async function convexIdentityMutation<Result>(
+    client: ConvexHttpClient,
+    name: string,
+    args: Record<string, unknown>,
+): Promise<Result> {
+    const reference = makeFunctionReference<'mutation', Record<string, unknown>, Result>(name);
+    return client.mutation(reference, args);
+}
+
+/**
  * Reads the shared server-trust secret presented as the `serverSecret` arg on every seam call. The
  * Convex `serverQuery`/`serverMutation` constructors fail closed without a matching secret, so an
  * unset value here is a hard misconfiguration rather than a silent degradation.

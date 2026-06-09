@@ -92,6 +92,10 @@
             "./src/editor/index.ts",
             "./dist/editor/index.js"
         ],
+        "./editor/form": [
+            "./src/editor/form/index.ts",
+            "./dist/editor/form/index.js"
+        ],
         "./editor/ui": [
             "./src/editor/ui/index.ts",
             "./dist/editor/ui/index.js"

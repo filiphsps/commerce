@@ -1029,6 +1029,7 @@ export enum GenericErrorKind {
     GENERIC_EMPTY_TENANT_SCOPE = 'GENERIC_EMPTY_TENANT_SCOPE',
     GENERIC_MISSING_LIST_CONFIG = 'GENERIC_MISSING_LIST_CONFIG',
     GENERIC_MISSING_CONVEX_BRIDGE = 'GENERIC_MISSING_CONVEX_BRIDGE',
+    GENERIC_CONVEX_OPERATOR_TOKEN_MINT = 'GENERIC_CONVEX_OPERATOR_TOKEN_MINT',
     GENERIC_DUPLICATE_PREDICATE_REGISTRATION = 'GENERIC_DUPLICATE_PREDICATE_REGISTRATION',
     GENERIC_MISSING_REQUEST_CONTEXT = 'GENERIC_MISSING_REQUEST_CONTEXT',
     GENERIC_DUPLICATE_WORKSPACE_SLUG = 'GENERIC_DUPLICATE_WORKSPACE_SLUG',
@@ -1266,6 +1267,32 @@ export class MissingConvexBridgeError extends GenericError {
 }
 
 /**
+ * Signals that an identity-authenticated Convex call could not obtain an operator bearer token —
+ * either the server-side session has no authenticated operator or the RS256 minting material
+ * (`CONVEX_AUTH_PRIVATE_KEY` / issuer / audience) is unconfigured. Raised instead of silently
+ * issuing an unauthenticated call so a misconfigured deployment fails loud at the write seam.
+ *
+ * @param context - The surface that needed the token (e.g. a collection slug); embedded in the description when provided.
+ * @example
+ * ```ts
+ * throw new ConvexOperatorTokenMintError('pages');
+ * ```
+ */
+export class ConvexOperatorTokenMintError extends GenericError {
+    name = 'ConvexOperatorTokenMintError';
+    details = 'Convex operator token mint failed';
+    description = 'No Convex operator token could be minted for the authenticated admin session';
+    code = GenericErrorKind.GENERIC_CONVEX_OPERATOR_TOKEN_MINT;
+
+    constructor(context?: string) {
+        super();
+        if (context) {
+            this.description = `${this.description} (while calling "${context}")`;
+        }
+    }
+}
+
+/**
  * Signals that a tenant predicate with the same name was registered more than once.
  *
  * @param predicateName - The predicate name that was registered twice; embedded in the description when provided.
@@ -1412,6 +1439,8 @@ export const getErrorFromCode = (
             return MissingListConfigError as unknown as typeof GenericError;
         case GenericErrorKind.GENERIC_MISSING_CONVEX_BRIDGE:
             return MissingConvexBridgeError as unknown as typeof GenericError;
+        case GenericErrorKind.GENERIC_CONVEX_OPERATOR_TOKEN_MINT:
+            return ConvexOperatorTokenMintError as unknown as typeof GenericError;
         case GenericErrorKind.GENERIC_DUPLICATE_PREDICATE_REGISTRATION:
             return DuplicatePredicateRegistrationError as unknown as typeof GenericError;
         case GenericErrorKind.GENERIC_MISSING_REQUEST_CONTEXT:

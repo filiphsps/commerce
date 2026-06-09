@@ -1,12 +1,12 @@
 import 'server-only';
 
-import type { EditorRuntime } from '@nordcom/commerce-cms/editor';
+import { buildInitialFormState, type EditorRuntime } from '@nordcom/commerce-cms/editor';
 import { CollectionTable } from '@/components/cms/collection-table';
 import { DocumentForm } from '@/components/cms/document-form';
 import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
 import { EmptyState } from '@/components/shell/empty-state';
 import { PageHeader } from '@/components/shell/page-header';
-import { buildCmsFormState } from './build-cms-form-state';
+import { editorConvexBridge } from './editor-convex-bridge';
 import { getCmsShellProps } from './get-cms-shell-props';
 import { getAuthedPayloadCtx } from './payload-ctx';
 
@@ -14,7 +14,10 @@ import { getAuthedPayloadCtx } from './payload-ctx';
  * Single per-app runtime bundle passed into every editor primitive.
  *
  * Built once at module import; consumed via
- * `<EditorEditPage runtime={editorRuntime} ... />`.
+ * `<EditorEditPage runtime={editorRuntime} ... />`. Form state resolves
+ * through the native CMSFORM-01 core (`buildInitialFormState`) and writes
+ * post through the CMSDATA-05 Convex bridge (`convex`) — neither path touches
+ * Payload's `buildFormState` or local API anymore.
  */
 export const editorRuntime: EditorRuntime = {
     getCtx: async (domain) => {
@@ -33,8 +36,12 @@ export const editorRuntime: EditorRuntime = {
         domain,
         tenantId: ctx.tenant?.id ?? null,
     }),
-    buildFormState: buildCmsFormState as never,
+    buildFormState: async ({ data }) => ({ state: buildInitialFormState(data) }),
     getShellProps: async (domain, locale) => getCmsShellProps(domain ?? undefined, locale),
+    convex: editorConvexBridge,
+    // Breadcrumb hrefs are `string` on the runtime seam but Next `Route`s in the
+    // shell components; the casts below bridge that boundary (same pattern as
+    // EmptyState's actionHref).
     DocumentForm: DocumentForm as never,
     // actionHref is typed as `string` in EditorRuntime (cms package stays free of
     // Next's typed-routes plumbing); cast to `never` bridges string ↔ Route at the boundary.

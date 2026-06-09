@@ -1,71 +1,39 @@
 'use client';
 
-import { Form, useFormModified } from '@payloadcms/ui';
-import type { FormState } from 'payload';
-import { type ReactNode, useEffect, useState } from 'react';
+import { Form, type FormState } from '@nordcom/commerce-cms/editor/form';
+import type { ReactNode } from 'react';
 
 export type DocumentFormBodyProps = {
     /** Server action invoked when the user explicitly submits the form. */
     action: (formData: FormData) => Promise<void>;
     /**
-     * The latest `FormState` from the server. The mount value is committed to
-     * Payload's `<Form>` as its `initialState`; subsequent values are only
-     * committed when the form is not modified (see `<InitialStateGate>`).
+     * The latest server-built `FormState`. The native `<Form>` seeds its
+     * reducer from the mount value and re-merges every subsequent reference
+     * change under the reducer's InitialStateGate (`REPLACE_STATE`), which
+     * overlays any dirty field's in-flight value over the incoming server
+     * state — per field, not all-or-nothing.
      */
     initialState?: FormState;
     children: ReactNode;
 };
 
 /**
- * Client wrapper around Payload's `<Form>` that keeps Payload's `initialState`
- * locked to a `useState` slot. Without this lock every parent re-render
- * (autosave → `revalidatePath` → Next.js page refresh → fresh `buildFormState`)
- * passes a new `initialState` reference into `<Form>`, whose own effect runs
- * `dispatchFields({ type: 'REPLACE_STATE', optimize: false })` and overwrites
- * every in-flight keystroke. The committed slot only advances when
- * `<InitialStateGate>` (below) sees a fresh prop AND `useFormModified()` is
- * false — so dirty edits survive every server-side refresh until the user
- * either explicitly saves or steps away long enough for `modified` to clear.
+ * Mounts the native CMSFORM-01 `<Form>` for a document editor surface — the
+ * Payload `<Form>` replacement (CMSDATA-06). The keystroke-clobber lock the
+ * Payload era needed here (`useState` commit slot + `<InitialStateGate>`) is
+ * gone: the native reducer's `REPLACE_STATE` branch performs the same
+ * dirty-preserving merge internally, so a background refresh
+ * (autosave → `revalidatePath` → fresh server state) never overwrites what
+ * the user is typing.
  *
  * @param props.action - Server action invoked on explicit form submit.
- * @param props.initialState - Latest FormState from the server; committed only when the form is clean.
- * @param props.children - Field components rendered inside the Payload Form context.
+ * @param props.initialState - Latest FormState from the server; merged under the reducer gate.
+ * @param props.children - Field components rendered inside the native form context.
  */
 export function DocumentFormBody({ action, initialState, children }: DocumentFormBodyProps) {
-    const [committedInitialState, setCommittedInitialState] = useState(initialState);
     return (
-        <Form action={action} initialState={committedInitialState} isDocumentForm>
-            <InitialStateGate
-                latest={initialState}
-                committed={committedInitialState}
-                onCommit={setCommittedInitialState}
-            />
+        <Form action={action} initialState={initialState} isDocumentForm>
             {children}
         </Form>
     );
-}
-
-type InitialStateGateProps = {
-    latest: FormState | undefined;
-    committed: FormState | undefined;
-    onCommit: (state: FormState | undefined) => void;
-};
-
-/**
- * Renders nothing; subscribes to `useFormModified()` and commits the parent's
- * latest `initialState` only when the form is clean. Lives inside `<Form>` so
- * the hook can read the form context.
- *
- * @param props.latest - Latest initialState prop from the parent.
- * @param props.committed - Currently committed state held in the parent's useState slot.
- * @param props.onCommit - Callback that advances the committed slot to the latest value.
- */
-function InitialStateGate({ latest, committed, onCommit }: InitialStateGateProps) {
-    const modified = useFormModified();
-    useEffect(() => {
-        if (latest !== committed && !modified) {
-            onCommit(latest);
-        }
-    }, [latest, committed, modified, onCommit]);
-    return null;
 }

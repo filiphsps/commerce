@@ -46,5 +46,5 @@ export {
     RenderFields,
     type RenderFieldsProps,
 } from './registry';
-export { deepEqual, isFieldDirty, isFormModified, reduceFieldsToValues } from './state';
+export { buildInitialFormState, deepEqual, isFieldDirty, isFormModified, reduceFieldsToValues } from './state';
 export type { FormAction, FormFieldState, FormState } from './types';

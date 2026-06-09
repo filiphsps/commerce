@@ -203,6 +203,9 @@ importers:
       geist:
         specifier: 1.7.1
         version: 1.7.1(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.100.0))
+      jose:
+        specifier: 6.2.3
+        version: 6.2.3
       lucide-react:
         specifier: 1.17.0
         version: 1.17.0(react@19.2.6)

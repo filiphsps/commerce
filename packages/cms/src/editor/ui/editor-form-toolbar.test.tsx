@@ -1,22 +1,28 @@
 // @vitest-environment happy-dom
 import { render } from '@testing-library/react';
+import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@payloadcms/ui', () => ({
-    useForm: () => ({ createFormData: async () => new FormData() }),
-    useAllFormFields: () => [{}],
-    useFormModified: () => false,
-}));
-
+import { Form } from '../form';
 import { EditorFormToolbar } from './editor-form-toolbar';
 
 const Toolbar = vi.fn((props: { hasDrafts: boolean }) => (
     <div data-testid="t" data-has-drafts={String(props.hasDrafts)} />
 ));
 
+/**
+ * Renders the toolbar inside the REAL native `<Form>` — the context it reads
+ * `useForm`/`useFormModified` from since the CMSDATA-06 rewire off
+ * `@payloadcms/ui`.
+ *
+ * @param children - The toolbar under test.
+ * @returns The testing-library render result.
+ */
+const renderInForm = (children: ReactNode) => render(<Form action={async () => {}}>{children}</Form>);
+
 describe('<EditorFormToolbar>', () => {
     it('passes hasDrafts=true when autosave is configured', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = renderInForm(
             <EditorFormToolbar
                 Toolbar={Toolbar as never}
                 saveDraftAction={async () => {}}
@@ -28,7 +34,7 @@ describe('<EditorFormToolbar>', () => {
     });
 
     it('passes hasDrafts=false when autosave is omitted', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = renderInForm(
             <EditorFormToolbar
                 Toolbar={Toolbar as never}
                 saveDraftAction={async () => {}}
@@ -39,7 +45,7 @@ describe('<EditorFormToolbar>', () => {
     });
 
     it('renders the localeSwitcher slot to the left of the toolbar', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = renderInForm(
             <EditorFormToolbar
                 Toolbar={Toolbar as never}
                 saveDraftAction={async () => {}}
@@ -51,7 +57,7 @@ describe('<EditorFormToolbar>', () => {
     });
 
     it('omits the localeSwitcher slot when not provided', () => {
-        const { queryByTestId } = render(
+        const { queryByTestId } = renderInForm(
             <EditorFormToolbar
                 Toolbar={Toolbar as never}
                 saveDraftAction={async () => {}}

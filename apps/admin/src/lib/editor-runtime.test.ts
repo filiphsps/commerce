@@ -23,9 +23,17 @@ vi.mock('@/components/shell/page-header', () => ({
 }));
 
 // Helpers imported by editor-runtime — stub at the module boundary so
-// tests run without real Payload / NextAuth wiring.
-vi.mock('./build-cms-form-state', () => ({
-    buildCmsFormState: vi.fn(),
+// tests run without real Payload / NextAuth / Convex wiring.
+vi.mock('./editor-convex-bridge', () => ({
+    editorConvexBridge: {
+        saveDraft: vi.fn(),
+        publish: vi.fn(),
+        create: vi.fn(),
+        deleteDocument: vi.fn(),
+        bulkDelete: vi.fn(),
+        bulkPublish: vi.fn(),
+        restoreVersion: vi.fn(),
+    },
 }));
 vi.mock('./get-cms-shell-props', () => ({
     getCmsShellProps: vi.fn(),
@@ -47,6 +55,33 @@ describe('editorRuntime', () => {
         expect(typeof editorRuntime.Table).toBe('function');
         expect(typeof editorRuntime.Toolbar).toBe('function');
         expect(typeof editorRuntime.PageHeader).toBe('function');
+    });
+
+    it('binds the Convex bridge with all seven editor write methods (CMSDATA-06)', () => {
+        expect(editorRuntime.convex).toBeDefined();
+        for (const method of [
+            'saveDraft',
+            'publish',
+            'create',
+            'deleteDocument',
+            'bulkDelete',
+            'bulkPublish',
+            'restoreVersion',
+        ] as const) {
+            expect(typeof editorRuntime.convex?.[method]).toBe('function');
+        }
+    });
+
+    it('buildFormState resolves through the native CMSFORM-01 core (no Payload buildFormState)', async () => {
+        const { state } = await editorRuntime.buildFormState({
+            collectionSlug: 'pages',
+            data: { title: 'Hello', seo: { description: 'd' }, nav: [{ label: 'Home' }] },
+            operation: 'update',
+            locale: 'en-US',
+        });
+        expect(state.title).toEqual({ value: 'Hello', initialValue: 'Hello' });
+        expect(state['seo.description']?.value).toBe('d');
+        expect(state['nav.0.label']?.value).toBe('Home');
     });
 
     it('toAccessCtx flattens user.tenants from [{tenant}] to [string]', () => {

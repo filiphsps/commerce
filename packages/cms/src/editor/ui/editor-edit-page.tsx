@@ -4,7 +4,7 @@ import type { Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
-import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
+import { getRequestLanguage } from 'payload';
 import { parseCookies } from 'payload/shared';
 import type { ReactNode } from 'react';
 import type { EditorActions } from '../actions';
@@ -55,8 +55,8 @@ export type EditorEditPageProps<TSlug extends CollectionSlug = CollectionSlug> =
 
 /**
  * Server Component that renders the edit form for a single document.
- * Resolves the locale (redirecting when absent), fetches the doc, builds
- * Payload's `FormState`, and assembles the `<DocumentForm>` shell with bound
+ * Resolves the locale (redirecting when absent), fetches the doc, builds the
+ * native `FormState`, and assembles the `<DocumentForm>` shell with bound
  * save-draft / publish actions and an optional live-preview iframe.
  *
  * @param props - {@link EditorEditPageProps} carrying manifest, runtime, params, and generated actions.
@@ -130,24 +130,18 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     });
     const existing = docs[0] ?? null;
 
-    // Build form state.
+    // Build the native form state. The language is still resolved Payload-style
+    // (cookie/header negotiation) because the locale switcher labels read it.
     const headers = await getHeaders();
     const cookies = parseCookies(headers);
     const language = getRequestLanguage({ config: ctx.payload.config, cookies, headers });
-    const i18n = (await getLocalI18n({ config: ctx.payload.config, language })) as PayloadRequest['i18n'];
-    const req = await createLocalReq({ req: { i18n, user: ctx.user as never } }, ctx.payload);
 
     const { state: initialState } = await runtime.buildFormState({
         collectionSlug: String(manifest.collection),
         data: (existing as unknown as Record<string, unknown>) ?? {},
         id: existing ? String((existing as unknown as { id: string }).id) : undefined,
         operation: existing ? 'update' : 'create',
-        docPermissions: { create: true, fields: true, read: true, readVersions: hasDrafts, update: true },
-        docPreferences: { fields: {} },
         locale,
-        req,
-        schemaPath: String(manifest.collection),
-        skipValidation: true,
     });
 
     const shellProps = await runtime.getShellProps(domain, locale);

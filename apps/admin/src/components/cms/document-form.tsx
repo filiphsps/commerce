@@ -1,5 +1,5 @@
+import type { FormState } from '@nordcom/commerce-cms/editor/form';
 import { PayloadFieldShell, type PayloadFieldShellProps } from '@nordcom/commerce-cms/ui';
-import type { FormState } from 'payload';
 import type { ReactNode } from 'react';
 
 import { DocumentFormBody } from '@/components/cms/document-form-body';
@@ -21,14 +21,18 @@ export type DocumentFormProps = {
 };
 
 /**
- * Full-page document editor layout combining a PageHeader, Payload field shell, and optional live-preview pane.
+ * Full-page document editor layout combining a PageHeader, the native CMSFORM-01
+ * form body, and an optional live-preview pane. The Payload field shell is still
+ * mounted around the body as a TEMPORARY provider adapter — legacy Payload field
+ * widgets that survive until CMSDATA-07's surface rebind read its contexts;
+ * the native form core itself does not.
  *
  * @param props.title - Page heading displayed in PageHeader.
  * @param props.breadcrumbs - Optional breadcrumb trail rendered above the title.
  * @param props.shellProps - Props forwarded to PayloadFieldShell (Payload context providers).
  * @param props.children - Field components rendered inside the form body.
  * @param props.onSubmit - Server action called on explicit form submit.
- * @param props.initialState - Payload FormState used to seed the form.
+ * @param props.initialState - Native FormState used to seed the form.
  * @param props.toolbar - Optional toolbar slot rendered in the sticky PageFooter.
  * @param props.livePreview - When provided the form body switches to a two-column grid layout.
  */

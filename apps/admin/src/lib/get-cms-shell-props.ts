@@ -1,8 +1,6 @@
 import 'server-only';
 
-import type { PayloadFieldShellProps } from '@nordcom/commerce-cms/ui';
-import { defaultTheme } from '@payloadcms/ui';
-import { getClientConfig } from '@payloadcms/ui/utilities/getClientConfig';
+import { buildPayloadClientConfig, type PayloadFieldShellProps } from '@nordcom/commerce-cms/ui';
 import { headers as getHeaders } from 'next/headers';
 import type { PayloadRequest } from 'payload';
 import { createLocalReq, getAccessResults, getLocalI18n, getRequestLanguage } from 'payload';
@@ -45,7 +43,9 @@ const resolveTheme = ({
     if (headerTheme && (ACCEPTED_THEMES as readonly string[]).includes(headerTheme)) {
         return headerTheme as ShellTheme;
     }
-    return (defaultTheme as ShellTheme) ?? 'light';
+    // Payload's exported `defaultTheme` constant is 'light'; inlined so this DI
+    // module carries no @payloadcms/ui import (CMSDATA-06 grep gate).
+    return 'light';
 };
 
 /**
@@ -61,6 +61,12 @@ const resolveTheme = ({
  * access against it. Omitting `domain` returns a cross-tenant prop bag —
  * appropriate only for admin-only routes that legitimately operate outside
  * a single tenant.
+ *
+ * TEMPORARY ADAPTER (CMSDATA-06): the prop bag stays Payload-shaped because
+ * the not-yet-rebuilt shell pages (and `<PayloadFieldShell>`) still consume
+ * it; the Payload coupling is reached through the
+ * `@nordcom/commerce-cms/ui` re-export so this DI module itself carries no
+ * `@payloadcms/ui` import. CMSDATA-07's shell rebind replaces the bag.
  *
  * @param domain - Tenant domain for tenant-scoped routes; omit for cross-tenant admin routes.
  * @param locale - Locale string forwarded to PayloadFieldShell for locale-aware fields.
@@ -79,7 +85,7 @@ export const getCmsShellProps = cache(
         const i18n = (await getLocalI18n({ config: payload.config, language: languageCode })) as PayloadRequest['i18n'];
         const req = await createLocalReq({ req: { i18n, user: user as never } }, payload);
 
-        const config = getClientConfig({
+        const config = buildPayloadClientConfig({
             config: payload.config,
             i18n: req.i18n,
             importMap: payload.importMap,

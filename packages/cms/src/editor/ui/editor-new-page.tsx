@@ -2,11 +2,8 @@ import 'server-only';
 
 import { UnknownCollectionSlugError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
-import { headers as getHeaders } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
-import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
-import { parseCookies } from 'payload/shared';
 import type { ReactNode } from 'react';
 
 import type { EditorActions } from '../actions';
@@ -31,7 +28,7 @@ export type EditorNewPageProps<TSlug extends CollectionSlug = CollectionSlug> = 
 
 /**
  * Server Component that renders the new-document creation form. Enforces
- * create access, resolves the locale, builds an empty Payload `FormState`,
+ * create access, resolves the locale, builds an empty native `FormState`,
  * and assembles the `<DocumentForm>` shell with a bound create action.
  *
  * @param props - {@link EditorNewPageProps} carrying manifest, runtime, params, and generated actions.
@@ -75,22 +72,11 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
 
     const locale = requested as string;
 
-    const headers = await getHeaders();
-    const cookies = parseCookies(headers);
-    const language = getRequestLanguage({ config: ctx.payload.config, cookies, headers });
-    const i18n = (await getLocalI18n({ config: ctx.payload.config, language })) as PayloadRequest['i18n'];
-    const req = await createLocalReq({ req: { i18n, user: ctx.user as never } }, ctx.payload);
-
     const { state: initialState } = await runtime.buildFormState({
         collectionSlug: String(manifest.collection),
         data: {},
         operation: 'create',
-        docPermissions: { create: true, fields: true, read: true, update: true },
-        docPreferences: { fields: {} },
         locale,
-        req,
-        schemaPath: String(manifest.collection),
-        skipValidation: true,
     });
 
     const shellProps = await runtime.getShellProps(domain, locale);

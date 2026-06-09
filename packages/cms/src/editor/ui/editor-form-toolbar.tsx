@@ -1,7 +1,7 @@
 'use client';
 
-import { useAllFormFields, useForm, useFormModified } from '@payloadcms/ui';
 import { type ComponentType, type ReactNode, useEffect, useRef, useState } from 'react';
+import { useForm, useFormModified } from '../form';
 import type { EditorToolbarShellProps } from '../runtime';
 
 /**
@@ -31,15 +31,15 @@ export type EditorFormToolbarProps = {
 };
 
 /**
- * Wires Payload's form context to:
+ * Wires the native CMSFORM-01 form context to:
  *   - the admin app's visual `<Toolbar>` (Save / Publish buttons),
  *   - an autosave timer that fires `saveDraftAction` after `autosave.interval`
  *     milliseconds of idle (only when the form is `modified`, to prevent the
  *     revalidate-loop that bit the bespoke `business-data-form.tsx`),
  *   - an optional locale switcher slot on the left.
  *
- * Must be rendered inside Payload's `<Form>` — `useForm`, `useAllFormFields`,
- * and `useFormModified` all read from that context.
+ * Must be rendered inside the native `<Form>` — `useForm` and
+ * `useFormModified` both read from that context.
  */
 export function EditorFormToolbar({
     Toolbar,
@@ -49,7 +49,6 @@ export function EditorFormToolbar({
     localeSwitcher,
 }: EditorFormToolbarProps) {
     const { createFormData } = useForm();
-    const [_fields] = useAllFormFields();
     const modified = useFormModified();
 
     const [isSaving, setIsSaving] = useState(false);
@@ -63,7 +62,7 @@ export function EditorFormToolbar({
         const timer = setTimeout(async () => {
             setIsSaving(true);
             try {
-                const formData = await createFormData(undefined, {});
+                const formData = await createFormData();
                 await saveActionRef.current(formData);
                 setLastSavedAt(new Date());
             } catch (err) {
@@ -79,13 +78,13 @@ export function EditorFormToolbar({
     }, [autosave, modified, createFormData]);
 
     const saveDraft = async (): Promise<void> => {
-        const formData = await createFormData(undefined, {});
+        const formData = await createFormData();
         await saveDraftAction(formData);
         setLastSavedAt(new Date());
     };
 
     const publish = async (): Promise<void> => {
-        const formData = await createFormData(undefined, {});
+        const formData = await createFormData();
         await publishAction(formData);
         setLastSavedAt(new Date());
     };
