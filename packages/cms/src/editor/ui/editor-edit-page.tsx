@@ -9,7 +9,7 @@ import { parseCookies } from 'payload/shared';
 import type { ReactNode } from 'react';
 import type { EditorActions } from '../actions';
 import type { CollectionEditorManifest } from '../manifest';
-import { tenantWhere } from '../revalidate';
+import { tenantWhere } from '../tenant-where';
 import type { EditorRuntime } from '../runtime';
 import { docUrlSegment } from '../url';
 import { EditorFields } from './editor-fields';

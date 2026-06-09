@@ -19,9 +19,8 @@ export {
     type EditorListColumn,
 } from './manifest';
 export {
-    type RevalidateForManifestArgs,
-    revalidateForManifest,
-    tenantWhere,
+    type RefreshEditorPathsArgs,
+    refreshEditorPaths,
 } from './revalidate';
 export type {
     AuthedPayloadCtx,
@@ -33,4 +32,5 @@ export type {
     EditorToolbarShellProps,
     WithRuntime,
 } from './runtime';
+export { tenantWhere } from './tenant-where';
 export { docUrlSegment } from './url';

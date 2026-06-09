@@ -1,62 +1,23 @@
-import { MissingTenantForScopedCollectionError } from '@nordcom/commerce-errors';
-import type { Where } from 'payload';
-
 import type { CollectionEditorManifest } from './manifest';
 
 /**
- * Build the `where` clause for a single-doc lookup.
- *
- * - `scoped`: AND of tenant + keyField equality
- * - `tenant-singleton`: tenant equality only — one doc per tenant, the plugin's
- *   unique index guarantees at most one match so no id/keyField is needed
- * - `singleton-by-domain`: OR of `domain` and `alternativeDomains` contains
- *   (matches `Shop.findByDomain`'s semantics so the shop edit URL works for
- *   both the canonical domain and any alt domain)
- * - `shared`: keyField equality only (cross-tenant collections not scoped by shop)
- *
- * @param manifest - Editor manifest describing the collection's tenant scoping strategy.
- * @param tenant - Resolved tenant document for the current request, or `null` on cross-tenant routes.
- * @param id - Document id or `keyField` value to look up.
- * @returns A Payload `Where` clause ready for `payload.find()`.
- * @throws {MissingTenantForScopedCollectionError} When `tenant` is `null` for a `scoped` or `tenant-singleton` collection.
- *
- * @example
- * const where = tenantWhere(pagesEditor, { id: 'tenant-1' }, '507f1f77bcf86cd799439011');
- * const { docs } = await payload.find({ collection: 'pages', where, depth: 0 });
+ * The storefront revalidation vocabulary, re-exported so editor code that reasons about cache
+ * busting lands on the SAME schema the Convex bridge derives tags from. Storefront invalidation is
+ * owned entirely by the Convex publish path — `cms/actions.ts` publish → `cms/documents.ts` save →
+ * `revalidate/onPublish.ts`, which derives tags via `revalidate/tags.ts`'s `deriveRevalidateTags`
+ * over this exact schema (BRIDGE-03). The editor never computes a storefront tag itself; there is
+ * deliberately no second vocabulary to drift.
  */
-export const tenantWhere = (manifest: CollectionEditorManifest, tenant: { id: string } | null, id: string): Where => {
-    const keyField = manifest.routes.keyField ?? 'id';
-    switch (manifest.tenant.kind) {
-        case 'scoped':
-            if (!tenant) {
-                throw new MissingTenantForScopedCollectionError(manifest.collection);
-            }
-            return {
-                and: [{ tenant: { equals: tenant.id } }, { [keyField]: { equals: id } }],
-            };
-        case 'tenant-singleton':
-            if (!tenant) {
-                throw new MissingTenantForScopedCollectionError(manifest.collection);
-            }
-            return { tenant: { equals: tenant.id } };
-        case 'singleton-by-domain':
-            return {
-                or: [{ domain: { equals: id } }, { alternativeDomains: { contains: id } }],
-            };
-        case 'shared':
-            return { [keyField]: { equals: id } };
-    }
-};
+export { type CmsTenant, cmsCacheSchema, cmsTenantRootTags } from '../cache-descriptor';
 
 /**
- * Arguments for {@link revalidateForManifest}. Accepts an injected
- * `revalidatePath` so the helper is callable from tests without importing
- * `next/cache`.
+ * Arguments for {@link refreshEditorPaths}. Accepts an injected `revalidatePath` so the helper is
+ * callable from tests without importing `next/cache`.
  *
  * @example
- * revalidateForManifest({ manifest: pagesEditor, domain: 'beta.test', doc, status: 'published', revalidatePath });
+ * refreshEditorPaths({ manifest: pagesEditor, domain: 'beta.test', doc, status: 'published', revalidatePath });
  */
-export type RevalidateForManifestArgs = {
+export type RefreshEditorPathsArgs = {
     manifest: CollectionEditorManifest;
     domain: string | null;
     doc: unknown;
@@ -66,21 +27,20 @@ export type RevalidateForManifestArgs = {
 };
 
 /**
- * Call `revalidatePath` for every path the manifest declares for this write.
+ * Refresh the ADMIN app's own manifest-declared routes (list pages, edit views) after a write.
  * No-op when `manifest.revalidate` is undefined.
  *
- * @param args - See {@link RevalidateForManifestArgs}.
+ * This is operator UX only — it never busts storefront caches. Storefront tags derive Convex-side
+ * from the publish hook (see the module re-export note above), so the published transition is the
+ * only thing that revalidates a storefront, and a draft/autosave save fires zero storefront
+ * revalidation by construction.
+ *
+ * @param args - See {@link RefreshEditorPathsArgs}.
  *
  * @example
- * revalidateForManifest({ manifest: pagesEditor, domain, doc, status: 'published', revalidatePath });
+ * refreshEditorPaths({ manifest: pagesEditor, domain, doc, status: 'published', revalidatePath });
  */
-export const revalidateForManifest = ({
-    manifest,
-    domain,
-    doc,
-    status,
-    revalidatePath,
-}: RevalidateForManifestArgs): void => {
+export const refreshEditorPaths = ({ manifest, domain, doc, status, revalidatePath }: RefreshEditorPathsArgs): void => {
     const paths = manifest.revalidate?.({ domain, doc, status }) ?? [];
     for (const p of paths) revalidatePath(p);
 };

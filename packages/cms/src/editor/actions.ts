@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 
 import { parseFormPayload } from './form-payload';
 import type { CollectionEditorManifest, EditorAccess } from './manifest';
-import { revalidateForManifest } from './revalidate';
+import { refreshEditorPaths } from './revalidate';
 import type { EditorConvexBridge, EditorDocumentTarget, EditorRuntime } from './runtime';
 
 export type { EditorConvexBridge, EditorDocumentTarget } from './runtime';
@@ -122,34 +122,34 @@ export const createCollectionEditorActions = (
             });
             // Storefront caches bust via the Convex publish hook; this only refreshes the admin's
             // own manifest-declared paths (list pages, edit views) for the operator.
-            revalidateForManifest({ manifest, domain, doc: { id: documentId }, status: 'published', revalidatePath });
+            refreshEditorPaths({ manifest, domain, doc: { id: documentId }, status: 'published', revalidatePath });
         },
         async create(domain, formData, locale) {
             await assertAccess(domain, manifest.access.create);
             const data = parseFormPayload(formData);
             const { documentId } = await bridge().create({ collection: manifest.collection, data, locale });
-            revalidateForManifest({ manifest, domain, doc: { id: documentId }, status: 'draft', revalidatePath });
+            refreshEditorPaths({ manifest, domain, doc: { id: documentId }, status: 'draft', revalidatePath });
             return { id: documentId };
         },
         async delete(domain, id) {
             await assertAccess(domain, manifest.access.delete);
             await bridge().deleteDocument({ documentId: id });
-            revalidateForManifest({ manifest, domain, doc: { id }, status: 'published', revalidatePath });
+            refreshEditorPaths({ manifest, domain, doc: { id }, status: 'published', revalidatePath });
         },
         async bulkDelete(domain, ids) {
             await assertAccess(domain, manifest.access.delete);
             await bridge().bulkDelete({ documentIds: ids });
-            revalidateForManifest({ manifest, domain, doc: { ids }, status: 'published', revalidatePath });
+            refreshEditorPaths({ manifest, domain, doc: { ids }, status: 'published', revalidatePath });
         },
         async bulkPublish(domain, ids) {
             await assertAccess(domain, manifest.access.update);
             await bridge().bulkPublish({ documentIds: ids });
-            revalidateForManifest({ manifest, domain, doc: { ids }, status: 'published', revalidatePath });
+            refreshEditorPaths({ manifest, domain, doc: { ids }, status: 'published', revalidatePath });
         },
         async restoreVersion(domain, id, versionId) {
             await assertAccess(domain, manifest.access.update);
             await bridge().restoreVersion({ versionId });
-            revalidateForManifest({ manifest, domain, doc: { id }, status: 'draft', revalidatePath });
+            refreshEditorPaths({ manifest, domain, doc: { id }, status: 'draft', revalidatePath });
         },
     };
 };
