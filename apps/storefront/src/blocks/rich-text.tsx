@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 import { Content as ContentContainer } from '@/components/typography/content';
 import { cn } from '@/utils/tailwind';
 import type { BlockContext } from './context';
-import { isRichTextEmpty, type LexicalRoot, RichText } from './rich-text-renderer';
+import { isRichTextEmpty, RichText, type RichTextDocument } from './rich-text-renderer';
 import type { RichTextBlockNode } from './types';
 
 /**
@@ -11,7 +11,7 @@ import type { RichTextBlockNode } from './types';
  * `ContentBlock` (default rich text) and `CollapsibleText` (expand/collapse)
  * — into one block, gated by `collapsible`.
  *
- * The Lexical document is rendered via the local `RichText` renderer
+ * The ProseMirror document is rendered via the local `RichText` renderer
  * inside the shared `Content` typography wrapper so prose styling matches
  * the rest of the storefront.
  */
@@ -22,7 +22,7 @@ export const RichTextBlock = ({
     block: RichTextBlockNode;
     context: BlockContext;
 }): JSX.Element | null => {
-    const body = block.body as LexicalRoot;
+    const body = block.body as RichTextDocument;
     if (isRichTextEmpty(body)) return null;
 
     if (block.collapsible) {
@@ -68,7 +68,7 @@ export const RichTextBlock = ({
 RichTextBlock.displayName = 'Nordcom.Blocks.RichText';
 
 /**
- * Loading placeholder for the rich-text block. The Lexical body isn't
+ * Loading placeholder for the rich-text block. The rich-text body isn't
  * available pre-load, so render a 3-row paragraph stack at the same prose
  * width / spacing as the live block. For the collapsible variant we
  * preserve the summary chrome (chevron + label slot) since that's the

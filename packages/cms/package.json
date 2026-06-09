@@ -99,6 +99,10 @@
         "./editor/manifests": [
             "./src/editor/manifests/index.ts",
             "./dist/editor/manifests/index.js"
+        ],
+        "./editor/richtext": [
+            "./src/editor/richtext/index.ts",
+            "./dist/editor/richtext/index.js"
         ]
     },
     "scripts": {

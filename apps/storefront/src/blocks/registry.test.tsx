@@ -47,7 +47,7 @@ const SAMPLE_NODES: Record<BlockType, BlockNode> = {
     overview: { blockType: 'overview', source: 'collection', collectionHandle: 'sample', limit: 8 },
     'rich-text': {
         blockType: 'rich-text',
-        body: { root: { children: [{ type: 'paragraph', children: [{ type: 'text', text: 'Rich body' }] }] } },
+        body: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Rich body' }] }] },
     },
     vendors: { blockType: 'vendors', maxVendors: 8 },
 };

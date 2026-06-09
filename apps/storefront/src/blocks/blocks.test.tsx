@@ -148,7 +148,7 @@ describe('Blocks.Skeleton dispatcher', () => {
                     [
                         { blockType: 'alert', severity: 'info', title: 't' },
                         { blockType: 'banner', heading: 'h', alignment: 'center' },
-                        { blockType: 'rich-text', body: { root: { children: [] } } },
+                        { blockType: 'rich-text', body: { type: 'doc', content: [{ type: 'paragraph' }] } },
                     ] as BlockNode[]
                 }
                 context={ctx}
