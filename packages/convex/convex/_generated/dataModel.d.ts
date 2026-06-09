@@ -224,6 +224,41 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  cmsMediaDerivatives: {
+    document: {
+      createdAt: number;
+      height?: number;
+      mediaId: Id<"cmsMedia">;
+      shopId: Id<"shops">;
+      size: "thumbnail" | "card" | "feature" | "hero";
+      status: "pending" | "ready";
+      storageId?: Id<"_storage">;
+      updatedAt: number;
+      width?: number;
+      _id: Id<"cmsMediaDerivatives">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "height"
+      | "mediaId"
+      | "shopId"
+      | "size"
+      | "status"
+      | "storageId"
+      | "updatedAt"
+      | "width";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_media: ["mediaId", "size", "_creationTime"];
+      by_shop: ["shopId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   cmsRichTextDocuments: {
     document: {
       documentId: string;

@@ -3,6 +3,7 @@ import { ConvexError, v } from 'convex/values';
 
 import type { Doc } from '../_generated/dataModel';
 import { tenantMutation, tenantQuery } from '../lib/tenant';
+import { scheduleDerivativePlan } from './media_derivatives';
 
 /**
  * Stable string codes carried on every {@link ConvexError} the media storage layer throws, so call
@@ -47,10 +48,12 @@ export function isAllowedMediaMimeType(mimeType: string): boolean {
 /**
  * Projects a `cmsMedia` row onto the frozen `Media` read contract (`@nordcom/commerce-cms/types`,
  * the CMSDESC-02 generated shape). Storage fields are populated from the row; `url`/`thumbnailURL`
- * stay `null` until the CDN/consumption layer (CMSMEDIA-03) and `width`/`height`/`focalX`/`focalY`
- * stay `null` until the derivative pass (CMSMEDIA-02) fills the placeholder columns. `sizes` is
- * omitted entirely for the same reason. The `Media` return annotation is the compile-time contract
- * gate: drift between this projection and the frozen type fails `tsc`.
+ * stay `null` until the CDN/consumption layer (CMSMEDIA-03). `focalX`/`focalY` are set at finalize
+ * for images (default center) and `width`/`height` once the Node-side derivative pass (CMSMEDIA-02)
+ * reports the original's dimensions through `cms/media_derivatives:saveDerivatives`; non-image rows
+ * keep them `null`. `sizes` is omitted — per-size metadata is queryable via
+ * `cms/media_derivatives:byMedia` instead. The `Media` return annotation is the compile-time
+ * contract gate: drift between this projection and the frozen type fails `tsc`.
  *
  * @param doc - The tenant-scoped media row.
  * @returns The `Media`-shaped wire object (Convex `_id`/`shopId` surfaced as plain strings).
@@ -92,8 +95,12 @@ export const generateUploadUrl = tenantMutation({
 });
 
 /**
- * Finalizes an upload: verifies the stored blob exists, enforces the mime allowlist, and persists
- * the tenant-scoped `cmsMedia` row referencing the original asset.
+ * Finalizes an upload: verifies the stored blob exists, enforces the mime allowlist, persists the
+ * tenant-scoped `cmsMedia` row referencing the original asset, and — for images — schedules the
+ * derivative plan in the same transaction (`scheduleDerivativePlan`: one `pending`
+ * `cmsMediaDerivatives` row per frozen size plus the clamped focal point, default center, on the
+ * media row; the Node-side sharp pass fulfills the plan via `cms/media_derivatives:saveDerivatives`).
+ * Non-image uploads schedule zero derivative work.
  *
  * The allowlist runs against the blob's RECORDED storage metadata (`ctx.db.system.get` on
  * `_storage`) in preference to the caller's `mimeType` claim — the storage-URL upload cannot trust
@@ -116,8 +123,9 @@ export const finalizeUpload = tenantMutation({
         mimeType: v.string(),
         alt: v.string(),
         caption: v.optional(v.string()),
+        focal: v.optional(v.object({ x: v.number(), y: v.number() })),
     },
-    handler: async (ctx, { storageId, filename, mimeType, alt, caption }): Promise<Media> => {
+    handler: async (ctx, { storageId, filename, mimeType, alt, caption, focal }): Promise<Media> => {
         const stored = await ctx.db.system.get(storageId);
         if (!stored) {
             throw new ConvexError({
@@ -145,6 +153,12 @@ export const finalizeUpload = tenantMutation({
             ...(caption === undefined ? {} : { caption }),
             createdAt: now,
             updatedAt: now,
+        });
+
+        await scheduleDerivativePlan(ctx, {
+            mediaId,
+            mimeType: effectiveMimeType,
+            ...(focal === undefined ? {} : { focal }),
         });
 
         const doc = await ctx.db.get(mediaId);

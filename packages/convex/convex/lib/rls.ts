@@ -157,6 +157,14 @@ export function tenantRules(shopId: Id<'shops'>): Rules<TenantRuleCtx, DataModel
             modify: ownedByShopId,
             insert: ownedByShopId,
         },
+        // The CMSMEDIA-02 per-(asset, size) derivative ledger rides the same `v.id('shops')`
+        // foreign key as its `cmsMedia` parent, so it joins the tenant tier under the identical
+        // scoped predicate.
+        cmsMediaDerivatives: {
+            read: ownedByShopId,
+            modify: ownedByShopId,
+            insert: ownedByShopId,
+        },
     };
 }
 

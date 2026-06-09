@@ -117,6 +117,7 @@ export declare const api: {
           alt: string;
           caption?: string;
           filename: string;
+          focal?: { x: number; y: number };
           mimeType: string;
           storageId: Id<"_storage">;
         },
@@ -124,6 +125,30 @@ export declare const api: {
       >;
       generateUploadUrl: FunctionReference<"mutation", "public", {}, any>;
       list: FunctionReference<"query", "public", { limit?: number }, any>;
+    };
+    media_derivatives: {
+      byMedia: FunctionReference<
+        "query",
+        "public",
+        { mediaId: Id<"cmsMedia"> },
+        any
+      >;
+      saveDerivatives: FunctionReference<
+        "mutation",
+        "public",
+        {
+          derivatives: Array<{
+            height: number;
+            size: "thumbnail" | "card" | "feature" | "hero";
+            storageId: Id<"_storage">;
+            width: number;
+          }>;
+          focal?: { x: number; y: number };
+          mediaId: Id<"cmsMedia">;
+          original: { height: number; width: number };
+        },
+        any
+      >;
     };
     prosemirror: {
       getSnapshot: FunctionReference<

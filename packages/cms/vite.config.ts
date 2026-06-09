@@ -26,6 +26,9 @@ export default mergeConfig(
                     'react',
                     'react-dom',
                     'server-only',
+                    // sharp is a native Node module the derivative generator loads lazily; bundling
+                    // it would drag .node binaries into the library build.
+                    'sharp',
                     /^@payloadcms\//,
                     /^@faceless-ui\//,
                     /^next($|\/)/,

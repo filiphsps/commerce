@@ -990,6 +990,9 @@ importers:
       server-only:
         specifier: 0.0.1
         version: 0.0.1
+      sharp:
+        specifier: 0.34.5
+        version: 0.34.5
       tailwind-merge:
         specifier: 3.6.0
         version: 3.6.0

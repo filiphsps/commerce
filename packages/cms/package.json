@@ -107,6 +107,14 @@
         "./editor/richtext": [
             "./src/editor/richtext/index.ts",
             "./dist/editor/richtext/index.js"
+        ],
+        "./media": [
+            "./src/media/sizes.ts",
+            "./dist/media/sizes.js"
+        ],
+        "./media/derive": [
+            "./src/media/derive.ts",
+            "./dist/media/derive.js"
         ]
     },
     "scripts": {
@@ -133,7 +141,8 @@
         "@tagtree/next": "workspace:*",
         "@tagtree/payload": "workspace:*",
         "clsx": "2.1.1",
-        "server-only": "0.0.1"
+        "server-only": "0.0.1",
+        "sharp": "0.34.5"
     },
     "peerDependencies": {
         "@faceless-ui/modal": "3.0.0",
