@@ -10,7 +10,7 @@ import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
 import type { ShopResolution } from '@/middleware/shop-cache';
-import { resolveShop, resolveShopLocales } from '@/middleware/shop-cache';
+import { invalidateShop, MAX_ENTRIES, resolveShop, resolveShopLocales } from '@/middleware/shop-cache';
 import type { Code } from '@/utils/locale';
 
 let cachedDevShopDomain: Promise<string> | undefined;
@@ -18,12 +18,13 @@ let cachedDevShopDomain: Promise<string> | undefined;
 /**
  * Resolves the shop domain that `*.storefront.localhost` should rewrite to
  * during local dev. Honours `STOREFRONT_DEV_SHOP` when set; otherwise picks
- * the first Shop present in MongoDB — which, after `pnpm predev`, is the
- * canonical seed (`nordcom-demo-shop.com`). The result is cached for the
- * process lifetime so we don't re-query Mongo on every request.
+ * the first Shop the Convex-backed Shop service returns — which, after
+ * `pnpm predev`, is the canonical seed (`nordcom-demo-shop.com`). The result
+ * is cached for the process lifetime so we don't re-query the backend on
+ * every request.
  *
  * @returns The resolved dev shop domain, falling back to a hard-coded
- *          beta tenant if neither env nor Mongo provides one.
+ *          beta tenant if neither env nor the backend provides one.
  */
 async function resolveDevShopDomain(): Promise<string> {
     if (process.env.STOREFRONT_DEV_SHOP) return process.env.STOREFRONT_DEV_SHOP;
@@ -71,12 +72,56 @@ async function hostnameFromRequest(req: NextRequest): Promise<string> {
 }
 
 /**
+ * Last summary observed per hostname, kept so a cache reload can detect the
+ * shop's routing identity (canonical domain or default locale) changing.
+ * Bounded to the same entry budget as the shop cache so a long-lived process
+ * serving many tenants stays flat; only resolvable shops are ever recorded.
+ */
+const lastSeenResolutions = new Map<string, ShopResolution>();
+
+/**
+ * Records the freshly loaded summary for a hostname and, when it differs from
+ * the previously observed one, drops both cached views via
+ * {@link invalidateShop}. The locale list is cached five times longer than the
+ * summary (300 s vs 60 s), so without this a shop whose domain or default
+ * locale changed would keep serving the stale locale set until that longer TTL
+ * lapsed; invalidating here makes the very next resolution reload it.
+ *
+ * @param hostname - The request hostname the summary was loaded for.
+ * @param resolution - The summary that just came back from the Shop service.
+ */
+function trackResolutionChange(hostname: string, resolution: ShopResolution): void {
+    const previous = lastSeenResolutions.get(hostname);
+    if (previous && (previous.domain !== resolution.domain || previous.defaultLocale !== resolution.defaultLocale)) {
+        invalidateShop(hostname);
+    }
+    // Re-insert at the tail so eviction below drops the least-recently-loaded key.
+    lastSeenResolutions.delete(hostname);
+    lastSeenResolutions.set(hostname, resolution);
+    while (lastSeenResolutions.size > MAX_ENTRIES) {
+        const oldest = lastSeenResolutions.keys().next().value;
+        if (oldest === undefined) break;
+        lastSeenResolutions.delete(oldest);
+    }
+}
+
+/**
+ * Drops the per-hostname change-tracking state behind {@link trackResolutionChange}.
+ * Test-only companion to `clearShopCache()` — module state would otherwise leak
+ * a previous test's resolution into the change detector.
+ */
+export function resetShopResolutionTracking(): void {
+    lastSeenResolutions.clear();
+}
+
+/**
  * Resolves (and process-caches) the existence + default-locale summary for a
- * hostname. The lookup masks credentials (`sensitiveData: false`) because this
- * validation path only reads `domain` and `i18n.defaultLocale`; the credential
- * doc is fetched separately, only when a cookie-less request must build a
- * Shopify client (see {@link resolveLocaleCodes}). An unknown host rejects so it
- * is only briefly negatively cached, keeping newly added tenants resolvable.
+ * hostname via the Convex-backed Shop service. The lookup masks credentials
+ * (`sensitiveData: false`) because this validation path only reads `domain`
+ * and `i18n.defaultLocale`; the credential doc is fetched separately, only
+ * when a cookie-less request must build a Shopify client (see
+ * {@link resolveLocaleCodes}). An unknown host rejects so it is only briefly
+ * negatively cached, keeping newly added tenants resolvable.
  *
  * @param hostname - The resolved request hostname to look up.
  * @returns The cached or freshly loaded shop summary.
@@ -95,7 +140,9 @@ function resolveShopSummary(hostname: string): Promise<ShopResolution> {
         if (!shop.domain) {
             throw new NotFoundError(`"Shop" with the handle "${hostname}" cannot be found`);
         }
-        return { domain: shop.domain, defaultLocale: shop.i18n?.defaultLocale ?? 'en-US' };
+        const resolution: ShopResolution = { domain: shop.domain, defaultLocale: shop.i18n?.defaultLocale ?? 'en-US' };
+        trackResolutionChange(hostname, resolution);
+        return resolution;
     });
 }
 
@@ -118,10 +165,10 @@ function resolveLocaleCodes(hostname: string): Promise<string[]> {
 
 /**
  * Resolves the canonical shop domain from a request, verifying it exists in
- * the MongoDB `shops` collection before returning it. Backed by a process-level
- * cache so the validation lookup does not hit Mongo on every matched request.
+ * the Convex `shops` table before returning it. Backed by a process-level
+ * cache so the validation lookup does not hit Convex on every matched request.
  *
- * @param req - The incoming Next.js edge request.
+ * @param req - The incoming request (the proxy runs on the Node.js runtime).
  * @returns The verified shop domain string.
  * @throws {NotFoundError} When no shop with the resolved hostname exists in the database.
  */

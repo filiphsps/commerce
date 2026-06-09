@@ -30,14 +30,17 @@ vi.mock('@/middleware/common-validations', async (importActual) => importActual(
 // Import after vi.mock declarations so the mocked modules are resolved first.
 import { Shop } from '@nordcom/commerce-db';
 import { getGlobalServiceDomain } from '@/api/shop';
+import { LocalesApi } from '@/api/store';
 import { clearShopCache } from '@/middleware/shop-cache';
-import { getHostname, storefront } from '@/middleware/storefront';
+import { getHostname, resetShopResolutionTracking, storefront } from '@/middleware/storefront';
 
-// The middleware memoizes hostname resolution in a process-level cache. Reset it
-// before every test so cases that reuse a hostname still exercise the (mocked)
-// lookup instead of serving a sibling test's cached result.
+// The middleware memoizes hostname resolution in a process-level cache (plus a
+// change-tracking map for invalidation). Reset both before every test so cases
+// that reuse a hostname still exercise the (mocked) lookup instead of serving
+// a sibling test's cached result.
 beforeEach(() => {
     clearShopCache();
+    resetShopResolutionTracking();
 });
 
 // ---------------------------------------------------------------------------
@@ -110,8 +113,9 @@ describe('getHostname', () => {
         await getHostname(req);
 
         // The middleware ignores the subdomain and resolves to the first shop
-        // present in MongoDB — i.e. whatever predev-mongo seeded. Guard against
-        // regressing back to slug extraction or the previous hard-coded fallback.
+        // the Convex-backed Shop service returns — i.e. whatever the dev seed
+        // inserted. Guard against regressing back to slug extraction or the
+        // previous hard-coded fallback.
         const calledWith = vi.mocked(Shop.findByDomain).mock.calls[0]?.[0];
         expect(calledWith).toBe('seeded-shop.example.com');
     });
@@ -262,5 +266,81 @@ describe('storefront middleware — happy path rewrite', () => {
         const rewriteTarget = res.headers.get('x-middleware-rewrite');
         expect(rewriteTarget).toBeTruthy();
         expect(rewriteTarget).toContain('nordcom-demo-shop.com');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// describe: storefront — cache contract over the Convex seam (SFREAD-04)
+// ---------------------------------------------------------------------------
+
+describe('storefront middleware — shop-cache contract', () => {
+    beforeEach(() => {
+        vi.mocked(getGlobalServiceDomain).mockReturnValue('shops.nordcom.io');
+        vi.mocked(Shop.findByDomain).mockResolvedValue(MOCK_SHOP as any);
+        vi.mocked(LocalesApi).mockResolvedValue([{ code: 'en-US' }] as any);
+    });
+
+    afterEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('serves repeat requests for a hostname from the cache with zero network calls', async () => {
+        // Cookie-less request to `/` exercises BOTH cached views: the summary
+        // (existence + default locale) and the locale-code list.
+        await storefront(makeRequest('nordcom-demo-shop.com', '/'));
+        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalled();
+        expect(vi.mocked(LocalesApi)).toHaveBeenCalledTimes(1);
+
+        // The Convex seam (ConvexHttpClient) and the Shopify locale round-trip
+        // both ride on `fetch`; a warm cache hit must reach NEITHER the mocked
+        // service seam NOR the network at all.
+        vi.mocked(Shop.findByDomain).mockClear();
+        vi.mocked(LocalesApi).mockClear();
+        const fetchSpy = vi.spyOn(globalThis, 'fetch');
+
+        try {
+            await storefront(makeRequest('nordcom-demo-shop.com', '/'));
+
+            expect(vi.mocked(Shop.findByDomain)).not.toHaveBeenCalled();
+            expect(vi.mocked(LocalesApi)).not.toHaveBeenCalled();
+            expect(fetchSpy).not.toHaveBeenCalled();
+        } finally {
+            fetchSpy.mockRestore();
+        }
+    });
+
+    it('invalidates the cached locale list when a reload reveals a default-locale change', async () => {
+        // The canonical domain must match the request host: the middleware
+        // re-keys the post-getHostname resolutions on the canonical domain, so
+        // a mismatched fixture would spread the two cached views across two
+        // keys and never hit the change-detection path under test.
+        const localeShop = { ...MOCK_SHOP, domain: 'locale-change.example.com' };
+        vi.mocked(Shop.findByDomain).mockResolvedValue(localeShop as any);
+
+        // Only fake `Date` — the TTL cache gates purely on `Date.now()`, and
+        // faking timers wholesale would stall unrelated async machinery.
+        vi.useFakeTimers({ toFake: ['Date'] });
+        try {
+            vi.setSystemTime(new Date('2026-06-09T12:00:00Z'));
+            await storefront(makeRequest('locale-change.example.com', '/'));
+            expect(vi.mocked(LocalesApi)).toHaveBeenCalledTimes(1);
+
+            // 61 s later the summary TTL (60 s) has lapsed while the locale
+            // list TTL (300 s) has not — without explicit invalidation the
+            // stale locale set would keep being served from its own entry.
+            vi.setSystemTime(new Date('2026-06-09T12:01:01Z'));
+            vi.mocked(Shop.findByDomain).mockResolvedValue({
+                ...localeShop,
+                i18n: { defaultLocale: 'de-DE' },
+            } as any);
+
+            await storefront(makeRequest('locale-change.example.com', '/'));
+
+            // The summary reload observed the locale change and invalidated
+            // both views, so the locale list refetches within this request.
+            expect(vi.mocked(LocalesApi)).toHaveBeenCalledTimes(2);
+        } finally {
+            vi.useRealTimers();
+        }
     });
 });
