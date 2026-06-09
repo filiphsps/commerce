@@ -683,6 +683,9 @@ importers:
       flags:
         specifier: 4.0.6
         version: 4.0.6(@opentelemetry/api@1.9.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.100.0))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      jose:
+        specifier: 6.2.3
+        version: 6.2.3
       lodash.debounce:
         specifier: 4.0.8
         version: 4.0.8

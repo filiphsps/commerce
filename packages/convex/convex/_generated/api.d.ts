@@ -20,6 +20,11 @@ import type { GenericId as Id } from "convex/values";
  * ```
  */
 export declare const api: {
+  account: {
+    profile: {
+      get: FunctionReference<"query", "public", {}, any>;
+    };
+  };
   cms: {
     actions: {
       bulkDelete: FunctionReference<

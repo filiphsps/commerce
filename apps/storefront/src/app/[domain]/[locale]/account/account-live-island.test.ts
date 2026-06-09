@@ -106,8 +106,24 @@ describe('accountProfileQueryReference', () => {
 });
 
 describe('mintAccountConvexToken', () => {
-    it('issues no token until the storefront RS256 mint endpoint lands (snapshot-only by contract)', async () => {
+    it('issues no token while the RS256 signing env is unconfigured (snapshot-only by contract)', async () => {
         await expect(mintAccountConvexToken({ email: 'jane@example.com' })).resolves.toBeNull();
+    });
+
+    it('mints the customer JWT in-process once the signing env is configured', async () => {
+        const { generateKeyPairSync } = await import('node:crypto');
+        const pem = generateKeyPairSync('rsa', { modulusLength: 2048 })
+            .privateKey.export({ type: 'pkcs8', format: 'pem' })
+            .toString();
+        vi.stubEnv('CONVEX_AUTH_PRIVATE_KEY', pem);
+        vi.stubEnv('CONVEX_AUTH_ISSUER', 'https://storefront.test.nordcom.io');
+        vi.stubEnv('CONVEX_AUTH_APPLICATION_ID', 'convex-storefront');
+        try {
+            const token = await mintAccountConvexToken({ email: 'jane@example.com', id: 'customer-1' });
+            expect(token?.split('.')).toHaveLength(3);
+        } finally {
+            vi.unstubAllEnvs();
+        }
     });
 });
 

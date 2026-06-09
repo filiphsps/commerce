@@ -9,6 +9,7 @@ import {
     type AccountProfileQuery,
     type AccountProfileSnapshot,
 } from '@/components/convex/account-profile-contract';
+import { type ConvexCustomerClaims, mintConvexCustomerToken } from '@/utils/convex-token';
 
 /**
  * Env values that flip the per-surface kill switch OFF. Anything else —
@@ -56,21 +57,22 @@ export function toAccountProfileSnapshot(session: Session): AccountProfileSnapsh
  * (`apps/admin/src/lib/convex-auth.ts`). Returning `null` means "no token can
  * be issued" and downgrades the surface to the read-only snapshot.
  */
-export type ConvexCustomerTokenMinter = (customer: { email: string; name?: string | null }) => Promise<string | null>;
+export type ConvexCustomerTokenMinter = (customer: ConvexCustomerClaims) => Promise<string | null>;
 
 /**
- * Default {@link ConvexCustomerTokenMinter}: always `null` for now. The
- * NextAuth session cookie is an encrypted JWE Convex cannot verify, and the
- * RS256 signing key + `/api/auth/convex-token/` mint endpoint (the
- * CONVEXCORE-14 fetcher's server counterpart) have not landed in the
- * storefront yet — so until they do, the surface renders the snapshot-only
- * branch by contract instead of preloading against a token that cannot
- * validate. The seam keeps `preloadAccountProfile` end-to-end testable and
- * live-ready the moment a real minter is injected.
+ * Default {@link ConvexCustomerTokenMinter}: signs the customer's RS256 JWT
+ * in-process via {@link mintConvexCustomerToken} — this module already runs
+ * server-side inside the dynamic PPR hole, so it shares the signing key with
+ * the `/api/auth/convex-token/` endpoint (the browser fetcher's mint path)
+ * instead of round-tripping its own HTTP route. Returns `null` whenever
+ * `CONVEX_AUTH_PRIVATE_KEY`/`CONVEX_AUTH_ISSUER`/`CONVEX_AUTH_APPLICATION_ID`
+ * are unconfigured or signing fails, downgrading the surface to the read-only
+ * snapshot by contract.
  *
- * @returns Always `null` (no token issuable yet).
+ * @param customer - The session-derived customer identity to mint for.
+ * @returns The signed JWT, or `null` when no token can be issued.
  */
-export const mintAccountConvexToken: ConvexCustomerTokenMinter = async () => null;
+export const mintAccountConvexToken: ConvexCustomerTokenMinter = async (customer) => mintConvexCustomerToken(customer);
 
 /**
  * The `preloadQuery` slice {@link preloadAccountProfile} consumes, narrowed to
@@ -136,7 +138,12 @@ export async function preloadAccountProfile(
         return null;
     }
 
-    const token = await mint({ email, name: session.user?.name ?? null });
+    const token = await mint({
+        email,
+        name: session.user?.name ?? null,
+        id: session.user?.id ?? null,
+        image: session.user?.image ?? null,
+    });
     if (!token) {
         return null;
     }
