@@ -1,4 +1,3 @@
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { allBlocks } from '../blocks';
@@ -24,7 +23,7 @@ export const collectionMetadata: CollectionConfig = {
     },
     fields: toFieldConfigs(
         { name: 'shopifyHandle', type: 'text', required: true, index: true },
-        { name: 'descriptionOverride', type: 'richText', localized: true, editor: lexicalEditor({}) },
+        { name: 'descriptionOverride', type: 'json', localized: true },
         { name: 'blocks', type: 'blocks', blocks: allBlocks },
         seoGroup(),
     ),

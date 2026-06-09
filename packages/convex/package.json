@@ -57,6 +57,7 @@
     ],
     "dependencies": {
         "@convex-dev/action-retrier": "0.3.0",
+        "@convex-dev/prosemirror-sync": "0.2.4",
         "@nordcom/commerce-cms": "workspace:*",
         "@tagtree/core": "workspace:*",
         "convex": "1.39.1",

@@ -461,7 +461,7 @@ export interface Article {
     publishedAt?: string | null;
     cover?: (string | null) | Media;
     excerpt?: string | null;
-    body?: { root: { type: string; children: { type: any; version: number; [k: string]: unknown }[]; direction: ('ltr' | 'rtl') | null; format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''; indent: number; version: number }; [k: string]: unknown } | null;
+    body?: { [k: string]: unknown } | unknown[] | string | number | boolean | null;
     tags?: string[] | null;
     seo?: {
         title?: string | null;
@@ -478,7 +478,7 @@ export interface ProductMetadatum {
     id: string;
     tenant?: (string | null) | Shop;
     shopifyHandle: string;
-    descriptionOverride?: { root: { type: string; children: { type: any; version: number; [k: string]: unknown }[]; direction: ('ltr' | 'rtl') | null; format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''; indent: number; version: number }; [k: string]: unknown } | null;
+    descriptionOverride?: { [k: string]: unknown } | unknown[] | string | number | boolean | null;
     blocks?: Array<ColumnsBlock | AlertBlock | BannerBlock | CollectionBlock | HtmlBlock | MediaGridBlock | OverviewBlock | RichTextBlock | VendorsBlock> | null;
     seo?: {
         title?: string | null;
@@ -495,7 +495,7 @@ export interface CollectionMetadatum {
     id: string;
     tenant?: (string | null) | Shop;
     shopifyHandle: string;
-    descriptionOverride?: { root: { type: string; children: { type: any; version: number; [k: string]: unknown }[]; direction: ('ltr' | 'rtl') | null; format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''; indent: number; version: number }; [k: string]: unknown } | null;
+    descriptionOverride?: { [k: string]: unknown } | unknown[] | string | number | boolean | null;
     blocks?: Array<ColumnsBlock | AlertBlock | BannerBlock | CollectionBlock | HtmlBlock | MediaGridBlock | OverviewBlock | RichTextBlock | VendorsBlock> | null;
     seo?: {
         title?: string | null;
@@ -787,7 +787,7 @@ export interface OverviewBlock {
     blockType: 'overview';
 }
 export interface RichTextBlock {
-    body?: { root: { type: string; children: { type: any; version: number; [k: string]: unknown }[]; direction: ('ltr' | 'rtl') | null; format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''; indent: number; version: number }; [k: string]: unknown } | null;
+    body?: { [k: string]: unknown } | unknown[] | string | number | boolean | null;
     collapsible?: boolean | null;
     collapsedByDefault?: boolean | null;
     collapseLabel?: string | null;

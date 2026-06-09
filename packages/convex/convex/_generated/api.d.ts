@@ -42,6 +42,43 @@ export declare const api: {
         any
       >;
     };
+    prosemirror: {
+      getSnapshot: FunctionReference<
+        "query",
+        "public",
+        { id: string; version?: number },
+        { content: null } | { content: string; version: number }
+      >;
+      getSteps: FunctionReference<
+        "query",
+        "public",
+        { id: string; version: number },
+        any
+      >;
+      latestVersion: FunctionReference<
+        "query",
+        "public",
+        { id: string },
+        null | number
+      >;
+      submitSnapshot: FunctionReference<
+        "mutation",
+        "public",
+        { content: string; id: string; version: number },
+        null
+      >;
+      submitSteps: FunctionReference<
+        "mutation",
+        "public",
+        {
+          clientId: string | number;
+          id: string;
+          steps: Array<string>;
+          version: number;
+        },
+        any
+      >;
+    };
     secrets: {
       readMaskedShop: FunctionReference<"query", "public", {}, any>;
     };
@@ -154,4 +191,5 @@ export declare const internal: {
 
 export declare const components: {
   actionRetrier: import("@convex-dev/action-retrier/_generated/component.js").ComponentApi<"actionRetrier">;
+  prosemirrorSync: import("@convex-dev/prosemirror-sync/_generated/component.js").ComponentApi<"prosemirrorSync">;
 };

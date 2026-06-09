@@ -5,6 +5,7 @@ import { cmsContentTables } from './cms';
 import { cmsI18nTables } from './cms_i18n';
 import { cmsVersionTables } from './cmsVersions';
 import { revalidationTables } from './revalidation';
+import { cmsRichTextTables } from './cms_prosemirror';
 import { reviewsTables } from './reviews';
 import { shopTables } from './shops';
 
@@ -48,6 +49,7 @@ import { shopTables } from './shops';
 export const coreTables: Record<string, TableDefinition> = {
     ...authTables,
     ...cmsI18nTables,
+    ...cmsRichTextTables,
     ...cmsVersionTables,
     ...revalidationTables,
     ...reviewsTables,

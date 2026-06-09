@@ -1,7 +1,6 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { resendAdapter } from '@payloadcms/email-resend';
 import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { AuthStrategy, SanitizedConfig } from 'payload';
 import { buildConfig } from 'payload';
 import { allCollections, buildUsers } from '../collections';
@@ -225,7 +224,6 @@ export const buildPayloadConfig = async ({
             apiKey: process.env.RESEND_API_KEY || '',
         }),
 
-        editor: lexicalEditor({}),
         collections,
         localization: {
             locales,

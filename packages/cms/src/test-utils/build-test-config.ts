@@ -1,6 +1,5 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { SanitizedConfig } from 'payload';
 import { buildConfig } from 'payload';
 
@@ -48,7 +47,6 @@ export const buildTestConfig = async ({
     return buildConfig({
         secret: 'test',
         db: mongooseAdapter({ url: url.toString() }),
-        editor: lexicalEditor({}),
         collections: [shops, users, media, pages, articles, productMetadata, collectionMetadata],
         localization: { locales, defaultLocale, fallback: true },
         plugins: [

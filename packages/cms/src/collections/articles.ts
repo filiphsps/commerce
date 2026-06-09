@@ -1,4 +1,3 @@
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { localized, required, textareaField, textField } from '../descriptors';
@@ -33,9 +32,9 @@ export const articles: CollectionConfig = {
         { name: 'publishedAt', type: 'date', admin: { date: { pickerAppearance: 'dayAndTime' } } },
         imageField({ name: 'cover' }),
         localized(textareaField({ name: 'excerpt' })),
-        // `richText`/Lexical has no descriptor equivalent yet; kept raw with its
-        // `localized` flag intact so the localized-field set is preserved.
-        { name: 'body', type: 'richText', localized: true, editor: lexicalEditor({}) },
+        // Rich text is authored with ProseMirror/Tiptap (CMSRICH-01) and stored as ProseMirror
+        // JSON, so the body is a localized `json` field.
+        { name: 'body', type: 'json', localized: true },
         textField({ name: 'tags', hasMany: true }),
         seoGroup(),
     ),

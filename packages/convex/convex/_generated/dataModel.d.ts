@@ -182,6 +182,35 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  cmsRichTextDocuments: {
+    document: {
+      documentId: string;
+      fieldPath: string;
+      locale: string;
+      shopId: Id<"shops">;
+      syncId: string;
+      updatedAt: number;
+      _id: Id<"cmsRichTextDocuments">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "documentId"
+      | "fieldPath"
+      | "locale"
+      | "shopId"
+      | "syncId"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shopId", "_creationTime"];
+      by_sync_id: ["syncId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   cmsVersions: {
     document: {
       collection: string;

@@ -1,11 +1,15 @@
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { Block } from 'payload';
-import { checkboxField, condition, localized, textField } from '../descriptors';
+import { checkboxField, condition, jsonField, localized, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 
 /**
- * Payload block definition for a localized Lexical rich-text body. Optionally
- * collapsible with a custom label for accordion-style presentation.
+ * Payload block definition for a localized rich-text body. Optionally collapsible with a custom label
+ * for accordion-style presentation.
+ *
+ * The body is modeled as a localized `json` field: rich text is authored with ProseMirror/Tiptap
+ * (CMSRICH-01) and stored as ProseMirror JSON, so the block no longer pulls in the dropped Payload
+ * rich-text editor dependency. The native editor's rich-text widget renders this descriptor
+ * (`json`) and binds it to the prosemirror-sync document backing its localized bucket.
  *
  * @example
  *   blocks: [richTextBlock]
@@ -14,9 +18,7 @@ export const richTextBlock: Block = {
     slug: 'rich-text',
     interfaceName: 'RichTextBlock',
     fields: toFieldConfigs(
-        // `richText`/Lexical has no descriptor equivalent yet; kept raw with its
-        // `localized` flag intact so the localized-field set is preserved.
-        { name: 'body', type: 'richText', localized: true, editor: lexicalEditor({}) },
+        localized(jsonField({ name: 'body' })),
         checkboxField({ name: 'collapsible', defaultValue: false }),
         condition(
             checkboxField({ name: 'collapsedByDefault', defaultValue: false }),

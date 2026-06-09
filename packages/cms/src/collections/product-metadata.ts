@@ -1,4 +1,3 @@
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { allBlocks } from '../blocks';
@@ -30,7 +29,7 @@ export const productMetadata: CollectionConfig = {
             index: true,
             admin: { description: 'Shopify product handle this CMS metadata overlays' },
         },
-        { name: 'descriptionOverride', type: 'richText', localized: true, editor: lexicalEditor({}) },
+        { name: 'descriptionOverride', type: 'json', localized: true },
         { name: 'blocks', type: 'blocks', blocks: allBlocks },
         seoGroup(),
     ),
