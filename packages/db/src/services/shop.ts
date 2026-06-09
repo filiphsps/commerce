@@ -209,7 +209,7 @@ export class ShopService extends Service<ShopBase> {
     // Override the base method with a narrowed return: the base resolves `Promise<ShopBase | null>`;
     // here we narrow to `Promise<OnlineShop>` (always resolves or throws). Cast through the
     // intersection to satisfy the override checker — the frozen snapshot pins this exact shape.
-    public override findById(id: string, ..._rest: never[]): Promise<OnlineShop> & Promise<ShopBase | null> {
+    public override findById(id: string, ...[]: never[]): Promise<OnlineShop> & Promise<ShopBase | null> {
         return (async () => {
             const payload = await convexServerQuery<ShopReadPayload | null>('db/shops:byId', { id });
             if (!payload) throw new UnknownShopIdError(id);

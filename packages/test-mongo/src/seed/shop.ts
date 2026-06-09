@@ -1,5 +1,4 @@
-import { ShopSchema } from '@nordcom/commerce-db/models/shop';
-import { createConnection, type Schema } from 'mongoose';
+import { createConnection, Schema } from 'mongoose';
 
 /**
  * Customization knobs for {@link seedShop}. All fields are optional —
@@ -47,13 +46,15 @@ export async function seedShop(uri: string, opts: SeedShopOptions = {}): Promise
     console.info(`[seedShop] connecting to mongo for tenant domain=${domain} …`);
     const conn = await createConnection(uri, { bufferCommands: false }).asPromise();
     try {
-        // The production `ShopSchema` is typed as `Schema<ShopBase>`. `ShopBase`
-        // models the live runtime shape (post-CMS sync) and omits a few fields
-        // the raw create payload uses (e.g. `contentProvider`), so the typed
-        // overload of `conn.model().create()` rejects the seed object. Cast
-        // here to keep the schema-as-source-of-truth principle without
-        // broadening the production types just for a test fixture.
-        const ShopModel = conn.model('Shop', ShopSchema as unknown as Schema);
+        // The production runtime `ShopSchema` was removed when packages/db was
+        // re-homed onto Convex (models are now mongoose-free type modules), but
+        // the Mongo seed still feeds the not-yet-cut-over Payload CMS paths. A
+        // loose local schema persists the fixture verbatim — the seed object
+        // itself is the source of truth until TEARDOWN-03 deletes this package.
+        const ShopModel = conn.model(
+            'Shop',
+            new Schema<Record<string, unknown>>({}, { strict: false, timestamps: true }),
+        );
         const existing = await ShopModel.findOne({ domain }).lean().exec();
         if (existing) {
             console.info(`[seedShop] tenant ${domain} already present (id=${existing._id}) — skipping insert`);
