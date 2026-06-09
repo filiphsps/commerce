@@ -2,6 +2,7 @@ import type { TableDefinition } from 'convex/server';
 
 import { authTables } from './auth';
 import { cmsContentTables } from './cms';
+import { cmsI18nTables } from './cms_i18n';
 import { cmsVersionTables } from './cmsVersions';
 import { revalidationTables } from './revalidation';
 import { reviewsTables } from './reviews';
@@ -38,9 +39,15 @@ import { shopTables } from './shops';
  * `v.id('shops')` foreign key, so they join the `v.id('shops')`-keyed tenant tier the RLS rule set
  * (`lib/rls.ts`) range-scopes, rather than the forward-referenced `shop: v.string()` descriptor
  * tables.
+ *
+ * `cmsI18nTables` (the `cms_i18n` shred side table holding large localized richtext/blocks chunks for
+ * `cmsDocuments` rows) joins this core slot for the same reason: it keys on a real
+ * `v.id('cmsDocuments')` foreign key into the id-keyed tenant tier, not the descriptor tables'
+ * `shop: v.string()`.
  */
 export const coreTables: Record<string, TableDefinition> = {
     ...authTables,
+    ...cmsI18nTables,
     ...cmsVersionTables,
     ...revalidationTables,
     ...reviewsTables,

@@ -1,11 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
     BCP47_REGION_TAGGED_LOCALES,
+    DEFAULT_MAX_LOCALES_PER_WRITE,
     filterAvailableLocales,
     ISO_639_1_LOCALES,
     isValidLocale,
     resolveCmsDefaultLocale,
     resolveCmsLocales,
+    resolveMaxLocalesPerWrite,
 } from './locales';
 
 describe('cms localization defaults', () => {
@@ -95,6 +97,24 @@ describe('cms localization defaults', () => {
     it('filterAvailableLocales fails open when no tenant locale overlaps the available list', () => {
         const available = [{ code: 'en-US' }, { code: 'de-DE' }];
         expect(filterAvailableLocales(available, ['fr-FR'])).toEqual(available);
+    });
+
+    it('resolveMaxLocalesPerWrite honours a positive integer env override', () => {
+        expect(resolveMaxLocalesPerWrite({ NORDCOM_CMS_MAX_LOCALES_PER_WRITE: '4' })).toBe(4);
+        expect(resolveMaxLocalesPerWrite({ NORDCOM_CMS_MAX_LOCALES_PER_WRITE: ' 12 ' })).toBe(12);
+    });
+
+    it('resolveMaxLocalesPerWrite falls back to the default for absent, non-numeric, or non-positive env', () => {
+        expect(resolveMaxLocalesPerWrite({})).toBe(DEFAULT_MAX_LOCALES_PER_WRITE);
+        expect(resolveMaxLocalesPerWrite({ NORDCOM_CMS_MAX_LOCALES_PER_WRITE: 'lots' })).toBe(
+            DEFAULT_MAX_LOCALES_PER_WRITE,
+        );
+        expect(resolveMaxLocalesPerWrite({ NORDCOM_CMS_MAX_LOCALES_PER_WRITE: '0' })).toBe(
+            DEFAULT_MAX_LOCALES_PER_WRITE,
+        );
+        expect(resolveMaxLocalesPerWrite({ NORDCOM_CMS_MAX_LOCALES_PER_WRITE: '-3' })).toBe(
+            DEFAULT_MAX_LOCALES_PER_WRITE,
+        );
     });
 
     it('isValidLocale accepts IETF + POSIX styles, rejects junk', () => {

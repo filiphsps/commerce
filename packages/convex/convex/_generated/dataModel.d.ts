@@ -123,6 +123,34 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  cms_i18n: {
+    document: {
+      createdAt: number;
+      fieldPath: string;
+      locale: string;
+      parentId: Id<"cmsDocuments">;
+      updatedAt: number;
+      value: any;
+      _id: Id<"cms_i18n">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "fieldPath"
+      | "locale"
+      | "parentId"
+      | "updatedAt"
+      | "value";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_parent_field: ["parentId", "fieldPath", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   cmsDocuments: {
     document: {
       collection: string;

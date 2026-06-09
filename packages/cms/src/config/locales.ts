@@ -239,11 +239,48 @@ export const filterAvailableLocales = <TLocale extends { code: string }>(
 };
 
 /**
+ * Default upper bound on how many locale slots a single shred-on-write call may carry per large
+ * localized field. Large localized richtext/blocks fields are shredded into one Convex `cms_i18n` side
+ * row per `(field, locale)`, each capped at the 1 MiB Convex value limit; this budget keeps the
+ * combined pre-shred mutation argument — every shreddable field's whole bucket inline — under Convex's
+ * 16 MiB per-call function-argument limit. The Convex shred guard mirrors this value (it cannot import
+ * this module, which reads `process.env` at load, into the `process`-less Convex isolate).
+ */
+export const DEFAULT_MAX_LOCALES_PER_WRITE = 8;
+
+/**
+ * Resolves the per-write locale budget Payload's editor should enforce for large localized fields.
+ * Reads `NORDCOM_CMS_MAX_LOCALES_PER_WRITE` from `env` (a positive integer); falls back to
+ * {@link DEFAULT_MAX_LOCALES_PER_WRITE} when the variable is absent, non-numeric, or non-positive.
+ *
+ * @param env - Environment variable map; defaults to `process.env`.
+ * @returns A positive integer locale budget.
+ *
+ * @example
+ * resolveMaxLocalesPerWrite({ NORDCOM_CMS_MAX_LOCALES_PER_WRITE: '4' }); // 4
+ * resolveMaxLocalesPerWrite({}); // 8
+ */
+export const resolveMaxLocalesPerWrite = (env: Record<string, string | undefined> = process.env): number => {
+    const raw = env.NORDCOM_CMS_MAX_LOCALES_PER_WRITE;
+    if (raw) {
+        const parsed = Number.parseInt(raw.trim(), 10);
+        if (Number.isInteger(parsed) && parsed > 0) return parsed;
+    }
+    return DEFAULT_MAX_LOCALES_PER_WRITE;
+};
+
+/**
  * Process-level locale superset computed once from `process.env` at module
  * load. Import directly for zero-cost access in non-test code; in tests call
  * {@link resolveCmsLocales} with a custom `env` map to exercise both branches.
  */
 export const cmsDefaultLocales: string[] = resolveCmsLocales();
+
+/**
+ * Process-level per-write locale budget computed once from `process.env` at module load. Import
+ * directly for zero-cost access; in tests call {@link resolveMaxLocalesPerWrite} with a custom `env`.
+ */
+export const cmsMaxLocalesPerWrite: number = resolveMaxLocalesPerWrite();
 
 /**
  * Process-level default locale computed once from `process.env` at module
