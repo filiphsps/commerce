@@ -30,7 +30,7 @@
  *   1 — at least one Convex-bearing chunk is eagerly shipped to a route
  *   2 — misconfiguration (target directory or build manifest missing)
  */
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { type Dirent, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 
 const LOG_PREFIX = '[assert-no-convex-public-bundle]';
@@ -96,52 +96,93 @@ function scanFile(filePath: string): string[] {
     return hits;
 }
 
+/** The shape shared by every Next build-manifest variant this guard reads. */
+type BuildManifestLike = {
+    polyfillFiles?: string[];
+    rootMainFiles?: string[];
+    lowPriorityFiles?: string[];
+    devFiles?: string[];
+    pages?: Record<string, string[]>;
+};
+
+/**
+ * Merge one build-manifest-like file's chunk references into `eager`.
+ *
+ * @param manifestPath - Absolute path of the manifest JSON to read.
+ * @param eager - The accumulating set of eager chunk paths (relative to `.next/`).
+ * @returns `true` when the file was read and merged, `false` when unreadable/absent.
+ */
+function mergeManifest(manifestPath: string, eager: Set<string>): boolean {
+    let manifest: BuildManifestLike;
+    try {
+        manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as BuildManifestLike;
+    } catch {
+        return false;
+    }
+    for (const chunk of manifest.polyfillFiles ?? []) eager.add(chunk);
+    for (const chunk of manifest.rootMainFiles ?? []) eager.add(chunk);
+    for (const chunk of manifest.lowPriorityFiles ?? []) eager.add(chunk);
+    for (const chunk of manifest.devFiles ?? []) eager.add(chunk);
+    for (const chunks of Object.values(manifest.pages ?? {})) {
+        for (const chunk of chunks) eager.add(chunk);
+    }
+    return true;
+}
+
+/**
+ * Recursively collect every `build-manifest.json` under `dir` (Turbopack writes
+ * one PER ROUTE under `.next/server/app/**`, which is where each route's eager
+ * chunk list lives in Next 16).
+ *
+ * @param dir - Absolute directory to walk.
+ * @returns Absolute paths of every per-route build manifest found.
+ */
+function collectRouteManifests(dir: string): string[] {
+    const found: string[] = [];
+    let entries: Dirent[];
+    try {
+        entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+        return found;
+    }
+    for (const entry of entries) {
+        const full = join(dir, entry.name);
+        if (entry.isDirectory()) {
+            found.push(...collectRouteManifests(full));
+        } else if (entry.isFile() && entry.name === 'build-manifest.json') {
+            found.push(full);
+        }
+    }
+    return found;
+}
+
 /**
  * Collect the set of chunk paths (relative to `.next/`, e.g.
- * `static/chunks/abc.js`) that some route loads EAGERLY on page load: every
- * route's chunk list from `app-build-manifest.json` plus the global/pages
- * entries from `build-manifest.json` (polyfills, root main files). Lazily
- * code-split chunks — loaded only when a `next/dynamic` boundary actually
- * renders — appear in neither, which is exactly what distinguishes the
- * sanctioned Lane-2 island chunk from an eager leak.
+ * `static/chunks/abc.js`) that some route loads EAGERLY on page load, across
+ * the manifest layouts Next emits: the root `build-manifest.json` (global
+ * polyfills / root main files), the webpack-era `app-build-manifest.json`
+ * (per-route lists, absent under Turbopack), and Turbopack's per-route
+ * `build-manifest.json` files under `.next/server/**` (Next 16's layout).
+ * Lazily code-split chunks — loaded only when a `next/dynamic` boundary
+ * actually renders — appear in none of these (they live in the
+ * `react-loadable-manifest.json` dynamic maps instead), which is exactly what
+ * distinguishes the sanctioned Lane-2 island chunk from an eager leak.
  *
  * @param nextDir - Absolute path of the `.next` build directory.
- * @returns The set of eagerly-referenced chunk paths, or `null` when the app
- *   build manifest is missing (a broken/partial build).
+ * @returns The set of eagerly-referenced chunk paths, or `null` when no
+ *   manifest source exists at all (a broken/partial build).
  */
 function collectEagerChunks(nextDir: string): Set<string> | null {
     const eager = new Set<string>();
+    let sources = 0;
 
-    const appManifestPath = join(nextDir, 'app-build-manifest.json');
-    let appManifest: { pages?: Record<string, string[]> };
-    try {
-        appManifest = JSON.parse(readFileSync(appManifestPath, 'utf8')) as { pages?: Record<string, string[]> };
-    } catch {
-        return null;
-    }
-    for (const chunks of Object.values(appManifest.pages ?? {})) {
-        for (const chunk of chunks) eager.add(chunk);
+    if (mergeManifest(join(nextDir, 'build-manifest.json'), eager)) sources += 1;
+    if (mergeManifest(join(nextDir, 'app-build-manifest.json'), eager)) sources += 1;
+    for (const manifestPath of collectRouteManifests(join(nextDir, 'server'))) {
+        if (mergeManifest(manifestPath, eager)) sources += 1;
     }
 
-    // build-manifest.json carries the global eager files (polyfills, root main
-    // files) and any pages-router entries; tolerate its absence — an app-router
-    // build always writes the app manifest above, which is the load-bearing one.
-    try {
-        const buildManifest = JSON.parse(readFileSync(join(nextDir, 'build-manifest.json'), 'utf8')) as {
-            polyfillFiles?: string[];
-            rootMainFiles?: string[];
-            pages?: Record<string, string[]>;
-        };
-        for (const chunk of buildManifest.polyfillFiles ?? []) eager.add(chunk);
-        for (const chunk of buildManifest.rootMainFiles ?? []) eager.add(chunk);
-        for (const chunks of Object.values(buildManifest.pages ?? {})) {
-            for (const chunk of chunks) eager.add(chunk);
-        }
-    } catch {
-        // Absent on pure app-router builds in some Next versions; the app manifest suffices.
-    }
-
-    return eager;
+    return sources > 0 ? eager : null;
 }
 
 /**
