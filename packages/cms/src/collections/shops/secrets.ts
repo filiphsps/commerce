@@ -12,12 +12,15 @@ export const SHOP_SECRET_PATHS = [
 
 /**
  * The slice of a Payload `req` the secret predicates decide over: the principal's role and the
- * trusted server-context opt-out flag. Typed structurally so the pure predicates can be unit-tested
- * (and shared with the Convex parity) without a full Payload request.
+ * trusted server-context opt-out flag. The members are deliberately `object` rather than shaped:
+ * `PayloadRequest['user']` is `UntypedUser` in compilations that don't load the generated payload
+ * types (e.g. a sibling package building this file through project references), and an `UntypedUser`
+ * shares no properties with a `{ role?: string }` weak type, so a shaped member fails to typecheck
+ * exactly where the hooks pass `req` through. The predicates narrow the members internally instead.
  */
 export type SecretAccessRequest = {
-    user?: { role?: string } | null;
-    context?: { sensitiveShopRead?: boolean } | null;
+    user?: object | null;
+    context?: object | null;
 };
 
 /**
@@ -34,8 +37,10 @@ export type SecretAccessRequest = {
  * @returns `true` for an admin or a trusted server-side sync; `false` otherwise.
  */
 export function mayReadShopSecrets(req: SecretAccessRequest | undefined): boolean {
-    if (req?.user?.role === 'admin') return true;
-    return Boolean(req?.context?.sensitiveShopRead);
+    const role = (req?.user as { role?: unknown } | null | undefined)?.role;
+    if (role === 'admin') return true;
+    const sensitiveShopRead = (req?.context as { sensitiveShopRead?: unknown } | null | undefined)?.sensitiveShopRead;
+    return sensitiveShopRead === true;
 }
 
 /**
@@ -48,7 +53,7 @@ export function mayReadShopSecrets(req: SecretAccessRequest | undefined): boolea
  * @returns `true` only for an admin principal.
  */
 export function mayWriteShopSecrets(req: SecretAccessRequest | undefined): boolean {
-    return req?.user?.role === 'admin';
+    return (req?.user as { role?: unknown } | null | undefined)?.role === 'admin';
 }
 
 /**
