@@ -42,6 +42,9 @@ export declare const api: {
         any
       >;
     };
+    secrets: {
+      readMaskedShop: FunctionReference<"query", "public", {}, any>;
+    };
     versions: {
       list: FunctionReference<
         "query",
@@ -68,6 +71,11 @@ export declare const api: {
  * ```
  */
 export declare const internal: {
+  cms: {
+    secrets: {
+      sensitiveShopRead: FunctionReference<"query", "internal", {}, any>;
+    };
+  };
   crons: {
     exportSnapshot: FunctionReference<"action", "internal", {}, any>;
   };

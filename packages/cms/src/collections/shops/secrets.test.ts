@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { rejectSecretWritesFromNonAdmins, stripSecretsOnRead } from './secrets';
+import {
+    mayReadShopSecrets,
+    mayWriteShopSecrets,
+    rejectSecretWritesFromNonAdmins,
+    SHOP_SECRET_PATHS,
+    stripSecretsOnRead,
+} from './secrets';
 
 type AnyHook = (args: Record<string, unknown>) => Promise<unknown>;
 
@@ -86,5 +92,30 @@ describe('rejectSecretWritesFromNonAdmins', () => {
             originalDoc,
         })) as typeof data;
         expect(out.commerceProvider.authentication.token).toBe('OLD');
+    });
+});
+
+describe('secret access predicates (overrideAccess parity)', () => {
+    it('names exactly the two masked secret paths', () => {
+        expect(SHOP_SECRET_PATHS).toEqual([
+            'commerceProvider.authentication.token',
+            'commerceProvider.authentication.customers.clientSecret',
+        ]);
+    });
+
+    it('mayReadShopSecrets exposes secrets to admins and trusted server-side syncs only', () => {
+        expect(mayReadShopSecrets({ user: { role: 'admin' } })).toBe(true);
+        expect(mayReadShopSecrets({ context: { sensitiveShopRead: true } })).toBe(true);
+        expect(mayReadShopSecrets({ user: { role: 'editor' } })).toBe(false);
+        expect(mayReadShopSecrets({ user: { role: 'editor' }, context: { sensitiveShopRead: false } })).toBe(false);
+        expect(mayReadShopSecrets({})).toBe(false);
+        expect(mayReadShopSecrets(undefined)).toBe(false);
+    });
+
+    it('mayWriteShopSecrets allows only admins (the context flag never grants writes)', () => {
+        expect(mayWriteShopSecrets({ user: { role: 'admin' } })).toBe(true);
+        expect(mayWriteShopSecrets({ user: { role: 'editor' }, context: { sensitiveShopRead: true } })).toBe(false);
+        expect(mayWriteShopSecrets({})).toBe(false);
+        expect(mayWriteShopSecrets(undefined)).toBe(false);
     });
 });
