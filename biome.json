@@ -25,6 +25,7 @@
             "!**/storybook-static",
             "!docs/superpowers",
             "!packages/cms/src/types/payload-types.ts",
+            "!packages/convex/convex/__fixtures__",
             "!packages/convex/convex/_generated",
             "!packages/convex/convex/tables/cms.ts",
             "!packages/convex/convex/tsconfig.json",
@@ -79,7 +80,21 @@
             },
             "style": {
                 "noNonNullAssertion": "off",
-                "noRestrictedImports": "off",
+                "noRestrictedImports": {
+                    "level": "error",
+                    "options": {
+                        "paths": {
+                            "./_generated/server": {
+                                "message": "Import a tenant/system constructor from the `@nordcom/commerce-convex` `_constructors` barrel (tenantQuery, tenantMutation, systemQuery, systemMutation) instead of the raw, RLS-bypassing builders in `_generated/server`.",
+                                "importNames": ["query", "mutation", "internalQuery"]
+                            },
+                            "../_generated/server": {
+                                "message": "Import a tenant/system constructor from the `@nordcom/commerce-convex` `_constructors` barrel (tenantQuery, tenantMutation, systemQuery, systemMutation) instead of the raw, RLS-bypassing builders in `_generated/server`.",
+                                "importNames": ["query", "mutation", "internalQuery"]
+                            }
+                        }
+                    }
+                },
                 "useConst": "error",
                 "useFilenamingConvention": "off",
                 "useImportType": "error",
@@ -104,6 +119,20 @@
         }
     },
     "overrides": [
+        {
+            "includes": [
+                "packages/convex/convex/lib/tenant.ts",
+                "packages/convex/convex/lib/system.ts",
+                "packages/convex/convex/lib/rls.ts"
+            ],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "noRestrictedImports": "off"
+                    }
+                }
+            }
+        },
         {
             "includes": ["**/*.test.*", "**/*.spec.*", "**/vitest.config.*", "**/vitest.setup.*"],
             "linter": {
