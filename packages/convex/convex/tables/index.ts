@@ -3,9 +3,9 @@ import type { TableDefinition } from 'convex/server';
 import { authTables } from './auth';
 import { cmsContentTables } from './cms';
 import { cmsI18nTables } from './cms_i18n';
+import { cmsRichTextTables } from './cms_prosemirror';
 import { cmsVersionTables } from './cmsVersions';
 import { revalidationTables } from './revalidation';
-import { cmsRichTextTables } from './cms_prosemirror';
 import { reviewsTables } from './reviews';
 import { shopTables } from './shops';
 
