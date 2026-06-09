@@ -2,7 +2,7 @@
  * Process-level tenant-resolution cache for the storefront edge middleware.
  *
  * The middleware resolves `hostname → shop` on the critical path of every
- * matched request. Without memoization that means a MongoDB lookup per request
+ * matched request. Without memoization that means a Convex lookup per request
  * (plus, for cookie-less requests, a Shopify Storefront GraphQL round-trip to
  * derive the supported locales) — all on the edge. `React.cache()` cannot help
  * here because middleware does not run inside the RSC render, so this module
