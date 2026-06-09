@@ -20,25 +20,8 @@ afterAll(() => {
 
 vi.mock('server-only', () => ({}));
 
-vi.mock('mongoose', async (importActual) => {
-    const actual = (await importActual()) as any;
-    return {
-        ...(actual || {}),
-        default: {
-            ...(actual?.default || {}),
-            connect: vi.fn().mockImplementation(() => ({
-                set: vi.fn(),
-                setStrict: vi.fn(),
-                setStrictQuery: vi.fn(),
-                models: {},
-                model: vi.fn().mockImplementation((name: string) => {
-                    return {
-                        ...(actual?.default?.models[name] || {}),
-                        find: vi.fn().mockResolvedValue([]),
-                    };
-                }),
-            })),
-        },
-    };
-});
-vi.stubEnv('MONGODB_URI', 'mongodb+srv://dummy-string');
+// The lazy ConvexHttpClient in `@nordcom/commerce-db` reads these on first use; stub them so
+// suites that reach the (mocked) service seam never trip the fail-closed env guard. Per-file
+// mocks/spies on the service objects provide the actual transport doubles.
+vi.stubEnv('CONVEX_URL', 'https://test-deployment.convex.cloud');
+vi.stubEnv('CONVEX_SERVER_SECRET', 'test-server-secret');

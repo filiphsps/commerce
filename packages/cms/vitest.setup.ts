@@ -1,7 +1,6 @@
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
-vi.stubEnv('MONGODB_URI', 'mongodb://localhost:27017/test');
 vi.stubEnv('PAYLOAD_SECRET', process.env.PAYLOAD_SECRET ?? 'test-payload-secret');
 
 vi.mock('server-only', () => ({}));
