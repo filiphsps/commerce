@@ -97,6 +97,192 @@ export declare const api: {
       >;
     };
   };
+  db: {
+    feature_flags: {
+      byKey: FunctionReference<
+        "query",
+        "public",
+        { key: string; serverSecret: string },
+        any
+      >;
+      findAll: FunctionReference<
+        "query",
+        "public",
+        { serverSecret: string },
+        any
+      >;
+    };
+    identities: {
+      byId: FunctionReference<
+        "query",
+        "public",
+        { id: string; serverSecret: string },
+        any
+      >;
+      byProviderIdentity: FunctionReference<
+        "query",
+        "public",
+        { identity: string; provider: string; serverSecret: string },
+        any
+      >;
+      upsertByProviderIdentity: FunctionReference<
+        "mutation",
+        "public",
+        {
+          accessToken?: string;
+          expiresAt?: number;
+          identity: string;
+          provider: string;
+          refreshToken?: string;
+          scope?: string;
+          serverSecret: string;
+          upsert?: boolean;
+        },
+        any
+      >;
+    };
+    reviews: {
+      byShop: FunctionReference<
+        "query",
+        "public",
+        { count?: number; serverSecret: string; shopId: string },
+        any
+      >;
+      findAll: FunctionReference<
+        "query",
+        "public",
+        { serverSecret: string },
+        any
+      >;
+    };
+    sessions: {
+      byId: FunctionReference<
+        "query",
+        "public",
+        { id: string; serverSecret: string },
+        any
+      >;
+      byToken: FunctionReference<
+        "query",
+        "public",
+        { serverSecret: string; token: string },
+        any
+      >;
+      create: FunctionReference<
+        "mutation",
+        "public",
+        {
+          expiresAt: number;
+          serverSecret: string;
+          token: string;
+          userId: string;
+        },
+        any
+      >;
+      deleteByToken: FunctionReference<
+        "mutation",
+        "public",
+        { serverSecret: string; token: string },
+        any
+      >;
+    };
+    shops: {
+      byCollaborator: FunctionReference<
+        "query",
+        "public",
+        { serverSecret: string; userId: string },
+        any
+      >;
+      byDomain: FunctionReference<
+        "query",
+        "public",
+        { domain: string; serverSecret: string },
+        any
+      >;
+      byDomainWithCredentials: FunctionReference<
+        "query",
+        "public",
+        { domain: string; serverSecret: string },
+        any
+      >;
+      byId: FunctionReference<
+        "query",
+        "public",
+        { id: string; serverSecret: string },
+        any
+      >;
+      findAll: FunctionReference<
+        "query",
+        "public",
+        { serverSecret: string },
+        any
+      >;
+    };
+    users: {
+      byEmail: FunctionReference<
+        "query",
+        "public",
+        { email: string; serverSecret: string },
+        any
+      >;
+      byId: FunctionReference<
+        "query",
+        "public",
+        { id: string; serverSecret: string },
+        any
+      >;
+      byProviderIdentity: FunctionReference<
+        "query",
+        "public",
+        { identity: string; provider: string; serverSecret: string },
+        any
+      >;
+      create: FunctionReference<
+        "mutation",
+        "public",
+        {
+          avatar?: string;
+          email: string;
+          emailVerified: number | null;
+          groups?: Array<string>;
+          identities: Array<{
+            accessToken?: string;
+            createdAt: number;
+            expiresAt?: number;
+            id: string;
+            identity: string;
+            provider: string;
+            refreshToken?: string;
+            scope?: string;
+            updatedAt: number;
+          }>;
+          name: string;
+          serverSecret: string;
+        },
+        any
+      >;
+      pushIdentity: FunctionReference<
+        "mutation",
+        "public",
+        {
+          identity: {
+            accessToken?: string;
+            createdAt: number;
+            expiresAt?: number;
+            id: string;
+            identity: string;
+            provider: string;
+            refreshToken?: string;
+            scope?: string;
+            updatedAt: number;
+          };
+          serverSecret: string;
+          userId: string;
+        },
+        any
+      >;
+    };
+  };
 };
 
 /**

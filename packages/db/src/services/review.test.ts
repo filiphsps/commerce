@@ -1,142 +1,129 @@
+import { getFunctionName } from 'convex/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { mockQuery } = vi.hoisted(() => {
-    const q = {
-        lean: vi.fn(),
-        populate: vi.fn(),
-        limit: vi.fn(),
-        exec: vi.fn(),
-    };
-    q.lean.mockReturnValue(q);
-    q.populate.mockReturnValue(q);
-    q.limit.mockReturnValue(q);
-    return { mockQuery: q };
-});
+const { queryMock, mutationMock } = vi.hoisted(() => ({ queryMock: vi.fn(), mutationMock: vi.fn() }));
 
-vi.mock('mongoose', async () => {
-    class MockModel {
-        public static modelName = 'MockModel';
-        public static find = vi.fn().mockReturnValue(mockQuery);
-        public static findOne = vi.fn().mockReturnValue(mockQuery);
-        public static findById = vi.fn().mockReturnValue(mockQuery);
-        public static create = vi.fn().mockResolvedValue({});
-        public static findOneAndUpdate = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue(null) });
-        public limit = vi.fn().mockResolvedValue(this);
-        public save = vi.fn().mockResolvedValue(this);
-    }
+vi.mock('convex/browser', () => ({
+    // A real class: the lazy client in `src/db.ts` constructs it with `new`, which a `vi.fn`
+    // arrow-implementation cannot satisfy.
+    ConvexHttpClient: class {
+        public query = queryMock;
+        public mutation = mutationMock;
+    },
+}));
 
-    const values = {
-        connect: vi.fn().mockResolvedValue({
-            get models() {
-                return new Proxy([], { get: () => MockModel });
-            },
-        }),
-        set: vi.fn(),
-    };
-
-    return {
-        ...(((await vi.importActual('mongoose')) as object) || {}),
-        Model: MockModel,
-        Document: {},
-        ...values,
-        connect: vi.fn().mockResolvedValue(values),
-        default: { ...values },
-    };
-});
-
-import { ReviewModel } from '../models';
 import { Review } from './review';
 
-const mockReview = { id: 'rev-1', shop: 'shop-1', rating: 5, body: 'great' };
+const NOW = 1_700_000_000_000;
+
+/**
+ * Resolves the Convex function path of the first transport call.
+ *
+ * @returns The `module:function` path string.
+ */
+const calledFunction = (): string => {
+    const call = queryMock.mock.calls[0];
+    expect(call).toBeDefined();
+    return getFunctionName((call as unknown[])[0] as Parameters<typeof getFunctionName>[0]);
+};
+
+// The `db/reviews` functions already project the branded shopId onto the public shop id string.
+const reviewPayload = { _id: 'rev-1', shop: 'shop-1', createdAt: NOW, updatedAt: NOW };
 
 beforeEach(() => {
-    mockQuery.exec.mockReset();
-    mockQuery.lean.mockClear();
-    mockQuery.limit.mockClear();
-    vi.mocked(ReviewModel.find).mockClear();
+    queryMock.mockReset();
+    mutationMock.mockReset();
 });
 
 afterEach(() => {
     vi.clearAllMocks();
 });
 
-describe('ReviewService.findByShop (Mongoose-backed)', () => {
-    it('queries ReviewModel.find with a shop filter', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockReview]);
+describe('Review.findByShop (Convex-backed)', () => {
+    it('queries db/reviews:byShop with the public shop id and the server secret', async () => {
+        queryMock.mockResolvedValueOnce([reviewPayload]);
         await Review.findByShop('shop-1');
-        expect(ReviewModel.find).toHaveBeenCalledWith({ shop: 'shop-1' });
+
+        expect(calledFunction()).toBe('db/reviews:byShop');
+        expect(queryMock.mock.calls[0]?.[1]).toEqual({ shopId: 'shop-1', serverSecret: 'test-server-secret' });
     });
 
-    it('applies the count as a limit when provided', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockReview]);
+    it('forwards the count cap when provided', async () => {
+        queryMock.mockResolvedValueOnce([reviewPayload]);
         await Review.findByShop('shop-1', { count: 10 });
-        expect(mockQuery.limit).toHaveBeenCalledWith(10);
+        expect(queryMock.mock.calls[0]?.[1]).toMatchObject({ shopId: 'shop-1', count: 10 });
     });
 
-    it('omits the limit when count is not provided', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockReview]);
+    it('omits the count when not provided', async () => {
+        queryMock.mockResolvedValueOnce([reviewPayload]);
         await Review.findByShop('shop-1');
-        expect(mockQuery.limit).not.toHaveBeenCalled();
+        expect(queryMock.mock.calls[0]?.[1]).not.toHaveProperty('count');
     });
 
     it('returns mapped reviews', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockReview]);
+        queryMock.mockResolvedValueOnce([reviewPayload]);
         const result = await Review.findByShop('shop-1');
         expect(result).toHaveLength(1);
         expect(result[0]?.id).toBe('rev-1');
     });
 
     it('returns an empty array when no reviews exist for the shop', async () => {
-        mockQuery.exec.mockResolvedValueOnce([]);
-        const result = await Review.findByShop('shop-empty');
-        expect(result).toEqual([]);
+        queryMock.mockResolvedValueOnce([]);
+        await expect(Review.findByShop('shop-empty')).resolves.toEqual([]);
     });
 });
 
-// Phase-0 regression gate for the Mongo→Convex migration. UNIFY-06 re-pins
-// these to the NEW return shape produced by `docToReview`: Mongo internals
-// (`_id`, `__v`) are stripped, `_id` is projected onto a string `id`, and
-// `shop` is now a plain string id ref (the unified shop row id) rather than an
-// embedded shop snapshot. The recursive `_id`/`__v` strip itself is pinned
-// canonically in `lib/doc-to-shape.test.ts`.
+// Return-shape contract carried over from the Mongoose era: internals are stripped, the row id is
+// projected onto a string `id`, and `shop` stays a plain string id ref (the unified shop row id),
+// never an embedded shop snapshot.
 describe('ReviewService return-shape contract (characterization)', () => {
-    it('projects a lean `_id` onto a string `id` and drops `_id`/`__v`', async () => {
-        mockQuery.exec.mockResolvedValueOnce([{ _id: 'mongo-id-1', __v: 3, rating: 4, body: 'ok' }]);
+    it('projects the row _id onto a string `id` and drops internals', async () => {
+        queryMock.mockResolvedValueOnce([
+            { _id: 'rev-1', _creationTime: NOW, shop: 'shop-1', createdAt: NOW, updatedAt: NOW },
+        ]);
         const [review] = await Review.findByShop('shop-1');
-        expect(review).toEqual({ id: 'mongo-id-1', rating: 4, body: 'ok' });
+        expect(review?.id).toBe('rev-1');
         expect(review).not.toHaveProperty('_id');
-        expect(review).not.toHaveProperty('__v');
+        expect(review).not.toHaveProperty('_creationTime');
     });
 
     it('keeps an existing string `id` rather than re-deriving it from `_id`', async () => {
-        mockQuery.exec.mockResolvedValueOnce([{ _id: 'mongo-id-1', id: 'public-id-1', rating: 5 }]);
+        queryMock.mockResolvedValueOnce([{ _id: 'rev-1', id: 'public-id-1', shop: 'shop-1' }]);
         const [review] = await Review.findByShop('shop-1');
         expect(review?.id).toBe('public-id-1');
     });
 
     it('carries `shop` through as a string id ref (no embedded shop snapshot)', async () => {
-        mockQuery.exec.mockResolvedValueOnce([{ _id: 'rev-1', shop: 'shop-oid', rating: 4 }]);
-        const [review] = await Review.findByShop('shop-oid');
-        expect(review).toEqual({ id: 'rev-1', shop: 'shop-oid', rating: 4 });
+        queryMock.mockResolvedValueOnce([reviewPayload]);
+        const [review] = await Review.findByShop('shop-1');
         expect(typeof review?.shop).toBe('string');
+        expect(review?.shop).toBe('shop-1');
+    });
+
+    it('rehydrates the managed timestamps into Dates', async () => {
+        queryMock.mockResolvedValueOnce([reviewPayload]);
+        const [review] = await Review.findByShop('shop-1');
+        expect(review?.createdAt).toEqual(new Date(NOW));
+        expect(review?.updatedAt).toEqual(new Date(NOW));
     });
 });
 
-describe('ReviewService.findAll (Mongoose-backed)', () => {
-    it('queries ReviewModel.find with no filter when tenant is not provided', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockReview]);
-        await Review.findAll();
-        expect(ReviewModel.find).toHaveBeenCalledWith({});
+describe('Review.findAll (Convex-backed)', () => {
+    it('queries db/reviews:findAll when no tenant filter is provided', async () => {
+        queryMock.mockResolvedValueOnce([reviewPayload]);
+        const result = await Review.findAll();
+        expect(calledFunction()).toBe('db/reviews:findAll');
+        expect(result).toHaveLength(1);
     });
 
-    it('queries with a tenant filter when provided', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockReview]);
-        await Review.findAll({ tenant: 'tenant-1' });
-        expect(ReviewModel.find).toHaveBeenCalledWith({ tenant: 'tenant-1' });
+    it('preserves the dead tenant-filter semantics: a provided tenant matches nothing', async () => {
+        const result = await Review.findAll({ tenant: 'tenant-1' });
+        expect(result).toEqual([]);
+        expect(queryMock).not.toHaveBeenCalled();
     });
 
     it('returns mapped reviews', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockReview, { ...mockReview, id: 'rev-2' }]);
+        queryMock.mockResolvedValueOnce([reviewPayload, { ...reviewPayload, _id: 'rev-2' }]);
         const result = await Review.findAll();
         expect(result).toHaveLength(2);
     });

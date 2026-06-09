@@ -1,23 +1,9 @@
 import { vi } from 'vitest';
 
-vi.stubEnv('MONGODB_URI', 'mongodb://localhost:27017/test');
-
-// `src/db.ts` calls `mongoose.connect()` at module load. Stub the connection
-// so model imports don't require a live Mongo; `Schema`/`Types` stay real via
-// `importActual`. Per-file mocks in `services/*.test.ts` still override.
-vi.mock('mongoose', async () => {
-    const actual = (await vi.importActual('mongoose')) as typeof import('mongoose');
-    const mockConnection = {
-        models: new Proxy({}, { get: () => undefined }),
-        model: vi.fn().mockReturnValue({}),
-        set: vi.fn(),
-    };
-    const mockConnect = vi.fn().mockResolvedValue(mockConnection);
-    return {
-        ...actual,
-        connect: mockConnect,
-        default: { ...actual, connect: mockConnect },
-    };
-});
+// The lazy ConvexHttpClient in `src/db.ts` reads these on first use; stub them so service tests
+// can exercise the (mocked) transport without a real deployment. Per-file mocks of
+// `convex/browser` in `services/*.test.ts` provide the actual transport double.
+vi.stubEnv('CONVEX_URL', 'https://test-deployment.convex.cloud');
+vi.stubEnv('CONVEX_SERVER_SECRET', 'test-server-secret');
 
 vi.mock('server-only', () => ({}));

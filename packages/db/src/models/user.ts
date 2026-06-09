@@ -1,61 +1,12 @@
-import type { InferSchemaType } from 'mongoose';
-import { Schema } from 'mongoose';
 import type { BaseDocument } from '../db';
-import { db } from '../db';
 import type { IdentityBase } from './identity';
-import { IdentitySchema } from './identity';
-
-export const UserSchema = new Schema(
-    {
-        email: {
-            type: Schema.Types.String,
-            required: true,
-            unique: true,
-        },
-        name: {
-            type: Schema.Types.String,
-            required: true,
-        },
-        avatar: {
-            type: Schema.Types.String,
-            default: null,
-        },
-        identities: [
-            {
-                type: IdentitySchema,
-                default: [],
-            },
-        ],
-
-        emailVerified: {
-            type: Schema.Types.Date,
-            default: null,
-        },
-
-        groups: {
-            type: [Schema.Types.String],
-            required: false,
-            default: undefined,
-        },
-    },
-    {
-        id: true,
-        timestamps: true,
-        // Auth.js's adapter receives `User.toObject()` results; without
-        // `virtuals: true` the `id` virtual is stripped and `token.sub` ends
-        // up undefined, which is what caused `getShopsForUser` to return
-        // an empty list. Scope is intentionally narrow to UserSchema.
-        toObject: { virtuals: true },
-        toJSON: { virtuals: true },
-    },
-);
-
-type InferredUser = InferSchemaType<typeof UserSchema>;
 
 /**
  * Document shape for a platform user. Carries an embedded list of OAuth identities and satisfies
  * the NextAuth adapter contract — specifically the optional `avatar` and nullable `emailVerified`
- * fields that the adapter reads after `User.create` and `User.find`.
+ * fields that the adapter reads after `User.create` and `User.find`. `email` is unique; the
+ * constraint is enforced inside the Convex `db/users:create` mutation (the migrated form of the old
+ * Mongo unique index).
  *
  * @example
  * ```ts
@@ -65,16 +16,11 @@ type InferredUser = InferSchemaType<typeof UserSchema>;
  * }
  * ```
  */
-// `avatar` and `emailVerified` use `default: null` in the schema; the public
-// API exposes them as optional/nullable to match the NextAuth adapter contract.
-export type UserBase = BaseDocument &
-    Omit<InferredUser, 'identities' | 'avatar' | 'emailVerified' | 'groups'> & {
-        identities: IdentityBase[];
-        avatar?: string;
-        emailVerified: Date | null;
-        groups?: string[];
-    };
-
-export const UserModel = (db.models.User || db.model('User', UserSchema)) as ReturnType<
-    typeof db.model<typeof UserSchema>
->;
+export type UserBase = BaseDocument & {
+    email: string;
+    name: string;
+    identities: IdentityBase[];
+    avatar?: string;
+    emailVerified: Date | null;
+    groups?: string[];
+};

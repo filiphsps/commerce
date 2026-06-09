@@ -1,162 +1,296 @@
+import { getFunctionName } from 'convex/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// `Identity`, `Session`, and `User` are plain `Service<DocType, Model>`
-// singletons with no overrides, so this file pins the base `Service` contract
-// as exercised through the REAL exported instances (service.test.ts covers a
-// freshly-constructed `new Service(model)`; these three exported singletons had
-// no characterization of their own). Mongoose connects at module load
-// (`src/db.ts`), so mock it: `Schema`/`Types` stay real via `importActual`,
-// while `connect` returns a connection whose `models` proxy hands back the same
-// chainable `MockModel` for every name. Each test reassigns
-// `mockQuery.exec.mockResolvedValueOnce(...)` to drive a case.
-const mockQuery = vi.hoisted(() => ({
-    limit: vi.fn(),
-    sort: vi.fn(),
-    exec: vi.fn(),
+// `Identity`, `Session`, and `User` are `Service` singletons over per-entity Convex backends.
+// This file pins the SFREAD-02 base contract (NotFoundError on an empty single-result lookup,
+// `[]` on an empty multi-result lookup) AND the seam translation — each frozen Mongoose-shaped
+// call lands on the matching deployed `db/*` function with the server secret attached — on a
+// mocked `ConvexHttpClient`, the only transport the re-homed seam owns.
+const { queryMock, mutationMock } = vi.hoisted(() => ({ queryMock: vi.fn(), mutationMock: vi.fn() }));
+
+vi.mock('convex/browser', () => ({
+    // A real class: the lazy client in `src/db.ts` constructs it with `new`, which a `vi.fn`
+    // arrow-implementation cannot satisfy.
+    ConvexHttpClient: class {
+        public query = queryMock;
+        public mutation = mutationMock;
+    },
 }));
 
-vi.mock('mongoose', async () => {
-    mockQuery.limit.mockReturnValue(mockQuery);
-    mockQuery.sort.mockReturnValue(mockQuery);
-
-    // A plain object literal rather than a static-only class (which trips
-    // Biome `noStaticOnlyClass`); the base `Service` only ever reads these
-    // members statically off the model.
-    const MockModel = {
-        modelName: 'MockModel',
-        find: vi.fn().mockReturnValue(mockQuery),
-        findById: vi.fn().mockReturnValue(mockQuery),
-        findOneAndUpdate: vi.fn().mockReturnValue(mockQuery),
-        create: vi.fn().mockResolvedValue({ id: 'created' }),
-    };
-
-    const values = {
-        connect: vi.fn().mockResolvedValue({
-            get models() {
-                return new Proxy([], { get: () => MockModel });
-            },
-        }),
-        set: vi.fn(),
-    };
-
-    return {
-        ...(((await vi.importActual('mongoose')) as object) || {}),
-        Model: MockModel,
-        Document: {},
-        ...values,
-        connect: vi.fn().mockResolvedValue(values),
-        default: { ...values },
-    };
-});
-
-import type { Model } from 'mongoose';
-
-import type { BaseDocument } from '../db';
 import { Identity } from './identity';
-import type { Service } from './service';
 import { Session } from './session';
 import { User } from './user';
 
+/**
+ * Resolves the Convex function path of the n-th call on a transport mock.
+ *
+ * @param mock - The mocked `query`/`mutation` transport method.
+ * @param index - Call index, defaulting to the first call.
+ * @returns The `module:function` path string.
+ */
+const calledFunction = (mock: ReturnType<typeof vi.fn>, index = 0): string => {
+    const call = mock.mock.calls[index];
+    expect(call).toBeDefined();
+    return getFunctionName((call as unknown[])[0] as Parameters<typeof getFunctionName>[0]);
+};
+
+/**
+ * Returns the args object of the n-th call on a transport mock.
+ *
+ * @param mock - The mocked `query`/`mutation` transport method.
+ * @param index - Call index, defaulting to the first call.
+ * @returns The args passed alongside the function reference.
+ */
+const calledArgs = (mock: ReturnType<typeof vi.fn>, index = 0): Record<string, unknown> => {
+    const call = mock.mock.calls[index];
+    expect(call).toBeDefined();
+    return (call as unknown[])[1] as Record<string, unknown>;
+};
+
+const NOW = 1_700_000_000_000;
+
+const userRow = {
+    _id: 'usr_1',
+    _creationTime: NOW,
+    email: 'john@example.com',
+    name: 'John Doe',
+    emailVerified: null,
+    identities: [],
+    createdAt: NOW,
+    updatedAt: NOW,
+};
+
 beforeEach(() => {
-    mockQuery.exec.mockReset();
-    mockQuery.limit.mockClear();
-    mockQuery.sort.mockClear();
+    queryMock.mockReset();
+    mutationMock.mockReset();
 });
 
 afterEach(() => {
     vi.clearAllMocks();
 });
 
-// All three are the same `Service` class bound to a different model, so the
-// base contract is identical; running each through `describe.each` proves every
-// exported singleton is correctly wired rather than asserting it on only one.
-//
-// Type the rows to a shared `Service<{ id: string }, any>` supertype rather
-// than `as const`: `as const` would infer `service` as the UNION of the three
-// distinct `Service<…>` instantiations, and the overloaded `.find` is not
-// callable on that union (TS2349). A common base view is faithful here because
-// every row is the same `Service` class — only the model binding differs, which
-// the base-contract assertions below do not depend on.
-//
-// The shared view is `Service<BaseDocument, typeof Model>`: `BaseDocument`
-// satisfies the `DocType extends BaseDocument` constraint on the class (a bare
-// `{ id: string }` would not — `BaseDocument` is a full Mongoose `Document`),
-// and the model type-arg only shapes the unused `model` getter.
-const services: ReadonlyArray<readonly [string, Service<BaseDocument, typeof Model>]> = [
-    ['Identity', Identity],
-    ['Session', Session],
-    ['User', User],
-];
+describe('User (Convex-backed seam)', () => {
+    it('find({ id }) resolves through db/users:byId with the server secret attached', async () => {
+        queryMock.mockResolvedValueOnce(userRow);
+        const result = await User.find({ id: 'usr_1' });
 
-describe.each(services)('%s base Service contract (characterization)', (name, service) => {
-    // Each `it` title embeds `name` so the singleton under test is named in the
-    // assertion output. This is a genuine read of the `describe.each` row name,
-    // so the unused-parameter rule holds without underscore suppression (which
-    // CLAUDE.md forbids outside rest patterns).
-    /**
-     * The single-document overload (`{ id }` or `count: 1`) promises
-     * `Promise<DocType>`, so an empty match must throw rather than return `[]`.
-     * Matched on `error.name` because the errors package ships both `src` and
-     * `dist` builds and Vitest can load the two class identities via different
-     * paths; the `name` field is identical across both.
-     */
-    it(`${name}: throws NotFoundError when an id lookup has no match`, async () => {
-        mockQuery.exec.mockResolvedValueOnce([]);
-        await expect(service.find({ id: 'missing' })).rejects.toMatchObject({ name: 'NotFoundError' });
+        expect(calledFunction(queryMock)).toBe('db/users:byId');
+        expect(calledArgs(queryMock)).toEqual({ id: 'usr_1', serverSecret: 'test-server-secret' });
+        expect(result).toMatchObject({ id: 'usr_1', email: 'john@example.com' });
+        expect(result).not.toHaveProperty('_id');
+        expect(result.createdAt).toBeInstanceOf(Date);
     });
 
-    it(`${name}: throws NotFoundError when a count:1 lookup has no match`, async () => {
-        mockQuery.exec.mockResolvedValueOnce([]);
-        await expect(service.find({ filter: { handle: 'nobody' }, count: 1 })).rejects.toMatchObject({
+    it('find({ id }) throws NotFoundError when the lookup misses', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        await expect(User.find({ id: 'missing' })).rejects.toMatchObject({ name: 'NotFoundError' });
+    });
+
+    it('find({ count: 1, filter: { email } }) resolves through db/users:byEmail', async () => {
+        queryMock.mockResolvedValueOnce(userRow);
+        const result = await User.find({ count: 1, filter: { email: 'john@example.com' } });
+
+        expect(calledFunction(queryMock)).toBe('db/users:byEmail');
+        expect(calledArgs(queryMock)).toMatchObject({ email: 'john@example.com' });
+        expect(result.id).toBe('usr_1');
+    });
+
+    it('find({ count: 1, filter: { email } }) throws NotFoundError when no user matches', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        await expect(User.find({ count: 1, filter: { email: 'nobody@example.com' } })).rejects.toMatchObject({
             name: 'NotFoundError',
         });
     });
 
-    it(`${name}: returns the first document for a single-result lookup`, async () => {
-        mockQuery.exec.mockResolvedValueOnce([{ id: 'a' }, { id: 'b' }]);
-        const result = await service.find({ id: 'a' });
-        expect(result).toMatchObject({ id: 'a' });
+    it('translates the identities $elemMatch filter onto db/users:byProviderIdentity', async () => {
+        queryMock.mockResolvedValueOnce(userRow);
+        await User.find({
+            count: 1,
+            filter: { identities: { $elemMatch: { provider: 'github', identity: '42' } } },
+        });
+
+        expect(calledFunction(queryMock)).toBe('db/users:byProviderIdentity');
+        expect(calledArgs(queryMock)).toMatchObject({ provider: 'github', identity: '42' });
     });
 
-    it(`${name}: returns [] for a multi-result lookup with no matches rather than throwing`, async () => {
-        mockQuery.exec.mockResolvedValueOnce([]);
-        const result = await service.find({ filter: { handle: 'nobody' } });
+    it('returns [] for an empty multi-result lookup rather than throwing', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        const result = await User.find({ filter: { email: 'nobody@example.com' } });
         expect(result).toEqual([]);
     });
 
-    it(`${name}: returns every document for a multi-result lookup`, async () => {
-        mockQuery.exec.mockResolvedValueOnce([{ id: 'a' }, { id: 'b' }]);
-        const result = await service.find({ filter: {} });
-        expect(result).toHaveLength(2);
+    it('create writes through db/users:create and rehydrates the stored row', async () => {
+        mutationMock.mockResolvedValueOnce({ ...userRow, emailVerified: NOW });
+        const result = await User.create({
+            email: 'john@example.com',
+            name: 'John Doe',
+            avatar: undefined,
+            emailVerified: new Date(NOW),
+            identities: [],
+        } as never);
+
+        expect(calledFunction(mutationMock)).toBe('db/users:create');
+        expect(calledArgs(mutationMock)).toMatchObject({
+            email: 'john@example.com',
+            name: 'John Doe',
+            emailVerified: NOW,
+            identities: [],
+            serverSecret: 'test-server-secret',
+        });
+        expect(result.id).toBe('usr_1');
+        expect(result.emailVerified).toEqual(new Date(NOW));
     });
 
-    it(`${name}: delegates create to the model`, async () => {
-        const input = { handle: 'x' } as never;
-        const result = await service.create(input);
-        expect(result).toMatchObject({ id: 'created' });
+    it('findById resolves null on a miss instead of throwing', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        await expect(User.findById('missing')).resolves.toBeNull();
     });
 
-    it(`${name}: resolves findById through .exec() and returns null when absent`, async () => {
-        mockQuery.exec.mockResolvedValueOnce(null);
-        const result = await service.findById('missing');
+    it('translates the $push identities update onto db/users:pushIdentity', async () => {
+        const identity = {
+            id: 'idn_1',
+            provider: 'github',
+            identity: '42',
+            createdAt: new Date(NOW),
+            updatedAt: new Date(NOW),
+        } as never;
+        mutationMock.mockResolvedValueOnce({
+            ...userRow,
+            identities: [{ id: 'idn_1', provider: 'github', identity: '42', createdAt: NOW, updatedAt: NOW }],
+        });
+
+        const result = await User.findOneAndUpdate({ _id: 'usr_1' } as never, { $push: { identities: identity } });
+
+        expect(calledFunction(mutationMock)).toBe('db/users:pushIdentity');
+        expect(calledArgs(mutationMock)).toMatchObject({
+            userId: 'usr_1',
+            identity: expect.objectContaining({ id: 'idn_1', provider: 'github', identity: '42' }),
+        });
+        expect(result?.identities[0]).toMatchObject({ id: 'idn_1', provider: 'github' });
+        expect(result?.identities[0]?.createdAt).toBeInstanceOf(Date);
+    });
+});
+
+describe('Identity (Convex-backed seam)', () => {
+    it('upserts on (provider, identity) through db/identities:upsertByProviderIdentity', async () => {
+        mutationMock.mockResolvedValueOnce({
+            _id: 'idn_1',
+            _creationTime: NOW,
+            provider: 'github',
+            identity: '42',
+            scope: 'read:user',
+            accessToken: 'at',
+            createdAt: NOW,
+            updatedAt: NOW,
+        });
+
+        const result = await Identity.findOneAndUpdate(
+            { provider: 'github', identity: '42' } as never,
+            {
+                provider: 'github',
+                identity: '42',
+                scope: 'read:user',
+                expiresAt: new Date(NOW),
+                refreshToken: 'rt',
+                accessToken: 'at',
+            } as never,
+            { upsert: true, new: true },
+        );
+
+        expect(calledFunction(mutationMock)).toBe('db/identities:upsertByProviderIdentity');
+        expect(calledArgs(mutationMock)).toMatchObject({
+            provider: 'github',
+            identity: '42',
+            scope: 'read:user',
+            expiresAt: NOW,
+            refreshToken: 'rt',
+            accessToken: 'at',
+            upsert: true,
+            serverSecret: 'test-server-secret',
+        });
+        expect(result).toMatchObject({ id: 'idn_1', provider: 'github', identity: '42' });
+        expect(result).not.toHaveProperty('_id');
+    });
+
+    it('resolves findOneAndUpdate to null when the pair is absent and upsert was not requested', async () => {
+        mutationMock.mockResolvedValueOnce(null);
+        const result = await Identity.findOneAndUpdate(
+            { provider: 'github', identity: 'missing' } as never,
+            {
+                provider: 'github',
+                identity: 'missing',
+            } as never,
+        );
         expect(result).toBeNull();
+        expect(calledArgs(mutationMock)).toMatchObject({ upsert: false });
     });
 
-    it(`${name}: resolves findById to the document when present`, async () => {
-        mockQuery.exec.mockResolvedValueOnce({ id: 'found' });
-        const result = await service.findById('found');
-        expect(result).toMatchObject({ id: 'found' });
+    it('find by (provider, identity) returns [] on a multi-result miss', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        const result = await Identity.find({ filter: { provider: 'github', identity: 'missing' } });
+        expect(calledFunction(queryMock)).toBe('db/identities:byProviderIdentity');
+        expect(result).toEqual([]);
     });
 
-    it(`${name}: resolves findOneAndUpdate to null when no document matches`, async () => {
-        mockQuery.exec.mockResolvedValueOnce(null);
-        const result = await service.findOneAndUpdate({ handle: 'x' }, { handle: 'y' });
-        expect(result).toBeNull();
+    it('find({ id }) throws NotFoundError when the lookup misses', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        await expect(Identity.find({ id: 'missing' })).rejects.toMatchObject({ name: 'NotFoundError' });
+    });
+});
+
+describe('Session (Convex-backed seam)', () => {
+    const sessionPayload = {
+        session: {
+            _id: 'ses_1',
+            _creationTime: NOW,
+            user: 'usr_1',
+            token: 'tok_1',
+            expiresAt: NOW + 60_000,
+            createdAt: NOW,
+            updatedAt: NOW,
+        },
+        user: userRow,
+    };
+
+    it('create writes through db/sessions:create with the owning user id and epoch-ms expiry', async () => {
+        mutationMock.mockResolvedValueOnce(sessionPayload);
+        const user = { id: 'usr_1', email: 'john@example.com', name: 'John Doe' } as never;
+
+        const session = await Session.create({
+            user,
+            token: 'tok_1',
+            expiresAt: new Date(NOW + 60_000),
+        } as never);
+
+        expect(calledFunction(mutationMock)).toBe('db/sessions:create');
+        expect(calledArgs(mutationMock)).toEqual({
+            userId: 'usr_1',
+            token: 'tok_1',
+            expiresAt: NOW + 60_000,
+            serverSecret: 'test-server-secret',
+        });
+        expect(session).toMatchObject({ id: 'ses_1', token: 'tok_1' });
+        expect(session.expiresAt).toBeInstanceOf(Date);
+        // The frozen contract populates the owning user, never a bare reference string.
+        expect(session.user).toMatchObject({ id: 'usr_1', email: 'john@example.com' });
     });
 
-    it(`${name}: resolves findOneAndUpdate to the updated document`, async () => {
-        mockQuery.exec.mockResolvedValueOnce({ id: 'updated' });
-        const result = await service.findOneAndUpdate({ handle: 'x' }, { handle: 'y' });
-        expect(result).toMatchObject({ id: 'updated' });
+    it('find by token resolves through db/sessions:byToken', async () => {
+        queryMock.mockResolvedValueOnce(sessionPayload);
+        const session = await Session.find({ count: 1, filter: { token: 'tok_1' } });
+
+        expect(calledFunction(queryMock)).toBe('db/sessions:byToken');
+        expect(calledArgs(queryMock)).toMatchObject({ token: 'tok_1' });
+        expect(session.user.id).toBe('usr_1');
+    });
+
+    it('find({ id }) throws NotFoundError when the lookup misses', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        await expect(Session.find({ id: 'missing' })).rejects.toMatchObject({ name: 'NotFoundError' });
+    });
+
+    it('findById resolves null on a miss instead of throwing', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        await expect(Session.findById('missing')).resolves.toBeNull();
     });
 });

@@ -1,7 +1,6 @@
 import { GenericErrorKind } from '@nordcom/commerce-errors';
 import { describe, expect, it } from 'vitest';
 
-import { ShopSchema } from '../models';
 import {
     FONT_FAMILIES,
     type ResolvedShopTheme,
@@ -9,50 +8,6 @@ import {
     THEME_DEFAULTS,
     type ThemeResolutionInput,
 } from './theme';
-
-/**
- * Resolves the nested schema for a single-nested/array path, mirroring `shop.feature-flags.test.ts`
- * — Mongoose exposes it via `.schema`, `.caster.schema`, or `.casterConstructor.schema` depending
- * on the path kind.
- */
-const nestedSchema = (path: {
-    schema?: { path(name: string): { instance: string; isRequired?: boolean } };
-    caster?: { schema?: { path(name: string): { instance: string; isRequired?: boolean } } };
-    casterConstructor?: { schema?: { path(name: string): { instance: string; isRequired?: boolean } } };
-}) => path.schema ?? path.caster?.schema ?? path.casterConstructor?.schema;
-
-describe('models/shop — theme schema', () => {
-    it('declares an optional `theme` path', () => {
-        const path = ShopSchema.path('theme');
-        expect(path).toBeDefined();
-        expect(path.isRequired).toBeFalsy();
-    });
-
-    it('types color tokens as String and numeric/boolean product-card knobs accordingly', () => {
-        const schema = nestedSchema(ShopSchema.path('theme') as never);
-        expect(schema).toBeDefined();
-        expect(schema!.path('colors.background').instance).toBe('String');
-        expect(schema!.path('colors.foreground').instance).toBe('String');
-        expect(schema!.path('productCard.titleLineClamp').instance).toBe('Number');
-        expect(schema!.path('productCard.saleBadgeMinDiscount').instance).toBe('Number');
-        expect(schema!.path('productCard.saleBadgeAllowOverlap').instance).toBe('Boolean');
-        expect(schema!.path('productCard.ctaBg').instance).toBe('String');
-    });
-
-    it('treats the `default`-named ramp keys as String sub-paths, not schema options', () => {
-        const schema = nestedSchema(ShopSchema.path('theme') as never);
-        expect(schema!.path('colors.text.default').instance).toBe('String');
-        expect(schema!.path('colors.text.muted').instance).toBe('String');
-        expect(schema!.path('colors.border.default').instance).toBe('String');
-        expect(schema!.path('colors.surface.base').instance).toBe('String');
-    });
-
-    it('keeps no theme leaf required so an unset theme persists nothing', () => {
-        const schema = nestedSchema(ShopSchema.path('theme') as never);
-        expect(schema!.path('colors.background').isRequired).toBeFalsy();
-        expect(schema!.path('productCard.ctaBg').isRequired).toBeFalsy();
-    });
-});
 
 describe('resolveTheme — backward-compat defaults', () => {
     it('resolves a shop with no theme to the platform defaults', () => {

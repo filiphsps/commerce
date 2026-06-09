@@ -1,159 +1,144 @@
-import { Model } from 'mongoose';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import type { BaseDocument } from '../db';
-import { Service } from './service';
+import { Service, type ServiceBackend } from './service';
 
-// Mocking the Model class
-vi.mock('mongoose', async () => {
-    const mockDocument = {
-        _id: '123',
-        name: 'John Doe',
-        age: 30,
-        save: vi.fn().mockResolvedValue(this),
-    };
+type TestDoc = BaseDocument & { name?: string };
 
-    const mockDocuments = [
-        mockDocument,
-        {
-            _id: '456',
-            name: 'Jane Doe',
-            age: 25,
-            save: vi.fn().mockResolvedValue(this),
-        },
-    ];
+const docA = { id: '123', name: 'John Doe' } as TestDoc;
+const docB = { id: '456', name: 'Jane Doe' } as TestDoc;
 
-    class MockModel {
-        public static modelName = 'MockModel';
-        public static find = vi.fn().mockReturnThis();
-        public static sort = vi.fn().mockReturnThis();
-        public static limit = vi.fn().mockReturnThis();
-        public static exec = vi.fn().mockResolvedValue(mockDocuments);
-        public static create = vi.fn().mockResolvedValue(mockDocument);
-        // `findById` returns a chainable Query in real Mongoose — Service.findById
-        // calls `.exec()` on it. Mirror that here so the unit test reflects the
-        // real call sequence.
-        public static findById = vi.fn().mockReturnValue({
-            exec: vi.fn().mockResolvedValue(mockDocument),
-        });
-        public static findOneAndUpdate = vi.fn().mockReturnValue({
-            exec: vi.fn().mockResolvedValue(mockDocument),
-        });
-        public static orFail = vi.fn().mockReturnThis();
-        public limit = vi.fn().mockResolvedValue(this);
-        public save = vi.fn().mockResolvedValue(this);
-    }
-
-    const values = {
-        connect: vi.fn().mockResolvedValue({
-            get models() {
-                return new Proxy([], {
-                    get: () => MockModel,
-                });
-            },
-        }),
-        set: vi.fn(),
-    };
-
-    return {
-        Model: MockModel,
-        Document: {},
-        ...values,
-        connect: vi.fn().mockResolvedValue(values),
-        default: {
-            ...values,
-        },
-    };
+/**
+ * Builds a fully-mocked backend so the base `Service` contract — the part SFREAD-02 freezes — is
+ * exercised in isolation from any transport.
+ *
+ * @returns The mocked backend with every method as a `vi.fn()`.
+ */
+const makeBackend = () => ({
+    name: 'TestDoc',
+    create: vi.fn(),
+    findMany: vi.fn(),
+    findById: vi.fn(),
+    findOneAndUpdate: vi.fn(),
 });
 
-describe('services', () => {
-    let model: any;
-    let service: Service<BaseDocument, typeof Model>;
+afterEach(() => {
+    vi.clearAllMocks();
+});
 
-    beforeEach(() => {
-        model = new Model();
-        service = new Service(model);
-    });
-
-    afterEach(() => {
-        vi.clearAllMocks();
-    });
-
+describe('Service (Convex-backed base contract)', () => {
     describe('create', () => {
-        it('should create a document', async () => {
-            const input = { name: 'John Doe' };
-            await service.create(input);
-            expect(Model.create).toHaveBeenCalledWith(input);
-            //expect(model.save).toHaveBeenCalled();
+        it('delegates to the backend and resolves the stored document', async () => {
+            const backend = makeBackend();
+            backend.create.mockResolvedValueOnce(docA);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
+            const input = { name: 'John Doe' } as Omit<TestDoc, keyof BaseDocument>;
+            const result = await service.create(input);
+
+            expect(backend.create).toHaveBeenCalledWith(input);
+            expect(result).toBe(docA);
         });
     });
 
     describe('find', () => {
-        it('should find multiple documents', async () => {
-            const filter = { name: 'John Doe' };
-            const result = await service.find({ filter });
-            expect(Model.find).toHaveBeenCalledWith(expect.objectContaining({ ...filter }), undefined);
-            expect((result as any).length).toEqual(2);
+        it('returns every document for a multi-result lookup', async () => {
+            const backend = makeBackend();
+            backend.findMany.mockResolvedValueOnce([docA, docB]);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
+            const result = await service.find({ filter: { name: 'Doe' } });
+
+            expect(backend.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({ filter: { name: 'Doe' }, id: undefined, count: undefined }),
+            );
+            expect(result).toHaveLength(2);
         });
 
-        it('should find one document', async () => {
-            const filter = { name: 'John Doe' };
-            const result = await service.find({ filter, count: 1 });
-            expect(Model.find).toHaveBeenCalledWith(expect.objectContaining({ ...filter }), undefined);
-            //expect(model.limit).toHaveBeenCalledWith(1);
-            expect(result._id).toEqual('123');
+        it('returns the first document for a count:1 lookup', async () => {
+            const backend = makeBackend();
+            backend.findMany.mockResolvedValueOnce([docA, docB]);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
+            const result = await service.find({ filter: { name: 'John Doe' }, count: 1 });
+            expect(result.id).toEqual('123');
         });
 
-        // Single-result overload (`count: 1` or `id`) promises `Promise<DocType>`.
-        // Returning `[]` on an empty match was a type lie that caused every
-        // caller doing `(await find(...)).toObject()` — the auth adapter, the
-        // storefront's `Shop.findByDomain` — to crash with
-        // `TypeError: (intermediate value).toObject is not a function`.
-        // Throw `NotFoundError` so the documented adapter contract (handle
-        // `NotFoundError` ⇒ return `null`) actually fires.
+        // Single-result overload (`count: 1` or `id`) promises `Promise<DocType>`. Returning `[]`
+        // on an empty match was a type lie that crashed every caller awaiting one document — the
+        // auth adapter, the storefront's `Shop.findByDomain`. Throw `NotFoundError` so the
+        // documented adapter contract (handle `NotFoundError` ⇒ return `null`) actually fires.
         //
-        // Match against `error.name` rather than `instanceof NotFoundError`:
-        // the errors package ships both `src/index.ts` and `dist/index.js` and
-        // Vitest can end up loading the two via different paths (test files
-        // resolve `src`, transitively-imported runtime resolves `dist`), so
-        // the two class identities don't match even though the thrown value
-        // is genuinely a NotFoundError. The `name` field is identical in both
-        // builds.
-        it('throws NotFoundError when count:1 query has no matches', async () => {
-            vi.mocked((Model as unknown as { exec: ReturnType<typeof vi.fn> }).exec).mockResolvedValueOnce([]);
+        // Matched on `error.name` rather than `instanceof`: the errors package ships both `src`
+        // and `dist` builds and Vitest can load the two class identities via different paths.
+        it('throws NotFoundError when a count:1 query has no matches', async () => {
+            const backend = makeBackend();
+            backend.findMany.mockResolvedValueOnce([]);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
             await expect(service.find({ filter: { name: 'Nobody' }, count: 1 })).rejects.toMatchObject({
                 name: 'NotFoundError',
             });
         });
 
-        it('throws NotFoundError when id query has no matches', async () => {
-            vi.mocked((Model as unknown as { exec: ReturnType<typeof vi.fn> }).exec).mockResolvedValueOnce([]);
+        it('throws NotFoundError when an id query has no matches', async () => {
+            const backend = makeBackend();
+            backend.findMany.mockResolvedValueOnce([]);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
             await expect(service.find({ id: 'missing-id' })).rejects.toMatchObject({ name: 'NotFoundError' });
         });
 
-        it('returns [] when multi-result query has no matches', async () => {
-            vi.mocked((Model as unknown as { exec: ReturnType<typeof vi.fn> }).exec).mockResolvedValueOnce([]);
+        it('returns [] when a multi-result query has no matches', async () => {
+            const backend = makeBackend();
+            backend.findMany.mockResolvedValueOnce([]);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
             const result = await service.find({ filter: { name: 'Nobody' } });
             expect(result).toEqual([]);
         });
     });
 
     describe('findById', () => {
-        it('should find a document by id', async () => {
-            const id = '123';
-            const projection = { name: 1 };
-            const options = { lean: true };
-            await service.findById(id, projection, options);
-            expect(Model.findById).toHaveBeenCalledWith(id, projection, options);
+        it('forwards id and projection to the backend', async () => {
+            const backend = makeBackend();
+            backend.findById.mockResolvedValueOnce(docA);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
+            await service.findById('123', { name: 1 }, { lean: true });
+            expect(backend.findById).toHaveBeenCalledWith('123', { name: 1 }, { lean: true });
+        });
+
+        it('resolves to null when the backend has no match', async () => {
+            const backend = makeBackend();
+            backend.findById.mockResolvedValueOnce(null);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
+            await expect(service.findById('missing')).resolves.toBeNull();
         });
     });
 
     describe('findOneAndUpdate', () => {
-        it('should find and update a document', async () => {
+        it('forwards filter, update, and options to the backend', async () => {
+            const backend = makeBackend();
+            backend.findOneAndUpdate.mockResolvedValueOnce(docA);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
             const filter = { name: 'John Doe' };
-            const update = { age: 30 };
-            const options = { includeResultMetadata: true, lean: true };
-            await service.findOneAndUpdate(filter, update, options);
-            expect(Model.findOneAndUpdate).toHaveBeenCalledWith(filter, update, options);
+            const update = { name: 'John D.' };
+            const options = { upsert: true, new: true };
+            const result = await service.findOneAndUpdate(filter, update, options);
+
+            expect(backend.findOneAndUpdate).toHaveBeenCalledWith(filter, update, options);
+            expect(result).toBe(docA);
+        });
+
+        it('resolves to null when no document matched', async () => {
+            const backend = makeBackend();
+            backend.findOneAndUpdate.mockResolvedValueOnce(null);
+            const service = new Service<TestDoc>(backend as unknown as ServiceBackend<TestDoc>);
+
+            await expect(service.findOneAndUpdate({ name: 'x' }, { name: 'y' })).resolves.toBeNull();
         });
     });
 });

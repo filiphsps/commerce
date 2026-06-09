@@ -1,199 +1,217 @@
+import { getFunctionName } from 'convex/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Mongoose connects at module evaluation (src/db.ts). Mock it so the module
-// graph loads without a running MongoDB. The mock returns a chainable Query
-// stub from `find`/`findOne`/`findById`; tests configure each test case by
-// reassigning `mockQuery.exec.mockResolvedValueOnce(...)`.
-//
-// `vi.hoisted` runs before the `vi.mock` factory is hoisted, making `mockQuery`
-// available both inside the factory and in test bodies.
-
-const mockQuery = vi.hoisted(() => ({
-    lean: vi.fn(),
-    populate: vi.fn(),
-    exec: vi.fn(),
+// The Convex transport double: `ShopService` reaches the deployed `db/shops` functions exclusively
+// through a lazy `ConvexHttpClient`, so mocking it pins the SFREAD-02 golden contract (masking,
+// id projection, NotFound errors, findAll's []-swallow, taint) on the re-homed seam.
+const { queryMock, mutationMock, taintMock } = vi.hoisted(() => ({
+    queryMock: vi.fn(),
+    mutationMock: vi.fn(),
+    taintMock: vi.fn(),
 }));
 
-vi.mock('mongoose', async () => {
-    mockQuery.lean.mockReturnValue(mockQuery);
-    mockQuery.populate.mockReturnValue(mockQuery);
+vi.mock('convex/browser', () => ({
+    // A real class: the lazy client in `src/db.ts` constructs it with `new`, which a `vi.fn`
+    // arrow-implementation cannot satisfy.
+    ConvexHttpClient: class {
+        public query = queryMock;
+        public mutation = mutationMock;
+    },
+}));
 
-    class MockModel {
-        public static modelName = 'MockModel';
-        public static find = vi.fn().mockReturnValue(mockQuery);
-        public static findOne = vi.fn().mockReturnValue(mockQuery);
-        public static findById = vi.fn().mockReturnValue(mockQuery);
-        public static create = vi.fn().mockResolvedValue({});
-        public static findOneAndUpdate = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue(null) });
-        public limit = vi.fn().mockResolvedValue(this);
-        public save = vi.fn().mockResolvedValue(this);
-    }
+// The taint helper resolves React dynamically; mock it so the re-taint of deserialized secrets is
+// observable in a plain Node test runtime.
+vi.mock('react', () => ({ experimental_taintUniqueValue: taintMock }));
 
-    const values = {
-        connect: vi.fn().mockResolvedValue({
-            get models() {
-                return new Proxy([], { get: () => MockModel });
-            },
-        }),
-        set: vi.fn(),
-    };
-
-    return {
-        ...(((await vi.importActual('mongoose')) as object) || {}),
-        Model: MockModel,
-        Document: {},
-        ...values,
-        connect: vi.fn().mockResolvedValue(values),
-        default: { ...values },
-    };
-});
-
-import { ShopModel } from '../models';
 import { Shop } from './shop';
 
-const mockShop = {
-    id: 'doc-1',
+const NOW = 1_700_000_000_000;
+
+/**
+ * Resolves the Convex function path of the first transport call.
+ *
+ * @returns The `module:function` path string.
+ */
+const calledFunction = (): string => {
+    const call = queryMock.mock.calls[0];
+    expect(call).toBeDefined();
+    return getFunctionName((call as unknown[])[0] as Parameters<typeof getFunctionName>[0]);
+};
+
+const shopRow = {
+    _id: 'cvx-shop-1',
+    _creationTime: NOW,
+    legacyId: 'shop-legacy-1',
     name: 'Acme',
     domain: 'acme.test',
-    alternativeDomains: [],
+    alternativeDomains: ['acme-alt.test'],
+    i18n: { defaultLocale: 'en-US' },
     design: { header: { logo: { src: '/l', alt: 'l', width: 1, height: 1 } }, accents: [] },
     commerceProvider: {
         type: 'shopify',
-        authentication: { token: 'SECRET', publicToken: 'pt', domain: 'shopify.com' },
+        authentication: {
+            publicToken: 'pt',
+            domain: 'shopify.com',
+            customers: { id: 'cid', clientId: 'client-id' },
+        },
         storefrontId: 's',
         domain: 'acme.test',
         id: 'cp',
     },
-    contentProvider: { type: 'cms' },
+    createdAt: NOW,
+    updatedAt: NOW,
 };
 
+const flagRow = {
+    _id: 'cvx-flag-1',
+    _creationTime: NOW,
+    legacyId: 'flag-legacy-1',
+    key: 'accounts',
+    defaultValue: false,
+    targeting: [],
+    createdAt: NOW,
+    updatedAt: NOW,
+};
+
+const publicPayload = { shop: shopRow, flags: [flagRow] };
+const sensitivePayload = { ...publicPayload, credentials: { token: 'SECRET', clientSecret: 'CLIENT_SECRET' } };
+
 beforeEach(() => {
-    mockQuery.exec.mockReset();
-    mockQuery.lean.mockClear();
-    mockQuery.populate.mockClear();
-    vi.mocked(ShopModel.find).mockClear();
-    vi.mocked(ShopModel.findOne).mockClear();
-    vi.mocked(ShopModel.findById).mockClear();
+    queryMock.mockReset();
+    mutationMock.mockReset();
+    taintMock.mockClear();
 });
 
 afterEach(() => {
     vi.clearAllMocks();
 });
 
-describe('Shop.findByDomain (Mongoose-backed)', () => {
-    it('queries ShopModel.findOne with an $or on domain + alternativeDomains', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShop);
+describe('Shop.findByDomain (Convex-backed)', () => {
+    it('resolves the masked read through db/shops:byDomain with the server secret attached', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
         await Shop.findByDomain('acme.test');
-        expect(ShopModel.findOne).toHaveBeenCalledWith(
-            {
-                $or: [{ domain: 'acme.test' }, { alternativeDomains: 'acme.test' }],
-            },
-            undefined,
-        );
+
+        expect(calledFunction()).toBe('db/shops:byDomain');
+        expect(queryMock.mock.calls[0]?.[1]).toEqual({ domain: 'acme.test', serverSecret: 'test-server-secret' });
     });
 
-    it('forwards a field projection to ShopModel.findOne', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShop);
-        await Shop.findByDomain('acme.test', {
-            convert: false,
-            projection: { domain: 1, 'i18n.defaultLocale': 1 },
-        });
-        expect(ShopModel.findOne).toHaveBeenCalledWith(
-            {
-                $or: [{ domain: 'acme.test' }, { alternativeDomains: 'acme.test' }],
-            },
-            { domain: 1, 'i18n.defaultLocale': 1 },
-        );
-    });
-
-    it('strips the auth token by default (sensitiveData: false)', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShop);
+    it('never carries token/clientSecret on the public read (structural masking)', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
         const result = await Shop.findByDomain('acme.test');
         const cp = (result as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
         expect(cp.authentication.token).toBeUndefined();
         expect(cp.authentication.publicToken).toBe('pt');
+        expect((cp.authentication.customers as Record<string, unknown>).clientSecret).toBeUndefined();
     });
 
-    it('projects Mongo _id into a string id field (sensitiveData: false)', async () => {
-        // Mongoose .lean() returns docs with _id but no `id`. The fixture's
-        // baked-in `id` would mask the projection we're testing — strip it.
-        const { id: _id_, ...rest } = mockShop;
-        const docFromMongoose = { ...rest, _id: 'mongo-id-x' };
-        mockQuery.exec.mockResolvedValueOnce(docFromMongoose);
+    it('projects the legacy Mongo id onto shop.id and never surfaces the Convex _id', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
         const result = (await Shop.findByDomain('acme.test')) as Record<string, unknown>;
-        expect(result.id).toBe('mongo-id-x');
+        expect(result.id).toBe('shop-legacy-1');
         expect(result).not.toHaveProperty('_id');
+        expect(result).not.toHaveProperty('_creationTime');
+        expect(result).not.toHaveProperty('legacyId');
     });
 
-    it('projects Mongo _id into a string id field (sensitiveData: true)', async () => {
-        const { id: _id_, ...rest } = mockShop;
-        const docFromMongoose = { ...rest, _id: 'mongo-id-x' };
-        mockQuery.exec.mockResolvedValueOnce(docFromMongoose);
-        const result = (await Shop.findByDomain('acme.test', { sensitiveData: true })) as Record<string, unknown>;
-        expect(result.id).toBe('mongo-id-x');
-        expect(result).not.toHaveProperty('_id');
+    it('always resolves the feature-flag join (populate is inert but satisfied)', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
+        const result = (await Shop.findByDomain('acme.test', { populate: ['featureFlags.flag'] })) as {
+            featureFlags?: { flag: { id?: string; key?: string } }[];
+        };
+        expect(result.featureFlags?.[0]?.flag).toMatchObject({ id: 'flag-legacy-1', key: 'accounts' });
     });
 
-    it('preserves the auth token when sensitiveData: true', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShop);
+    it('rehydrates the managed timestamps into Dates', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
+        const result = (await Shop.findByDomain('acme.test')) as { createdAt: unknown; updatedAt: unknown };
+        expect(result.createdAt).toEqual(new Date(NOW));
+        expect(result.updatedAt).toEqual(new Date(NOW));
+    });
+
+    it('routes sensitiveData through db/shops:byDomainWithCredentials and re-attaches the secrets', async () => {
+        queryMock.mockResolvedValueOnce(sensitivePayload);
         const result = await Shop.findByDomain('acme.test', { sensitiveData: true });
+
+        expect(calledFunction()).toBe('db/shops:byDomainWithCredentials');
         const cp = (result as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
         expect(cp.authentication.token).toBe('SECRET');
+        expect((cp.authentication.customers as Record<string, unknown>).clientSecret).toBe('CLIENT_SECRET');
     });
 
-    it('strips _id and __v even when sensitiveData: true', async () => {
-        const docWithInternals = { ...mockShop, _id: 'mongo-id-x', __v: 0 };
-        mockQuery.exec.mockResolvedValueOnce(docWithInternals);
-        const result = (await Shop.findByDomain('acme.test', { sensitiveData: true })) as Record<string, unknown>;
-        expect(result).not.toHaveProperty('_id');
-        expect(result).not.toHaveProperty('__v');
+    it('re-applies the React taint to both secrets after deserialization', async () => {
+        queryMock.mockResolvedValueOnce(sensitivePayload);
+        await Shop.findByDomain('acme.test', { sensitiveData: true });
+
+        expect(taintMock).toHaveBeenCalledWith('Do not pass private tokens to the client', globalThis, 'SECRET');
+        expect(taintMock).toHaveBeenCalledWith('Do not pass private tokens to the client', globalThis, 'CLIENT_SECRET');
     });
 
-    it('returns the raw lean doc when convert: false', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShop);
-        const result = await Shop.findByDomain('acme.test', { convert: false });
-        expect(result).toBe(mockShop);
-    });
-
-    it('applies populate paths via Mongoose .populate()', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShop);
-        await Shop.findByDomain('acme.test', { populate: ['featureFlags.flag'] });
-        expect(mockQuery.populate).toHaveBeenCalledWith('featureFlags.flag');
-    });
-
-    it('does not call .populate() when no paths are supplied', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShop);
+    it('does not taint on the masked read (no secret ever enters the process)', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
         await Shop.findByDomain('acme.test');
-        expect(mockQuery.populate).not.toHaveBeenCalled();
+        expect(taintMock).not.toHaveBeenCalled();
+    });
+
+    it('projects id even on the sensitiveData read', async () => {
+        queryMock.mockResolvedValueOnce(sensitivePayload);
+        const result = (await Shop.findByDomain('acme.test', { sensitiveData: true })) as Record<string, unknown>;
+        expect(result.id).toBe('shop-legacy-1');
+        expect(result).not.toHaveProperty('_id');
+    });
+
+    it('honors an include-style projection with convert: false', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
+        const result = (await Shop.findByDomain('acme.test', {
+            convert: false,
+            projection: { domain: 1, 'i18n.defaultLocale': 1 },
+        })) as Record<string, unknown>;
+
+        expect(result.domain).toBe('acme.test');
+        expect(result.i18n).toEqual({ defaultLocale: 'en-US' });
+        expect(result.id).toBe('shop-legacy-1');
+        expect(result).not.toHaveProperty('name');
+    });
+
+    it('returns the full raw doc when convert: false without a projection', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
+        const result = (await Shop.findByDomain('acme.test', { convert: false })) as Record<string, unknown>;
+        expect(result.name).toBe('Acme');
+        expect(result).not.toHaveProperty('_id');
     });
 
     it('throws UnknownShopDomainError when no shop matches', async () => {
-        mockQuery.exec.mockResolvedValueOnce(null);
+        queryMock.mockResolvedValueOnce(null);
         await expect(Shop.findByDomain('missing.test')).rejects.toMatchObject({
             name: 'UnknownShopDomainError',
             code: 'API_UNKNOWN_SHOP_DOMAIN',
         });
     });
+
+    it('throws InvalidShopDomainError for an empty domain', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        await expect(Shop.findByDomain('')).rejects.toMatchObject({ name: 'InvalidShopDomainError' });
+    });
 });
 
-describe('Shop.findById (Mongoose-backed)', () => {
-    const mockShopForId = { ...mockShop, id: 'shop-42' };
+describe('Shop.findById (Convex-backed)', () => {
+    it('resolves through db/shops:byId with the public (legacy) id', async () => {
+        queryMock.mockResolvedValueOnce(publicPayload);
+        const result = await Shop.findById('shop-legacy-1');
 
-    it('calls ShopModel.findById with the given id', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShopForId);
-        await Shop.findById('shop-42');
-        expect(ShopModel.findById).toHaveBeenCalledWith('shop-42');
+        expect(calledFunction()).toBe('db/shops:byId');
+        expect(queryMock.mock.calls[0]?.[1]).toMatchObject({ id: 'shop-legacy-1' });
+        expect((result as { id: string }).id).toBe('shop-legacy-1');
     });
 
     it('strips the auth token from the returned doc', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShopForId);
-        const result = await Shop.findById('shop-42');
+        queryMock.mockResolvedValueOnce(publicPayload);
+        const result = await Shop.findById('shop-legacy-1');
         const cp = (result as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
         expect(cp.authentication.token).toBeUndefined();
     });
 
     it('throws UnknownShopIdError when no shop matches', async () => {
-        mockQuery.exec.mockResolvedValueOnce(null);
+        queryMock.mockResolvedValueOnce(null);
         await expect(Shop.findById('missing')).rejects.toMatchObject({
             name: 'UnknownShopIdError',
             code: 'API_UNKNOWN_SHOP_ID',
@@ -201,21 +219,12 @@ describe('Shop.findById (Mongoose-backed)', () => {
     });
 });
 
-describe('Shop.findAll (Mongoose-backed)', () => {
-    const mockShops = [
-        { ...mockShop, id: 'shop-1', domain: 'alpha.test' },
-        { ...mockShop, id: 'shop-2', domain: 'beta.test' },
-    ];
-
-    it('calls ShopModel.find with no filter', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShops);
-        await Shop.findAll();
-        expect(ShopModel.find).toHaveBeenCalledWith({});
-    });
-
-    it('returns shops mapped through docToOnlineShop', async () => {
-        mockQuery.exec.mockResolvedValueOnce(mockShops);
+describe('Shop.findAll (Convex-backed)', () => {
+    it('resolves every shop through db/shops:findAll, masked', async () => {
+        queryMock.mockResolvedValueOnce([shopRow, { ...shopRow, legacyId: 'shop-legacy-2', domain: 'beta.test' }]);
         const result = await Shop.findAll();
+
+        expect(calledFunction()).toBe('db/shops:findAll');
         expect(result).toHaveLength(2);
         for (const shop of result) {
             const cp = (shop as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
@@ -224,13 +233,12 @@ describe('Shop.findAll (Mongoose-backed)', () => {
     });
 
     it('returns an empty array when no shops exist', async () => {
-        mockQuery.exec.mockResolvedValueOnce([]);
-        const result = await Shop.findAll();
-        expect(result).toEqual([]);
+        queryMock.mockResolvedValueOnce([]);
+        await expect(Shop.findAll()).resolves.toEqual([]);
     });
 
-    it('swallows errors and returns an empty array', async () => {
-        mockQuery.exec.mockRejectedValueOnce(new Error('mongo down'));
+    it('swallows transport errors and returns an empty array', async () => {
+        queryMock.mockRejectedValueOnce(new TypeError('convex down'));
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
         const result = await Shop.findAll();
         expect(result).toEqual([]);
@@ -239,34 +247,33 @@ describe('Shop.findAll (Mongoose-backed)', () => {
     });
 });
 
-describe('Shop.findByCollaborator (Mongoose-backed)', () => {
-    // Post de-embed: `collaborators` is a join of `{ user, permissions }` rows where `user` is a
-    // plain user id string ref, not an embedded user document.
-    const mockShopForCollab = {
-        ...mockShop,
-        id: 'shop-99',
-        domain: 'collab.test',
-        collaborators: [{ user: 'user-123', permissions: ['admin'] }],
-    };
+describe('Shop.findByCollaborator (Convex-backed)', () => {
+    const collaboratedPayload = [
+        {
+            shop: { ...shopRow, legacyId: 'shop-99', domain: 'collab.test' },
+            collaborators: [{ user: 'user-123', permissions: ['admin'] }],
+        },
+    ];
 
-    it('queries the de-embedded collaborators.user id ref', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockShopForCollab]);
+    it('queries db/shops:byCollaborator with the user id', async () => {
+        queryMock.mockResolvedValueOnce(collaboratedPayload);
         await Shop.findByCollaborator({ collaboratorId: 'user-123' });
-        expect(ShopModel.find).toHaveBeenCalledWith({ 'collaborators.user': 'user-123' });
+
+        expect(calledFunction()).toBe('db/shops:byCollaborator');
+        expect(queryMock.mock.calls[0]?.[1]).toMatchObject({ userId: 'user-123' });
     });
 
-    it('resolves the seeded collaborator as an id-ref join row (no embedded user)', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockShopForCollab]);
+    it('resolves the collaborator as an id-ref join row (no embedded user)', async () => {
+        queryMock.mockResolvedValueOnce(collaboratedPayload);
         const result = await Shop.findByCollaborator({ collaboratorId: 'user-123' });
         const collaborators = (result[0] as { collaborators?: Array<{ user: unknown; permissions: unknown }> })
             ?.collaborators;
         expect(collaborators).toEqual([{ user: 'user-123', permissions: ['admin'] }]);
-        // `user` is a string id, never a nested user document.
         expect(typeof collaborators?.[0]?.user).toBe('string');
     });
 
     it('strips auth tokens from results', async () => {
-        mockQuery.exec.mockResolvedValueOnce([mockShopForCollab]);
+        queryMock.mockResolvedValueOnce(collaboratedPayload);
         const result = await Shop.findByCollaborator({ collaboratorId: 'user-123' });
         const cp = (result[0] as { commerceProvider: { authentication: Record<string, unknown> } } | undefined)
             ?.commerceProvider;
@@ -275,8 +282,7 @@ describe('Shop.findByCollaborator (Mongoose-backed)', () => {
     });
 
     it('returns an empty array when no shops match', async () => {
-        mockQuery.exec.mockResolvedValueOnce([]);
-        const result = await Shop.findByCollaborator({ collaboratorId: 'nobody' });
-        expect(result).toEqual([]);
+        queryMock.mockResolvedValueOnce([]);
+        await expect(Shop.findByCollaborator({ collaboratorId: 'nobody' })).resolves.toEqual([]);
     });
 });

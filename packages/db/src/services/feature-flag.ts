@@ -1,12 +1,14 @@
 import 'server-only';
 
+import { convexServerQuery } from '../db';
 import { docToFeatureFlag } from '../lib/doc-to-shape';
 import type { FeatureFlagBase } from '../models';
-import { FeatureFlagModel } from '../models';
+
+type ConvexDoc = Record<string, unknown>;
 
 /**
- * FeatureFlag service backed by Mongoose. Method signatures preserved from
- * the prior Payload-backed service so storefront / admin callsites are
+ * FeatureFlag service backed by the deployed `db/feature_flags` Convex functions. Method
+ * signatures preserved from the prior Mongoose-backed service so storefront / admin callsites are
  * unchanged.
  */
 export class FeatureFlagService {
@@ -22,8 +24,8 @@ export class FeatureFlagService {
      * ```
      */
     public async findByKey(key: string): Promise<FeatureFlagBase | null> {
-        const doc = await FeatureFlagModel.findOne({ key }).lean<FeatureFlagBase>().exec();
-        return doc ? docToFeatureFlag(doc as unknown as Record<string, unknown>) : null;
+        const row = await convexServerQuery<ConvexDoc | null>('db/feature_flags:byKey', { key });
+        return row ? docToFeatureFlag(row) : null;
     }
 
     /**
@@ -36,8 +38,8 @@ export class FeatureFlagService {
      * ```
      */
     public async findAll(): Promise<FeatureFlagBase[]> {
-        const docs = await FeatureFlagModel.find({}).lean<FeatureFlagBase[]>().exec();
-        return docs.map((d) => docToFeatureFlag(d as unknown as Record<string, unknown>));
+        const rows = await convexServerQuery<ConvexDoc[]>('db/feature_flags:findAll', {});
+        return rows.map((row) => docToFeatureFlag(row));
     }
 }
 

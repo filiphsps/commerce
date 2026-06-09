@@ -1,8 +1,4 @@
-import type { InferSchemaType } from 'mongoose';
-import { Schema } from 'mongoose';
-
 import type { BaseDocument } from '../db';
-import { db } from '../db';
 // Pure section-flag primitives live in the Mongoose-free leaf module so the CMS collection config
 // (a plain-Node `payload generate:types` context) can import them without pulling in `db.ts`'s
 // `server-only`; the package barrel re-exports them, so `@nordcom/commerce-db` consumers are unchanged.
@@ -10,7 +6,8 @@ import type { FeatureFlagKind } from '../lib/feature-flag';
 
 /**
  * JSON-serializable value accepted as a feature flag `defaultValue`, targeting rule output, or
- * option value. All flag storage uses this union to stay compatible with Mongo's `Mixed` type.
+ * option value. All flag storage uses this union — the Convex `featureFlags` table validates it
+ * structurally (the migrated form of Mongo's `Mixed`).
  *
  * @example
  * ```ts
@@ -53,46 +50,11 @@ export interface TargetingRule {
     description?: string;
 }
 
-const TargetingRuleSchema = new Schema(
-    {
-        rule: { type: Schema.Types.String, required: true },
-        params: { type: Schema.Types.Mixed, required: true, default: {} },
-        value: { type: Schema.Types.Mixed, required: true },
-        description: { type: Schema.Types.String, required: false },
-    },
-    { _id: false },
-);
-
-const FeatureFlagOptionSchema = new Schema(
-    {
-        label: { type: Schema.Types.String, required: true },
-        value: { type: Schema.Types.Mixed, required: true },
-    },
-    { _id: false },
-);
-
-export const FeatureFlagSchema = new Schema(
-    {
-        key: { type: Schema.Types.String, required: true },
-        // Optional discriminator (`behavior` | `section`); left without a `default` so existing rows
-        // and new behavior flags persist `undefined` rather than a migrated value.
-        kind: { type: Schema.Types.String, enum: ['behavior', 'section'] satisfies FeatureFlagKind[], required: false },
-        description: { type: Schema.Types.String, required: false },
-        defaultValue: { type: Schema.Types.Mixed, required: true },
-        options: { type: [FeatureFlagOptionSchema], required: false, default: undefined },
-        targeting: { type: [TargetingRuleSchema], required: true, default: [] },
-    },
-    { id: true, timestamps: true },
-);
-
-FeatureFlagSchema.index({ key: 1 }, { unique: true });
-
-type InferredFeatureFlag = InferSchemaType<typeof FeatureFlagSchema>;
-
 /**
  * Resolved document shape for a feature flag record. Combines `BaseDocument` (id, timestamps) with
- * the schema fields, replacing inferred sub-document types with the explicit `TargetingRule` and
- * `FeatureFlagOption` shapes. Use this type when reading flag documents from `FeatureFlagService`.
+ * the flag fields — a unique `key`, the optional `kind` discriminator and `description`, the
+ * required `defaultValue`, the optional enum-style `options`, and the `targeting` rule list. Use
+ * this type when reading flag documents from `FeatureFlagService`.
  *
  * @example
  * ```ts
@@ -102,13 +64,13 @@ type InferredFeatureFlag = InferSchemaType<typeof FeatureFlagSchema>;
  * }
  * ```
  */
-export type FeatureFlagBase = BaseDocument &
-    Omit<InferredFeatureFlag, 'targeting' | 'options' | 'kind'> & {
-        targeting: TargetingRule[];
-        options?: FeatureFlagOption[];
-        kind?: FeatureFlagKind;
-    };
-
-export const FeatureFlagModel = (db.models.FeatureFlag || db.model('FeatureFlag', FeatureFlagSchema)) as ReturnType<
-    typeof db.model<typeof FeatureFlagSchema>
->;
+export type FeatureFlagBase = BaseDocument & {
+    key: string;
+    // Optional discriminator (`behavior` | `section`); existing rows and new behavior flags persist
+    // no value rather than a migrated default.
+    kind?: FeatureFlagKind;
+    description?: string;
+    defaultValue: JsonValue;
+    options?: FeatureFlagOption[];
+    targeting: TargetingRule[];
+};
