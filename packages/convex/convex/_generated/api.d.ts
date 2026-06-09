@@ -177,6 +177,19 @@ export declare const internal: {
         any
       >;
     };
+    onPublish: {
+      onPublish: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          collection: string;
+          eventId: string;
+          key?: string;
+          shopId: Id<"shops">;
+        },
+        any
+      >;
+    };
     reconcile: {
       listLostWindows: FunctionReference<
         "query",

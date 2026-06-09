@@ -1,7 +1,9 @@
 import { ConvexError, v } from 'convex/values';
 
+import { internal } from '../_generated/api';
 import type { Id } from '../_generated/dataModel';
 import { tenantMutation } from '../lib/tenant';
+import { cmsRevalidateKey } from '../revalidate/onPublish';
 import { cmsDocumentStatusValidator } from '../tables/cmsVersions';
 
 /**
@@ -82,6 +84,9 @@ function assertPublishable(collection: string, data: unknown): void {
  *   row (a `documentId` outside the resolved tenant reads as missing under RLS and fails closed).
  * - It then inserts one `cmsVersions` snapshot pointing back at the live row and advances the live
  *   row's `latestVersionId` to it, so the pointer always names the most recent save.
+ * - On the `published` status ONLY it schedules the post-commit revalidation hook
+ *   (`internal.revalidate.onPublish`, BRIDGE-05) via `ctx.scheduler.runAfter`, so a draft/autosave save
+ *   busts nothing while a publish coalesces into the tenant's debounced cache-revalidation window.
  *
  * Built on {@link tenantMutation} (NOT a raw/system mutation), so the tenant is pinned from
  * server-trusted context and the RLS-wrapped writer confines every read and write to that shop's
@@ -135,6 +140,19 @@ export const save = tenantMutation({
             createdAt: now,
         });
         await ctx.db.patch(liveId, { latestVersionId: versionId });
+
+        // Revalidation fires on the published transition ONLY — a draft/autosave save schedules nothing.
+        // Scheduled post-commit (never inline) so the live row and its version snapshot are durable
+        // before any cache tag is derived; the logic lives in `revalidate/onPublish.ts`, which runs on
+        // the system tier because the revalidation bridge tables sit outside this tenant's RLS scope.
+        if (status === 'published') {
+            await ctx.scheduler.runAfter(0, internal.revalidate.onPublish.onPublish, {
+                shopId: ctx.shopId,
+                collection,
+                key: cmsRevalidateKey(collection, data),
+                eventId: crypto.randomUUID(),
+            });
+        }
 
         return { documentId: liveId, versionId };
     },
