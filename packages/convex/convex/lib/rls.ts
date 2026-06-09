@@ -117,6 +117,15 @@ export function tenantRules(shopId: Id<'shops'>): Rules<TenantRuleCtx, DataModel
             modify: ownedByShopId,
             insert: ownedByShopId,
         },
+        // The CMSMEDIA-01 original-asset storage ledger. Like `cmsDocuments`/`cmsVersions` it
+        // carries a real `v.id('shops')` foreign key, so it joins this tenant tier: the wrapped
+        // writer can persist a tenant's own media rows under `defaultPolicy: 'deny'` while a
+        // cross-tenant read or write is denied.
+        cmsMedia: {
+            read: ownedByShopId,
+            modify: ownedByShopId,
+            insert: ownedByShopId,
+        },
     };
 }
 

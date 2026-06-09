@@ -182,6 +182,48 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  cmsMedia: {
+    document: {
+      alt: string;
+      caption?: string;
+      createdAt: number;
+      filename: string;
+      filesize: number;
+      focalX?: number;
+      focalY?: number;
+      height?: number;
+      mimeType: string;
+      shopId: Id<"shops">;
+      storageId: Id<"_storage">;
+      updatedAt: number;
+      width?: number;
+      _id: Id<"cmsMedia">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "alt"
+      | "caption"
+      | "createdAt"
+      | "filename"
+      | "filesize"
+      | "focalX"
+      | "focalY"
+      | "height"
+      | "mimeType"
+      | "shopId"
+      | "storageId"
+      | "updatedAt"
+      | "width";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shopId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   cmsRichTextDocuments: {
     document: {
       documentId: string;

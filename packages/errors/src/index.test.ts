@@ -23,6 +23,7 @@ import {
     UnknownCollectionSlugError,
     UnknownShopDomainError,
     UnknownShopIdError,
+    UnsupportedUploadMimeTypeError,
 } from './index';
 
 describe('MissingSessionUserIdError', () => {
@@ -172,6 +173,22 @@ describe('MissingRequiredFieldError', () => {
     });
     it('is reachable through getErrorFromCode', () => {
         expect(getErrorFromCode(ApiErrorKind.API_MISSING_REQUIRED_FIELD)).toBe(MissingRequiredFieldError);
+    });
+});
+
+describe('UnsupportedUploadMimeTypeError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new UnsupportedUploadMimeTypeError();
+        expect(err.name).toBe('UnsupportedUploadMimeTypeError');
+        expect(err.statusCode).toBe(415);
+        expect(err.code).toBe(ApiErrorKind.API_UNSUPPORTED_UPLOAD_MIME_TYPE);
+    });
+    it('templates mime type into description', () => {
+        const err = new UnsupportedUploadMimeTypeError('text/html');
+        expect(err.description).toContain('"text/html"');
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(ApiErrorKind.API_UNSUPPORTED_UPLOAD_MIME_TYPE)).toBe(UnsupportedUploadMimeTypeError);
     });
 });
 

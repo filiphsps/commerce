@@ -4,6 +4,15 @@ import { localized, required, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 
 /**
+ * The frozen media mime allowlist: any image, mp4 video, and PDF. Single source of truth for the
+ * Payload upload config below and the admin upload action's pre-check; the Convex storage layer
+ * (`packages/convex/convex/cms/media.ts`) MIRRORS this list rather than importing it, because this
+ * module sits behind the payload-coupled `collections` barrel, which is off the Convex isolate's
+ * bundle surface — keep the two in sync.
+ */
+export const MEDIA_MIME_TYPES = ['image/*', 'video/mp4', 'application/pdf'] as const;
+
+/**
  * Payload collection config for `media`. Upload collection scoped to tenants
  * with four image-size variants (thumbnail, card, feature, hero) and a focal
  * point selector. Accepts images, mp4 video, and PDF.
@@ -22,7 +31,7 @@ export const media: CollectionConfig = {
         delete: adminOnly,
     },
     upload: {
-        mimeTypes: ['image/*', 'video/mp4', 'application/pdf'],
+        mimeTypes: [...MEDIA_MIME_TYPES],
         imageSizes: [
             { name: 'thumbnail', width: 320, height: 240, position: 'centre' },
             { name: 'card', width: 768, height: 576, position: 'centre' },

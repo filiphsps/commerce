@@ -4,7 +4,15 @@
     "compilerOptions": {
         // DOM lib supplies `console` and other Convex-runtime globals these functions rely on; it
         // mirrors the Convex-scaffolded `convex/tsconfig.json` lib, which the root config omits.
-        "lib": ["ESNext", "DOM"]
+        "lib": ["ESNext", "DOM"],
+        // The cms `./types` entry resolves to SOURCE (`src/types/payload-types.ts`), whose
+        // `declare module 'payload'` augmentation cannot resolve here — this package deliberately
+        // has no payload dependency. Pinning the specifier to the built declaration keeps the
+        // type-only `Media` contract import (`cms/media.ts`) checkable while `skipLibCheck`
+        // skips the augmentation inside the `.d.ts`.
+        "paths": {
+            "@nordcom/commerce-cms/types": ["../cms/dist/types/index.d.ts"]
+        }
     },
     "include": ["./convex/**/*.ts"]
 }

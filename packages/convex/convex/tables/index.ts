@@ -3,6 +3,7 @@ import type { TableDefinition } from 'convex/server';
 import { authTables } from './auth';
 import { cmsContentTables } from './cms';
 import { cmsI18nTables } from './cms_i18n';
+import { cmsMediaTables } from './cms_media';
 import { cmsRichTextTables } from './cms_prosemirror';
 import { cmsVersionTables } from './cmsVersions';
 import { revalidationTables } from './revalidation';
@@ -45,10 +46,15 @@ import { shopTables } from './shops';
  * `cmsDocuments` rows) joins this core slot for the same reason: it keys on a real
  * `v.id('cmsDocuments')` foreign key into the id-keyed tenant tier, not the descriptor tables'
  * `shop: v.string()`.
+ *
+ * `cmsMediaTables` (the CMSMEDIA-01 original-asset storage ledger, `cmsMedia`) also keys on a real
+ * `v.id('shops')` foreign key, so it joins the same RLS-scoped tenant tier as `cmsVersionTables` —
+ * distinct from the descriptor-generated `media` CONTENT table in `cmsContentTables`.
  */
 export const coreTables: Record<string, TableDefinition> = {
     ...authTables,
     ...cmsI18nTables,
+    ...cmsMediaTables,
     ...cmsRichTextTables,
     ...cmsVersionTables,
     ...revalidationTables,

@@ -11,6 +11,14 @@
     "jsx": "react-jsx",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
+    /* The cms `./types` entry resolves to SOURCE, whose `declare module 'payload'` augmentation
+     * cannot resolve here — this package deliberately has no payload dependency. Pinning the
+     * specifier to the built declaration keeps the type-only `Media` contract import
+     * (`cms/media.ts`) checkable while `skipLibCheck` skips the augmentation inside the `.d.ts`.
+     * Mirrors the same mapping in the package-root tsconfig.json. */
+    "paths": {
+      "@nordcom/commerce-cms/types": ["../../cms/dist/types/index.d.ts"]
+    },
 
     /* These compiler options are required by Convex */
     "target": "ESNext",

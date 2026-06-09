@@ -14,7 +14,7 @@ export { articles } from './articles';
 export { type BuildUsersOptions, buildUsers } from './build-users';
 export { collectionMetadata } from './collection-metadata';
 export { featureFlags } from './feature-flags';
-export { media } from './media';
+export { MEDIA_MIME_TYPES, media } from './media';
 export { pages } from './pages';
 export { productMetadata } from './product-metadata';
 export { reviews } from './reviews';

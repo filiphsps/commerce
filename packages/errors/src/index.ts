@@ -171,6 +171,7 @@ export enum ApiErrorKind {
     API_MISSING_UPLOAD_FILE = 'API_MISSING_UPLOAD_FILE',
     API_EMPTY_UPLOAD_FILE = 'API_EMPTY_UPLOAD_FILE',
     API_MISSING_REQUIRED_FIELD = 'API_MISSING_REQUIRED_FIELD',
+    API_UNSUPPORTED_UPLOAD_MIME_TYPE = 'API_UNSUPPORTED_UPLOAD_MIME_TYPE',
 }
 
 /**
@@ -980,6 +981,33 @@ export class MissingRequiredFieldError extends ApiError {
 }
 
 /**
+ * Signals that an uploaded file's mime type is outside the media allowlist (any image, mp4 video,
+ * or PDF), returning HTTP 415.
+ *
+ * @param mimeType - The rejected mime type; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 415 HTTP status code.
+ * @example
+ * ```ts
+ * throw new UnsupportedUploadMimeTypeError('text/html');
+ * ```
+ */
+export class UnsupportedUploadMimeTypeError extends ApiError {
+    statusCode = 415;
+    name = 'UnsupportedUploadMimeTypeError';
+    details = 'Unsupported upload mime type';
+    description = 'The uploaded file has a mime type that is not allowed';
+    code = ApiErrorKind.API_UNSUPPORTED_UPLOAD_MIME_TYPE;
+
+    constructor(mimeType?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (mimeType) {
+            this.description = this.description.replace('a mime type', `mime type "${mimeType}"`);
+        }
+    }
+}
+
+/**
  * Error codes for non-API, application-layer errors covering unclassified failures, type violations, context misuse, and CMS configuration issues.
  *
  * @example
@@ -1454,5 +1482,7 @@ export const getErrorFromCode = (
             return EmptyUploadFileError;
         case ApiErrorKind.API_MISSING_REQUIRED_FIELD:
             return MissingRequiredFieldError as unknown as typeof ApiError;
+        case ApiErrorKind.API_UNSUPPORTED_UPLOAD_MIME_TYPE:
+            return UnsupportedUploadMimeTypeError as unknown as typeof ApiError;
     }
 };

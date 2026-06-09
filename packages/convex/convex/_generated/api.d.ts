@@ -98,6 +98,28 @@ export declare const api: {
         any
       >;
     };
+    media: {
+      byId: FunctionReference<
+        "query",
+        "public",
+        { mediaId: Id<"cmsMedia"> },
+        any
+      >;
+      finalizeUpload: FunctionReference<
+        "mutation",
+        "public",
+        {
+          alt: string;
+          caption?: string;
+          filename: string;
+          mimeType: string;
+          storageId: Id<"_storage">;
+        },
+        any
+      >;
+      generateUploadUrl: FunctionReference<"mutation", "public", {}, any>;
+      list: FunctionReference<"query", "public", { limit?: number }, any>;
+    };
     prosemirror: {
       getSnapshot: FunctionReference<
         "query",
