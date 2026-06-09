@@ -1042,6 +1042,9 @@ importers:
       payload:
         specifier: 3.85.0
         version: 3.85.0(graphql@16.14.0)(typescript@6.0.3)
+      prosemirror-model:
+        specifier: ^1.25.7
+        version: 1.25.7
       react:
         specifier: 19.2.6
         version: 19.2.6
