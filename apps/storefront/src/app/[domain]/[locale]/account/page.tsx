@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { type ReactNode, Suspense } from 'react';
@@ -8,10 +7,10 @@ import { Shop } from '@/api/_loaders';
 import { getAuthSession } from '@/auth';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
-import { Label } from '@/components/typography/label';
 import { getDictionary } from '@/utils/dictionary';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
+import { AccountProfile } from './account-profile';
 
 export type AccountDashboardParams = Promise<{ domain: string; locale: string }>;
 
@@ -82,28 +81,12 @@ async function AccountSession({ params }: { params: AccountDashboardParams }) {
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const session = await getAuthSession(shop);
-    const user = session?.user;
 
     if (!session) {
         return <div>TODO: Not logged in.</div>;
     }
 
-    return (
-        <div>
-            <h1>TODO: Logged in!</h1>
-
-            <Label as="div">{user?.id}</Label>
-            <Label as="div">{user?.name}</Label>
-            <Label as="div">{user?.email}</Label>
-            {user?.image ? (
-                <Image
-                    src={user.image}
-                    alt={user.name || ''}
-                    height={100}
-                    width={100}
-                    className="rounded-full object-cover object-center"
-                />
-            ) : null}
-        </div>
-    );
+    // The SFREAD-08 Lane-2 island: `preloadQuery` runs inside this dynamic
+    // hole (`await connection()` above), never in the cached `AccountShell`.
+    return <AccountProfile session={session} />;
 }
