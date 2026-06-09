@@ -9,6 +9,7 @@ import {
     GenericErrorKind,
     getErrorFromCode,
     MalformedFormPayloadError,
+    MissingConvexBridgeError,
     MissingEnvironmentVariableError,
     MissingListConfigError,
     MissingRequestContextError,
@@ -214,6 +215,21 @@ describe('MissingListConfigError', () => {
     });
     it('is reachable through getErrorFromCode', () => {
         expect(getErrorFromCode(GenericErrorKind.GENERIC_MISSING_LIST_CONFIG)).toBe(MissingListConfigError);
+    });
+});
+
+describe('MissingConvexBridgeError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new MissingConvexBridgeError();
+        expect(err.name).toBe('MissingConvexBridgeError');
+        expect(err.code).toBe(GenericErrorKind.GENERIC_MISSING_CONVEX_BRIDGE);
+    });
+    it('templates collection into description', () => {
+        const err = new MissingConvexBridgeError('pages');
+        expect(err.description).toContain('"pages"');
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_MISSING_CONVEX_BRIDGE)).toBe(MissingConvexBridgeError);
     });
 });
 

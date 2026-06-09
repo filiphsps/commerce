@@ -21,6 +21,62 @@ import type { GenericId as Id } from "convex/values";
  */
 export declare const api: {
   cms: {
+    actions: {
+      bulkDelete: FunctionReference<
+        "mutation",
+        "public",
+        { documentIds: Array<Id<"cmsDocuments">> },
+        any
+      >;
+      bulkPublish: FunctionReference<
+        "mutation",
+        "public",
+        { documentIds: Array<Id<"cmsDocuments">> },
+        any
+      >;
+      create: FunctionReference<
+        "mutation",
+        "public",
+        { collection: string; data: any },
+        any
+      >;
+      deleteDocument: FunctionReference<
+        "mutation",
+        "public",
+        { documentId: Id<"cmsDocuments"> },
+        any
+      >;
+      publish: FunctionReference<
+        "mutation",
+        "public",
+        {
+          collection: string;
+          data: any;
+          documentId?: string;
+          keyField?: string;
+          keyValue?: string;
+        },
+        any
+      >;
+      restoreVersion: FunctionReference<
+        "mutation",
+        "public",
+        { versionId: Id<"cmsVersions"> },
+        any
+      >;
+      saveDraft: FunctionReference<
+        "mutation",
+        "public",
+        {
+          collection: string;
+          data: any;
+          documentId?: string;
+          keyField?: string;
+          keyValue?: string;
+        },
+        any
+      >;
+    };
     documents: {
       save: FunctionReference<
         "mutation",
@@ -295,6 +351,14 @@ export declare const api: {
  */
 export declare const internal: {
   cms: {
+    actions: {
+      principal: FunctionReference<
+        "query",
+        "internal",
+        { shopId: Id<"shops"> },
+        any
+      >;
+    };
     secrets: {
       sensitiveShopRead: FunctionReference<"query", "internal", {}, any>;
     };

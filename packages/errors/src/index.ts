@@ -1000,6 +1000,7 @@ export enum GenericErrorKind {
     GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION = 'GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION',
     GENERIC_EMPTY_TENANT_SCOPE = 'GENERIC_EMPTY_TENANT_SCOPE',
     GENERIC_MISSING_LIST_CONFIG = 'GENERIC_MISSING_LIST_CONFIG',
+    GENERIC_MISSING_CONVEX_BRIDGE = 'GENERIC_MISSING_CONVEX_BRIDGE',
     GENERIC_DUPLICATE_PREDICATE_REGISTRATION = 'GENERIC_DUPLICATE_PREDICATE_REGISTRATION',
     GENERIC_MISSING_REQUEST_CONTEXT = 'GENERIC_MISSING_REQUEST_CONTEXT',
     GENERIC_DUPLICATE_WORKSPACE_SLUG = 'GENERIC_DUPLICATE_WORKSPACE_SLUG',
@@ -1213,6 +1214,30 @@ export class MissingListConfigError extends GenericError {
 }
 
 /**
+ * Signals that a CMS editor server action ran against a runtime with no Convex bridge wired, so the
+ * action cannot reach its Convex-backed document mutations.
+ *
+ * @param collection - The collection slug whose editor action found no bridge; embedded in the description when provided.
+ * @example
+ * ```ts
+ * throw new MissingConvexBridgeError('pages');
+ * ```
+ */
+export class MissingConvexBridgeError extends GenericError {
+    name = 'MissingConvexBridgeError';
+    details = 'Missing Convex bridge';
+    description = 'The editor runtime has no Convex bridge; cannot reach the CMS document mutations';
+    code = GenericErrorKind.GENERIC_MISSING_CONVEX_BRIDGE;
+
+    constructor(collection?: string) {
+        super();
+        if (collection) {
+            this.description = this.description.replace('The editor runtime', `Editor runtime for "${collection}"`);
+        }
+    }
+}
+
+/**
  * Signals that a tenant predicate with the same name was registered more than once.
  *
  * @param predicateName - The predicate name that was registered twice; embedded in the description when provided.
@@ -1357,6 +1382,8 @@ export const getErrorFromCode = (
             return EmptyTenantScopeError;
         case GenericErrorKind.GENERIC_MISSING_LIST_CONFIG:
             return MissingListConfigError as unknown as typeof GenericError;
+        case GenericErrorKind.GENERIC_MISSING_CONVEX_BRIDGE:
+            return MissingConvexBridgeError as unknown as typeof GenericError;
         case GenericErrorKind.GENERIC_DUPLICATE_PREDICATE_REGISTRATION:
             return DuplicatePredicateRegistrationError as unknown as typeof GenericError;
         case GenericErrorKind.GENERIC_MISSING_REQUEST_CONTEXT:

@@ -1,13 +1,12 @@
 import 'server-only';
 
-import { UnknownCollectionSlugError } from '@nordcom/commerce-errors';
+import { MissingConvexBridgeError } from '@nordcom/commerce-errors';
 import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
-import type { CollectionSlug } from 'payload';
 
-import { parseFormPayload, pickByFieldNames } from './form-payload';
-import type { CollectionEditorManifest } from './manifest';
-import { revalidateForManifest, tenantWhere } from './revalidate';
+import { parseFormPayload } from './form-payload';
+import type { CollectionEditorManifest, EditorAccess } from './manifest';
+import { revalidateForManifest } from './revalidate';
 import type { EditorRuntime } from './runtime';
 
 /**
@@ -31,226 +30,162 @@ export type EditorActions = {
 };
 
 /**
- * Factory that builds the seven server-action methods for a manifest.
+ * Document-addressing target the bridge forwards to Convex's `cms/actions.ts` save mutations: a
+ * literal `cmsDocuments` id, a content-key pair (`keyField`/`keyValue`) for keyField-routed
+ * collections, or nothing for tenant singletons (server-side singleton upsert).
+ */
+export type EditorDocumentTarget = {
+    documentId?: string;
+    keyField?: string;
+    keyValue?: string;
+};
+
+/**
+ * The Convex transport the editor server actions post through — the same injected-callback seam as
+ * the CMSFORM-05 autosave `save` prop, lifted to all seven operations. The admin app binds each
+ * method to the matching `cms/actions.ts` mutation over a `ConvexHttpClient` authenticated with the
+ * operator's CONVEXCORE-14/16 bearer token, so the Convex side resolves the tenant and enforces
+ * access from the trusted identity; nothing in this contract lets the client pick a tenant or relax
+ * enforcement (there is no `overrideAccess`).
  *
- * Methods returned here are plain async functions — they MUST be re-exported
- * from a `'use server'` top-level module before being passed across an RSC
- * boundary. `pnpm cms:gen` generates those wrappers; do not call this factory
- * directly inside a component module.
+ * `locale` rides along on the save-shaped calls so the transport can route localized field buckets
+ * once the CMSDATA-10 localized write seam consumes it; the document mutations themselves treat
+ * `data` as the already-serialized field map.
+ */
+export type EditorConvexBridge = {
+    saveDraft: (
+        args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
+    ) => Promise<{ documentId: string }>;
+    publish: (
+        args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
+    ) => Promise<{ documentId: string }>;
+    create: (args: { collection: string; data: Record<string, unknown>; locale: string }) => Promise<{
+        documentId: string;
+    }>;
+    deleteDocument: (args: { documentId: string }) => Promise<void>;
+    bulkDelete: (args: { documentIds: string[] }) => Promise<void>;
+    bulkPublish: (args: { documentIds: string[] }) => Promise<void>;
+    restoreVersion: (args: { versionId: string }) => Promise<void>;
+};
+
+/**
+ * Maps the editor route's `id` segment onto the bridge's document target using the manifest's
+ * tenant kind and key field: singleton kinds carry no target (the tenant's one row IS the target,
+ * resolved server-side), keyField-routed collections address by content key, and everything else
+ * addresses by document id.
+ *
+ * @param manifest - The collection's editor manifest (tenant kind + optional `routes.keyField`).
+ * @param id - The URL id segment — a document id, a key value, or `''` for singletons.
+ * @returns The bridge target for the save-shaped calls.
+ */
+const targetFor = (manifest: CollectionEditorManifest, id: string): EditorDocumentTarget => {
+    if (manifest.tenant.kind === 'tenant-singleton' || manifest.tenant.kind === 'singleton-by-domain') {
+        return {};
+    }
+    const keyField = manifest.routes.keyField ?? 'id';
+    return keyField === 'id' ? { documentId: id } : { keyField, keyValue: id };
+};
+
+/**
+ * Factory that builds the seven Convex-backed server-action methods for a manifest.
+ *
+ * Methods returned here are plain async functions — they MUST be re-exported from a `'use server'`
+ * top-level module before being passed across an RSC boundary. `pnpm cms:gen` generates those
+ * wrappers; do not call this factory directly inside a component module.
+ *
+ * Every method runs the manifest's route-level access gate first (`notFound()` on denial — the
+ * defense-in-depth UX layer), then posts through the runtime's {@link EditorConvexBridge}, where
+ * Convex's `cms/actions.ts` re-enforces access from the server-trusted identity. The form payload
+ * is forwarded as parsed; key scrubbing is no longer a server concern here because the Convex side
+ * pins the tenant from `ctx` — a smuggled `tenant`/`shopId` key in `data` is inert content.
  *
  * @param manifest - Editor manifest describing the collection and its access rules.
- * @param runtime - Per-app runtime bundle providing `getCtx`, `buildFormState`, etc.
+ * @param runtime - Per-app runtime bundle; its optional `convex` property is the Convex transport.
  * @returns An {@link EditorActions} object with all seven server-action methods bound to the manifest.
  *
  * @example
  * // In a 'use server' module generated by pnpm cms:gen:
  * export const { saveDraft, publish } = createCollectionEditorActions(pagesEditor, editorRuntime);
  */
-export const createCollectionEditorActions = <T extends CollectionSlug>(
-    manifest: CollectionEditorManifest<T>,
-    runtime: EditorRuntime,
+export const createCollectionEditorActions = (
+    manifest: CollectionEditorManifest,
+    runtime: EditorRuntime & { convex?: EditorConvexBridge },
 ): EditorActions => {
     /**
-     * Returns whether a collection has `versions.drafts` enabled.
+     * Returns the wired Convex transport, failing loud when the runtime was built without one —
+     * a misconfigured app must surface immediately rather than silently dropping writes.
      *
-     * @param collection - Partial collection config subset containing `versions`.
-     * @returns `true` when the collection supports draft saves.
+     * @returns The runtime's {@link EditorConvexBridge}.
+     * @throws {MissingConvexBridgeError} When the runtime carries no `convex` transport.
      */
-    const hasDrafts = (collection: { versions?: unknown }): boolean => {
-        const v = collection.versions as { drafts?: unknown } | undefined;
-        return v !== undefined && v.drafts !== undefined && v.drafts !== false;
+    const bridge = (): EditorConvexBridge => {
+        if (!runtime.convex) throw new MissingConvexBridgeError(manifest.collection);
+        return runtime.convex;
     };
 
     /**
-     * Finds the doc identified by `id` within the tenant scope and either
-     * updates it or creates it. Applies the draft/publish status patch and
-     * calls `revalidatePath` only for published writes.
+     * Runs a manifest access gate against the resolved auth context, `notFound()`-ing on denial
+     * or when the gate is undeclared (e.g. a collection without `create`/`delete`). Route-level
+     * defense in depth — the authoritative enforcement lives in Convex's `cms/actions.ts`.
      *
      * @param domain - Tenant domain, or `null` on cross-tenant routes.
-     * @param id - Document id or keyField value used for the lookup.
-     * @param formData - Raw `FormData` from the `<Form>` submit event.
-     * @param status - Whether to write as `'draft'` or `'published'`.
-     * @param locale - BCP-47 locale code for localized field round-tripping.
+     * @param gate - The manifest predicate for the operation, or `undefined` when unsupported.
+     * @throws Next.js `notFound()` when the gate is missing or denies.
      */
-    const upsert = async (
-        domain: string | null,
-        id: string,
-        formData: FormData,
-        status: 'draft' | 'published',
-        locale: string,
-    ): Promise<void> => {
+    const assertAccess = async (domain: string | null, gate: EditorAccess | undefined): Promise<void> => {
+        if (!gate) notFound();
         const ctx = await runtime.getCtx(domain);
-        if (!(await manifest.access.update(runtime.toAccessCtx(ctx, domain)))) notFound();
-
-        const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
-        if (!collection) {
-            throw new UnknownCollectionSlugError(manifest.collection);
-        }
-
-        const raw = parseFormPayload(formData);
-        const allowed = pickByFieldNames(raw, collection.fields);
-        const where = tenantWhere(manifest, ctx.tenant, id);
-
-        // Pass `locale` to Payload on every read+write so localized fields
-        // round-trip through the same locale the editor is currently viewing.
-        // Without it, Payload falls back to its configured `defaultLocale`
-        // (en-US) and silently writes German text into the English bucket.
-        const { docs } = await ctx.payload.find({
-            collection: manifest.collection as never,
-            where,
-            limit: 1,
-            locale: locale as never,
-            user: ctx.user as never,
-            overrideAccess: false,
-            draft: hasDrafts(collection),
-        });
-
-        const drafts = hasDrafts(collection);
-        const statusPatch = drafts ? { _status: status } : {};
-        // Payload's `draft: true` option skips required-field validation so
-        // partially-filled docs (e.g. a freshly-added block whose required
-        // `Title` is still empty) can be autosaved. Without it, every
-        // autosave tick throws `ValidationError` and the new block becomes
-        // impossible to edit.
-        const draftFlag = drafts && status === 'draft' ? { draft: true as const } : {};
-        const existing = docs[0];
-
-        let doc: unknown;
-        if (existing) {
-            doc = await ctx.payload.update({
-                collection: manifest.collection as never,
-                id: (existing as { id: string }).id,
-                data: { ...allowed, ...statusPatch } as never,
-                locale: locale as never,
-                user: ctx.user as never,
-                overrideAccess: false,
-                ...draftFlag,
-            });
-        } else {
-            const tenantPatch =
-                (manifest.tenant.kind === 'scoped' || manifest.tenant.kind === 'tenant-singleton') && ctx.tenant
-                    ? { tenant: ctx.tenant.id }
-                    : {};
-            doc = await ctx.payload.create({
-                collection: manifest.collection as never,
-                data: { ...allowed, ...tenantPatch, ...statusPatch } as never,
-                locale: locale as never,
-                user: ctx.user as never,
-                overrideAccess: false,
-                ...draftFlag,
-            });
-        }
-
-        // Skip path revalidation on draft autosaves. Tenant-singleton manifests
-        // declare their `revalidate` path as the admin's own edit URL, so a
-        // 2-second autosave loop causes Next.js to revalidate the page the
-        // user is editing — `<Form>`'s `initialState` effect then dispatches
-        // REPLACE_STATE and clobbers every in-flight keystroke. Storefront
-        // caches are already invalidated by the collection's `afterChange`
-        // hook (`buildRevalidateHooks` → `revalidateTag`), so the only thing
-        // we lose by skipping here is admin LIST-page freshness — which the
-        // user sees on next navigation, not while editing.
-        if (status === 'published') {
-            revalidateForManifest({ manifest, domain, doc, status, revalidatePath });
-        }
+        if (!(await gate(runtime.toAccessCtx(ctx, domain)))) notFound();
     };
 
     return {
         async saveDraft(domain, id, formData, locale) {
-            await upsert(domain, id, formData, 'draft', locale);
+            await assertAccess(domain, manifest.access.update);
+            const data = parseFormPayload(formData);
+            // ZERO revalidation on the draft path — by contract. A draft autosave landing a
+            // `revalidatePath` on the edit URL re-seeds `<Form>`'s `initialState` mid-keystroke,
+            // and the Convex draft save schedules no storefront revalidation either (BRIDGE-05
+            // arms only on the published transition).
+            await bridge().saveDraft({ collection: manifest.collection, data, locale, ...targetFor(manifest, id) });
         },
         async publish(domain, id, formData, locale) {
-            await upsert(domain, id, formData, 'published', locale);
+            await assertAccess(domain, manifest.access.update);
+            const data = parseFormPayload(formData);
+            const { documentId } = await bridge().publish({
+                collection: manifest.collection,
+                data,
+                locale,
+                ...targetFor(manifest, id),
+            });
+            // Storefront caches bust via the Convex publish hook; this only refreshes the admin's
+            // own manifest-declared paths (list pages, edit views) for the operator.
+            revalidateForManifest({ manifest, domain, doc: { id: documentId }, status: 'published', revalidatePath });
         },
         async create(domain, formData, locale) {
-            const ctx = await runtime.getCtx(domain);
-            const accessCtx = runtime.toAccessCtx(ctx, domain);
-            if (!manifest.access.create) notFound();
-            if (!(await manifest.access.create(accessCtx))) notFound();
-
-            const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
-            if (!collection) throw new UnknownCollectionSlugError(manifest.collection);
-
-            const raw = parseFormPayload(formData);
-            const allowed = pickByFieldNames(raw, collection.fields);
-            const tenantPatch =
-                (manifest.tenant.kind === 'scoped' || manifest.tenant.kind === 'tenant-singleton') && ctx.tenant
-                    ? { tenant: ctx.tenant.id }
-                    : {};
-            const drafts = hasDrafts(collection);
-            const statusPatch = drafts ? { _status: 'draft' as const } : {};
-            // See upsert(): `draft: true` skips required-field validation so a
-            // brand-new doc with empty required fields (or freshly-added
-            // blocks) can be autosaved before the user fills them in.
-            const draftFlag = drafts ? { draft: true as const } : {};
-
-            const created = (await ctx.payload.create({
-                collection: manifest.collection as never,
-                data: { ...allowed, ...tenantPatch, ...statusPatch } as never,
-                locale: locale as never,
-                user: ctx.user as never,
-                overrideAccess: false,
-                ...draftFlag,
-            })) as { id: string };
-
-            revalidateForManifest({ manifest, domain, doc: created, status: 'draft', revalidatePath });
-            return { id: String(created.id) };
+            await assertAccess(domain, manifest.access.create);
+            const data = parseFormPayload(formData);
+            const { documentId } = await bridge().create({ collection: manifest.collection, data, locale });
+            revalidateForManifest({ manifest, domain, doc: { id: documentId }, status: 'draft', revalidatePath });
+            return { id: documentId };
         },
         async delete(domain, id) {
-            const ctx = await runtime.getCtx(domain);
-            if (!manifest.access.delete) notFound();
-            if (!(await manifest.access.delete(runtime.toAccessCtx(ctx, domain)))) notFound();
-
-            await ctx.payload.delete({
-                collection: manifest.collection as never,
-                id,
-                user: ctx.user as never,
-                overrideAccess: false,
-            });
-
+            await assertAccess(domain, manifest.access.delete);
+            await bridge().deleteDocument({ documentId: id });
             revalidateForManifest({ manifest, domain, doc: { id }, status: 'published', revalidatePath });
         },
         async bulkDelete(domain, ids) {
-            const ctx = await runtime.getCtx(domain);
-            if (!manifest.access.delete) notFound();
-            if (!(await manifest.access.delete(runtime.toAccessCtx(ctx, domain)))) notFound();
-
-            for (const id of ids) {
-                await ctx.payload.delete({
-                    collection: manifest.collection as never,
-                    id,
-                    user: ctx.user as never,
-                    overrideAccess: false,
-                });
-            }
+            await assertAccess(domain, manifest.access.delete);
+            await bridge().bulkDelete({ documentIds: ids });
             revalidateForManifest({ manifest, domain, doc: { ids }, status: 'published', revalidatePath });
         },
         async bulkPublish(domain, ids) {
-            const ctx = await runtime.getCtx(domain);
-            if (!(await manifest.access.update(runtime.toAccessCtx(ctx, domain)))) notFound();
-
-            for (const id of ids) {
-                await ctx.payload.update({
-                    collection: manifest.collection as never,
-                    id,
-                    data: { _status: 'published' } as never,
-                    user: ctx.user as never,
-                    overrideAccess: false,
-                });
-            }
+            await assertAccess(domain, manifest.access.update);
+            await bridge().bulkPublish({ documentIds: ids });
             revalidateForManifest({ manifest, domain, doc: { ids }, status: 'published', revalidatePath });
         },
         async restoreVersion(domain, id, versionId) {
-            const ctx = await runtime.getCtx(domain);
-            if (!(await manifest.access.update(runtime.toAccessCtx(ctx, domain)))) notFound();
-
-            await ctx.payload.restoreVersion({
-                collection: manifest.collection as never,
-                id: versionId,
-                user: ctx.user as never,
-                overrideAccess: false,
-            });
-
+            await assertAccess(domain, manifest.access.update);
+            await bridge().restoreVersion({ versionId });
             revalidateForManifest({ manifest, domain, doc: { id }, status: 'draft', revalidatePath });
         },
     };

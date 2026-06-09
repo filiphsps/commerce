@@ -1,7 +1,6 @@
 import type { Route } from 'next';
-import type { CollectionConfig } from 'payload';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createCollectionEditorActions } from './actions';
+import { createCollectionEditorActions, type EditorConvexBridge } from './actions';
 import { defineCollectionEditor } from './manifest';
 import type { AuthedPayloadCtx, EditorRuntime } from './runtime';
 
@@ -14,39 +13,45 @@ vi.mock('next/navigation', () => ({
 }));
 vi.mock('server-only', () => ({}));
 
-const collectionConfig: CollectionConfig = {
-    slug: 'businessData',
-    fields: [
-        { name: 'legalName', type: 'text' },
-        { name: 'supportEmail', type: 'email' },
-    ],
-    versions: { drafts: { autosave: { interval: 2000 } } },
-};
-
 const baseManifest = defineCollectionEditor({
-    collection: 'businessData',
+    collection: 'pages',
     routes: { label: { singular: 'X', plural: 'X' }, basePath: (d) => `/${d}/x/` as Route },
     tenant: { kind: 'scoped', field: 'tenant' },
-    access: { list: () => true, read: () => true, update: () => true, delete: () => true },
+    access: { list: () => true, read: () => true, create: () => true, update: () => true, delete: () => true },
     revalidate: ({ domain }) => [`/${domain}/x/`],
 });
 
 const tenantSingletonManifest = defineCollectionEditor({
     ...baseManifest,
+    collection: 'businessData',
     tenant: { kind: 'tenant-singleton', field: 'tenant' },
-    access: { ...baseManifest.access, create: () => true },
 });
 
-const buildRuntime = (overrides: Partial<EditorRuntime> = {}): EditorRuntime => {
-    // Stable ctx so tests can inspect the same payload mocks the action used.
+const keyedManifest = defineCollectionEditor({
+    ...baseManifest,
+    collection: 'productMetadata',
+    routes: { ...baseManifest.routes, keyField: 'shopifyHandle' },
+});
+
+/** Builds a fully-mocked Convex bridge whose save-shaped calls resolve to a stable document id. */
+const buildBridge = (): EditorConvexBridge => ({
+    saveDraft: vi.fn().mockResolvedValue({ documentId: 'doc-1' }),
+    publish: vi.fn().mockResolvedValue({ documentId: 'doc-1' }),
+    create: vi.fn().mockResolvedValue({ documentId: 'doc-new' }),
+    deleteDocument: vi.fn().mockResolvedValue(undefined),
+    bulkDelete: vi.fn().mockResolvedValue(undefined),
+    bulkPublish: vi.fn().mockResolvedValue(undefined),
+    restoreVersion: vi.fn().mockResolvedValue(undefined),
+});
+
+/**
+ * Builds a runtime whose `getCtx`/`toAccessCtx` satisfy the route-level access gates and whose
+ * `convex` property is the mocked bridge. The Payload members are inert stubs — the Convex-backed
+ * actions must never touch `ctx.payload`.
+ */
+const buildRuntime = (bridge?: EditorConvexBridge): EditorRuntime & { convex?: EditorConvexBridge } => {
     const stableCtx: AuthedPayloadCtx = {
-        payload: {
-            config: { collections: [collectionConfig] },
-            find: vi.fn().mockResolvedValue({ docs: [] }),
-            create: vi.fn().mockResolvedValue({ id: 'new-id', _status: 'draft' }),
-            update: vi.fn().mockResolvedValue({ id: 'doc-1', _status: 'draft' }),
-            delete: vi.fn().mockResolvedValue({}),
-        } as never,
+        payload: {} as never,
         user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
         tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'en-US', locales: ['en-US'] },
     };
@@ -67,10 +72,11 @@ const buildRuntime = (overrides: Partial<EditorRuntime> = {}): EditorRuntime => 
         buildFormState: vi.fn(),
         getShellProps: vi.fn(),
         DocumentForm: () => null,
+        EmptyState: () => null,
         Table: () => null,
         Toolbar: () => null,
         PageHeader: () => null,
-        ...overrides,
+        convex: bridge,
     };
 };
 
@@ -85,235 +91,176 @@ beforeEach(() => {
 });
 
 describe('createCollectionEditorActions.saveDraft', () => {
-    it('creates a new doc when no existing tenant doc is found, with _status=draft and draft:true', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
+    it('posts the parsed payload through the bridge with the document target and locale', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        await actions.saveDraft('a.test', 'doc-1', fd({ title: 'Acme' }), 'de-DE');
 
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.find).toHaveBeenCalledWith(
-            expect.objectContaining({
-                collection: 'businessData',
-                where: { and: [{ tenant: { equals: 'tenant-1' } }, { id: { equals: 'singleton' } }] },
-                draft: true,
-                locale: 'en-US',
-            }),
-        );
-        expect(ctx.payload.create).toHaveBeenCalledWith(
-            expect.objectContaining({
-                collection: 'businessData',
-                data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
-                overrideAccess: false,
-                draft: true,
-                locale: 'en-US',
-            }),
-        );
+        expect(bridge.saveDraft).toHaveBeenCalledWith({
+            collection: 'pages',
+            data: { title: 'Acme' },
+            locale: 'de-DE',
+            documentId: 'doc-1',
+        });
     });
 
     it('does NOT call revalidatePath on draft saves (autosave must not refresh the editor mid-typing)', async () => {
-        // Tenant-singleton manifests declare their `revalidate` path as the
-        // admin's own edit URL. If saveDraft revalidates that path, Next.js
-        // re-renders the editor and Payload's `<Form>` dispatches
-        // REPLACE_STATE, clobbering every in-flight keystroke. Storefront
-        // caches still invalidate via the collection's `afterChange` hook
-        // (`buildRevalidateHooks` → `revalidateTag`), independent of this.
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
+        // A draft autosave landing a `revalidatePath` on the edit URL re-seeds `<Form>`'s
+        // `initialState` mid-keystroke; the Convex draft mutation schedules zero storefront
+        // revalidation too, so the whole draft path stays revalidation-free.
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        await actions.saveDraft('a.test', 'doc-1', fd({ title: 'Acme' }), 'en-US');
         expect(mockRevalidatePath).not.toHaveBeenCalled();
     });
 
-    it('updates the existing doc when one is found, passing draft:true to skip required validation', async () => {
-        const runtime = buildRuntime();
-        const ctx = await runtime.getCtx('a.test');
-        (ctx.payload.find as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ docs: [{ id: 'doc-1' }] });
-        (runtime.getCtx as ReturnType<typeof vi.fn>).mockResolvedValue(ctx);
+    it('sends no document target for tenant singletons (server-side singleton upsert)', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(tenantSingletonManifest, buildRuntime(bridge));
+        await actions.saveDraft('a.test', '', fd({ legalName: 'Acme' }), 'en-US');
 
-        const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
-
-        expect(ctx.payload.update).toHaveBeenCalledWith(
-            expect.objectContaining({
-                collection: 'businessData',
-                id: 'doc-1',
-                data: { legalName: 'Acme', _status: 'draft' },
-                draft: true,
-                locale: 'en-US',
-            }),
-        );
+        expect(bridge.saveDraft).toHaveBeenCalledWith({
+            collection: 'businessData',
+            data: { legalName: 'Acme' },
+            locale: 'en-US',
+        });
     });
 
-    it('forwards the requested locale to payload.find/update/create so localized fields write to the right bucket', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }), 'de-DE');
+    it('addresses keyField-routed collections by keyField/keyValue', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(keyedManifest, buildRuntime(bridge));
+        await actions.saveDraft('a.test', 'hat', fd({ seoTitle: 'Hat' }), 'en-US');
 
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.find).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
-        expect(ctx.payload.create).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
+        expect(bridge.saveDraft).toHaveBeenCalledWith({
+            collection: 'productMetadata',
+            data: { seoTitle: 'Hat' },
+            locale: 'en-US',
+            keyField: 'shopifyHandle',
+            keyValue: 'hat',
+        });
     });
 
-    it('drops undeclared fields from the payload', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme', injected: 'evil' }), 'en-US');
-
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.create).toHaveBeenCalledWith(
-            expect.objectContaining({
-                data: expect.not.objectContaining({ injected: expect.anything() }),
-            }),
-        );
-    });
-
-    it('throws notFound() when access.update returns false', async () => {
-        const runtime = buildRuntime();
+    it('throws notFound() when access.update returns false, without touching the bridge', async () => {
+        const bridge = buildBridge();
         const manifest = defineCollectionEditor({
             ...baseManifest,
             access: { ...baseManifest.access, update: () => false },
         });
-        const actions = createCollectionEditorActions(manifest, runtime);
-        await expect(actions.saveDraft('a.test', 'singleton', fd({}), 'en-US')).rejects.toThrow('NEXT_NOT_FOUND');
+        const actions = createCollectionEditorActions(manifest, buildRuntime(bridge));
+        await expect(actions.saveDraft('a.test', 'doc-1', fd({}), 'en-US')).rejects.toThrow('NEXT_NOT_FOUND');
+        expect(bridge.saveDraft).not.toHaveBeenCalled();
+    });
+
+    it('throws MissingConvexBridgeError when the runtime has no Convex transport', async () => {
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(undefined));
+        await expect(actions.saveDraft('a.test', 'doc-1', fd({}), 'en-US')).rejects.toMatchObject({
+            name: 'MissingConvexBridgeError',
+        });
     });
 });
 
 describe('createCollectionEditorActions.publish', () => {
-    it('writes with _status=published and revalidates with status=published', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
+    it('posts through bridge.publish and revalidates the manifest paths', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        await actions.publish('a.test', 'doc-1', fd({ title: 'Acme' }), 'en-US');
 
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.create).toHaveBeenCalledWith(
-            expect.objectContaining({
-                data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'published' },
-                locale: 'en-US',
-            }),
-        );
-    });
-
-    it('does NOT pass draft:true on publish so Payload runs required-field validation', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
-
-        const ctx = await runtime.getCtx('a.test');
-        const call = (ctx.payload.create as ReturnType<typeof vi.fn>).mock.calls[0]?.[0];
-        expect(call?.draft).toBeUndefined();
-    });
-
-    it('calls revalidatePath on publish (an explicit publish refreshes admin list pages)', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
+        expect(bridge.publish).toHaveBeenCalledWith({
+            collection: 'pages',
+            data: { title: 'Acme' },
+            locale: 'en-US',
+            documentId: 'doc-1',
+        });
         expect(mockRevalidatePath).toHaveBeenCalledWith('/a.test/x/');
     });
 });
 
 describe('createCollectionEditorActions.create', () => {
-    it('passes draft:true so empty required fields and new blocks do not fail validation', async () => {
-        const runtime = buildRuntime();
-        const manifest = defineCollectionEditor({
-            ...baseManifest,
-            access: { ...baseManifest.access, create: () => true },
-        });
-        const actions = createCollectionEditorActions(manifest, runtime);
-        await actions.create('a.test', fd({ legalName: 'Acme' }), 'en-US');
+    it('posts through bridge.create and returns the new document id', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        const result = await actions.create('a.test', fd({ title: 'Acme' }), 'de-DE');
 
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.create).toHaveBeenCalledWith(
-            expect.objectContaining({
-                collection: 'businessData',
-                data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
-                draft: true,
-                locale: 'en-US',
-            }),
-        );
+        expect(bridge.create).toHaveBeenCalledWith({
+            collection: 'pages',
+            data: { title: 'Acme' },
+            locale: 'de-DE',
+        });
+        expect(result).toEqual({ id: 'doc-new' });
     });
 
-    it('forwards the requested locale to payload.create on a fresh doc', async () => {
-        const runtime = buildRuntime();
+    it('throws notFound() when the manifest declares no create gate', async () => {
+        const bridge = buildBridge();
         const manifest = defineCollectionEditor({
             ...baseManifest,
-            access: { ...baseManifest.access, create: () => true },
+            access: { list: () => true, read: () => true, update: () => true },
         });
-        const actions = createCollectionEditorActions(manifest, runtime);
-        await actions.create('a.test', fd({ legalName: 'Acme' }), 'de-DE');
-
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.create).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
+        const actions = createCollectionEditorActions(manifest, buildRuntime(bridge));
+        await expect(actions.create('a.test', fd({}), 'en-US')).rejects.toThrow('NEXT_NOT_FOUND');
+        expect(bridge.create).not.toHaveBeenCalled();
     });
 });
 
 describe('createCollectionEditorActions.delete', () => {
-    it('calls payload.delete and revalidates', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
+    it('posts through bridge.deleteDocument and revalidates', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
         await actions.delete('a.test', 'doc-1');
 
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.delete).toHaveBeenCalledWith(
-            expect.objectContaining({
-                collection: 'businessData',
-                id: 'doc-1',
-                overrideAccess: false,
-            }),
-        );
+        expect(bridge.deleteDocument).toHaveBeenCalledWith({ documentId: 'doc-1' });
         expect(mockRevalidatePath).toHaveBeenCalledWith('/a.test/x/');
     });
 
-    it('throws notFound() when access.delete returns false', async () => {
-        const runtime = buildRuntime();
+    it('throws notFound() when access.delete returns false, without touching the bridge', async () => {
+        const bridge = buildBridge();
         const manifest = defineCollectionEditor({
             ...baseManifest,
             access: { ...baseManifest.access, delete: () => false },
         });
-        const actions = createCollectionEditorActions(manifest, runtime);
+        const actions = createCollectionEditorActions(manifest, buildRuntime(bridge));
         await expect(actions.delete('a.test', 'doc-1')).rejects.toThrow('NEXT_NOT_FOUND');
+        expect(bridge.deleteDocument).not.toHaveBeenCalled();
     });
 });
 
-describe('createCollectionEditorActions.bulkDelete', () => {
-    it('loops through ids and calls delete for each', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(baseManifest, runtime);
+describe('createCollectionEditorActions bulk actions', () => {
+    it('bulkDelete forwards the whole id set in one call', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
         await actions.bulkDelete('a.test', ['id-1', 'id-2', 'id-3']);
 
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.delete).toHaveBeenCalledTimes(3);
+        expect(bridge.bulkDelete).toHaveBeenCalledTimes(1);
+        expect(bridge.bulkDelete).toHaveBeenCalledWith({ documentIds: ['id-1', 'id-2', 'id-3'] });
+    });
+
+    it('bulkPublish forwards the whole id set and revalidates', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        await actions.bulkPublish('a.test', ['id-1', 'id-2']);
+
+        expect(bridge.bulkPublish).toHaveBeenCalledWith({ documentIds: ['id-1', 'id-2'] });
+        expect(mockRevalidatePath).toHaveBeenCalledWith('/a.test/x/');
     });
 });
 
-describe('createCollectionEditorActions on tenant-singleton manifests', () => {
-    it('saveDraft uses a tenant-only where clause and patches tenant on create', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(tenantSingletonManifest, runtime);
-        await actions.saveDraft('a.test', '', fd({ legalName: 'Acme' }), 'en-US');
+describe('createCollectionEditorActions.restoreVersion', () => {
+    it('posts through bridge.restoreVersion and revalidates as a draft write', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        await actions.restoreVersion('a.test', 'doc-1', 'version-9');
 
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.find).toHaveBeenCalledWith(
-            expect.objectContaining({
-                collection: 'businessData',
-                where: { tenant: { equals: 'tenant-1' } },
-            }),
-        );
-        expect(ctx.payload.create).toHaveBeenCalledWith(
-            expect.objectContaining({
-                data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
-            }),
-        );
+        expect(bridge.restoreVersion).toHaveBeenCalledWith({ versionId: 'version-9' });
+        expect(mockRevalidatePath).toHaveBeenCalledWith('/a.test/x/');
     });
 
-    it('create includes the tenant patch', async () => {
-        const runtime = buildRuntime();
-        const actions = createCollectionEditorActions(tenantSingletonManifest, runtime);
-        await actions.create('a.test', fd({ legalName: 'Acme' }), 'en-US');
-
-        const ctx = await runtime.getCtx('a.test');
-        expect(ctx.payload.create).toHaveBeenCalledWith(
-            expect.objectContaining({
-                data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
-            }),
-        );
+    it('throws notFound() when access.update returns false', async () => {
+        const bridge = buildBridge();
+        const manifest = defineCollectionEditor({
+            ...baseManifest,
+            access: { ...baseManifest.access, update: () => false },
+        });
+        const actions = createCollectionEditorActions(manifest, buildRuntime(bridge));
+        await expect(actions.restoreVersion('a.test', 'doc-1', 'version-9')).rejects.toThrow('NEXT_NOT_FOUND');
+        expect(bridge.restoreVersion).not.toHaveBeenCalled();
     });
 });

@@ -1,5 +1,10 @@
 export { adminOnly, editorOrAdmin, tenantMember } from './access';
-export { createCollectionEditorActions, type EditorActions } from './actions';
+export {
+    createCollectionEditorActions,
+    type EditorActions,
+    type EditorConvexBridge,
+    type EditorDocumentTarget,
+} from './actions';
 export { parseFormPayload, pickByFieldNames } from './form-payload';
 export { isHiddenEditorField } from './hidden-fields';
 export {
