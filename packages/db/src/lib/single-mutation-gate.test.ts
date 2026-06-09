@@ -35,6 +35,32 @@ describe('single-mutation-per-write gate', () => {
         expect(violations[0]?.count).toBe(2);
     });
 
+    // Positive coverage for the shop write specifically: the gate's directory sweep must not be
+    // vacuous — shop.ts now REALLY issues transport mutations (create + findOneAndUpdate) and each
+    // write body holds exactly one.
+    it('covers the shop service: it issues transport mutations and passes the gate', () => {
+        const source = readFileSync(join(servicesDir, 'shop.ts'), 'utf8');
+        expect(source).toContain('convexServerMutation');
+        expect(findMultiMutationWrites(source)).toEqual([]);
+    });
+
+    // The shop-shaped negative: splitting the domains reconciliation out of the atomic upsert into
+    // a second mutation (two transactions, a routable-domain race window) must be flagged.
+    it('flags a shop write that splits the domain reconciliation into a second mutation', () => {
+        const offending = `
+            const backend = {
+                create: async (input) => {
+                    const payload = await convexServerMutation('db/shop_write:upsertShop', input);
+                    await convexServerMutation('db/shop_write:reconcileDomains', { id: payload.shop._id });
+                    return payload;
+                },
+            };
+        `;
+        const violations = findMultiMutationWrites(offending);
+        expect(violations).toHaveLength(1);
+        expect(violations[0]?.count).toBe(2);
+    });
+
     it('does not flag two writes that live in separate async bodies', () => {
         const compliant = `
             const a = async () => convexServerMutation('db/users:create', {});

@@ -38,6 +38,17 @@ const calledFunction = (): string => {
     return getFunctionName((call as unknown[])[0] as Parameters<typeof getFunctionName>[0]);
 };
 
+/**
+ * Resolves the Convex function path of the first transport MUTATION call.
+ *
+ * @returns The `module:function` path string.
+ */
+const calledMutation = (): string => {
+    const call = mutationMock.mock.calls[0];
+    expect(call).toBeDefined();
+    return getFunctionName((call as unknown[])[0] as Parameters<typeof getFunctionName>[0]);
+};
+
 const shopRow = {
     _id: 'cvx-shop-1',
     _creationTime: NOW,
@@ -284,5 +295,104 @@ describe('Shop.findByCollaborator (Convex-backed)', () => {
     it('returns an empty array when no shops match', async () => {
         queryMock.mockResolvedValueOnce([]);
         await expect(Shop.findByCollaborator({ collaboratorId: 'nobody' })).resolves.toEqual([]);
+    });
+});
+
+// The seam-shaped create input: secrets embedded on the provider (the frozen ShopBase shape), which
+// the write path must split out before anything crosses the wire.
+const createInput = {
+    name: 'Acme',
+    domain: 'acme.test',
+    alternativeDomains: ['acme-alt.test'],
+    design: { header: { logo: { src: '/l', alt: 'l', width: 1, height: 1 } }, accents: [] },
+    commerceProvider: {
+        type: 'shopify' as const,
+        authentication: {
+            token: 'SECRET',
+            publicToken: 'pt',
+            domain: 'shopify.com',
+            customers: { id: 'cid', clientId: 'client-id', clientSecret: 'CLIENT_SECRET' },
+        },
+        storefrontId: 's',
+        domain: 'acme.test',
+        id: 'cp',
+    },
+    collaborators: [{ user: 'user-1', permissions: ['admin'] }],
+};
+
+const writePayload = { shop: shopRow, collaborators: [{ user: 'user-1', permissions: ['admin'] }] };
+
+describe('Shop.create (Convex-backed)', () => {
+    it('performs exactly ONE Convex mutation through db/shop_write:upsertShop', async () => {
+        mutationMock.mockResolvedValueOnce(writePayload);
+        await Shop.create(createInput);
+
+        expect(mutationMock).toHaveBeenCalledTimes(1);
+        expect(queryMock).not.toHaveBeenCalled();
+        expect(calledMutation()).toBe('db/shop_write:upsertShop');
+    });
+
+    it('splits the secrets off the wire payload into the credentials bag (structural write masking)', async () => {
+        mutationMock.mockResolvedValueOnce(writePayload);
+        await Shop.create(createInput);
+
+        const args = mutationMock.mock.calls[0]?.[1] as {
+            shop: { commerceProvider: { authentication: Record<string, unknown> } };
+            credentials: Record<string, unknown>;
+            collaborators: unknown;
+            serverSecret: string;
+        };
+        expect(args.credentials).toEqual({ token: 'SECRET', clientSecret: 'CLIENT_SECRET' });
+        expect(args.shop.commerceProvider.authentication.token).toBeUndefined();
+        expect(
+            (args.shop.commerceProvider.authentication.customers as Record<string, unknown>).clientSecret,
+        ).toBeUndefined();
+        expect(args.collaborators).toEqual([{ user: 'user-1', permissions: ['admin'] }]);
+        expect(args.serverSecret).toBe('test-server-secret');
+    });
+
+    it('re-attaches the caller secrets and re-embeds collaborators on the returned doc', async () => {
+        mutationMock.mockResolvedValueOnce(writePayload);
+        const result = await Shop.create(createInput);
+
+        expect(result.id).toBe('shop-legacy-1');
+        expect(result).not.toHaveProperty('_id');
+        expect(result.collaborators).toEqual([{ user: 'user-1', permissions: ['admin'] }]);
+        const cp = result.commerceProvider as { authentication: Record<string, unknown> };
+        expect(cp.authentication.token).toBe('SECRET');
+        expect((cp.authentication.customers as Record<string, unknown>).clientSecret).toBe('CLIENT_SECRET');
+    });
+});
+
+describe('Shop.findOneAndUpdate (Convex-backed)', () => {
+    it('maps a $set update onto ONE upsertShop mutation keyed by the public id', async () => {
+        mutationMock.mockResolvedValueOnce(writePayload);
+        await Shop.findOneAndUpdate({ id: 'shop-legacy-1' }, { $set: { name: 'Acme 2', alternativeDomains: [] } });
+
+        expect(mutationMock).toHaveBeenCalledTimes(1);
+        expect(calledMutation()).toBe('db/shop_write:upsertShop');
+        expect(mutationMock.mock.calls[0]?.[1]).toMatchObject({
+            legacyId: 'shop-legacy-1',
+            upsert: false,
+            shop: { name: 'Acme 2', alternativeDomains: [] },
+        });
+    });
+
+    it('passes the upsert option through to the mutation', async () => {
+        mutationMock.mockResolvedValueOnce(writePayload);
+        await Shop.findOneAndUpdate({ id: 'shop-legacy-1' }, { name: 'Acme 2' }, { upsert: true });
+        expect(mutationMock.mock.calls[0]?.[1]).toMatchObject({ upsert: true });
+    });
+
+    it('resolves null when the mutation matches no shop (no upsert)', async () => {
+        mutationMock.mockResolvedValueOnce(null);
+        await expect(Shop.findOneAndUpdate({ id: 'missing' }, { name: 'X' })).resolves.toBeNull();
+    });
+
+    it('throws TodoError for an unsupported filter shape', async () => {
+        await expect(Shop.findOneAndUpdate({ domain: 'acme.test' }, { name: 'X' })).rejects.toMatchObject({
+            name: 'TodoError',
+        });
+        expect(mutationMock).not.toHaveBeenCalled();
     });
 });

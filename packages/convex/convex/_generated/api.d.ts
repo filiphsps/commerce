@@ -264,6 +264,213 @@ export declare const api: {
         any
       >;
     };
+    shop_write: {
+      upsertShop: FunctionReference<
+        "mutation",
+        "public",
+        {
+          collaborators?: Array<{ permissions: Array<string>; user: string }>;
+          credentials?: { clientSecret?: string; token?: string };
+          legacyId?: string;
+          serverSecret: string;
+          shop: {
+            alternativeDomains?: Array<string>;
+            commerce?: { maxQuantity?: number; processingTimeInDays?: number };
+            commerceProvider?:
+              | {
+                  authentication: {
+                    customers?: { clientId: string; id: string };
+                    domain?: string;
+                    publicToken: string;
+                  };
+                  domain: string;
+                  id: string;
+                  storefrontId: string;
+                  type: "shopify";
+                }
+              | { authentication: {}; type: "stripe" };
+            description?: string;
+            design?: {
+              accents: Array<{
+                color: string;
+                foreground: string;
+                type: "primary" | "secondary";
+              }>;
+              header: {
+                logo: {
+                  alt: string;
+                  height: number;
+                  src: string;
+                  width: number;
+                };
+              };
+            };
+            domain?: string;
+            i18n?: { defaultLocale: string };
+            icons?: {
+              favicon?: {
+                alt: string;
+                height: number;
+                src: string;
+                width: number;
+              };
+            };
+            integrations?: { judgeme?: { publicToken?: string } };
+            name?: string;
+            showProductVendor?: boolean;
+            theme?: {
+              colors?: {
+                accentPrimaryDark?: string;
+                accentPrimaryLight?: string;
+                accentSecondaryDark?: string;
+                accentSecondaryLight?: string;
+                accents?: Array<{
+                  color: string;
+                  foreground: string;
+                  type: "primary" | "secondary";
+                }>;
+                background?: string;
+                border?: { default?: string; strong?: string };
+                focusRing?: string;
+                foreground?: string;
+                state?: {
+                  danger?: string;
+                  info?: string;
+                  sale?: string;
+                  success?: string;
+                };
+                surface?: { base?: string; raised?: string; sunken?: string };
+                text?: { default?: string; muted?: string };
+              };
+              elevation?: { card?: string; cardHover?: string; panel?: string };
+              productCard?: {
+                aspectHorizontal?: string;
+                aspectHorizontalSquare?: string;
+                aspectMicro?: string;
+                aspectVertical?: string;
+                bg?: string;
+                borderColor?: string;
+                borderWidth?: string;
+                chipActiveBg?: string;
+                chipActiveColor?: string;
+                chipBg?: string;
+                chipBorder?: string;
+                chipColor?: string;
+                chipPaddingX?: string;
+                chipPaddingY?: string;
+                compareColor?: string;
+                ctaBg?: string;
+                ctaColor?: string;
+                ctaHeight?: string;
+                ctaInlineStyle?: string;
+                ctaPaddingY?: string;
+                ctaPillIcon?: string;
+                ctaPillLabel?: string;
+                ctaPillPosition?: string;
+                ctaPillReveal?: string;
+                ctaPlacement?: string;
+                ctaRadius?: string;
+                eyebrowTracking?: string;
+                fastPathDot?: string;
+                fastPathSingleVariant?: string;
+                gap?: string;
+                gridAlign?: string;
+                imageFit?: string;
+                imageHoverSwap?: string;
+                imagePadding?: string;
+                imageRadius?: string;
+                imageSizes?: string;
+                maxWidth?: string;
+                minWidth?: string;
+                moreBg?: string;
+                moreColor?: string;
+                moreMinSize?: string;
+                moreSize?: string;
+                moreWeight?: number;
+                motionBase?: string;
+                motionEase?: string;
+                motionFast?: string;
+                motionHoverDuration?: string;
+                motionHoverEase?: string;
+                motionImageSwapDuration?: string;
+                motionOverlayInDuration?: string;
+                motionOverlayInEase?: string;
+                motionPickerIn?: string;
+                motionPickerOut?: string;
+                oosImageSaturate?: number;
+                oosOpacity?: number;
+                overlayBg?: string;
+                overlayBorderColor?: string;
+                overlayMaxHeight?: string;
+                overlayPadding?: string;
+                overlayRadius?: string;
+                overlayShadow?: string;
+                overlayWidth?: string;
+                padding?: string;
+                priceColor?: string;
+                priceSize?: string;
+                priceWeight?: number;
+                quickAddPresentation?: string;
+                radius?: string;
+                saleBadgeAllowOverlap?: boolean;
+                saleBadgeMinDiscount?: number;
+                saleBadgePosition?: string;
+                saleBadgeStyle?: string;
+                saleBadgeText?: string;
+                saleCurrentColor?: string;
+                saleShowSavingsLine?: string;
+                saleStrikeAngle?: string;
+                saleStrikeColor?: string;
+                saleStrikeExtend?: string;
+                saleStyle?: string;
+                searchImageWidth?: string;
+                shadow?: string;
+                shadowHover?: string;
+                swatchGap?: string;
+                swatchHitPadding?: string;
+                swatchRingColor?: string;
+                swatchSize?: string;
+                titleColor?: string;
+                titleLineClamp?: number;
+                titleSize?: string;
+                titleWeight?: number;
+                urgencyColor?: string;
+                urgencyThreshold?: number;
+                vendorColor?: string;
+                vendorSize?: string;
+              };
+              radii?: {
+                block?: string;
+                blockLarge?: string;
+                blockSmall?: string;
+                blockTiny?: string;
+              };
+              spacing?: { blockPadding?: string; blockSpacer?: string };
+              typography?: {
+                fontFamily?: string;
+                fontWeights?: {
+                  bold?: number;
+                  medium?: number;
+                  normal?: number;
+                  semibold?: number;
+                };
+                headingFamily?: string;
+                scale?: {
+                  base?: string;
+                  lg?: string;
+                  sm?: string;
+                  xl?: string;
+                  xs?: string;
+                };
+              };
+            };
+            thirdParty?: { googleTagManager?: string; intercom?: string };
+          };
+          upsert?: boolean;
+        },
+        any
+      >;
+    };
     shops: {
       byCollaborator: FunctionReference<
         "query",
