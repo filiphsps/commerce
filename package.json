@@ -59,6 +59,7 @@
         "cms:gen:check": "pnpm --filter @nordcom/commerce-cms cms:gen:check",
         "convex:deploy": "pnpm --filter @nordcom/commerce-convex convex:deploy",
         "convex:dev": "pnpm --filter @nordcom/commerce-convex convex:dev",
+        "convex:env": "pnpm --filter @nordcom/commerce-convex convex:env",
         "docs:gen:check": "pnpm --filter @nordcom/commerce-docs docs:gen:check",
         "changeset": "changeset",
         "changeset:version": "changeset version",

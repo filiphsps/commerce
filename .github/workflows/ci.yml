@@ -238,7 +238,18 @@ jobs:
               if: steps.changes.outputs.convex == 'true'
               env:
                   CONVEX_AGENT_MODE: anonymous
-              run: pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION"
+              # The push validates every env var auth.config.ts reads against the DEPLOYMENT
+              # env, and a fresh anonymous backend has none set — so the first pass only
+              # provisions the pinned backend binary (its auth-config failure is expected),
+              # the CONVEX_AUTH_* placeholders are then seeded onto the ephemeral deployment
+              # (`convex env set` has no --local-backend-version flag, hence the two-pass
+              # shape), and the second pass is the real, validated push.
+              run: |
+                  pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION" || echo "first pass provisions the backend; auth-config env validation fails until the vars are seeded"
+                  pnpm convex:env set CONVEX_AUTH_ISSUER https://ci.localhost.invalid
+                  pnpm convex:env set CONVEX_AUTH_APPLICATION_ID convex
+                  pnpm convex:env set CONVEX_AUTH_JWKS_URL https://ci.localhost.invalid/.well-known/jwks.json
+                  pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION"
 
             - name: ⏭️ Skip Convex deploy (no packages/convex changes)
               if: steps.changes.outputs.convex != 'true'
