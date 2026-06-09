@@ -4,6 +4,8 @@ import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { systemMutation, tenantMutation, tenantQuery } from '../_constructors';
+import type { Id } from '../_generated/dataModel';
+import { tenantRules } from '../lib/rls';
 import schema from '../schema';
 
 /**
@@ -24,6 +26,11 @@ import schema from '../schema';
  *   (a rule-less table drops out of the wrapped writer's rules-keyed table inference, so the bare-id
  *   patch bypassed the check — the failure still trips this gate, which is what the red-check proves).
  * Green again with the rule restored, proving these assertions pin the rule set rather than vacuously pass.
+ *
+ * The bare-id inference bypass that red-check surfaced (a rule-less table escaping BOTH the predicate
+ * and `defaultPolicy: 'deny'` on bare-id `get`/`patch`/`delete`) is closed by `tenantRules` covering
+ * EVERY schema table via its `denyEveryTable` base; the "denies bare-id…" and "covers every schema
+ * table…" cases below pin that closure.
  */
 
 /**
@@ -88,14 +95,14 @@ const seedTenants = systemMutation({
         const tenantA = await seedTenant(emailA, 'shop_a', 'a.example.com');
         const tenantB = await seedTenant(emailB, 'shop_b', 'b.example.com');
 
-        await ctx.db.insert('pages', {
+        const pageId = await ctx.db.insert('pages', {
             shop: tenantA.shopId,
             title: 'Home',
             slug: 'home',
             createdAt: NOW,
             updatedAt: NOW,
         });
-        await ctx.db.insert('featureFlags', {
+        const flagId = await ctx.db.insert('featureFlags', {
             legacyId: 'flag_legacy',
             key: 'global.flag',
             defaultValue: true,
@@ -104,7 +111,7 @@ const seedTenants = systemMutation({
             updatedAt: NOW,
         });
 
-        return { shopAId: tenantA.shopId, shopBId: tenantB.shopId, reviewBId: tenantB.reviewId };
+        return { shopAId: tenantA.shopId, shopBId: tenantB.shopId, reviewBId: tenantB.reviewId, pageId, flagId };
     },
 });
 
@@ -174,6 +181,39 @@ const patchReviewFixture = tenantMutation({
 });
 
 /**
+ * A {@link tenantQuery} fixture fetching non-tenant-tier rows by BARE id through the wrapped reader.
+ * Pins the bare-id bypass closed: convex-helpers infers a bare id's table from `Object.keys(rules)`
+ * only, so these `get`s pass through OPEN unless EVERY table carries a rule (the `denyEveryTable`
+ * base in `tenantRules`). Both must come back `null` even though the rows exist.
+ */
+const getBareIdsFixture = tenantQuery({
+    args: { pageId: v.id('pages'), flagId: v.id('featureFlags') },
+    handler: async (ctx, { pageId, flagId }) => ({
+        page: await ctx.db.get(pageId),
+        flag: await ctx.db.get(flagId),
+    }),
+});
+
+/**
+ * A {@link tenantMutation} fixture patching a `pages` row by BARE id through the wrapped writer — the
+ * write-side companion to {@link getBareIdsFixture}. Must die as "no read access" under the explicit
+ * per-table deny, never reach the row.
+ */
+const patchPageBareIdFixture = tenantMutation({
+    args: { pageId: v.id('pages') },
+    handler: async (ctx, { pageId }) => ctx.db.patch(pageId, { title: 'Tampered' }),
+});
+
+/**
+ * A {@link tenantMutation} fixture deleting a `pages` row by BARE id through the wrapped writer. Like
+ * {@link patchPageBareIdFixture}, must be denied before the delete executes.
+ */
+const deletePageBareIdFixture = tenantMutation({
+    args: { pageId: v.id('pages') },
+    handler: async (ctx, { pageId }) => ctx.db.delete(pageId),
+});
+
+/**
  * Hand-built module map for `convex-test` (see `lib/auth.test.ts` for the full rationale): Biome forbids
  * exporting fixtures from a test file and the default glob excludes the self-importing module, so the
  * fixtures are mapped to this module's path to resolve by `FunctionReference`, running the real
@@ -189,6 +229,9 @@ const modules = {
             addReviewFixture,
             insertPageFixture,
             patchReviewFixture,
+            getBareIdsFixture,
+            patchPageBareIdFixture,
+            deletePageBareIdFixture,
         }),
 };
 
@@ -198,6 +241,11 @@ const scanRuleLessRef = makeFunctionReference<'query'>('__tests__/rls-deny-defau
 const addReviewRef = makeFunctionReference<'mutation'>('__tests__/rls-deny-default.test:addReviewFixture');
 const insertPageRef = makeFunctionReference<'mutation'>('__tests__/rls-deny-default.test:insertPageFixture');
 const patchReviewRef = makeFunctionReference<'mutation'>('__tests__/rls-deny-default.test:patchReviewFixture');
+const getBareIdsRef = makeFunctionReference<'query'>('__tests__/rls-deny-default.test:getBareIdsFixture');
+const patchPageBareIdRef = makeFunctionReference<'mutation'>('__tests__/rls-deny-default.test:patchPageBareIdFixture');
+const deletePageBareIdRef = makeFunctionReference<'mutation'>(
+    '__tests__/rls-deny-default.test:deletePageBareIdFixture',
+);
 
 /**
  * Boots a fresh in-memory backend, seeds both tenants, and returns the harness plus identity-bound
@@ -235,6 +283,31 @@ describe('Phase 2 exit: deny-default through the tenant tier', () => {
         const { asOperatorA } = await setUpTwoTenants();
 
         await expect(asOperatorA.mutation(insertPageRef, {})).rejects.toThrow('insert access not allowed');
+    });
+
+    it('denies bare-id get/patch/delete against non-tenant-tier tables (the inference bypass)', async () => {
+        const { pageId, flagId, asOperatorA } = await setUpTwoTenants();
+
+        // convex-helpers infers a bare id's table from the rule map's keys; with total table coverage
+        // the inference always lands and the explicit deny applies. Before `denyEveryTable`, all three
+        // of these passed through OPEN.
+        const fetched = await asOperatorA.query(getBareIdsRef, { pageId, flagId });
+        expect(fetched).toEqual({ page: null, flag: null });
+
+        await expect(asOperatorA.mutation(patchPageBareIdRef, { pageId })).rejects.toThrow(
+            'no read access or doc does not exist',
+        );
+        await expect(asOperatorA.mutation(deletePageBareIdRef, { pageId })).rejects.toThrow(
+            'no read access or doc does not exist',
+        );
+    });
+
+    it('covers every schema table with a rule so bare-id table inference is total', () => {
+        const rules = tenantRules('000000000000000000000000000shops' as Id<'shops'>);
+
+        // Sorted-equality (not a subset check): a table missing from the rule map would reopen the
+        // bare-id bypass, and a rule for a nonexistent table signals schema drift.
+        expect(Object.keys(rules).sort()).toEqual(Object.keys(schema.tables).sort());
     });
 });
 

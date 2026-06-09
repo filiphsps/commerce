@@ -2,6 +2,7 @@ import type { GenericDatabaseReader, GenericDatabaseWriter, GenericMutationCtx, 
 import { type Rules, wrapDatabaseReader, wrapDatabaseWriter } from 'convex-helpers/server/rowLevelSecurity';
 
 import type { DataModel, Id } from '../_generated/dataModel';
+import schema from '../schema';
 
 /**
  * Context type the tenant rules are declared against. The rule predicates here close over the
@@ -29,13 +30,42 @@ function scopedTo<Doc>(owns: (doc: Doc) => boolean): (...args: [ctx: TenantRuleC
 }
 
 /**
+ * The unconditional-deny rule the non-tenant tables carry in {@link tenantRules}. Explicit per-table
+ * deny (rather than relying on `defaultPolicy: 'deny'` alone) is load-bearing: convex-helpers'
+ * wrapped reader/writer infers a BARE id's table by probing `Object.keys(rules)` only — a table
+ * absent from the rule map is uninferable, and a bare-id `get`/`patch`/`delete` against it skips
+ * both the rule predicate AND the default policy, passing through OPEN. Covering every schema table
+ * keeps that inference total, so the bypass path cannot exist.
+ */
+const denyAll = {
+    read: async () => false,
+    modify: async () => false,
+    insert: async () => false,
+};
+
+/**
+ * An unconditional-deny rule entry for EVERY table in the schema — the base layer {@link tenantRules}
+ * overlays its scoped rules onto. Built from the schema itself so a newly added table is born denied
+ * at the tenant tier until it is deliberately given a scoped rule (fail-closed by construction).
+ * The cast is sound: `denyAll` ignores its arguments, so it satisfies the rule shape of any table.
+ */
+const denyEveryTable = Object.fromEntries(Object.keys(schema.tables).map((table) => [table, denyAll])) as Rules<
+    TenantRuleCtx,
+    DataModel
+>;
+
+/**
  * Builds the fail-closed row-level-security (RLS) rule set scoping every tenant-owned table to a single
  * resolved `shopId` (the tenant root — a `shops` row `_id`, NOT the legacy Mongo id). Paired with
  * `defaultPolicy: 'deny'` on {@link wrapTenantDatabaseReader}/{@link wrapTenantDatabaseWriter}, a table
  * with NO rule here is DENIED rather than allowed, so forgetting to scope a new tenant table fails
  * closed instead of leaking cross-tenant rows.
  *
- * Coverage and the deliberate omissions:
+ * EVERY table in the schema carries a rule: the tenant-owned tables get scoped predicates below, and
+ * every other table inherits {@link denyEveryTable}'s unconditional deny. Total coverage (not just
+ * `defaultPolicy: 'deny'`) is what closes the bare-id bypass — see {@link denyAll}.
+ *
+ * Coverage and the deliberate non-tenant tiers (all explicit-deny here):
  * - **Tenant root `shops`.** Keyed by its OWN `_id` (the tenant id), so its read/modify predicate is
  *   `doc._id === shopId`. `insert` is denied unconditionally: a brand-new `shops` row has no `_id` yet
  *   to bind to `shopId`, and creating a shop is an onboarding/migration concern that belongs to the
@@ -45,14 +75,14 @@ function scopedTo<Doc>(owns: (doc: Doc) => boolean): (...args: [ctx: TenantRuleC
  *   assert that key equals `shopId`. Read AND write predicates are provided so the wrapped WRITER can
  *   still write a tenant's own rows under `defaultPolicy: 'deny'` (an omitted `modify`/`insert` rule
  *   would otherwise fall through to deny, locking the writer out of every tenant table).
- * - **No rule for the auth tables (`users`/`sessions`/`identities`) or the platform-global
- *   `featureFlags`.** These sit ABOVE any tenant partition (they carry no `shop` key), so they are
- *   intentionally rule-less here and are reached through `systemQuery`/`systemMutation` (lib/system.ts),
- *   NEVER through the wrapped tenant db — where `defaultPolicy: 'deny'` correctly denies them.
- * - **No rule for the CMS content tables** (`pages`, `articles`, …). They are tenant-scoped but key on
- *   a forward-referenced `shop: v.string()` (not a `v.id('shops')` foreign key, mirroring the
+ * - **Explicit deny for the auth tables (`users`/`sessions`/`identities`) and the platform-global
+ *   `featureFlags`.** These sit ABOVE any tenant partition (they carry no `shop` key) and are reached
+ *   through `systemQuery`/`systemMutation` (lib/system.ts), NEVER through the wrapped tenant db —
+ *   which denies them via their {@link denyEveryTable} entry.
+ * - **Explicit deny for the CMS content tables** (`pages`, `articles`, …). They are tenant-scoped but
+ *   key on a forward-referenced `shop: v.string()` (not a `v.id('shops')` foreign key, mirroring the
  *   revalidation bridge's string tenant id), so they are NOT in this `v.id('shops')`-keyed tenant tier.
- *   Under `defaultPolicy: 'deny'` they are denied by the wrapped db until a string-keyed CMS rule set
+ *   Their {@link denyEveryTable} entry denies them at the tenant tier until a string-keyed CMS rule set
  *   (or the `shop` promotion to `v.id('shops')`) lands.
  *
  * The read predicate is per-document defense-in-depth: it pairs with callers range-bounding their
@@ -69,6 +99,7 @@ export function tenantRules(shopId: Id<'shops'>): Rules<TenantRuleCtx, DataModel
     const ownedByShopId = scopedTo<{ shopId: Id<'shops'> }>((doc) => doc.shopId === shopId);
 
     return {
+        ...denyEveryTable,
         shops: {
             read: ownedByRoot,
             modify: ownedByRoot,
