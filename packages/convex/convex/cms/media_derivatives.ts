@@ -157,7 +157,8 @@ async function readDerivativeRows(
  *
  * @param ctx - The tenant-scoped mutation context (RLS-wrapped `db` plus the pinned `shopId`).
  * @param args - The owning media row, its finalize-verified mime type, and the optional focal point.
- * @returns The number of sizes scheduled (the frozen four for images, zero otherwise).
+ * @returns The size count of the idempotent plan — the frozen four for an image (even when every
+ *   plan row already existed and zero were inserted this call), zero for a non-image.
  */
 export async function scheduleDerivativePlan(
     ctx: { db: GenericDatabaseWriter<DataModel>; shopId: Id<'shops'> },

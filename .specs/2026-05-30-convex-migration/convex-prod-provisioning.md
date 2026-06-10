@@ -131,7 +131,7 @@ Set per project (storefront + admin), Production environment, via Vercel dashboa
 | `CONVEX_AUTH_PRIVATE_KEY` | yes | yes | server, **sensitive** | RS256 PKCS8 PEM; signs Convex-bound JWTs (`/api/auth/convex-token/`, admin operator tokens) and derives the public JWKS. Generate per `.env.example` (`openssl genpkey -algorithm RSA …`) |
 | `CONVEX_AUTH_ISSUER` | yes | yes | server | must equal the deployment's value (§4) — `iss` claim |
 | `CONVEX_AUTH_APPLICATION_ID` | yes | yes | server | must equal the deployment's value (§4) — `aud` claim |
-| `CONVEX_AUTH_JWKS_URL` | optional | optional | server | only to override the `${CONVEX_AUTH_ISSUER}/.well-known/jwks.json` default app-side |
+| `CONVEX_AUTH_JWKS_URL` | no | no | — | deployment-side only (§4): `auth.config.ts` reads it on the Convex deployment; no app code reads this var, so it does not belong on Vercel |
 | `CONVEX_REVALIDATE_SECRET` | yes | no | server, **sensitive** | identical to the deployment value (§4) — HMAC check on `/api/revalidate/convex` |
 | `CONVEX_REVALIDATE_SECRET_PREVIOUS` | rotation only | no | server, **sensitive** | dual-accept window during rotation (§6); unset otherwise |
 | `STOREFRONT_ACCOUNT_LIVE_ISLAND` | optional | no | server | lane-2 kill switch: unset = live, `0/false/off/disabled` downgrades to snapshot without a deploy |
