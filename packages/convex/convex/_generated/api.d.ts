@@ -709,6 +709,63 @@ export declare const internal: {
   crons: {
     exportSnapshot: FunctionReference<"action", "internal", {}, any>;
   };
+  reconcile: {
+    checksumPage: FunctionReference<
+      "query",
+      "internal",
+      {
+        paginationOpts: {
+          cursor: string | null;
+          endCursor?: string | null;
+          id?: number;
+          maximumBytesRead?: number;
+          maximumRowsRead?: number;
+          numItems: number;
+        };
+        table:
+          | "shops"
+          | "shopCredentials"
+          | "shopDomains"
+          | "shopFeatureFlags"
+          | "featureFlags"
+          | "reviews"
+          | "cmsDocuments";
+      },
+      any
+    >;
+    recordParity: FunctionReference<
+      "mutation",
+      "internal",
+      {
+        actualCount: number;
+        actualOnlySamples: Array<string>;
+        actualRollup: string;
+        collection: string;
+        expectedCount: number;
+        expectedOnlySamples: Array<string>;
+        expectedRollup: string;
+        runId: string;
+        status: "match" | "mismatch";
+      },
+      any
+    >;
+    run: FunctionReference<
+      "action",
+      "internal",
+      {
+        expected: Array<{
+          collection: string;
+          count: number;
+          docHashes?: Array<string>;
+          rollup: string;
+        }>;
+        pageSize?: number;
+        runId: string;
+      },
+      any
+    >;
+    runLedger: FunctionReference<"query", "internal", { runId: string }, any>;
+  };
   revalidate: {
     delivery: {
       emitDeadLetterAlert: FunctionReference<

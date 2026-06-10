@@ -877,6 +877,43 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  reconciliationLedger: {
+    document: {
+      actualCount: number;
+      actualOnlySamples: Array<string>;
+      actualRollup: string;
+      collection: string;
+      expectedCount: number;
+      expectedOnlySamples: Array<string>;
+      expectedRollup: string;
+      recordedAt: number;
+      runId: string;
+      status: "match" | "mismatch";
+      _id: Id<"reconciliationLedger">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "actualCount"
+      | "actualOnlySamples"
+      | "actualRollup"
+      | "collection"
+      | "expectedCount"
+      | "expectedOnlySamples"
+      | "expectedRollup"
+      | "recordedAt"
+      | "runId"
+      | "status";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_collection: ["collection", "_creationTime"];
+      by_run: ["runId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   revalidationDeadLetters: {
     document: {
       collection: string;

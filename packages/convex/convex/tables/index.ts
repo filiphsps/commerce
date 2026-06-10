@@ -7,6 +7,7 @@ import { cmsMediaTables } from './cms_media';
 import { cmsRichTextTables } from './cms_prosemirror';
 import { cmsReadShadowTables } from './cms_read_shadow';
 import { cmsVersionTables } from './cmsVersions';
+import { reconciliationTables } from './reconciliation';
 import { revalidationTables } from './revalidation';
 import { reviewsTables } from './reviews';
 import { shopTables } from './shops';
@@ -56,6 +57,11 @@ import { shopTables } from './shops';
  * platform-global migration infrastructure written only through the server-trust tier, keying on the
  * string tenant id the storefront holds — like `revalidationTables`, it belongs here and never joins
  * the `v.id('shops')`-keyed tenant tier.
+ *
+ * `reconciliationTables` (the PIPELINE-04 migration parity ledger, `reconciliationLedger`) is
+ * platform-global migration infrastructure written only by the system tier (`convex/reconcile.ts`),
+ * keyed on an opaque run id — like the other ledgers above, it belongs in this core slot and stays
+ * deny-everything at the tenant tier.
  */
 export const coreTables: Record<string, TableDefinition> = {
     ...authTables,
@@ -64,6 +70,7 @@ export const coreTables: Record<string, TableDefinition> = {
     ...cmsReadShadowTables,
     ...cmsRichTextTables,
     ...cmsVersionTables,
+    ...reconciliationTables,
     ...revalidationTables,
     ...reviewsTables,
     ...shopTables,
