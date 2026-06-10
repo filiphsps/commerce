@@ -20,7 +20,7 @@
         "format:check": "biome check --write --unsafe .",
         "typegen": "next typegen",
         "typecheck": "tsc -noEmit",
-        "test:e2e": "NODE_OPTIONS='--import @nordcom/commerce-test-mongo/register-seed-loaders' playwright test",
+        "test:e2e": "playwright test",
         "analyze": "next experimental-analyze"
     },
     "author": {
@@ -109,6 +109,7 @@
     "devDependencies": {
         "@0no-co/graphqlsp": "^1.15.4",
         "@happy-dom/global-registrator": "20.9.0",
+        "@nordcom/commerce-test-convex": "workspace:*",
         "@playwright/test": "1.60.0",
         "@tailwindcss/forms": "0.5.11",
         "@tailwindcss/postcss": "4.3.0",

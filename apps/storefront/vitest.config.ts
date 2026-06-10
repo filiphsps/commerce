@@ -53,6 +53,8 @@ export default defineProject({
             },
         },
 
-        exclude: [...configDefaults.exclude, './src/utils/flags.ts', './e2e/**'],
+        // Playwright owns `e2e/**/*.spec.ts`; the e2e setup module's unit suite
+        // (`e2e/global-setup.test.ts`) stays vitest-owned.
+        exclude: [...configDefaults.exclude, './src/utils/flags.ts', './e2e/**/*.spec.ts'],
     },
 });

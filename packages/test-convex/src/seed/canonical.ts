@@ -1,8 +1,7 @@
-import { ConvexError } from 'convex/values';
-
 import type { Id } from '../../../convex/convex/_generated/dataModel';
 import type { MutationCtx } from '../../../convex/convex/_generated/server';
 import { seedCmsMutation } from './cms';
+import { seedCanonicalLive } from './live';
 import { type SeedShopOptions, seedShopMutation } from './shop';
 
 /**
@@ -41,19 +40,21 @@ export async function seedCanonicalMutation(ctx: MutationCtx, opts: SeedCanonica
 }
 
 /**
- * Live-backend transport wrapper around {@link seedCanonicalMutation}, the entry the HARNESS-02 CLI's
- * `seed` subcommand dispatches to. Seeding a running deployment requires invoking the seed mutation over
- * the wire (a deployed function reference plus an authenticated client), which the live mutation runner
- * (HARNESS-07/08) wires up; until then this entry throws rather than silently skipping, exactly like the
- * per-phase `seedShop`/`seedCms` wrappers.
+ * Live-backend transport wrapper around the canonical seed — the entry the HARNESS-02 CLI's `seed`
+ * subcommand and the e2e global-setups (HARNESS-07/08) dispatch to. A registered seed mutation does
+ * not exist on the deployment (fixtures must not ship in the production bundle), so the live runner
+ * (`seed/live.ts`) re-expresses {@link seedCanonicalMutation} over the wire: the deployed server-tier
+ * seam for the shop phase, schema-validated CLI imports for the CMS phase, both behind the same
+ * `byDomain` idempotency key.
  *
- * @param url - Deployment URL the seed mutation runs against.
- * @param opts - Optional overrides forwarded to {@link seedCanonicalMutation}.
+ * Requires `CONVEX_SERVER_SECRET` (the deployment's server-tier secret) plus, for a FRESH deployment
+ * only, a CLI credential (`CONVEX_SELF_HOSTED_ADMIN_KEY` or `CONVEX_DEPLOY_KEY`).
+ *
+ * @param url - Deployment URL the seed runs against.
+ * @param opts - Optional overrides forwarded to the shop fixture.
  * @returns The canonical shop id as a plain string (the wire boundary erases the branded `Id<'shops'>`).
- * @throws {ConvexError} Always, until the live mutation runner lands.
+ * @throws {ConvexError} See `seed/live.ts`'s `seedCanonicalLive`.
  */
 export async function seedCanonical(url: string, opts: SeedCanonicalOptions = {}): Promise<string> {
-    throw new ConvexError(
-        `@nordcom/commerce-test-convex: seedCanonical(${url}, ${JSON.stringify(opts)}) requires the live mutation runner; use seedCanonicalMutation(ctx, opts) directly against a Convex mutation context.`,
-    );
+    return seedCanonicalLive(url, opts);
 }

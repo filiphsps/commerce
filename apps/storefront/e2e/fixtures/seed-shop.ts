@@ -1,1 +1,1 @@
-export { type SeedShopOptions, seedShop } from '@nordcom/commerce-test-mongo';
+export { type SeedShopOptions, seedShop } from '@nordcom/commerce-test-convex';

@@ -26,6 +26,9 @@ export default defineConfig({
     globalSetup: resolve(__dirname, './e2e/global-setup.ts'),
     globalTeardown: resolve(__dirname, './e2e/global-teardown.ts'),
     testDir: './e2e',
+    // Spec files only: the e2e dir also holds the vitest-owned `global-setup.test.ts`
+    // (Playwright's default testMatch would otherwise collect `.test.ts` too).
+    testMatch: '**/*.spec.ts',
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
     retries: 0,

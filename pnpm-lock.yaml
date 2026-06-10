@@ -750,6 +750,9 @@ importers:
       '@happy-dom/global-registrator':
         specifier: 20.9.0
         version: 20.9.0
+      '@nordcom/commerce-test-convex':
+        specifier: workspace:*
+        version: link:../../packages/test-convex
       '@playwright/test':
         specifier: 1.60.0
         version: 1.60.0
