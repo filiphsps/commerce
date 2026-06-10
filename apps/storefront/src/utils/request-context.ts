@@ -14,10 +14,11 @@ export type RequestContext = { shop: OnlineShop; locale: ReturnType<typeof Local
  * Resolves a tenant's shop document (with feature flags populated) keyed on the primitive
  * `domain`, cached at `max` and tagged with the tenant-root tags so admin edits evict it.
  *
- * `getRequestContext` runs on every request; calling `Shop.findByDomain` directly issued an
- * uncached, populated mongoose query each time (and its `.exec()` clock read also trips the
- * prerender current-time guard). Wrapping it in `'use cache'` collapses that to one lookup per
- * tenant, makes the clock read part of cache creation, and `tenantRootTags(shop)` keeps it fresh.
+ * `getRequestContext` runs on every request; calling `Shop.findByDomain` directly would issue an
+ * uncached Convex HTTP read (`db/shops:byDomain` through the `packages/db` server-trust seam)
+ * each time. Wrapping it in `'use cache'` collapses that to one lookup per tenant, makes the read
+ * part of cache creation (the SFREAD-11 boundary for this seam), and `tenantRootTags(shop)` keeps
+ * it fresh.
  *
  * @param domain - The tenant hostname to resolve.
  * @returns The matched shop as `OnlineShop`.

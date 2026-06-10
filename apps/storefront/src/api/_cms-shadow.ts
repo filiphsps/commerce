@@ -2,6 +2,7 @@ import 'server-only';
 
 import { type LexicalDocument, lexicalToProseMirror } from '@nordcom/commerce-cms/editor/richtext';
 import { convexServerMutation, convexServerQuery } from '@nordcom/commerce-db';
+import { after } from 'next/server';
 
 /**
  * SFREAD-12 — the CMS dual-read shadow. Every storefront CMS getter routes through
@@ -15,9 +16,14 @@ import { convexServerMutation, convexServerQuery } from '@nordcom/commerce-db';
  * - With both flags unset NOTHING observable changes: the Mongo result is returned untouched and
  *   the Convex transport is never invoked.
  * - The shadow runs strictly AFTER the Mongo result resolves and is never awaited on the request
- *   path — a Convex error/timeout can only ever produce a ledger row, never break the page. The
- *   detached promise touches no request-scoped API (`cookies()`, `cacheTag`, …), so running inside
- *   a `'use cache'` boundary cannot perturb the cache key; tests drain via {@link flushCmsShadows}.
+ *   path — a Convex error/timeout can only ever produce a ledger row, never break the page. Inside
+ *   a Next render the shadow is deferred through `after()` (SFREAD-11), so its execution happens
+ *   OUTSIDE the `'use cache'` boundary the getters run in: nothing about the comparison or the
+ *   ledger write participates in cache-entry creation, and `after()`'s waitUntil semantics keep a
+ *   serverless runtime from freezing the ledger write mid-flight. The leg touches no request-scoped
+ *   API (`cookies()`, `cacheTag`, …) and reads no clock in-process (the ledger stamps times
+ *   Convex-side), so it is prerender-safe; outside a Next scope (unit tests, scripts) it degrades
+ *   to a tracked detached promise that tests drain via {@link flushCmsShadows}.
  * - A flipped getter that fails on the Convex side falls back to Mongo and records the failure, so
  *   even a misconfigured flip degrades to the pre-flip behavior instead of a 500.
  */
@@ -78,6 +84,28 @@ function track(promise: Promise<void>): void {
     promise.finally(() => {
         pendingShadows.delete(promise);
     });
+}
+
+/**
+ * Schedules the fire-and-forget shadow/ledger leg OUTSIDE the active render and cache scope.
+ *
+ * The getters run inside `'use cache'` boundaries (the chrome under `CachedShell`, the cached page
+ * bodies), so spawning the leg inline would execute its network I/O during cache-entry creation.
+ * `after()` defers it until the response (or prerender) has finished — the work store survives into
+ * `use cache` scopes, so this is callable from inside them, and the callback only ever runs when
+ * the cached body actually executed (a cache fill), which is exactly when a fresh Mongo result
+ * exists to compare. Outside a Next request/prerender scope `after()` throws synchronously
+ * (`E468`); the fallback runs the leg as a tracked detached promise so unit tests and scripts keep
+ * the pre-SFREAD-11 behavior and can drain via {@link flushCmsShadows}.
+ *
+ * @param run - Thunk starting the shadow comparison or ledger write; must never throw.
+ */
+function scheduleShadow(run: () => Promise<void>): void {
+    try {
+        after(run);
+    } catch {
+        track(run());
+    }
 }
 
 /**
@@ -352,7 +380,7 @@ export async function runCmsDualRead<T>(opts: CmsDualReadOptions<T>): Promise<T>
             const raw = await opts.convex(transport.query);
             return (opts.fromConvex ?? ((value: unknown) => value as T))(raw);
         } catch (error: unknown) {
-            track(
+            scheduleShadow(() =>
                 recordDivergence({
                     shop: opts.shopId,
                     getter: opts.getter,
@@ -369,9 +397,10 @@ export async function runCmsDualRead<T>(opts: CmsDualReadOptions<T>): Promise<T>
     const result = await opts.mongo();
 
     if (isCmsShadowEnabled(env) && opts.draft !== true) {
-        // Detached on purpose: the comparison must never extend the request path. The promise is
-        // tracked so tests can drain it; its own error paths all terminate in swallowed ledger writes.
-        track(runShadowComparison(opts, result));
+        // Detached on purpose: the comparison must never extend the request path. Scheduled via
+        // `after()` so it runs outside the caller's `'use cache'` boundary (tracked-promise fallback
+        // outside Next); its own error paths all terminate in swallowed ledger writes.
+        scheduleShadow(() => runShadowComparison(opts, result));
     }
 
     return result;

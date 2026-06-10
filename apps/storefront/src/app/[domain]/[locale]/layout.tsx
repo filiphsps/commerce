@@ -48,11 +48,11 @@ export const viewport: Viewport = {
 /**
  * Resolves a tenant's typography tokens for the `<html>` font class, cached at `max`.
  *
- * The root layout runs before any request-data read, so calling `Shop.findByDomain`
- * directly trips the prerender current-time guard — mongoose's `.exec()` reads
- * `new Date()` deep in the driver, which Cache Components forbids before request data.
- * Wrapping the lookup in `'use cache'` makes that clock read part of cache creation
- * (allowed), and the cached typography is tagged with the tenant-root tags so an admin
+ * The root layout runs before any request-data read, and `Shop.findByDomain` is now an
+ * uncached Convex HTTP read (`db/shops:byDomain` through the `packages/db` server-trust
+ * seam) — I/O Cache Components forbids in a static scope before request data. Wrapping
+ * the lookup in `'use cache'` makes that read part of cache creation (allowed; SFREAD-11
+ * audit classifies every such seam), and the cached typography is tagged with the tenant-root tags so an admin
  * theme/font edit evicts it. A theme-less or unknown domain falls back to the platform
  * default, keeping the class byte-identical and letting `CachedShell` stay the sole
  * `notFound()` authority.
@@ -96,7 +96,7 @@ export default async function RootLayout({
     }
 
     // Resolve the tenant's body/heading fonts for the `<html>` class via the cached helper, which
-    // keeps the mongoose clock read out of the prerender current-time guard. A theme-less shop
+    // keeps the uncached Convex read out of the static prerender scope. A theme-less shop
     // resolves to the platform-default font, leaving the class byte-identical to the pre-theming
     // markup; `CachedShell` remains the single authority that emits `notFound()`.
     const typography = await resolveTenantTypography(domain);

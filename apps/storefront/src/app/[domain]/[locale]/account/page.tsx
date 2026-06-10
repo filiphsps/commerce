@@ -71,7 +71,10 @@ async function AccountShell({ params, children }: { params: AccountDashboardPara
 }
 
 async function AccountSession({ params }: { params: AccountDashboardParams }) {
-    // Per-user (session) — mark dynamic before Mongoose's `new Date()` runs.
+    // Per-user (session) — open the dynamic hole before any per-user read: the
+    // sensitive-credentials shop lookup and the session cookie read below, plus
+    // the `preloadQuery` in `AccountProfile`, are all uncached request-scoped
+    // I/O that must never run in a prerenderable scope.
     await connection();
 
     const { domain } = await params;
