@@ -227,6 +227,9 @@ jobs:
                   filters: |
                       convex:
                           - 'packages/convex/**'
+                      limits:
+                          - 'packages/convex/**'
+                          - 'packages/test-convex/**'
 
             - name: 🚀 Bootstrap
               id: bootstrap
@@ -254,6 +257,24 @@ jobs:
             - name: ⏭️ Skip Convex deploy (no packages/convex changes)
               if: steps.changes.outputs.convex != 'true'
               run: echo "No packages/convex/** changes detected; skipping the self-hosted Convex deploy."
+
+            # HARNESS-10: the limit-boundary suites boot a REAL ephemeral backend per file (1MiB
+            # shred round-trip, typed scan-ceiling abort, 20-editor autosave OCC, depth-6 header
+            # populate). They are env-gated behind CONVEX_LIMITS_TESTS=1 so the default `pnpm test`
+            # run never pays the boot cost; this job runs them because it already restores the
+            # pinned backend-binary cache. The generous startup timeout covers a cache-miss binary
+            # fetch — the suites' own per-test budgets are documented in packages/test-convex/src/limits.
+            - name: 🧪 Limit-boundary integration tests (real backend)
+              if: steps.changes.outputs.limits == 'true'
+              env:
+                  CONVEX_LIMITS_TESTS: "1"
+                  CONVEX_AGENT_MODE: anonymous
+                  CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
+              run: pnpm --filter @nordcom/commerce-test-convex run test src/limits
+
+            - name: ⏭️ Skip limit-boundary tests (no convex/test-convex changes)
+              if: steps.changes.outputs.limits != 'true'
+              run: echo "No packages/convex/** or packages/test-convex/** changes detected; skipping the limit-boundary suites."
 
             - name: 💾 Save bootstrap caches
               if: always()
