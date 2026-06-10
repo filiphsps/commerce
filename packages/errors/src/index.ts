@@ -172,6 +172,7 @@ export enum ApiErrorKind {
     API_EMPTY_UPLOAD_FILE = 'API_EMPTY_UPLOAD_FILE',
     API_MISSING_REQUIRED_FIELD = 'API_MISSING_REQUIRED_FIELD',
     API_UNSUPPORTED_UPLOAD_MIME_TYPE = 'API_UNSUPPORTED_UPLOAD_MIME_TYPE',
+    API_MEDIA_STORAGE_UPLOAD_FAILED = 'API_MEDIA_STORAGE_UPLOAD_FAILED',
 }
 
 /**
@@ -1008,6 +1009,33 @@ export class UnsupportedUploadMimeTypeError extends ApiError {
 }
 
 /**
+ * Signals that POSTing bytes to a Convex file-storage upload URL failed (non-2xx response or a
+ * response without a `storageId`), returning HTTP 502 — the byte sink is an upstream dependency of
+ * the media upload pipeline, not a client fault.
+ *
+ * @param status - The byte sink's HTTP status; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @example
+ * ```ts
+ * throw new MediaStorageUploadError(503);
+ * ```
+ */
+export class MediaStorageUploadError extends ApiError {
+    statusCode = 502;
+    name = 'MediaStorageUploadError';
+    details = 'Media storage upload failed';
+    description = 'The media byte upload to Convex file storage failed';
+    code = ApiErrorKind.API_MEDIA_STORAGE_UPLOAD_FAILED;
+
+    constructor(status?: number, cause?: string) {
+        super(cause);
+        if (status !== undefined) {
+            this.description = `${this.description} (byte sink responded ${status})`;
+        }
+    }
+}
+
+/**
  * Error codes for non-API, application-layer errors covering unclassified failures, type violations, context misuse, and CMS configuration issues.
  *
  * @example
@@ -1513,5 +1541,7 @@ export const getErrorFromCode = (
             return MissingRequiredFieldError as unknown as typeof ApiError;
         case ApiErrorKind.API_UNSUPPORTED_UPLOAD_MIME_TYPE:
             return UnsupportedUploadMimeTypeError as unknown as typeof ApiError;
+        case ApiErrorKind.API_MEDIA_STORAGE_UPLOAD_FAILED:
+            return MediaStorageUploadError as unknown as typeof ApiError;
     }
 };

@@ -67,7 +67,7 @@ const buildRuntime = (
             user: { ...ctx.user, tenants: ctx.user.tenants.map((t) => t.tenant) },
             domain,
         }),
-        convex: { getDocument },
+        convex: { getDocument, listRelationshipOptions: async () => [] },
         buildFormState: async () => ({ state: {} }),
         getShellProps: async () => ({}),
         DocumentForm: ({ title }: { title: string }) => <div data-testid="doc-form">{title}</div>,

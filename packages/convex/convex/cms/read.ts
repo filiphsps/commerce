@@ -96,14 +96,19 @@ function resolveLocalizedFields(collection: string, data: unknown, chain: readon
 }
 
 /**
- * The tenant singletons whose localized fields are NESTED (array-embedded nav-item descriptions,
- * the header's `localeSwitcher.label`, the footer's section titles), so the registry-driven
- * top-level resolver above cannot reach them. Their documents are resolved by the DEEP walk
- * ({@link resolveLocalizedDeep}) instead, collapsing every bucket-shaped value at any depth.
+ * The collections whose localized fields are NESTED, so the registry-driven top-level resolver
+ * above cannot reach them — resolved by the DEEP walk ({@link resolveLocalizedDeep}) instead,
+ * collapsing every bucket-shaped value at any depth:
+ * - the tenant singletons `header`/`footer` (array-embedded nav-item descriptions, the header's
+ *   `localeSwitcher.label`, the footer's section titles — CMSGATE-01), and
+ * - the block-bearing content collections (CMSGATE-02): the native editor buckets every
+ *   `localized: true` leaf INSIDE `blocks` rows (an alert's title, a rich-text block's body, a
+ *   media-grid caption), which the per-field registry can never reach, so a published page must
+ *   deep-collapse to read back on the frozen `Page.blocks` contract shape.
  * `businessData` carries no localized fields and stays on the top-level resolver to keep the
  * shape-test surface minimal.
  */
-const DEEP_LOCALIZED_COLLECTIONS = new Set(['header', 'footer']);
+const DEEP_LOCALIZED_COLLECTIONS = new Set(['header', 'footer', 'pages', 'collectionMetadata', 'productMetadata']);
 
 /**
  * Recursively collapses every locale-keyed bucket in a value through the fallback chain — the

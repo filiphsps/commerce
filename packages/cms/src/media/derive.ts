@@ -36,6 +36,19 @@ export interface GeneratedDerivative {
     data: Uint8Array;
 }
 
+/**
+ * A full derivative pass: the decoded original's pixel dimensions (what
+ * `cms/media_derivatives:saveDerivatives` records on the media row) plus the generated derivatives.
+ * `null` when the source is not an image — the Node-side twin of finalize scheduling zero
+ * derivative work.
+ */
+export interface DerivativePass {
+    /** The original image's decoded pixel dimensions. */
+    original: { width: number; height: number };
+    /** One generated derivative per frozen size, in the frozen declaration order. */
+    derivatives: GeneratedDerivative[];
+}
+
 /** The source upload the derivatives are generated from. */
 export interface DerivativeSource {
     /** The original image's encoded bytes. */
@@ -59,8 +72,24 @@ export interface DerivativeSource {
  *   decode raster dimensions from them.
  */
 export async function generateImageDerivatives(source: DerivativeSource): Promise<GeneratedDerivative[]> {
+    const pass = await generateImageDerivativePass(source);
+    return pass?.derivatives ?? [];
+}
+
+/**
+ * Runs the full Node-side derivative pass for one upload: decodes the original once, generates the
+ * four frozen sizes, and reports the original's pixel dimensions alongside them — the exact input
+ * set `cms/media_derivatives:saveDerivatives` persists, so the production caller (the admin upload
+ * action) never decodes the source a second time just to learn its dimensions.
+ *
+ * @param source - The original upload's bytes, verified mime type, and optional focal point.
+ * @returns The original's dimensions plus the generated derivatives, or `null` for a non-image.
+ * @throws {UnsupportedUploadMimeTypeError} When the bytes claim to be an image but sharp cannot
+ *   decode raster dimensions from them.
+ */
+export async function generateImageDerivativePass(source: DerivativeSource): Promise<DerivativePass | null> {
     const plan = planDerivatives(source.mimeType);
-    if (plan.length === 0) return [];
+    if (plan.length === 0) return null;
 
     const { default: sharp } = await import('sharp');
 
@@ -96,5 +125,5 @@ export async function generateImageDerivatives(source: DerivativeSource): Promis
             data: new Uint8Array(data),
         });
     }
-    return derivatives;
+    return { original: { width: sourceWidth, height: sourceHeight }, derivatives };
 }

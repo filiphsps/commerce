@@ -45,6 +45,7 @@ const buildBridge = (): EditorConvexBridge => ({
     list: vi.fn().mockResolvedValue({ docs: [], page: 1, pageSize: 25, totalDocs: 0, totalPages: 1 }),
     getDocument: vi.fn().mockResolvedValue(null),
     listVersions: vi.fn().mockResolvedValue([]),
+    listRelationshipOptions: vi.fn().mockResolvedValue([]),
 });
 
 /**

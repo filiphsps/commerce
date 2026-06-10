@@ -12,12 +12,24 @@ import {
     registerDataBoundFieldWidgets,
     registerRichTextFieldWidget,
     registerScalarFieldWidgets,
+    type RelationshipOption,
     type RelationshipQuery,
     RelationshipQueryProvider,
     RenderFields,
     type UploadAction,
     UploadActionProvider,
 } from '../form';
+
+/**
+ * The serialized upload transport `EditorFields` adapts onto the widget seam — a `'use server'`
+ * action reference (already bound to the tenant domain by the edit page), since a Client Component
+ * prop must cross the RSC boundary. The widget hands over a `File`; the adapter packs it into the
+ * `FormData` shape the admin's media-upload action consumes.
+ *
+ * @param formData - The upload payload (`file` + required `alt`).
+ * @returns The persisted media document's id.
+ */
+export type EditorFieldsUploadAction = (formData: FormData) => Promise<{ id: string }>;
 
 /**
  * Props for {@link EditorFields}.
@@ -47,20 +59,28 @@ export type EditorFieldsProps = {
      * platform default `en-US`.
      */
     defaultLocale?: string;
+    /**
+     * Prefetched relationship option sets keyed by target collection slug — the CMSGATE-02 live
+     * option source the edit pages load through the bridge's bounded Convex list read
+     * (`loadRelationshipOptions`). Must be threaded through THIS prop: `EditorFields` mounts its
+     * own `RelationshipQueryProvider`, so a provider wrapped around it from outside is shadowed.
+     * A target absent from the map (or an omitted prop) lists zero options — degraded, never
+     * crashing.
+     */
+    relationshipOptions?: Record<string, RelationshipOption[]>;
+    /**
+     * The live media upload transport (CMSGATE-02) — a server action already bound to the tenant
+     * domain. Threaded through THIS prop for the same shadowing reason as `relationshipOptions`:
+     * the internal `UploadActionProvider` wins over any outer one. Omitted keeps the degrading
+     * placeholder, which surfaces `MissingConvexBridgeError` inline on file pick.
+     */
+    uploadAction?: EditorFieldsUploadAction;
 };
 
 /**
- * Placeholder option source for relationship pickers until the admin host
- * wires the live Convex content-table query (CMSGATE-02): every related
- * collection lists zero options, so the picker renders empty rather than
- * crashing on the missing provider.
- */
-const emptyRelationshipQuery: RelationshipQuery = () => [];
-
-/**
- * Placeholder upload transport until the admin host wires the Convex media
- * upload flow (CMSGATE-02). The widget catches the rejection and surfaces it
- * inline, so picking a file degrades to a visible error instead of a crash.
+ * Placeholder upload transport for hosts that have not wired the Convex media upload flow. The
+ * widget catches the rejection and surfaces it inline, so picking a file degrades to a visible
+ * error instead of a crash.
  *
  * @throws {MissingConvexBridgeError} Always, until the media transport is wired.
  */
@@ -103,11 +123,38 @@ function buildEditorFieldRegistry(richText: boolean): FieldRegistry {
  *   without touching their form-state entries.
  * @param props.locale - Active editing locale for localized leaves.
  * @param props.defaultLocale - Tenant default locale (legacy plain-value attribution).
+ * @param props.relationshipOptions - Prefetched relationship options keyed by target slug.
+ * @param props.uploadAction - The bound media-upload server action.
  * @returns The rendered descriptor tree.
  */
-export function EditorFields({ collection, omitPaths, locale, defaultLocale }: EditorFieldsProps) {
+export function EditorFields({
+    collection,
+    omitPaths,
+    locale,
+    defaultLocale,
+    relationshipOptions,
+    uploadAction,
+}: EditorFieldsProps) {
     const schema = editorCollectionSchema(collection);
     const registry = useMemo(() => buildEditorFieldRegistry(schema.richText === true), [schema.richText]);
+
+    const relationshipQuery: RelationshipQuery = useMemo(
+        () => (relationTo) => relationshipOptions?.[relationTo] ?? [],
+        [relationshipOptions],
+    );
+
+    const upload: UploadAction = useMemo(() => {
+        if (!uploadAction) return unwiredUploadAction;
+        return async (file) => {
+            const formData = new FormData();
+            formData.set('file', file);
+            // The widget collects no metadata yet; the filename is the only alt
+            // candidate available at pick time, and `alt` is required on the
+            // media contract.
+            formData.set('alt', file.name);
+            return uploadAction(formData);
+        };
+    }, [uploadAction]);
 
     const omit = new Set(omitPaths ?? []);
     const fields = schema.fields.filter((field) => !('name' in field && omit.has(field.name)));
@@ -116,8 +163,8 @@ export function EditorFields({ collection, omitPaths, locale, defaultLocale }: E
 
     return (
         <FormLocaleProvider locale={locale ?? resolvedDefault} defaultLocale={resolvedDefault}>
-            <RelationshipQueryProvider query={emptyRelationshipQuery}>
-                <UploadActionProvider action={unwiredUploadAction}>
+            <RelationshipQueryProvider query={relationshipQuery}>
+                <UploadActionProvider action={upload}>
                     <RenderFields registry={registry} fields={fields} parentPath="" />
                 </UploadActionProvider>
             </RelationshipQueryProvider>

@@ -8,6 +8,7 @@ import type { ReactNode } from 'react';
 import { documentTargetFor, type EditorActions } from '../actions';
 import { editorCollectionSchema } from '../collection-fields';
 import type { CollectionEditorManifest } from '../manifest';
+import { loadRelationshipOptions } from '../relationship-targets';
 import type { EditorRuntime } from '../runtime';
 import { docUrlSegment } from '../url';
 import { EditorFields } from './editor-fields';
@@ -149,6 +150,19 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
         return generatedActions.publish(domain, id, formData, locale);
     };
 
+    // The CMSGATE-02 live transports for the default field surface. Both must
+    // thread through <EditorFields>'s own props — it mounts its own providers,
+    // so wrapping it from out here would be shadowed. A bespoke `fieldSurface`
+    // owns its data wiring, so the prefetch is skipped entirely for it.
+    const relationshipOptions = fieldSurface ? {} : await loadRelationshipOptions(runtime.convex, schema.fields);
+    const mediaUpload = runtime.mediaUploadAction;
+    const boundUpload = mediaUpload
+        ? async (formData: FormData) => {
+              'use server';
+              return mediaUpload(domain, formData);
+          }
+        : undefined;
+
     const existingName = existing?.data.name;
     const title = typeof existingName === 'string' && existingName ? existingName : manifest.routes.label.singular;
 
@@ -185,6 +199,8 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
                     omitPaths={omitPaths}
                     locale={locale}
                     defaultLocale={tenantDefault}
+                    relationshipOptions={relationshipOptions}
+                    uploadAction={boundUpload}
                 />
             )}
         </runtime.DocumentForm>

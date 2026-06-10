@@ -9,6 +9,7 @@ import {
     GenericErrorKind,
     getErrorFromCode,
     MalformedFormPayloadError,
+    MediaStorageUploadError,
     MissingConvexBridgeError,
     MissingEnvironmentVariableError,
     MissingListConfigError,
@@ -189,6 +190,22 @@ describe('UnsupportedUploadMimeTypeError', () => {
     });
     it('is reachable through getErrorFromCode', () => {
         expect(getErrorFromCode(ApiErrorKind.API_UNSUPPORTED_UPLOAD_MIME_TYPE)).toBe(UnsupportedUploadMimeTypeError);
+    });
+});
+
+describe('MediaStorageUploadError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new MediaStorageUploadError();
+        expect(err.name).toBe('MediaStorageUploadError');
+        expect(err.statusCode).toBe(502);
+        expect(err.code).toBe(ApiErrorKind.API_MEDIA_STORAGE_UPLOAD_FAILED);
+    });
+    it('templates the byte-sink status into description', () => {
+        const err = new MediaStorageUploadError(503);
+        expect(err.description).toContain('503');
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(ApiErrorKind.API_MEDIA_STORAGE_UPLOAD_FAILED)).toBe(MediaStorageUploadError);
     });
 });
 

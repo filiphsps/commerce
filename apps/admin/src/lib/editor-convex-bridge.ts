@@ -5,6 +5,7 @@ import type {
     EditorCmsListPage,
     EditorCmsVersion,
     EditorConvexBridge,
+    EditorRelationshipOption,
 } from '@nordcom/commerce-cms/editor';
 import { convexIdentityMutation, convexIdentityQuery, createConvexIdentityClient } from '@nordcom/commerce-db';
 import { ConvexOperatorTokenMintError } from '@nordcom/commerce-errors';
@@ -47,6 +48,48 @@ type ConvexCmsVersionRow = {
     status: 'draft' | 'published';
     createdAt: number;
 };
+
+/** The slice of `cms/media:list`'s `Media` wire shape the relationship-option projection reads. */
+type ConvexMediaRow = {
+    id: string;
+    alt: string;
+    filename: string;
+};
+
+/**
+ * Hard ceiling on one relationship-option prefetch — mirrors the Convex side's own
+ * `MAX_PAGE_SIZE`/`MAX_LIST_LIMIT` clamp (100), so the edit page's option load is bounded at both
+ * ends of the wire.
+ */
+const RELATIONSHIP_OPTIONS_LIMIT = 100;
+
+/**
+ * Field names tried, in order, when deriving a relationship option's display label from a
+ * document's serialized data. Covers every keyed CMS collection's natural label field; the
+ * document id is the last-resort fallback.
+ */
+const RELATIONSHIP_LABEL_FIELDS = ['title', 'name', 'slug', 'shopifyHandle', 'legalName', 'email', 'key'] as const;
+
+/**
+ * Derives a human-readable option label from a document's serialized field map. Localized fields
+ * may be stored as per-locale buckets, so a bucket-shaped candidate falls back to its first string
+ * slot — a label heuristic, not a locale resolution (the picker only needs something readable).
+ *
+ * @param data - The document's serialized field map.
+ * @param fallback - Returned when no candidate field yields a string (typically the document id).
+ * @returns The label.
+ */
+function relationshipLabelOf(data: Record<string, unknown>, fallback: string): string {
+    for (const field of RELATIONSHIP_LABEL_FIELDS) {
+        const value = data[field];
+        if (typeof value === 'string' && value.length > 0) return value;
+        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+            const slot = Object.values(value).find((entry) => typeof entry === 'string' && entry.length > 0);
+            if (typeof slot === 'string') return slot;
+        }
+    }
+    return fallback;
+}
 
 /**
  * Projects a Convex `cmsDocuments` row into the bridge's {@link EditorCmsDocument}: `_id` becomes
@@ -200,5 +243,83 @@ export const editorConvexBridge: EditorConvexBridge = {
     listVersions: async ({ documentId }): Promise<EditorCmsVersion[]> => {
         const rows = await operatorQuery<ConvexCmsVersionRow[]>('cms/versions:list', { documentId });
         return rows.map((row) => ({ versionId: row._id, status: row.status, createdAt: row.createdAt }));
+    },
+    listRelationshipOptions: async ({ relationTo }): Promise<EditorRelationshipOption[]> => {
+        // Media lives in its own tenant table behind `cms/media:list`; every CMS content
+        // collection routes through the page-bounded `cms/list:list`. Both reads clamp the
+        // requested window server-side, so this prefetch can never unbound. A `relationTo`
+        // outside the cmsDocuments world (e.g. the platform `shops` table) simply lists zero
+        // documents — a degraded picker, never a crash.
+        if (relationTo === 'media') {
+            const media = await operatorQuery<ConvexMediaRow[]>('cms/media:list', {
+                limit: RELATIONSHIP_OPTIONS_LIMIT,
+            });
+            return media.map((row) => ({ id: row.id, label: row.alt || row.filename }));
+        }
+        const page = await operatorQuery<ConvexCmsListResult>('cms/list:list', {
+            collection: relationTo,
+            pageSize: RELATIONSHIP_OPTIONS_LIMIT,
+        });
+        return page.docs.map((row) => {
+            const data = (typeof row.data === 'object' && row.data !== null ? row.data : {}) as Record<string, unknown>;
+            return { id: row._id, label: relationshipLabelOf(data, row._id) };
+        });
+    },
+};
+
+/**
+ * The serialized `Media` wire shape `cms/media:finalizeUpload` returns — the members the upload
+ * pipeline reads (`id` for the stored document, `mimeType` as the finalize-verified effective
+ * type the derivative planner keyed off).
+ */
+export type FinalizedMediaUpload = {
+    id: string;
+    mimeType: string;
+};
+
+/**
+ * The CMSMEDIA storage transport for the admin's media-upload server action — the Convex half of
+ * the upload pipeline (`generateUploadUrl` byte-sink issuance, `finalizeUpload` row persistence +
+ * derivative planning, `saveDerivatives` plan fulfillment). Same per-call identity-client contract
+ * as {@link editorConvexBridge}: tenant scope and the mime allowlist are enforced inside Convex
+ * from the operator's validated identity.
+ */
+export const mediaStorageTransport = {
+    /**
+     * Issues a short-lived Convex file-storage upload URL for the operator's tenant.
+     *
+     * @returns The URL to POST the file bytes to.
+     */
+    generateUploadUrl: (): Promise<{ url: string }> =>
+        operatorMutation<{ url: string }>('cms/media:generateUploadUrl', {}),
+    /**
+     * Finalizes a stored blob into a tenant `cmsMedia` row (verifying the mime allowlist against
+     * the recorded blob metadata) and plants the pending derivative plan for images.
+     *
+     * @param args - The stored blob id plus the upload's metadata.
+     * @returns The persisted media document's wire shape.
+     */
+    finalizeUpload: (args: {
+        storageId: string;
+        filename: string;
+        mimeType: string;
+        alt: string;
+        caption?: string;
+        focal?: { x: number; y: number };
+    }): Promise<FinalizedMediaUpload> => operatorMutation<FinalizedMediaUpload>('cms/media:finalizeUpload', args),
+    /**
+     * Persists the Node-side sharp pass's results: flips each size's plan row to `ready` and
+     * records the original's dimensions (and focal point) on the media row.
+     *
+     * @param args - The owning media id, the original's dimensions, the optional focal point, and
+     *   the generated derivatives' storage ids + dimensions.
+     */
+    saveDerivatives: async (args: {
+        mediaId: string;
+        original: { width: number; height: number };
+        focal?: { x: number; y: number };
+        derivatives: Array<{ size: string; storageId: string; width: number; height: number }>;
+    }): Promise<void> => {
+        await operatorMutation<unknown>('cms/media_derivatives:saveDerivatives', args);
     },
 };

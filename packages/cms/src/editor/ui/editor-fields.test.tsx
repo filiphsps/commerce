@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
-import { fireEvent, render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 import type { ArrayFieldDescriptor, FieldDescriptor } from '../../descriptors/types';
 import { editorCollectionSchema } from '../collection-fields';
@@ -202,6 +202,88 @@ describe('<EditorFields>', () => {
         const { container } = renderSurface('articles', { title: 'Hello' });
         // `cover` is an upload field; the placeholder action keeps it rendered.
         expect(controlAt(container, 'cover', 'input[type="file"]')).toBeDefined();
+    });
+
+    it('serves relationship options from the prefetched map through its OWN provider (CMSGATE-02)', () => {
+        // `reviews.shop` is a relationship onto `shops`; the prop map is the
+        // live option source the edit pages prefetch through the bridge.
+        const { container } = render(
+            <Form action={() => {}} initialState={buildInitialFormState({})}>
+                <EditorFields
+                    collection="reviews"
+                    relationshipOptions={{ shops: [{ id: 'shop-1', label: 'Acme Store' }] }}
+                />
+                <StateProbe />
+            </Form>,
+        );
+
+        const select = controlAt(container, 'shop', 'select') as HTMLSelectElement;
+        const labels = Array.from(select.options).map((option) => option.textContent);
+        expect(labels).toContain('Acme Store');
+
+        fireEvent.change(select, { target: { value: 'shop-1' } });
+        expect(probe(container).data.shop).toBe('shop-1');
+    });
+
+    it('lists zero options for a target absent from the prefetched map (degraded, not crashing)', () => {
+        const { container } = render(
+            <Form action={() => {}} initialState={buildInitialFormState({})}>
+                <EditorFields collection="reviews" relationshipOptions={{}} />
+            </Form>,
+        );
+        const select = controlAt(container, 'shop', 'select') as HTMLSelectElement;
+        // Only the empty "Select…" placeholder remains.
+        expect(Array.from(select.options).map((option) => option.value)).toEqual(['']);
+    });
+
+    it('commits a picked file through the wired upload transport and stores the media id', async () => {
+        const uploadAction = vi.fn(async (formData: FormData) => {
+            const file = formData.get('file');
+            if (!(file instanceof File)) throw new TypeError('upload action received no file');
+            expect(formData.get('alt')).toBe('logo.png');
+            return { id: 'media-42' };
+        });
+        const { container } = render(
+            <Form action={() => {}} initialState={buildInitialFormState({})}>
+                <EditorFields collection="articles" uploadAction={uploadAction} />
+                <StateProbe />
+            </Form>,
+        );
+
+        const input = controlAt(container, 'cover', 'input[type="file"]') as HTMLInputElement;
+        const file = new File([new Uint8Array([1, 2, 3])], 'logo.png', { type: 'image/png' });
+        Object.defineProperty(input, 'files', { value: [file] });
+        await act(async () => {
+            fireEvent.change(input);
+        });
+
+        await waitFor(() => expect(probe(container).data.cover).toBe('media-42'));
+        expect(uploadAction).toHaveBeenCalledTimes(1);
+    });
+
+    it('surfaces an upload transport failure inline without crashing or clobbering the stored id', async () => {
+        const uploadAction = vi.fn(async () => {
+            throw new TypeError('byte sink unreachable');
+        });
+        const { container } = render(
+            <Form action={() => {}} initialState={buildInitialFormState({ cover: 'media-old' })}>
+                <EditorFields collection="articles" uploadAction={uploadAction} />
+                <StateProbe />
+            </Form>,
+        );
+
+        const input = controlAt(container, 'cover', 'input[type="file"]') as HTMLInputElement;
+        const file = new File([new Uint8Array([1])], 'broken.png', { type: 'image/png' });
+        Object.defineProperty(input, 'files', { value: [file] });
+        await act(async () => {
+            fireEvent.change(input);
+        });
+
+        await waitFor(() => {
+            const shell = container.querySelector('[data-testid="field-cover"]');
+            expect(shell?.querySelector('[role="alert"]')?.textContent).toContain('byte sink unreachable');
+        });
+        expect(probe(container).data.cover).toBe('media-old');
     });
 });
 

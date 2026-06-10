@@ -2,7 +2,7 @@ import { UnsupportedUploadMimeTypeError } from '@nordcom/commerce-errors';
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
-import { generateImageDerivatives } from './derive';
+import { generateImageDerivativePass, generateImageDerivatives } from './derive';
 import { MEDIA_IMAGE_SIZES } from './sizes';
 
 /**
@@ -85,5 +85,20 @@ describe('generateImageDerivatives (real sharp resize)', () => {
         await expect(
             generateImageDerivatives({ data: new Uint8Array([0xde, 0xad, 0xbe, 0xef]), mimeType: 'image/png' }),
         ).rejects.toBeInstanceOf(UnsupportedUploadMimeTypeError);
+    });
+});
+
+describe('generateImageDerivativePass', () => {
+    it('reports the decoded original dimensions alongside the derivatives (the saveDerivatives input set)', async () => {
+        const data = await buildSourceImage();
+        const pass = await generateImageDerivativePass({ data, mimeType: 'image/png' });
+        expect(pass?.original).toEqual({ width: 1600, height: 800 });
+        expect(pass?.derivatives.map(({ size }) => size)).toEqual(MEDIA_IMAGE_SIZES.map(({ name }) => name));
+    });
+
+    it('resolves null for non-image uploads — zero derivative work', async () => {
+        await expect(
+            generateImageDerivativePass({ data: new Uint8Array([1, 2, 3]), mimeType: 'application/pdf' }),
+        ).resolves.toBeNull();
     });
 });

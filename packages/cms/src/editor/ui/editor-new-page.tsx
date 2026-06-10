@@ -8,6 +8,7 @@ import type { ReactNode } from 'react';
 import type { EditorActions } from '../actions';
 import { editorCollectionSchema } from '../collection-fields';
 import type { CollectionEditorManifest } from '../manifest';
+import { loadRelationshipOptions } from '../relationship-targets';
 import type { EditorRuntime } from '../runtime';
 import { EditorFields } from './editor-fields';
 import { EditorFormToolbar } from './editor-form-toolbar';
@@ -88,6 +89,17 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
     const autosave = schema.drafts?.autosave;
     const breadcrumbs = manifest.routes.breadcrumbs?.({ domain }) ?? [];
 
+    // CMSGATE-02 live transports — threaded through <EditorFields>'s own props
+    // (its internal providers shadow any outer ones; see EditorEditPage).
+    const relationshipOptions = await loadRelationshipOptions(runtime.convex, schema.fields);
+    const mediaUpload = runtime.mediaUploadAction;
+    const boundUpload = mediaUpload
+        ? async (formData: FormData) => {
+              'use server';
+              return mediaUpload(domain, formData);
+          }
+        : undefined;
+
     return (
         <runtime.DocumentForm
             title={`New ${manifest.routes.label.singular}`}
@@ -104,7 +116,13 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
                 />
             }
         >
-            <EditorFields collection={String(manifest.collection)} locale={locale} defaultLocale={tenantDefault} />
+            <EditorFields
+                collection={String(manifest.collection)}
+                locale={locale}
+                defaultLocale={tenantDefault}
+                relationshipOptions={relationshipOptions}
+                uploadAction={boundUpload}
+            />
         </runtime.DocumentForm>
     );
 }

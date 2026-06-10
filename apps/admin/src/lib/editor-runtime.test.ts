@@ -36,10 +36,14 @@ vi.mock('./editor-convex-bridge', () => ({
         list: vi.fn(),
         getDocument: vi.fn(),
         listVersions: vi.fn(),
+        listRelationshipOptions: vi.fn(),
     },
 }));
 vi.mock('./payload-ctx', () => ({
     getAuthedPayloadCtx: vi.fn(),
+}));
+vi.mock('./cms-actions/media-upload', () => ({
+    createMediaAction: vi.fn(),
 }));
 
 import { editorRuntime } from './editor-runtime';
@@ -57,7 +61,7 @@ describe('editorRuntime', () => {
         expect(typeof editorRuntime.PageHeader).toBe('function');
     });
 
-    it('binds the Convex bridge with the seven write methods (CMSDATA-06) and three reads (CMSDATA-07)', () => {
+    it('binds the Convex bridge with the seven write methods (CMSDATA-06), three reads (CMSDATA-07), and the relationship option read (CMSGATE-02)', () => {
         expect(editorRuntime.convex).toBeDefined();
         for (const method of [
             'saveDraft',
@@ -70,9 +74,14 @@ describe('editorRuntime', () => {
             'list',
             'getDocument',
             'listVersions',
+            'listRelationshipOptions',
         ] as const) {
             expect(typeof editorRuntime.convex?.[method]).toBe('function');
         }
+    });
+
+    it('binds the media upload action (CMSGATE-02) as a direct server-action reference', () => {
+        expect(typeof editorRuntime.mediaUploadAction).toBe('function');
     });
 
     it('buildFormState resolves through the native CMSFORM-01 core (no Payload buildFormState)', async () => {

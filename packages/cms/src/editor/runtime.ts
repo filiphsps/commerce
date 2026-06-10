@@ -134,6 +134,34 @@ export type EditorCmsListPage = {
 };
 
 /**
+ * One selectable document for a relationship picker, as the bridge's bounded list read projects it:
+ * the related document's Convex id (what the field stores) plus its human-readable label.
+ * Structurally identical to the form engine's `RelationshipOption` — duplicated here so the
+ * server-side runtime seam never imports from a `'use client'` module.
+ */
+export type EditorRelationshipOption = {
+    /** The related document's Convex id. */
+    id: string;
+    /** The option's display text. */
+    label: string;
+};
+
+/**
+ * The server action the editor's upload widget commits picked files through — the CMSGATE-02 live
+ * media transport. The admin app binds this to its media-upload action (`createMediaAction`), whose
+ * server side drives the full CMSMEDIA pipeline: `cms/media:generateUploadUrl` → byte POST →
+ * `cms/media:finalizeUpload` → the Node-side sharp derivative pass →
+ * `cms/media_derivatives:saveDerivatives`. Must be a real `'use server'` function: the edit pages
+ * close over it inside their inline bound actions, so it has to serialize as an action reference.
+ *
+ * @param domain - Tenant domain the route resolved, or `null` on cross-tenant routes (refused
+ *   server-side — media is tenant-scoped).
+ * @param formData - The upload payload: `file`, required `alt`, optional `caption`/`focalX`/`focalY`.
+ * @returns The persisted media document's id.
+ */
+export type EditorMediaUploadAction = (domain: string | null, formData: FormData) => Promise<{ id: string }>;
+
+/**
  * One version snapshot as the versions page reads it through the bridge — the projection of a
  * Convex `cmsVersions` row.
  */
@@ -184,6 +212,14 @@ export type EditorConvexBridge = {
     getDocument: (args: { collection: string } & EditorDocumentTarget) => Promise<EditorCmsDocument | null>;
     /** A live document's version history, oldest first (`cms/versions:list`). */
     listVersions: (args: { documentId: string }) => Promise<EditorCmsVersion[]>;
+    /**
+     * Bounded option list for a relationship picker (CMSGATE-02): the related collection's
+     * documents projected to `{ id, label }`. The admin binding routes `media` through
+     * `cms/media:list` and every CMS content collection through `cms/list:list` — both
+     * page-bounded tenant reads, so a runaway related collection can never unbound the edit
+     * page's prefetch.
+     */
+    listRelationshipOptions: (args: { relationTo: string }) => Promise<EditorRelationshipOption[]>;
 };
 
 /**
@@ -272,6 +308,13 @@ export type EditorRuntime = {
      * (`MissingConvexBridgeError`) when an action runs without one.
      */
     convex?: EditorConvexBridge;
+    /**
+     * The CMSGATE-02 media upload server action. Optional only so test
+     * substrates (and hosts without media) can omit it; without one the upload
+     * widget keeps its degrading placeholder (`MissingConvexBridgeError`
+     * surfaced inline on file pick).
+     */
+    mediaUploadAction?: EditorMediaUploadAction;
     DocumentForm: ComponentType<DocumentFormShellProps>;
     /** Render the empty-state for a list. The list page passes label/action props.
      *  The admin app wires this to `<EmptyState>` from its shell. */

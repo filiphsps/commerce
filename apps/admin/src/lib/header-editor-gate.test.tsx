@@ -131,6 +131,10 @@ const modules = {
     '/convex/cms/actions.ts': () => import('../../../../packages/convex/convex/cms/actions'),
     '/convex/cms/documents.ts': () => import('../../../../packages/convex/convex/cms/documents'),
     '/convex/cms/versions.ts': () => import('../../../../packages/convex/convex/cms/versions'),
+    // The edit page prefetches link-relationship options through the bounded
+    // list read since CMSGATE-02 (the header nav's linkFields target pages/
+    // articles/product/collection metadata).
+    '/convex/cms/list.ts': () => import('../../../../packages/convex/convex/cms/list'),
 };
 
 type SeededTenant = { shopId: string };

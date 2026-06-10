@@ -20,6 +20,7 @@ export {
     type EditorAccessCtx,
     type EditorListColumn,
 } from './manifest';
+export { loadRelationshipOptions, relationshipTargetsOf } from './relationship-targets';
 export {
     type RefreshEditorPathsArgs,
     refreshEditorPaths,
@@ -33,6 +34,8 @@ export type {
     EditorCmsDocument,
     EditorCmsListPage,
     EditorCmsVersion,
+    EditorMediaUploadAction,
+    EditorRelationshipOption,
     EditorRuntime,
     EditorToolbarShellProps,
     WithRuntime,

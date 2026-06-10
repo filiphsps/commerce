@@ -28,6 +28,7 @@ export {
     registerDataBoundFieldWidgets,
     registerRichTextFieldWidget,
     registerScalarFieldWidgets,
+    type RelationshipOption,
     type RelationshipQuery,
     RelationshipQueryProvider,
     RichTextEditorProvider,

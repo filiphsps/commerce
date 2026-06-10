@@ -6,6 +6,7 @@ import { DocumentForm } from '@/components/cms/document-form';
 import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
 import { EmptyState } from '@/components/shell/empty-state';
 import { PageHeader } from '@/components/shell/page-header';
+import { createMediaAction } from './cms-actions/media-upload';
 import { editorConvexBridge } from './editor-convex-bridge';
 import { getAuthedPayloadCtx } from './payload-ctx';
 
@@ -43,6 +44,10 @@ export const editorRuntime: EditorRuntime = {
     // field surface — calls `getCmsShellProps` itself.
     getShellProps: async () => ({}),
     convex: editorConvexBridge,
+    // A direct server-action reference, NOT a wrapper: the edit pages close
+    // over it inside their inline bound upload actions, and only a registered
+    // action reference serializes across that closure boundary.
+    mediaUploadAction: createMediaAction,
     // Breadcrumb hrefs are `string` on the runtime seam but Next `Route`s in the
     // shell components; the casts below bridge that boundary (same pattern as
     // EmptyState's actionHref).
