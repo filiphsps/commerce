@@ -44,7 +44,9 @@ export default defineProject({
         },
 
         setupFiles: [`${__dirname}/vitest.setup.ts`],
-        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', './e2e/**'],
+        // Playwright owns `e2e/**/*.spec.ts`; the e2e setup module's unit suite
+        // (`e2e/global-setup.test.ts`) stays vitest-owned.
+        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', './e2e/**/*.spec.ts'],
 
         globals: true,
         deps: {

@@ -116,9 +116,6 @@ importers:
       '@nordcom/commerce-marketing-common':
         specifier: workspace:*
         version: link:../../packages/marketing-common
-      '@nordcom/commerce-test-mongo':
-        specifier: workspace:*
-        version: link:../../packages/test-mongo
       '@nordcom/commerce-utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -246,6 +243,9 @@ importers:
       '@happy-dom/global-registrator':
         specifier: 20.9.0
         version: 20.9.0
+      '@nordcom/commerce-test-convex':
+        specifier: workspace:*
+        version: link:../../packages/test-convex
       '@playwright/test':
         specifier: 1.60.0
         version: 1.60.0
@@ -279,6 +279,9 @@ importers:
       concurrently:
         specifier: 10.0.0
         version: 10.0.0
+      convex:
+        specifier: 1.39.1
+        version: 1.39.1(react@19.2.6)
       critters:
         specifier: 0.0.25
         version: 0.0.25
