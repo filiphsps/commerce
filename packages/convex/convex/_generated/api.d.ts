@@ -198,6 +198,79 @@ export declare const api: {
         any
       >;
     };
+    read: {
+      articleBySlug: FunctionReference<
+        "query",
+        "public",
+        { locale: string; serverSecret: string; shopId: string; slug: string },
+        any
+      >;
+      articles: FunctionReference<
+        "query",
+        "public",
+        { locale: string; serverSecret: string; shopId: string; tag?: string },
+        any
+      >;
+      collectionMetadataByHandle: FunctionReference<
+        "query",
+        "public",
+        {
+          handle: string;
+          locale: string;
+          serverSecret: string;
+          shopId: string;
+        },
+        any
+      >;
+      pageBySlug: FunctionReference<
+        "query",
+        "public",
+        { locale: string; serverSecret: string; shopId: string; slug: string },
+        any
+      >;
+      pages: FunctionReference<
+        "query",
+        "public",
+        { locale: string; serverSecret: string; shopId: string },
+        any
+      >;
+      productMetadataByHandle: FunctionReference<
+        "query",
+        "public",
+        {
+          handle: string;
+          locale: string;
+          serverSecret: string;
+          shopId: string;
+        },
+        any
+      >;
+      recordDivergence: FunctionReference<
+        "mutation",
+        "public",
+        {
+          detail?: string;
+          getter: string;
+          key?: string;
+          kind: "mismatch" | "error";
+          locale: string;
+          serverSecret: string;
+          shop: string;
+        },
+        any
+      >;
+      singleton: FunctionReference<
+        "query",
+        "public",
+        {
+          collection: "header" | "footer" | "businessData";
+          locale: string;
+          serverSecret: string;
+          shopId: string;
+        },
+        any
+      >;
+    };
     secrets: {
       readMaskedShop: FunctionReference<"query", "public", {}, any>;
     };

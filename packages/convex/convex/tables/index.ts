@@ -5,6 +5,7 @@ import { cmsContentTables } from './cms';
 import { cmsI18nTables } from './cms_i18n';
 import { cmsMediaTables } from './cms_media';
 import { cmsRichTextTables } from './cms_prosemirror';
+import { cmsReadShadowTables } from './cms_read_shadow';
 import { cmsVersionTables } from './cmsVersions';
 import { revalidationTables } from './revalidation';
 import { reviewsTables } from './reviews';
@@ -50,11 +51,17 @@ import { shopTables } from './shops';
  * `cmsMediaTables` (the CMSMEDIA-01 original-asset storage ledger, `cmsMedia`) also keys on a real
  * `v.id('shops')` foreign key, so it joins the same RLS-scoped tenant tier as `cmsVersionTables` —
  * distinct from the descriptor-generated `media` CONTENT table in `cmsContentTables`.
+ *
+ * `cmsReadShadowTables` (the SFREAD-12 dual-read divergence ledger, `cmsReadDivergence`) is
+ * platform-global migration infrastructure written only through the server-trust tier, keying on the
+ * string tenant id the storefront holds — like `revalidationTables`, it belongs here and never joins
+ * the `v.id('shops')`-keyed tenant tier.
  */
 export const coreTables: Record<string, TableDefinition> = {
     ...authTables,
     ...cmsI18nTables,
     ...cmsMediaTables,
+    ...cmsReadShadowTables,
     ...cmsRichTextTables,
     ...cmsVersionTables,
     ...revalidationTables,

@@ -10,6 +10,7 @@ import type { Country, PaymentSettings } from '@shopify/hydrogen-react/storefron
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
+import { runCmsDualRead } from './_cms-shadow';
 import { normalizePayloadDoc } from './_normalize-payload';
 
 const COUNTRIES_QUERY = graphql(`
@@ -205,7 +206,10 @@ export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
 /**
  * Reads the Payload `BusinessData` global for this tenant + locale. Returns
  * `null` when the doc has not been seeded — InfoBar / Footer call sites
- * collapse to no-render in that case.
+ * collapse to no-render in that case. Routed through the SFREAD-12 dual-read
+ * loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=businessData`); InfoBarApi
+ * delegates here, so this single wrap covers both surfaces without
+ * double-shadowing.
  *
  * @param options - Tenant shop record and locale used to scope the Payload CMS fetch.
  * @param options.shop - Shop record identifying the tenant.
@@ -213,9 +217,18 @@ export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
  * @returns Normalized business data, or `null` when the doc has not been seeded.
  */
 export const BusinessDataApi = async ({ shop, locale }: BusinessDataApiArgs): Promise<BusinessDatum | null> => {
-    const data = await getBusinessData({
-        shop: toShopRef(shop),
-        locale: { code: locale.code },
+    return runCmsDualRead<BusinessDatum | null>({
+        getter: 'businessData',
+        shopId: shop.id,
+        locale: locale.code,
+        mongo: async () => {
+            const data = await getBusinessData({
+                shop: toShopRef(shop),
+                locale: { code: locale.code },
+            });
+            return data ? normalizePayloadDoc(data, locale.code) : null;
+        },
+        convex: (query) =>
+            query('cms/read:singleton', { shopId: shop.id, collection: 'businessData', locale: locale.code }),
     });
-    return data ? normalizePayloadDoc(data, locale.code) : null;
 };

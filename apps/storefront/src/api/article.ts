@@ -5,6 +5,7 @@ import type { Article } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
+import { runCmsDualRead } from './_cms-shadow';
 import { normalizePayloadDoc } from './_normalize-payload';
 
 export type ArticleApiArgs = { shop: OnlineShop; locale: Locale; slug: string };
@@ -16,7 +17,8 @@ export type ArticleApiArgs = { shop: OnlineShop; locale: Locale; slug: string };
  * article body comes from Shopify; CMS supplements it with SEO, an alternate
  * excerpt/cover, additional tags, and a Lexical body that renders below the
  * Shopify body. Returns `null` when no CMS Article exists for the slug — the
- * Shopify path then renders unchanged.
+ * Shopify path then renders unchanged. Routed through the SFREAD-12 dual-read
+ * loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=article`).
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.
@@ -25,10 +27,19 @@ export type ArticleApiArgs = { shop: OnlineShop; locale: Locale; slug: string };
  * @returns The normalized CMS article document, or `null` when none exists for the slug.
  */
 export async function ArticleApi({ shop, locale, slug }: ArticleApiArgs): Promise<Article | null> {
-    const article = await getArticle({
-        shop: toShopRef(shop),
-        locale: { code: locale.code },
-        slug,
+    return runCmsDualRead<Article | null>({
+        getter: 'article',
+        shopId: shop.id,
+        locale: locale.code,
+        key: slug,
+        mongo: async () => {
+            const article = await getArticle({
+                shop: toShopRef(shop),
+                locale: { code: locale.code },
+                slug,
+            });
+            return article ? normalizePayloadDoc(article, locale.code) : null;
+        },
+        convex: (query) => query('cms/read:articleBySlug', { shopId: shop.id, slug, locale: locale.code }),
     });
-    return article ? normalizePayloadDoc(article, locale.code) : null;
 }

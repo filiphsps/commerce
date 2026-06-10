@@ -259,6 +259,37 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  cmsReadDivergence: {
+    document: {
+      createdAt: number;
+      detail?: string;
+      getter: string;
+      key?: string;
+      kind: "mismatch" | "error";
+      locale: string;
+      shop: string;
+      _id: Id<"cmsReadDivergence">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "detail"
+      | "getter"
+      | "key"
+      | "kind"
+      | "locale"
+      | "shop";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_getter: ["getter", "_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   cmsRichTextDocuments: {
     document: {
       documentId: string;
