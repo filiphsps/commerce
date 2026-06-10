@@ -1,7 +1,12 @@
 import 'server-only';
 
-import type { EditorConvexBridge } from '@nordcom/commerce-cms/editor';
-import { convexIdentityMutation, createConvexIdentityClient } from '@nordcom/commerce-db';
+import type {
+    EditorCmsDocument,
+    EditorCmsListPage,
+    EditorCmsVersion,
+    EditorConvexBridge,
+} from '@nordcom/commerce-cms/editor';
+import { convexIdentityMutation, convexIdentityQuery, createConvexIdentityClient } from '@nordcom/commerce-db';
 import { ConvexOperatorTokenMintError } from '@nordcom/commerce-errors';
 
 import { authenticateConvexClient } from './convex-auth';
@@ -12,6 +17,56 @@ import { mintConvexOperatorToken } from './convex-token';
  * surfaces only the public `documentId` string.
  */
 type ConvexSaveResult = { documentId: string; versionId: string };
+
+/**
+ * The wire shape of a Convex `cmsDocuments` row as the read queries return it —
+ * the isolate-private members the bridge collapses away before handing the
+ * document to the editor shell.
+ */
+type ConvexCmsDocumentRow = {
+    _id: string;
+    collection: string;
+    data: unknown;
+    status: 'draft' | 'published';
+    updatedAt: number;
+    latestVersionId?: string;
+};
+
+/** The wire shape of Convex `cms/list:list`'s page result. */
+type ConvexCmsListResult = {
+    docs: ConvexCmsDocumentRow[];
+    page: number;
+    pageSize: number;
+    totalDocs: number;
+    totalPages: number;
+};
+
+/** The wire shape of a Convex `cmsVersions` row from `cms/versions:list`. */
+type ConvexCmsVersionRow = {
+    _id: string;
+    status: 'draft' | 'published';
+    createdAt: number;
+};
+
+/**
+ * Projects a Convex `cmsDocuments` row into the bridge's {@link EditorCmsDocument}: `_id` becomes
+ * the public `documentId` and the serialized `data` is normalized to a record (a non-object value —
+ * possible because the column is schema-`any` — reads as an empty document rather than crashing the
+ * shell).
+ *
+ * @param row - The wire row.
+ * @returns The bridge document.
+ */
+function toEditorDocument(row: ConvexCmsDocumentRow): EditorCmsDocument {
+    return {
+        documentId: row._id,
+        collection: row.collection,
+        data: (typeof row.data === 'object' && row.data !== null ? row.data : {}) as Record<string, unknown>,
+        status: row.status,
+        updatedAt: row.updatedAt,
+        ...(row.latestVersionId !== undefined ? { latestVersionId: row.latestVersionId } : {}),
+    };
+}
 
 /**
  * Runs one Convex mutation on a FRESH identity-authenticated client. Per-call
@@ -35,6 +90,25 @@ async function operatorMutation<Result>(name: string, args: Record<string, unkno
         throw new ConvexOperatorTokenMintError(name);
     }
     return convexIdentityMutation<Result>(client, name, args);
+}
+
+/**
+ * Runs one Convex query on a FRESH identity-authenticated client — the read-side companion of
+ * {@link operatorMutation} with the identical token-hygiene contract (per-call client, per-request
+ * bearer token, no tenant selector in the args). Backs the CMSDATA-07 editor shell reads.
+ *
+ * @param name - The Convex function path in `module/path:function` form.
+ * @param args - The query's args.
+ * @returns The query's result.
+ * @throws {ConvexOperatorTokenMintError} When no operator token can be minted.
+ */
+async function operatorQuery<Result>(name: string, args: Record<string, unknown>): Promise<Result> {
+    const client = createConvexIdentityClient();
+    const token = await authenticateConvexClient(client, mintConvexOperatorToken);
+    if (!token) {
+        throw new ConvexOperatorTokenMintError(name);
+    }
+    return convexIdentityQuery<Result>(client, name, args);
 }
 
 /**
@@ -99,5 +173,32 @@ export const editorConvexBridge: EditorConvexBridge = {
     },
     restoreVersion: async ({ versionId }) => {
         await operatorMutation<ConvexSaveResult>('cms/actions:restoreVersion', { versionId });
+    },
+    list: async ({ collection, page, pageSize }): Promise<EditorCmsListPage> => {
+        const result = await operatorQuery<ConvexCmsListResult>('cms/list:list', {
+            collection,
+            ...(page !== undefined ? { page } : {}),
+            ...(pageSize !== undefined ? { pageSize } : {}),
+        });
+        return {
+            docs: result.docs.map(toEditorDocument),
+            page: result.page,
+            pageSize: result.pageSize,
+            totalDocs: result.totalDocs,
+            totalPages: result.totalPages,
+        };
+    },
+    getDocument: async ({ collection, documentId, keyField, keyValue }): Promise<EditorCmsDocument | null> => {
+        const row = await operatorQuery<ConvexCmsDocumentRow | null>('cms/documents:get', {
+            collection,
+            ...(documentId !== undefined ? { documentId } : {}),
+            ...(keyField !== undefined ? { keyField } : {}),
+            ...(keyValue !== undefined ? { keyValue } : {}),
+        });
+        return row === null ? null : toEditorDocument(row);
+    },
+    listVersions: async ({ documentId }): Promise<EditorCmsVersion[]> => {
+        const rows = await operatorQuery<ConvexCmsVersionRow[]>('cms/versions:list', { documentId });
+        return rows.map((row) => ({ versionId: row._id, status: row.status, createdAt: row.createdAt }));
     },
 };

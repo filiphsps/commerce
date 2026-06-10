@@ -25,11 +25,13 @@ export type AuthedUser = {
  * admin app's `getAuthedPayloadCtx` call. Passed to every editor primitive as
  * the first argument to `runtime.toAccessCtx`.
  *
- * `payload` is the LAST Payload-typed handle on the runtime seam: the editor
- * pages still read documents through `payload.find` and the collection config
- * until the Convex read seam replaces them (CMSDATA-07's shell rebind). The
- * write path no longer touches it — all seven editor actions post through
- * {@link EditorConvexBridge}.
+ * `payload` is the LAST Payload-typed handle on the runtime seam. Since the
+ * CMSDATA-07 shell rebind the editor pages neither read documents nor the
+ * collection config through it — reads go through the bridge's
+ * `list`/`getDocument`/`listVersions` and the field schemas come from
+ * `collection-fields.ts`. It survives only for the admin's legacy-Payload
+ * surfaces (the shell-prop adapter and the theme editor's field widgets) until
+ * TEARDOWN removes them.
  *
  * @example
  * const ctx: AuthedPayloadCtx = await runtime.getCtx(domain);
@@ -96,12 +98,65 @@ export type EditorDocumentTarget = {
 };
 
 /**
+ * One live CMS document as the editor shell reads it through the bridge — the projection of a
+ * Convex `cmsDocuments` row with the isolate-private members (`_id`, `shopId`) collapsed into the
+ * public `documentId`/timestamps the pages bind to.
+ */
+export type EditorCmsDocument = {
+    /** The live `cmsDocuments` id, as a string. */
+    documentId: string;
+    /** The document's collection slug. */
+    collection: string;
+    /** The serialized field map the editor seeds its form state from. */
+    data: Record<string, unknown>;
+    /** The live row's draft/published status. */
+    status: 'draft' | 'published';
+    /** Last-save epoch-ms timestamp. */
+    updatedAt: number;
+    /** The most recent version snapshot's id, when one exists. */
+    latestVersionId?: string;
+};
+
+/**
+ * One page of an editor list read — the bridge projection of Convex `cms/list.ts`'s `CmsListPage`,
+ * carrying the page's documents plus the addressing metadata the list view binds to.
+ */
+export type EditorCmsListPage = {
+    docs: EditorCmsDocument[];
+    /** The 1-based page index actually served. */
+    page: number;
+    /** The page size in force. */
+    pageSize: number;
+    /** Total live documents for the tenant/collection. */
+    totalDocs: number;
+    /** Last addressable page, at least 1. */
+    totalPages: number;
+};
+
+/**
+ * One version snapshot as the versions page reads it through the bridge — the projection of a
+ * Convex `cmsVersions` row.
+ */
+export type EditorCmsVersion = {
+    /** The `cmsVersions` id, as a string — what `restoreVersion` re-materializes. */
+    versionId: string;
+    /** The snapshot's draft/published status at save time. */
+    status: 'draft' | 'published';
+    /** The snapshot's creation epoch-ms timestamp. */
+    createdAt: number;
+};
+
+/**
  * The Convex transport the editor server actions post through — the same injected-callback seam as
  * the CMSFORM-05 autosave `save` prop, lifted to all seven operations. The admin app binds each
  * method to the matching `cms/actions.ts` mutation over a `ConvexHttpClient` authenticated with the
  * operator's CONVEXCORE-14/16 bearer token, so the Convex side resolves the tenant and enforces
  * access from the trusted identity; nothing in this contract lets the client pick a tenant or relax
  * enforcement (there is no `overrideAccess`).
+ *
+ * The three read methods (`list`/`getDocument`/`listVersions`) are the CMSDATA-07 shell-read seam:
+ * they bind to the tenant-tier `cms/list:list`, `cms/documents:get`, and `cms/versions:list`
+ * queries, replacing the editor pages' `payload.find`/`payload.findVersions` reads.
  *
  * `locale` rides along on the save-shaped calls for the CMSDATA-10 localized write seam. The
  * CMSDATA-06 admin transport deliberately does NOT forward it to the `cms/actions.ts` mutations —
@@ -123,6 +178,12 @@ export type EditorConvexBridge = {
     bulkDelete: (args: { documentIds: string[] }) => Promise<void>;
     bulkPublish: (args: { documentIds: string[] }) => Promise<void>;
     restoreVersion: (args: { versionId: string }) => Promise<void>;
+    /** Page-bounded tenant list over a collection's live documents (`cms/list:list`). */
+    list: (args: { collection: string; page?: number; pageSize?: number }) => Promise<EditorCmsListPage>;
+    /** Read one live document by id/key/singleton target (`cms/documents:get`); `null` when absent. */
+    getDocument: (args: { collection: string } & EditorDocumentTarget) => Promise<EditorCmsDocument | null>;
+    /** A live document's version history, oldest first (`cms/versions:list`). */
+    listVersions: (args: { documentId: string }) => Promise<EditorCmsVersion[]>;
 };
 
 /**

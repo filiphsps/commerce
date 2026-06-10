@@ -1,12 +1,12 @@
 import 'server-only';
 
-import { UnknownCollectionSlugError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
 
 import type { EditorActions } from '../actions';
+import { editorCollectionSchema } from '../collection-fields';
 import type { CollectionEditorManifest } from '../manifest';
 import type { EditorRuntime } from '../runtime';
 import { EditorFields } from './editor-fields';
@@ -29,11 +29,13 @@ export type EditorNewPageProps<TSlug extends CollectionSlug = CollectionSlug> = 
 /**
  * Server Component that renders the new-document creation form. Enforces
  * create access, resolves the locale, builds an empty native `FormState`,
- * and assembles the `<DocumentForm>` shell with a bound create action.
+ * and assembles the `<DocumentForm>` shell with a bound create action. The
+ * field surface and the drafts/autosave behavior both come from the
+ * collection's editor schema (`collection-fields.ts` — the CMSDATA-07 native
+ * rebind), so no Payload config is consulted.
  *
  * @param props - {@link EditorNewPageProps} carrying manifest, runtime, params, and generated actions.
  * @returns The rendered new-document form wrapped in the runtime's `DocumentForm` shell.
- * @throws {UnknownCollectionSlugError} When the manifest's collection is not registered in Payload's config.
  */
 export async function EditorNewPage<TSlug extends CollectionSlug>({
     manifest,
@@ -47,12 +49,8 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
     if (!manifest.access.create) notFound();
     if (!(await manifest.access.create(runtime.toAccessCtx(ctx, domain)))) notFound();
 
-    const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
-    if (!collection) throw new UnknownCollectionSlugError(manifest.collection);
-
     // ── Locale resolution ── (mirrors EditorEditPage)
-    const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;
-    const tenantDefault = ctx.tenant?.defaultLocale ?? localization?.defaultLocale ?? 'en-US';
+    const tenantDefault = ctx.tenant?.defaultLocale ?? 'en-US';
     const allowed = ctx.tenant?.locales ?? [tenantDefault];
     const requested = searchParams.locale;
     const valid = typeof requested === 'string' && allowed.includes(requested);
@@ -86,14 +84,8 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
         await generatedActions.create(domain, formData, locale);
     };
 
-    const hasDrafts =
-        collection.versions !== undefined &&
-        (collection.versions as { drafts?: unknown }).drafts !== undefined &&
-        (collection.versions as { drafts?: unknown }).drafts !== false;
-    const autosave =
-        hasDrafts && (collection.versions as { drafts: { autosave?: { interval: number } } }).drafts.autosave
-            ? (collection.versions as { drafts: { autosave: { interval: number } } }).drafts.autosave
-            : undefined;
+    const schema = editorCollectionSchema(String(manifest.collection));
+    const autosave = schema.drafts?.autosave;
     const breadcrumbs = manifest.routes.breadcrumbs?.({ domain }) ?? [];
 
     return (

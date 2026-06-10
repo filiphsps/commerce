@@ -119,6 +119,26 @@ export async function convexIdentityMutation<Result>(
 }
 
 /**
+ * Calls a deployed Convex query by path on an identity-authenticated client — the read-side
+ * companion of {@link convexIdentityMutation}. No `serverSecret` is injected: the callee is
+ * expected to be a tenant-tier function that derives its scope from the validated identity the
+ * client's `setAuth` token carries (the CMSDATA-07 editor shell reads flow through this).
+ *
+ * @param client - An authenticated client from {@link createConvexIdentityClient}.
+ * @param name - The Convex function path in `module/path:function` form.
+ * @param args - The function's args.
+ * @returns The function's result.
+ */
+export async function convexIdentityQuery<Result>(
+    client: ConvexHttpClient,
+    name: string,
+    args: Record<string, unknown>,
+): Promise<Result> {
+    const reference = makeFunctionReference<'query', Record<string, unknown>, Result>(name);
+    return client.query(reference, args);
+}
+
+/**
  * Reads the shared server-trust secret presented as the `serverSecret` arg on every seam call. The
  * Convex `serverQuery`/`serverMutation` constructors fail closed without a matching secret, so an
  * unset value here is a hard misconfiguration rather than a silent degradation.

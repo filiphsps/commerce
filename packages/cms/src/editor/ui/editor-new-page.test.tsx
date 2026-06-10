@@ -13,15 +13,9 @@ const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
     }),
 }));
 vi.mock('next/navigation', () => ({ notFound: mockNotFound, redirect: mockRedirect }));
-vi.mock('next/headers', () => ({ headers: async () => new Headers() }));
-vi.mock('payload', () => ({
-    createLocalReq: vi.fn(async () => ({})),
-    getLocalI18n: vi.fn(async () => ({})),
-    getRequestLanguage: vi.fn(() => 'en'),
-}));
-vi.mock('payload/shared', () => ({ parseCookies: () => ({}) }));
-// Mock the child component imports to avoid pulling in @payloadcms/ui's CSS side-effects
-// in the node test environment (consistent with editor-edit-page.test.tsx).
+// Mock the child component imports so the server-component page renders
+// without mounting the client field surface (consistent with
+// editor-edit-page.test.tsx).
 vi.mock('./editor-fields', () => ({ EditorFields: () => null }));
 vi.mock('./editor-form-toolbar', () => ({ EditorFormToolbar: () => null }));
 
@@ -37,7 +31,6 @@ const manifest = defineCollectionEditor({
 const buildRuntime = (overrides: Record<string, unknown> = {}): never =>
     ({
         getCtx: async () => ({
-            payload: { config: { collections: [{ slug: 'pages', fields: [], versions: false }], localization: false } },
             user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
             tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'sv', locales: ['sv', 'en'] },
         }),
@@ -90,5 +83,29 @@ describe('<EditorNewPage>', () => {
                 },
             }),
         ).rejects.toThrow(/NEXT_REDIRECT:.*locale=sv/);
+    });
+
+    it('calls notFound when the manifest declares no create gate', async () => {
+        const readOnly = defineCollectionEditor({
+            ...manifest,
+            access: { list: () => true, read: () => true, update: () => true },
+        });
+        await expect(
+            EditorNewPage({
+                manifest: readOnly,
+                runtime: buildRuntime(),
+                params: { domain: 'a.test' },
+                searchParams: { locale: 'sv' },
+                generatedActions: {
+                    saveDraft: async () => {},
+                    publish: async () => {},
+                    delete: async () => {},
+                    create: async () => ({ id: 'new' }),
+                    bulkDelete: async () => {},
+                    bulkPublish: async () => {},
+                    restoreVersion: async () => {},
+                },
+            }),
+        ).rejects.toThrow('NEXT_NOT_FOUND');
     });
 });

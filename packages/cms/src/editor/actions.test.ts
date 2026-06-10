@@ -42,6 +42,9 @@ const buildBridge = (): EditorConvexBridge => ({
     bulkDelete: vi.fn().mockResolvedValue(undefined),
     bulkPublish: vi.fn().mockResolvedValue(undefined),
     restoreVersion: vi.fn().mockResolvedValue(undefined),
+    list: vi.fn().mockResolvedValue({ docs: [], page: 1, pageSize: 25, totalDocs: 0, totalPages: 1 }),
+    getDocument: vi.fn().mockResolvedValue(null),
+    listVersions: vi.fn().mockResolvedValue([]),
 });
 
 /**

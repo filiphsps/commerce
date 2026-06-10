@@ -1,8 +1,9 @@
 import { ConvexError, v } from 'convex/values';
 
 import { internal } from '../_generated/api';
-import type { Id } from '../_generated/dataModel';
-import { tenantMutation } from '../lib/tenant';
+import type { Doc, Id } from '../_generated/dataModel';
+import { BoundedScanExceededError, SCAN_BYTE_BUDGET, SCAN_DOCUMENT_BUDGET } from '../lib/scan_budget';
+import { tenantMutation, tenantQuery } from '../lib/tenant';
 import { cmsRevalidateKey } from '../revalidate/onPublish';
 import { cmsDocumentStatusValidator } from '../tables/cmsVersions';
 
@@ -18,6 +19,8 @@ export const CmsDocumentErrorCode = {
     REQUIRED_FIELD_MISSING: 'CMS_REQUIRED_FIELD_MISSING',
     /** A save targeted a `documentId` that does not exist for the resolved tenant. */
     DOCUMENT_NOT_FOUND: 'CMS_DOCUMENT_NOT_FOUND',
+    /** A document target supplied `keyField` without `keyValue` (or vice versa) — unresolvable. */
+    INVALID_DOCUMENT_TARGET: 'CMS_INVALID_DOCUMENT_TARGET',
 } as const;
 
 /**
@@ -71,6 +74,76 @@ function assertPublishable(collection: string, data: unknown): void {
         });
     }
 }
+
+/**
+ * Reads ONE live CMS document for the resolved tenant — the Convex-native replacement for the
+ * editor shell's `payload.find({ where, limit: 1 })` read (CMSDATA-07). Addressing mirrors
+ * `cms/actions.ts`'s `resolveTargetDocumentId` three modes:
+ * - **`documentId`** — a literal `cmsDocuments` id; an unparseable or foreign id reads as `null`.
+ * - **`keyField`/`keyValue`** — keyField-routed collections (e.g. `productMetadata` by
+ *   `shopifyHandle`): the tenant's rows are streamed via `by_shop_collection` and matched on the
+ *   serialized `data[keyField]`.
+ * - **neither** — tenant singletons (`header`/`footer`/`businessData`/`shops`): the tenant's single
+ *   row for the collection IS the target.
+ *
+ * Built on {@link tenantQuery}, so the shop is pinned from server-trusted context and the
+ * RLS-wrapped reader confines the scan to that shop's own rows; a missing document returns `null`
+ * (the editor's create flow) rather than throwing. The key scan carries the same budget ceilings as
+ * `lib/scan_budget.ts` so a runaway collection fails typed.
+ *
+ * @param ctx - The tenant query context (RLS-wrapped `db`, server-resolved `shopId`).
+ * @param args - The `collection` slug plus at most one addressing mode.
+ * @returns The live document, or `null` when none matches.
+ * @throws {ConvexError} `CMS_INVALID_DOCUMENT_TARGET` when `keyField`/`keyValue` are not a pair.
+ * @throws {BoundedScanExceededError} When the key scan crosses the document or byte budget.
+ */
+export const get = tenantQuery({
+    args: {
+        collection: v.string(),
+        documentId: v.optional(v.string()),
+        keyField: v.optional(v.string()),
+        keyValue: v.optional(v.string()),
+    },
+    handler: async (ctx, { collection, documentId, keyField, keyValue }): Promise<Doc<'cmsDocuments'> | null> => {
+        if (documentId !== undefined) {
+            const normalized = ctx.db.normalizeId('cmsDocuments', documentId);
+            if (!normalized) return null;
+            const doc = await ctx.db.get(normalized);
+            return doc !== null && doc.collection === collection ? doc : null;
+        }
+        if ((keyField === undefined) !== (keyValue === undefined)) {
+            throw new ConvexError({
+                code: CmsDocumentErrorCode.INVALID_DOCUMENT_TARGET,
+                message: 'A keyed document target requires both keyField and keyValue.',
+            });
+        }
+
+        let scanned = 0;
+        let bytes = 0;
+        const rows = ctx.db
+            .query('cmsDocuments')
+            .withIndex('by_shop_collection', (q) => q.eq('shopId', ctx.shopId).eq('collection', collection));
+        for await (const doc of rows) {
+            scanned += 1;
+            bytes += JSON.stringify(doc)?.length ?? 0;
+            if (scanned >= SCAN_DOCUMENT_BUDGET || bytes >= SCAN_BYTE_BUDGET) {
+                throw new BoundedScanExceededError({
+                    scanned,
+                    documentBudget: SCAN_DOCUMENT_BUDGET,
+                    bytes,
+                    byteBudget: SCAN_BYTE_BUDGET,
+                });
+            }
+            if (keyField === undefined) return doc;
+            const record = (typeof doc.data === 'object' && doc.data !== null ? doc.data : {}) as Record<
+                string,
+                unknown
+            >;
+            if (record[keyField] === keyValue) return doc;
+        }
+        return null;
+    },
+});
 
 /**
  * Saves a CMS document under the server-resolved tenant, writing the live row and appending exactly

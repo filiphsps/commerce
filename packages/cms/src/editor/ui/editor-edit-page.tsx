@@ -1,21 +1,26 @@
 import 'server-only';
 
+import { MissingConvexBridgeError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
-import { headers as getHeaders } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
-import { getRequestLanguage } from 'payload';
-import { parseCookies } from 'payload/shared';
 import type { ReactNode } from 'react';
-import type { EditorActions } from '../actions';
+import { documentTargetFor, type EditorActions } from '../actions';
+import { editorCollectionSchema } from '../collection-fields';
 import type { CollectionEditorManifest } from '../manifest';
-import { tenantWhere } from '../tenant-where';
 import type { EditorRuntime } from '../runtime';
 import { docUrlSegment } from '../url';
 import { EditorFields } from './editor-fields';
 import { EditorFormToolbar } from './editor-form-toolbar';
 import { localeLabel } from './locale-label';
 import { LocaleSwitcher } from './locale-switcher';
+
+/**
+ * The UI language locale labels resolve in. Fixed: the admin shell is
+ * English-only since the Payload i18n negotiation (cookie/header) left with
+ * the legacy form state builder.
+ */
+const UI_LANGUAGE = 'en';
 
 /**
  * Props for {@link EditorEditPage}. Carries the manifest, runtime, resolved
@@ -55,12 +60,16 @@ export type EditorEditPageProps<TSlug extends CollectionSlug = CollectionSlug> =
 
 /**
  * Server Component that renders the edit form for a single document.
- * Resolves the locale (redirecting when absent), fetches the doc, builds the
- * native `FormState`, and assembles the `<DocumentForm>` shell with bound
- * save-draft / publish actions and an optional live-preview iframe.
+ * Resolves the locale (redirecting when absent), fetches the doc through the
+ * bridge's Convex read (`cms/documents:get` — the CMSDATA-07 shell rebind),
+ * builds the native `FormState`, and assembles the `<DocumentForm>` shell
+ * with bound save-draft / publish actions and an optional live-preview
+ * iframe. Drafts/autosave behavior comes from the collection's editor schema
+ * (`collection-fields.ts`), not a Payload config.
  *
  * @param props - {@link EditorEditPageProps} carrying manifest, runtime, params, and generated actions.
  * @returns The rendered edit page wrapped in the runtime's `DocumentForm` shell.
+ * @throws {MissingConvexBridgeError} When the runtime carries no Convex bridge.
  * @example
  * ```tsx
  * <EditorEditPage
@@ -85,16 +94,16 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     const { domain, id } = params;
     const ctx = await runtime.getCtx(domain);
     if (!(await manifest.access.read(runtime.toAccessCtx(ctx, domain)))) notFound();
-
-    const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
+    if (!runtime.convex) {
+        throw new MissingConvexBridgeError(manifest.collection);
+    }
 
     // ── Locale resolution ──
-    // Shop's defaultLocale (from tenant) wins over the global Payload default;
-    // searchParams.locale wins if it's in the tenant's allow-list. Otherwise
-    // redirect to ?locale=<shop default> so the URL is always populated and
-    // the doc fetch always uses a valid locale.
-    const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;
-    const tenantDefault = ctx.tenant?.defaultLocale ?? localization?.defaultLocale ?? 'en-US';
+    // Shop's defaultLocale (from tenant) wins; searchParams.locale wins if it's
+    // in the tenant's allow-list. Otherwise redirect to ?locale=<shop default>
+    // so the URL is always populated and the doc edit always targets a valid
+    // locale bucket.
+    const tenantDefault = ctx.tenant?.defaultLocale ?? 'en-US';
     const allowed = ctx.tenant?.locales ?? [tenantDefault];
     const requested = searchParams.locale;
     const valid = typeof requested === 'string' && allowed.includes(requested);
@@ -111,35 +120,16 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
 
     const locale = requested as string;
 
-    // Detect drafts support from the collection config when available.
-    const hasDrafts =
-        collection !== undefined &&
-        collection.versions !== undefined &&
-        (collection.versions as { drafts?: unknown }).drafts !== undefined &&
-        (collection.versions as { drafts?: unknown }).drafts !== false;
-
-    const where = tenantWhere(manifest, ctx.tenant, id);
-    const { docs } = await ctx.payload.find({
-        collection: manifest.collection as never,
-        where,
-        limit: 1,
-        locale: locale as never,
-        user: ctx.user as never,
-        overrideAccess: false,
-        draft: hasDrafts,
+    const schema = editorCollectionSchema(String(manifest.collection));
+    const existing = await runtime.convex.getDocument({
+        collection: String(manifest.collection),
+        ...documentTargetFor(manifest, id),
     });
-    const existing = docs[0] ?? null;
-
-    // Build the native form state. The language is still resolved Payload-style
-    // (cookie/header negotiation) because the locale switcher labels read it.
-    const headers = await getHeaders();
-    const cookies = parseCookies(headers);
-    const language = getRequestLanguage({ config: ctx.payload.config, cookies, headers });
 
     const { state: initialState } = await runtime.buildFormState({
         collectionSlug: String(manifest.collection),
-        data: (existing as unknown as Record<string, unknown>) ?? {},
-        id: existing ? String((existing as unknown as { id: string }).id) : undefined,
+        data: existing?.data ?? {},
+        id: existing?.documentId,
         operation: existing ? 'update' : 'create',
         locale,
     });
@@ -149,7 +139,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     // Bind the codegen'd action wrappers to (domain, id, locale). The locale
     // closes over the request-time value the editor is currently viewing so
     // saves write into the correct localized field bucket instead of falling
-    // back to Payload's configured default.
+    // back to the platform default.
     const boundSaveDraft = async (formData: FormData) => {
         'use server';
         return generatedActions.saveDraft(domain, id, formData, locale);
@@ -159,19 +149,16 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
         return generatedActions.publish(domain, id, formData, locale);
     };
 
-    const existingName = (existing as unknown as { name?: string } | null)?.name;
-    const title = existingName ? String(existingName) : manifest.routes.label.singular;
+    const existingName = existing?.data.name;
+    const title = typeof existingName === 'string' && existingName ? existingName : manifest.routes.label.singular;
 
     const breadcrumbs = manifest.routes.breadcrumbs?.({ domain }) ?? [];
 
-    const autosave =
-        hasDrafts && collection !== undefined
-            ? (collection.versions as { drafts: { autosave?: { interval: number } } }).drafts.autosave
-            : undefined;
+    const autosave = schema.drafts?.autosave;
 
-    const localeOptions = (ctx.tenant?.locales ?? [tenantDefault]).map((code) => ({
+    const localeOptions = allowed.map((code) => ({
         code,
-        label: localeLabel(code, language),
+        label: localeLabel(code, UI_LANGUAGE),
     }));
 
     return (

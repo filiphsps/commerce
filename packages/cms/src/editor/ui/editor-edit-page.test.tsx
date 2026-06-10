@@ -2,7 +2,9 @@
 import { render } from '@testing-library/react';
 import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
+import type { EditorActions } from '../actions';
 import { defineCollectionEditor } from '../manifest';
+import type { EditorCmsDocument } from '../runtime';
 
 const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
     mockNotFound: vi.fn(() => {
@@ -13,13 +15,6 @@ const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
     }),
 }));
 vi.mock('next/navigation', () => ({ notFound: mockNotFound, redirect: mockRedirect }));
-vi.mock('next/headers', () => ({ headers: async () => new Headers() }));
-vi.mock('payload', () => ({
-    createLocalReq: vi.fn(async () => ({ user: { id: 'u' }, payload: {}, i18n: {} })),
-    getLocalI18n: vi.fn(async () => ({})),
-    getRequestLanguage: vi.fn(() => 'en'),
-}));
-vi.mock('payload/shared', () => ({ parseCookies: () => ({}) }));
 vi.mock('./editor-fields', () => ({ EditorFields: () => null }));
 vi.mock('./editor-form-toolbar', () => ({ EditorFormToolbar: () => null }));
 vi.mock('./locale-switcher', () => ({ LocaleSwitcher: () => null }));
@@ -34,13 +29,34 @@ const baseManifest = defineCollectionEditor({
     revalidate: ({ domain }) => [`/${domain}/x/`],
 });
 
-const buildRuntime = (overrides: Record<string, unknown> = {}): never =>
+const generatedActions: EditorActions = {
+    saveDraft: async () => {},
+    publish: async () => {},
+    delete: async () => {},
+    create: async () => ({ id: 'new' }),
+    bulkDelete: async () => {},
+    bulkPublish: async () => {},
+    restoreVersion: async () => {},
+};
+
+/**
+ * Build the runtime substrate with a Convex bridge whose `getDocument`
+ * resolves the given document — the CMSDATA-07 read seam under test.
+ *
+ * @param getDocument - The bridge `getDocument` implementation for this scenario.
+ * @returns The runtime, typed loosely for the page under test.
+ */
+const buildRuntime = (
+    getDocument: (args: Record<string, unknown>) => Promise<EditorCmsDocument | null> = async () => ({
+        documentId: 'd1',
+        collection: 'businessData',
+        data: { legalName: 'A' },
+        status: 'draft',
+        updatedAt: 1_700_000_000_000,
+    }),
+): never =>
     ({
         getCtx: async () => ({
-            payload: {
-                config: { collections: [], localization: false },
-                find: async () => ({ docs: [{ id: 'd1', legalName: 'A' }] }),
-            },
             user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
             tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'de', locales: ['de', 'en'] },
         }),
@@ -51,12 +67,12 @@ const buildRuntime = (overrides: Record<string, unknown> = {}): never =>
             user: { ...ctx.user, tenants: ctx.user.tenants.map((t) => t.tenant) },
             domain,
         }),
+        convex: { getDocument },
         buildFormState: async () => ({ state: {} }),
         getShellProps: async () => ({}),
         DocumentForm: ({ title }: { title: string }) => <div data-testid="doc-form">{title}</div>,
         Table: () => null,
         Toolbar: () => null,
-        ...overrides,
     }) as never;
 
 describe('<EditorEditPage>', () => {
@@ -66,18 +82,63 @@ describe('<EditorEditPage>', () => {
             runtime: buildRuntime(),
             params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'de' },
-            generatedActions: {
-                saveDraft: async () => {},
-                publish: async () => {},
-                delete: async () => {},
-                create: async () => ({ id: 'new' }),
-                bulkDelete: async () => {},
-                bulkPublish: async () => {},
-                restoreVersion: async () => {},
-            },
+            generatedActions,
         });
         const { getByTestId } = render(el);
         // Use plain DOM access — this package's tests don't load jest-dom.
+        expect(getByTestId('doc-form').textContent).toBe('X');
+    });
+
+    it('uses the document data `name` as the title when present', async () => {
+        const el = await EditorEditPage({
+            manifest: baseManifest,
+            runtime: buildRuntime(async () => ({
+                documentId: 'd1',
+                collection: 'businessData',
+                data: { name: 'Named Doc' },
+                status: 'published',
+                updatedAt: 1_700_000_000_000,
+            })),
+            params: { domain: 'a.test', id: '' },
+            searchParams: { locale: 'de' },
+            generatedActions,
+        });
+        const { getByTestId } = render(el);
+        expect(getByTestId('doc-form').textContent).toBe('Named Doc');
+    });
+
+    it('reads through the bridge with the manifest-derived document target', async () => {
+        const getDocument = vi.fn(async () => null);
+        const keyedManifest = defineCollectionEditor({
+            ...baseManifest,
+            collection: 'productMetadata',
+            tenant: { kind: 'scoped', field: 'tenant' },
+            routes: { ...baseManifest.routes, keyField: 'shopifyHandle' },
+        });
+        const el = await EditorEditPage({
+            manifest: keyedManifest,
+            runtime: buildRuntime(getDocument),
+            params: { domain: 'a.test', id: 'sneaker' },
+            searchParams: { locale: 'de' },
+            generatedActions,
+        });
+        render(el);
+        expect(getDocument).toHaveBeenCalledWith({
+            collection: 'productMetadata',
+            keyField: 'shopifyHandle',
+            keyValue: 'sneaker',
+        });
+    });
+
+    it('renders a create-shaped form when the bridge resolves no document', async () => {
+        const el = await EditorEditPage({
+            manifest: baseManifest,
+            runtime: buildRuntime(async () => null),
+            params: { domain: 'a.test', id: '' },
+            searchParams: { locale: 'de' },
+            generatedActions,
+        });
+        const { getByTestId } = render(el);
         expect(getByTestId('doc-form').textContent).toBe('X');
     });
 
@@ -92,15 +153,7 @@ describe('<EditorEditPage>', () => {
                 runtime: buildRuntime(),
                 params: { domain: 'a.test', id: '' },
                 searchParams: { locale: 'de' },
-                generatedActions: {
-                    saveDraft: async () => {},
-                    publish: async () => {},
-                    delete: async () => {},
-                    create: async () => ({ id: 'new' }),
-                    bulkDelete: async () => {},
-                    bulkPublish: async () => {},
-                    restoreVersion: async () => {},
-                },
+                generatedActions,
             }),
         ).rejects.toThrow('NEXT_NOT_FOUND');
     });
@@ -112,15 +165,7 @@ describe('<EditorEditPage>', () => {
                 runtime: buildRuntime(),
                 params: { domain: 'a.test', id: '' },
                 searchParams: {},
-                generatedActions: {
-                    saveDraft: async () => {},
-                    publish: async () => {},
-                    delete: async () => {},
-                    create: async () => ({ id: 'new' }),
-                    bulkDelete: async () => {},
-                    bulkPublish: async () => {},
-                    restoreVersion: async () => {},
-                },
+                generatedActions,
             }),
         ).rejects.toThrow(/NEXT_REDIRECT:.*locale=de/);
     });
@@ -132,15 +177,7 @@ describe('<EditorEditPage>', () => {
                 runtime: buildRuntime(),
                 params: { domain: 'a.test', id: '' },
                 searchParams: { locale: 'zz' },
-                generatedActions: {
-                    saveDraft: async () => {},
-                    publish: async () => {},
-                    delete: async () => {},
-                    create: async () => ({ id: 'new' }),
-                    bulkDelete: async () => {},
-                    bulkPublish: async () => {},
-                    restoreVersion: async () => {},
-                },
+                generatedActions,
             }),
         ).rejects.toThrow(/NEXT_REDIRECT:.*locale=de/);
     });
@@ -152,15 +189,7 @@ describe('<EditorEditPage>', () => {
                 runtime: buildRuntime(),
                 params: { domain: 'a.test', id: '' },
                 searchParams: {},
-                generatedActions: {
-                    saveDraft: async () => {},
-                    publish: async () => {},
-                    delete: async () => {},
-                    create: async () => ({ id: 'new' }),
-                    bulkDelete: async () => {},
-                    bulkPublish: async () => {},
-                    restoreVersion: async () => {},
-                },
+                generatedActions,
             }),
         ).rejects.toThrow('NEXT_REDIRECT:/a.test/x/?locale=de');
     });
@@ -171,15 +200,7 @@ describe('<EditorEditPage>', () => {
             runtime: buildRuntime(),
             params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'en' },
-            generatedActions: {
-                saveDraft: async () => {},
-                publish: async () => {},
-                delete: async () => {},
-                create: async () => ({ id: 'new' }),
-                bulkDelete: async () => {},
-                bulkPublish: async () => {},
-                restoreVersion: async () => {},
-            },
+            generatedActions,
         });
         const { getByTestId } = render(el);
         expect(getByTestId('doc-form').textContent).toBe('X');

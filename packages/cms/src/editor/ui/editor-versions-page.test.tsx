@@ -2,7 +2,9 @@
 import { render, screen } from '@testing-library/react';
 import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
+import type { EditorActions } from '../actions';
 import { defineCollectionEditor } from '../manifest';
+import type { EditorCmsDocument, EditorCmsVersion } from '../runtime';
 
 const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
     mockNotFound: vi.fn(() => {
@@ -20,12 +22,6 @@ vi.mock('next/navigation', () => ({
     useSearchParams: () => new URLSearchParams('locale=de'),
 }));
 
-vi.mock('next/headers', () => ({ headers: async () => new Headers() }));
-vi.mock('payload', () => ({
-    getRequestLanguage: vi.fn(() => 'en'),
-}));
-vi.mock('payload/shared', () => ({ parseCookies: () => ({}) }));
-
 import { EditorVersionsPage } from './editor-versions-page';
 
 const manifest = defineCollectionEditor({
@@ -38,17 +34,44 @@ const manifest = defineCollectionEditor({
     access: { list: () => true, read: () => true, update: () => true },
 });
 
-const buildRuntime = (versions: Array<Record<string, unknown>>): never =>
+const generatedActions: EditorActions = {
+    saveDraft: async () => {},
+    publish: async () => {},
+    delete: async () => {},
+    create: async () => ({ id: 'new' }),
+    bulkDelete: async () => {},
+    bulkPublish: async () => {},
+    restoreVersion: async () => {},
+};
+
+const liveDoc: EditorCmsDocument = {
+    documentId: 'd1',
+    collection: 'businessData',
+    data: { legalName: 'Acme' },
+    status: 'draft',
+    updatedAt: 1_700_000_000_000,
+    latestVersionId: 'v2',
+};
+
+/**
+ * Build the runtime substrate with a Convex bridge resolving the given live
+ * document and version history — the CMSDATA-07 read seam under test.
+ *
+ * @param doc - The live document `getDocument` resolves, or `null`.
+ * @param versions - The `listVersions` history, oldest first (the Convex order).
+ * @returns The runtime, typed loosely for the page under test.
+ */
+const buildRuntime = (doc: EditorCmsDocument | null, versions: EditorCmsVersion[]): never =>
     ({
         getCtx: async () => ({
-            payload: {
-                config: { collections: [{ slug: 'businessData', versions: { drafts: true } }] },
-                findVersions: async () => ({ docs: versions }),
-            },
             user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
             tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'de', locales: ['de', 'en'] },
         }),
         toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
+        convex: {
+            getDocument: async () => doc,
+            listVersions: async () => versions,
+        },
         DocumentForm: () => null,
         Table: () => null,
         Toolbar: () => null,
@@ -61,18 +84,10 @@ describe('<EditorVersionsPage>', () => {
     it('renders an empty state when no versions exist', async () => {
         const el = await EditorVersionsPage({
             manifest,
-            runtime: buildRuntime([]),
+            runtime: buildRuntime(liveDoc, []),
             params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'de' },
-            generatedActions: {
-                saveDraft: async () => {},
-                publish: async () => {},
-                delete: async () => {},
-                create: async () => ({ id: 'new' }),
-                bulkDelete: async () => {},
-                bulkPublish: async () => {},
-                restoreVersion: async () => {},
-            },
+            generatedActions,
         });
         const { container } = render(el);
         // Plain DOM access — no jest-dom.
@@ -80,46 +95,48 @@ describe('<EditorVersionsPage>', () => {
         expect(screen.getByRole('heading', { level: 1, name: /Versions/ })).toBeDefined();
     });
 
-    it('renders one row per version', async () => {
-        const versions = [
-            { id: 'v1', updatedAt: '2026-05-15T10:00:00Z', version: { updatedBy: 'editor@test' }, latest: false },
-            { id: 'v2', updatedAt: '2026-05-15T12:00:00Z', version: { updatedBy: 'admin@test' }, latest: true },
+    it('renders an empty state when the document does not exist yet', async () => {
+        const el = await EditorVersionsPage({
+            manifest,
+            runtime: buildRuntime(null, []),
+            params: { domain: 'a.test', id: '' },
+            searchParams: { locale: 'de' },
+            generatedActions,
+        });
+        const { container } = render(el);
+        expect(container.textContent).toMatch(/no version history/i);
+    });
+
+    it('renders one row per version, newest first, marking the latest as Current', async () => {
+        const versions: EditorCmsVersion[] = [
+            { versionId: 'v1', status: 'published', createdAt: Date.UTC(2026, 4, 15, 10) },
+            { versionId: 'v2', status: 'draft', createdAt: Date.UTC(2026, 4, 15, 12) },
         ];
         const el = await EditorVersionsPage({
             manifest,
-            runtime: buildRuntime(versions),
+            runtime: buildRuntime(liveDoc, versions),
             params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'de' },
-            generatedActions: {
-                saveDraft: async () => {},
-                publish: async () => {},
-                delete: async () => {},
-                create: async () => ({ id: 'new' }),
-                bulkDelete: async () => {},
-                bulkPublish: async () => {},
-                restoreVersion: async () => {},
-            },
+            generatedActions,
         });
         const { container } = render(el);
-        expect(container.querySelectorAll('li')).toHaveLength(2);
+        const rows = container.querySelectorAll('li');
+        expect(rows).toHaveLength(2);
+        // Newest (v2 — the live doc's latestVersionId) renders first and is Current.
+        expect(rows[0]?.textContent).toContain('Current');
+        expect(rows[0]?.querySelector('button')?.hasAttribute('disabled')).toBe(true);
+        expect(rows[1]?.textContent).not.toContain('Current');
+        expect(rows[1]?.querySelector('button')?.hasAttribute('disabled')).toBe(false);
     });
 
     it('redirects to tenant.defaultLocale when searchParams.locale is missing', async () => {
         await expect(
             EditorVersionsPage({
                 manifest,
-                runtime: buildRuntime([]),
+                runtime: buildRuntime(liveDoc, []),
                 params: { domain: 'a.test', id: '' },
                 searchParams: {},
-                generatedActions: {
-                    saveDraft: async () => {},
-                    publish: async () => {},
-                    delete: async () => {},
-                    create: async () => ({ id: 'new' }),
-                    bulkDelete: async () => {},
-                    bulkPublish: async () => {},
-                    restoreVersion: async () => {},
-                },
+                generatedActions,
             }),
         ).rejects.toThrow(/NEXT_REDIRECT:.*locale=de/);
     });
@@ -127,18 +144,10 @@ describe('<EditorVersionsPage>', () => {
     it('renders the locale switcher in the header when tenant has multiple locales', async () => {
         const el = await EditorVersionsPage({
             manifest,
-            runtime: buildRuntime([]),
+            runtime: buildRuntime(liveDoc, []),
             params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'de' },
-            generatedActions: {
-                saveDraft: async () => {},
-                publish: async () => {},
-                delete: async () => {},
-                create: async () => ({ id: 'new' }),
-                bulkDelete: async () => {},
-                bulkPublish: async () => {},
-                restoreVersion: async () => {},
-            },
+            generatedActions,
         });
         const { container } = render(el);
         expect(container.querySelector('select#locale-switcher')).not.toBeNull();

@@ -25,7 +25,14 @@ export {
     fieldControlClassName,
     GroupField,
     registerCompositeFieldWidgets,
+    registerDataBoundFieldWidgets,
+    registerRichTextFieldWidget,
     registerScalarFieldWidgets,
+    type RelationshipQuery,
+    RelationshipQueryProvider,
+    RichTextEditorProvider,
+    type UploadAction,
+    UploadActionProvider,
     useEditorField,
 } from './fields';
 export { Form, type FormProps } from './form';

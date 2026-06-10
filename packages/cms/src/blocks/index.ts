@@ -5,7 +5,9 @@ export { htmlBlock } from './html';
 export { mediaGridBlock } from './media-grid';
 export { overviewBlock } from './overview';
 export {
+    allBlockDescriptors,
     allBlocks,
+    BLOCK_DESCRIPTORS,
     BLOCK_TYPES,
     type BlockType,
     blockSlugs,

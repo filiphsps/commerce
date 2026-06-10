@@ -83,6 +83,17 @@ export declare const api: {
       >;
     };
     documents: {
+      get: FunctionReference<
+        "query",
+        "public",
+        {
+          collection: string;
+          documentId?: string;
+          keyField?: string;
+          keyValue?: string;
+        },
+        any
+      >;
       save: FunctionReference<
         "mutation",
         "public",

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
 import { defineCollectionEditor } from '../manifest';
+import type { EditorCmsDocument, EditorCmsListPage } from '../runtime';
 
 const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
     mockNotFound: vi.fn(() => {
@@ -24,22 +25,36 @@ const manifest = defineCollectionEditor({
     list: { columns: [{ label: 'Title', accessor: 'title' }] },
 });
 
-const buildRuntime = (): never =>
+/**
+ * Build a bridge document row for the list mock.
+ *
+ * @param documentId - The live id.
+ * @param title - The serialized `title` field.
+ * @returns The bridge document.
+ */
+const doc = (documentId: string, title: string): EditorCmsDocument => ({
+    documentId,
+    collection: 'pages',
+    data: { title },
+    status: 'draft',
+    updatedAt: 1_700_000_000_000,
+});
+
+/**
+ * Build the runtime substrate with a Convex bridge whose `list` resolves (or
+ * rejects with) the given outcome.
+ *
+ * @param list - The bridge `list` implementation for this scenario.
+ * @returns The runtime, typed loosely for the page under test.
+ */
+const buildRuntime = (list: () => Promise<EditorCmsListPage>): never =>
     ({
         getCtx: async () => ({
-            payload: {
-                config: { collections: [] },
-                find: async () => ({
-                    docs: [
-                        { id: '1', title: 'Hello' },
-                        { id: '2', title: 'World' },
-                    ],
-                }),
-            },
             user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
             tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'fr', locales: ['fr', 'en'] },
         }),
         toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
+        convex: { list },
         Table: ({ rows }: { rows: Array<{ id: string }> }) => <div data-testid="table">{rows.length} rows</div>,
         EmptyState: ({
             label,
@@ -62,24 +77,19 @@ const buildRuntime = (): never =>
         getShellProps: async () => ({}),
     }) as never;
 
-const buildEmptyRuntime = (): never =>
-    ({
-        ...(buildRuntime() as object),
-        getCtx: async () => ({
-            payload: {
-                config: { collections: [] },
-                find: async () => ({ docs: [] }),
-            },
-            user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
-            tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'fr', locales: ['fr', 'en'] },
-        }),
-    }) as never;
+const onePage = (docs: EditorCmsDocument[]): EditorCmsListPage => ({
+    docs,
+    page: 1,
+    pageSize: 25,
+    totalDocs: docs.length,
+    totalPages: 1,
+});
 
 describe('<EditorListPage>', () => {
-    it('renders the runtime Table with the docs returned from payload.find', async () => {
+    it('renders the runtime Table with the docs returned from the Convex bounded list', async () => {
         const el = await EditorListPage({
             manifest,
-            runtime: buildRuntime(),
+            runtime: buildRuntime(async () => onePage([doc('1', 'Hello'), doc('2', 'World')])),
             params: { domain: 'a.test' },
             searchParams: { locale: 'fr' },
         });
@@ -93,7 +103,7 @@ describe('<EditorListPage>', () => {
         await expect(
             EditorListPage({
                 manifest,
-                runtime: buildRuntime(),
+                runtime: buildRuntime(async () => onePage([])),
                 params: { domain: 'a.test' },
                 searchParams: {},
             }),
@@ -111,7 +121,7 @@ describe('<EditorListPage>', () => {
         });
         const el = await EditorListPage({
             manifest: manifestWithEmpty,
-            runtime: buildEmptyRuntime(),
+            runtime: buildRuntime(async () => onePage([])),
             params: { domain: 'a.test' },
             searchParams: { locale: 'fr' },
         });
@@ -123,12 +133,56 @@ describe('<EditorListPage>', () => {
     it('falls back to the table when docs are empty but manifest.list.emptyState is absent', async () => {
         const el = await EditorListPage({
             manifest, // no emptyState
-            runtime: buildEmptyRuntime(),
+            runtime: buildRuntime(async () => onePage([])),
             params: { domain: 'a.test' },
             searchParams: { locale: 'fr' },
         });
         const { getByTestId, queryByTestId } = render(el);
         expect(getByTestId('table').textContent).toBe('0 rows');
         expect(queryByTestId('empty-state')).toBeNull();
+    });
+
+    it('refuses an out-of-range page with notFound (typed CMS_LIST_PAGE_OUT_OF_RANGE)', async () => {
+        await expect(
+            EditorListPage({
+                manifest,
+                runtime: buildRuntime(async () => {
+                    throw Object.assign(new TypeError('page out of range'), {
+                        data: { code: 'CMS_LIST_PAGE_OUT_OF_RANGE' },
+                    });
+                }),
+                params: { domain: 'a.test' },
+                searchParams: { locale: 'fr', page: '99' },
+            }),
+        ).rejects.toThrow('NEXT_NOT_FOUND');
+    });
+
+    it('surfaces a friendly bounded-list notice on CMS_BOUNDED_SCAN_EXCEEDED instead of crashing', async () => {
+        const el = await EditorListPage({
+            manifest,
+            runtime: buildRuntime(async () => {
+                throw Object.assign(new TypeError('scan exceeded'), {
+                    data: { code: 'CMS_BOUNDED_SCAN_EXCEEDED' },
+                });
+            }),
+            params: { domain: 'a.test' },
+            searchParams: { locale: 'fr' },
+        });
+        const { getByTestId, queryByTestId } = render(el);
+        expect(getByTestId('bounded-list-notice').textContent).toContain('too large to list');
+        expect(queryByTestId('table')).toBeNull();
+    });
+
+    it('rethrows bridge errors without a recognized code', async () => {
+        await expect(
+            EditorListPage({
+                manifest,
+                runtime: buildRuntime(async () => {
+                    throw new Error('boom');
+                }),
+                params: { domain: 'a.test' },
+                searchParams: { locale: 'fr' },
+            }),
+        ).rejects.toThrow('boom');
     });
 });

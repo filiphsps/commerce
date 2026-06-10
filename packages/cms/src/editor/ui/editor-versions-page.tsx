@@ -1,19 +1,23 @@
 import 'server-only';
 
+import { MissingConvexBridgeError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
-import { headers as getHeaders } from 'next/headers';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
-import { getRequestLanguage } from 'payload';
-import { parseCookies } from 'payload/shared';
 import type { ReactNode } from 'react';
-import type { EditorActions } from '../actions';
+import { documentTargetFor, type EditorActions } from '../actions';
 import type { CollectionEditorManifest } from '../manifest';
-import type { EditorRuntime } from '../runtime';
+import type { EditorCmsVersion, EditorRuntime } from '../runtime';
 import { docUrlSegment } from '../url';
 import { localeLabel } from './locale-label';
 import { LocaleSwitcher } from './locale-switcher';
+
+/** The UI language locale labels resolve in (see `editor-edit-page.tsx`). */
+const UI_LANGUAGE = 'en';
+
+/** Maximum versions rendered, newest first — mirrors the legacy `limit: 50` read. */
+const MAX_VERSIONS = 50;
 
 /**
  * Props for {@link EditorVersionsPage}.
@@ -31,12 +35,16 @@ export type EditorVersionsPageProps<TSlug extends CollectionSlug = CollectionSlu
 
 /**
  * Server Component that renders the version history list for a single
- * document. Fetches up to 50 past versions sorted by `updatedAt` descending
- * and renders each with a restore button wired to the generated
- * `restoreVersion` action.
+ * document. Resolves the document through the bridge's Convex read
+ * (`cms/documents:get`), lists its snapshots via `cms/versions:list`
+ * (CMSDATA-07), and renders each — newest first, capped at
+ * {@link MAX_VERSIONS} — with a restore button wired to the generated
+ * `restoreVersion` action (Convex `cms/versions:restore`, which
+ * re-materializes the snapshot as a new draft).
  *
  * @param props - {@link EditorVersionsPageProps} carrying manifest, runtime, params, and generated actions.
  * @returns The rendered version list with a back-link and locale switcher.
+ * @throws {MissingConvexBridgeError} When the runtime carries no Convex bridge.
  */
 export async function EditorVersionsPage<TSlug extends CollectionSlug>({
     manifest,
@@ -48,10 +56,12 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
     const { domain, id } = params;
     const ctx = await runtime.getCtx(domain);
     if (!(await manifest.access.read(runtime.toAccessCtx(ctx, domain)))) notFound();
+    if (!runtime.convex) {
+        throw new MissingConvexBridgeError(manifest.collection);
+    }
 
     // ── Locale resolution ── (mirrors EditorEditPage)
-    const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;
-    const tenantDefault = ctx.tenant?.defaultLocale ?? localization?.defaultLocale ?? 'en-US';
+    const tenantDefault = ctx.tenant?.defaultLocale ?? 'en-US';
     const allowed = ctx.tenant?.locales ?? [tenantDefault];
     const requested = searchParams.locale;
     const valid = typeof requested === 'string' && allowed.includes(requested);
@@ -68,30 +78,23 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
 
     const locale = requested as string;
 
-    // Tenant-scoped `findVersions` uses the `version.tenant` path because
-    // versions are stored separately and embed the parent's tenant ref.
-    const where =
-        manifest.tenant.kind === 'scoped' && ctx.tenant ? { 'version.tenant': { equals: ctx.tenant.id } } : undefined;
-
-    const { docs } = await ctx.payload.findVersions({
-        collection: manifest.collection as never,
-        where: where as never,
-        sort: '-updatedAt',
-        limit: 50,
-        user: ctx.user as never,
-        overrideAccess: false,
+    // The versions query addresses by live document id, so keyField/singleton
+    // routes resolve their document first — through the same target mapping
+    // the save actions use.
+    const doc = await runtime.convex.getDocument({
+        collection: String(manifest.collection),
+        ...documentTargetFor(manifest, id),
     });
+    const history: EditorCmsVersion[] = doc ? await runtime.convex.listVersions({ documentId: doc.documentId }) : [];
+    // `cms/versions:list` returns oldest first; the page renders newest first.
+    const versions = history.slice(-MAX_VERSIONS).reverse();
 
     const backHref =
         `${manifest.routes.basePath(domain)}${docUrlSegment(manifest, id)}?locale=${encodeURIComponent(locale)}` as Route;
 
-    const headers = await getHeaders();
-    const cookies = parseCookies(headers);
-    const language = getRequestLanguage({ config: ctx.payload.config, cookies, headers });
-
-    const localeOptions = (ctx.tenant?.locales ?? [tenantDefault]).map((code) => ({
+    const localeOptions = allowed.map((code) => ({
         code,
-        label: localeLabel(code, language),
+        label: localeLabel(code, UI_LANGUAGE),
     }));
 
     return (
@@ -113,40 +116,25 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
                 </nav>
             </div>
 
-            {docs.length === 0 ? (
+            {versions.length === 0 ? (
                 <p className="text-gray-500">No version history yet.</p>
             ) : (
                 <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200">
-                    {docs.map((v) => {
-                        const isLatest = (v as { latest?: boolean }).latest === true;
-                        const versionData = (v as { version?: Record<string, unknown> }).version ?? {};
-                        const updatedBy = versionData.updatedBy;
-                        const authorLabel =
-                            typeof updatedBy === 'object' && updatedBy !== null && 'email' in updatedBy
-                                ? String((updatedBy as { email: unknown }).email)
-                                : typeof updatedBy === 'string' && updatedBy.length > 0
-                                  ? updatedBy
-                                  : 'Unknown';
-                        const restoreThis = generatedActions.restoreVersion.bind(
-                            null,
-                            domain,
-                            id,
-                            String((v as { id: string }).id),
-                        );
+                    {versions.map((version) => {
+                        const isLatest = doc?.latestVersionId === version.versionId;
+                        const createdAt = new Date(version.createdAt);
+                        const restoreThis = generatedActions.restoreVersion.bind(null, domain, id, version.versionId);
 
                         return (
-                            <li
-                                key={String((v as { id: string }).id)}
-                                className="flex items-center justify-between px-4 py-3"
-                            >
+                            <li key={version.versionId} className="flex items-center justify-between px-4 py-3">
                                 <div className="flex flex-col gap-0.5">
                                     <time
-                                        dateTime={(v as { updatedAt: string }).updatedAt}
+                                        dateTime={createdAt.toISOString()}
                                         className="font-medium text-gray-900 text-sm"
                                     >
-                                        {new Date((v as { updatedAt: string }).updatedAt).toLocaleString()}
+                                        {createdAt.toLocaleString()}
                                     </time>
-                                    <span className="text-gray-500 text-xs">{authorLabel}</span>
+                                    <span className="text-gray-500 text-xs capitalize">{version.status}</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {isLatest && (

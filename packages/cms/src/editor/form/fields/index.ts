@@ -2,11 +2,12 @@
  * Field widgets for the native CMS editor — the Payload field-component
  * replacement. Each widget is a `'use client'` renderer bound to the form
  * runtime, wired into a {@link FieldRegistry} via {@link registerScalarFieldWidgets}
- * (text/textarea/select/checkbox/number/date/email/json/code) and
- * {@link registerCompositeFieldWidgets} (group/array/collapsible/blocks). The
- * relationship/upload widgets land in CMSFORM-06. The condition-driven
- * {@link ConditionalField} wrapper is orthogonal to descriptor kind, so it is
- * exported but not self-registered.
+ * (text/textarea/select/checkbox/number/date/email/json/code),
+ * {@link registerCompositeFieldWidgets} (group/array/collapsible/blocks),
+ * {@link registerDataBoundFieldWidgets} (relationship/upload), and
+ * {@link registerRichTextFieldWidget} (rich-text over the `json` kind). The
+ * condition-driven {@link ConditionalField} wrapper is orthogonal to
+ * descriptor kind, so it is exported but not self-registered.
  */
 
 import type { FieldRegistry } from '../registry';
@@ -33,6 +34,24 @@ export { ConditionalField } from './conditional';
 export { FieldShell, type FieldShellProps, fieldControlClassName, useEditorField } from './field-shell';
 export { GroupField } from './group';
 export {
+    registerDataBoundFieldWidgets,
+    RelationshipField,
+    type RelationshipOption,
+    type RelationshipQuery,
+    RelationshipQueryProvider,
+    useRelationshipOptions,
+} from './relationship';
+export {
+    EMPTY_PROSE_MIRROR_DOC,
+    type ProseMirrorDoc,
+    registerRichTextFieldWidget,
+    type RichTextEditorComponent,
+    RichTextEditorProvider,
+    type RichTextEditorProps,
+    RichTextField,
+    useRichTextEditor,
+} from './rich-text';
+export {
     CheckboxField,
     CodeField,
     DateField,
@@ -43,6 +62,7 @@ export {
     TextareaField,
     TextField,
 } from './scalar-fields';
+export { type UploadAction, UploadActionProvider, type UploadedMedia, UploadField, useUploadAction } from './upload';
 
 /**
  * Register the nine scalar leaf widgets into a field registry. Registration is

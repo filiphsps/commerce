@@ -35,13 +35,14 @@ export type EditorActions = {
  * Maps the editor route's `id` segment onto the bridge's document target using the manifest's
  * tenant kind and key field: singleton kinds carry no target (the tenant's one row IS the target,
  * resolved server-side), keyField-routed collections address by content key, and everything else
- * addresses by document id.
+ * addresses by document id. Shared by the action factory below and the shell pages' bridge reads
+ * (`getDocument`), so the read and write paths can never address differently.
  *
  * @param manifest - The collection's editor manifest (tenant kind + optional `routes.keyField`).
  * @param id - The URL id segment — a document id, a key value, or `''` for singletons.
- * @returns The bridge target for the save-shaped calls.
+ * @returns The bridge target for the save-shaped and read calls.
  */
-const targetFor = (manifest: CollectionEditorManifest, id: string): EditorDocumentTarget => {
+export const documentTargetFor = (manifest: CollectionEditorManifest, id: string): EditorDocumentTarget => {
     if (manifest.tenant.kind === 'tenant-singleton' || manifest.tenant.kind === 'singleton-by-domain') {
         return {};
     }
@@ -109,7 +110,12 @@ export const createCollectionEditorActions = (
             // `revalidatePath` on the edit URL re-seeds `<Form>`'s `initialState` mid-keystroke,
             // and the Convex draft save schedules no storefront revalidation either (BRIDGE-05
             // arms only on the published transition).
-            await bridge().saveDraft({ collection: manifest.collection, data, locale, ...targetFor(manifest, id) });
+            await bridge().saveDraft({
+                collection: manifest.collection,
+                data,
+                locale,
+                ...documentTargetFor(manifest, id),
+            });
         },
         async publish(domain, id, formData, locale) {
             await assertAccess(domain, manifest.access.update);
@@ -118,7 +124,7 @@ export const createCollectionEditorActions = (
                 collection: manifest.collection,
                 data,
                 locale,
-                ...targetFor(manifest, id),
+                ...documentTargetFor(manifest, id),
             });
             // Storefront caches bust via the Convex publish hook; this only refreshes the admin's
             // own manifest-declared paths (list pages, edit views) for the operator.

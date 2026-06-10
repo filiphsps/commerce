@@ -1,7 +1,22 @@
 'use client';
 
-import { RenderFields, useConfig } from '@payloadcms/ui';
-import { isHiddenEditorField } from '../hidden-fields';
+import { MissingConvexBridgeError } from '@nordcom/commerce-errors';
+import { useMemo } from 'react';
+
+import { editorCollectionSchema } from '../collection-fields';
+import {
+    createFieldRegistry,
+    type FieldRegistry,
+    registerCompositeFieldWidgets,
+    registerDataBoundFieldWidgets,
+    registerRichTextFieldWidget,
+    registerScalarFieldWidgets,
+    type RelationshipQuery,
+    RelationshipQueryProvider,
+    RenderFields,
+    type UploadAction,
+    UploadActionProvider,
+} from '../form';
 
 /**
  * Props for {@link EditorFields}.
@@ -10,46 +25,83 @@ import { isHiddenEditorField } from '../hidden-fields';
  * <EditorFields collection="pages" />
  */
 export type EditorFieldsProps = {
-    /** Payload collection slug. Must match the manifest's collection. */
+    /** Collection slug; selects the descriptor schema from `collection-fields.ts`. */
     collection: string;
     /**
-     * Named top-level fields to drop from the RENDERED tree only. Unlike
-     * `isHiddenEditorField`, this does NOT strip the field from `FormState`,
-     * so its dotted paths stay live for `useField`/save even when another
-     * surface (e.g. the theme editor) owns the UI for them.
+     * Named top-level fields to drop from the RENDERED tree only. Form state is
+     * seeded from the document data independently of the rendered descriptors,
+     * so an omitted field's dotted paths stay live for `useField`/save even
+     * when another surface (e.g. the theme editor) owns the UI for them.
      */
     omitPaths?: string[];
 };
 
 /**
- * Generic field renderer for any Payload collection. Reads the collection
- * config via `useConfig()` (provided by the shell's `<ConfigProvider>`) and
- * delegates to Payload's `<RenderFields>`. Drops every field
- * `isHiddenEditorField` flags so the rendered tree matches the form state
- * `buildCmsFormState` strips on the server.
+ * Placeholder option source for relationship pickers until the admin host
+ * wires the live Convex content-table query (CMSGATE-02): every related
+ * collection lists zero options, so the picker renders empty rather than
+ * crashing on the missing provider.
+ */
+const emptyRelationshipQuery: RelationshipQuery = () => [];
+
+/**
+ * Placeholder upload transport until the admin host wires the Convex media
+ * upload flow (CMSGATE-02). The widget catches the rejection and surfaces it
+ * inline, so picking a file degrades to a visible error instead of a crash.
  *
- * Must be rendered inside `<PayloadFieldShell>` (for `useConfig`) and inside
- * Payload's `<Form>` (for `RenderFields` to read form state).
+ * @throws {MissingConvexBridgeError} Always, until the media transport is wired.
+ */
+const unwiredUploadAction: UploadAction = async () => {
+    throw new MissingConvexBridgeError('media');
+};
+
+/**
+ * Build the field registry for one collection surface: the scalar leaves, the
+ * composite containers, the data-bound relationship/upload widgets, and — on
+ * content surfaces only — the rich-text widget claiming the `json` kind
+ * (registration is last-write-wins, so settings surfaces keep the raw JSON
+ * editor).
  *
- * @param props.collection - Payload collection slug to render fields for.
+ * @param richText - Whether `json` descriptors render through the rich-text widget.
+ * @returns The populated registry.
+ */
+function buildEditorFieldRegistry(richText: boolean): FieldRegistry {
+    const registry = createFieldRegistry();
+    registerScalarFieldWidgets(registry);
+    registerCompositeFieldWidgets(registry);
+    registerDataBoundFieldWidgets(registry);
+    if (richText) registerRichTextFieldWidget(registry);
+    return registry;
+}
+
+/**
+ * Generic field surface for any CMS collection — the native renderer that
+ * replaced Payload's `<RenderFields>` (CMSDATA-07). Resolves the collection's
+ * descriptor schema from `collection-fields.ts` (a client-side import, so
+ * descriptor `condition` functions never cross the RSC boundary) and walks it
+ * through the CMSFORM widget registry. Plugin-era hidden fields (`tenant`,
+ * `_status`) need no filtering: the descriptor schemas never model them.
+ *
+ * Must be rendered inside the native `<Form>` — every widget binds its dotted
+ * path through `useEditorField`.
+ *
+ * @param props.collection - Collection slug to render fields for.
  * @param props.omitPaths - Named top-level fields to skip in the rendered tree
- *   without touching their `FormState` entries.
+ *   without touching their form-state entries.
+ * @returns The rendered descriptor tree.
  */
 export function EditorFields({ collection, omitPaths }: EditorFieldsProps) {
-    const { getEntityConfig } = useConfig();
-    const config = getEntityConfig({ collectionSlug: collection });
+    const schema = editorCollectionSchema(collection);
+    const registry = useMemo(() => buildEditorFieldRegistry(schema.richText === true), [schema.richText]);
+
     const omit = new Set(omitPaths ?? []);
-    const fields = (config?.fields ?? []).filter(
-        (f) => !isHiddenEditorField(f) && !('name' in f && typeof f.name === 'string' && omit.has(f.name)),
-    );
+    const fields = schema.fields.filter((field) => !('name' in field && omit.has(field.name)));
 
     return (
-        <RenderFields
-            fields={fields}
-            parentIndexPath=""
-            parentPath=""
-            parentSchemaPath={collection}
-            permissions={true}
-        />
+        <RelationshipQueryProvider query={emptyRelationshipQuery}>
+            <UploadActionProvider action={unwiredUploadAction}>
+                <RenderFields registry={registry} fields={fields} parentPath="" />
+            </UploadActionProvider>
+        </RelationshipQueryProvider>
     );
 }

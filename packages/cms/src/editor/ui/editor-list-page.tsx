@@ -1,14 +1,15 @@
 import 'server-only';
 
-import { MissingListConfigError } from '@nordcom/commerce-errors';
+import { MissingConvexBridgeError, MissingListConfigError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
 
+import { bridgeErrorCode, EditorBridgeErrorCode } from '../bridge-errors';
 import type { CollectionEditorManifest } from '../manifest';
-import type { EditorRuntime } from '../runtime';
+import type { EditorCmsListPage, EditorRuntime } from '../runtime';
 
 /**
  * Props for {@link EditorListPage}.
@@ -27,16 +28,18 @@ export type EditorListPageProps<TSlug extends CollectionSlug = CollectionSlug> =
 
 /**
  * Server Component that renders the collection list view. Resolves the locale
- * (redirecting when absent), enforces list access, fetches a page-bounded doc
- * list, surfaces the aggregate `totalDocs` count, and renders the runtime's
- * `Table` (or `EmptyState` when zero docs). A page requested past the last
- * addressable page is refused with `notFound()` rather than rendering a
- * silently-empty window — the UI mirror of the bounded list query's typed
- * `CMS_LIST_PAGE_OUT_OF_RANGE` refusal.
+ * (redirecting when absent), enforces list access, fetches one page through
+ * the bridge's bounded Convex list (`cms/list:list` — CMSDATA-11), surfaces
+ * the aggregate `totalDocs` count, and renders the runtime's `Table` (or
+ * `EmptyState` when zero docs). Two typed refusals from the bounded read map
+ * to UI states instead of crashes: a page past the last addressable page is
+ * refused with `notFound()`, and a tenant whose collection crosses the scan
+ * budget gets a friendly bounded-list notice.
  *
  * @param props - {@link EditorListPageProps} carrying manifest, runtime, params, and search params.
  * @returns The rendered list page with a page header, document count, optional new-doc link, and table.
  * @throws {MissingListConfigError} When the manifest has no `list` config.
+ * @throws {MissingConvexBridgeError} When the runtime carries no Convex bridge.
  */
 export async function EditorListPage<TSlug extends CollectionSlug>({
     manifest,
@@ -51,10 +54,12 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
     if (!manifest.list) {
         throw new MissingListConfigError(manifest.collection);
     }
+    if (!runtime.convex) {
+        throw new MissingConvexBridgeError(manifest.collection);
+    }
 
     // ── Locale resolution ── (mirrors EditorEditPage)
-    const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;
-    const tenantDefault = ctx.tenant?.defaultLocale ?? localization?.defaultLocale ?? 'en-US';
+    const tenantDefault = ctx.tenant?.defaultLocale ?? 'en-US';
     const allowed = ctx.tenant?.locales ?? [tenantDefault];
     const requested = searchParams.locale;
     const valid = typeof requested === 'string' && allowed.includes(requested);
@@ -69,53 +74,74 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
         redirect(`${base}?${next.toString()}` as Route);
     }
 
-    const where = manifest.tenant.kind === 'scoped' && ctx.tenant ? { tenant: { equals: ctx.tenant.id } } : undefined;
-
     const page = Number(searchParams.page) || 1;
-    const { docs, totalDocs, totalPages } = await ctx.payload.find({
-        collection: manifest.collection as never,
-        where: where as never,
-        sort: manifest.list.sortBy ?? '-updatedAt',
-        limit: 25,
-        page,
-        user: ctx.user as never,
-        overrideAccess: false,
-    });
 
-    // Refuse a page past the last addressable page instead of rendering an empty window — the UI
-    // counterpart to the bounded list query's `CMS_LIST_PAGE_OUT_OF_RANGE`. Guarded on a known,
-    // positive page count so an unpaginated source (no `totalPages`) renders untouched.
-    if (typeof totalPages === 'number' && totalPages > 0 && page > totalPages) {
-        notFound();
+    let result: EditorCmsListPage | null = null;
+    let scanExceeded = false;
+    try {
+        result = await runtime.convex.list({ collection: String(manifest.collection), page });
+    } catch (error) {
+        const code = bridgeErrorCode(error);
+        // The UI counterparts of the bounded list's typed refusals: a page past
+        // the last addressable page reads as missing, and a budget-crossing
+        // tenant gets a notice instead of a leaked engine error.
+        if (code === EditorBridgeErrorCode.PAGE_OUT_OF_RANGE) notFound();
+        if (code !== EditorBridgeErrorCode.BOUNDED_SCAN_EXCEEDED) throw error;
+        scanExceeded = true;
     }
+
+    const header = (
+        <runtime.PageHeader
+            title={manifest.routes.label.plural}
+            breadcrumbs={manifest.routes.breadcrumbs?.({ domain }) ?? []}
+            actions={
+                manifest.access.create ? (
+                    <Link
+                        href={`${manifest.routes.basePath(domain)}new/` as Route}
+                        // Inline primary-button classes: this cms package cannot
+                        // import the admin app's `<Button>` (cross-boundary). When
+                        // we move the action slot into the runtime, this string
+                        // can collapse into `runtime.Button` or equivalent.
+                        className="inline-flex h-9 items-center gap-2 rounded-md border-2 border-primary bg-primary px-4 font-bold text-primary-foreground text-sm uppercase tracking-wide hover:bg-primary/90"
+                    >
+                        New {manifest.routes.label.singular}
+                    </Link>
+                ) : null
+            }
+        />
+    );
+
+    if (scanExceeded || result === null) {
+        return (
+            <>
+                {header}
+                <p role="alert" data-testid="bounded-list-notice" className="text-muted-foreground text-sm">
+                    This collection is too large to list safely right now. Open a document directly via its URL, or
+                    contact support to prune the collection.
+                </p>
+            </>
+        );
+    }
+
+    // Project the bridge documents into table rows: the serialized field map
+    // becomes the cell source, with the live id/status/timestamp layered on
+    // top so column accessors like `updatedAt` and `_status` keep resolving.
+    const rows = result.docs.map((doc) => ({
+        ...doc.data,
+        id: doc.documentId,
+        _status: doc.status,
+        updatedAt: new Date(doc.updatedAt).toISOString(),
+    }));
 
     const keyField = manifest.routes.keyField ?? 'id';
     return (
         <>
-            <runtime.PageHeader
-                title={manifest.routes.label.plural}
-                breadcrumbs={manifest.routes.breadcrumbs?.({ domain }) ?? []}
-                actions={
-                    manifest.access.create ? (
-                        <Link
-                            href={`${manifest.routes.basePath(domain)}new/` as Route}
-                            // Inline primary-button classes: this cms package cannot
-                            // import the admin app's `<Button>` (cross-boundary). When
-                            // we move the action slot into the runtime, this string
-                            // can collapse into `runtime.Button` or equivalent.
-                            className="inline-flex h-9 items-center gap-2 rounded-md border-2 border-primary bg-primary px-4 font-bold text-primary-foreground text-sm uppercase tracking-wide hover:bg-primary/90"
-                        >
-                            New {manifest.routes.label.singular}
-                        </Link>
-                    ) : null
-                }
-            />
-            {typeof totalDocs === 'number' ? (
-                <p className="text-muted-foreground text-sm">
-                    {totalDocs} {totalDocs === 1 ? manifest.routes.label.singular : manifest.routes.label.plural}
-                </p>
-            ) : null}
-            {docs.length === 0 && manifest.list.emptyState ? (
+            {header}
+            <p className="text-muted-foreground text-sm">
+                {result.totalDocs}{' '}
+                {result.totalDocs === 1 ? manifest.routes.label.singular : manifest.routes.label.plural}
+            </p>
+            {rows.length === 0 && manifest.list.emptyState ? (
                 <runtime.EmptyState
                     label={manifest.list.emptyState.label}
                     description={manifest.list.emptyState.description}
@@ -124,7 +150,7 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
                 />
             ) : (
                 <runtime.Table
-                    rows={docs as Array<Record<string, unknown> & { id: string | number }>}
+                    rows={rows}
                     columns={manifest.list.columns}
                     getRowHref={(row) => `${manifest.routes.basePath(domain)}${String(row[keyField])}/` as Route}
                     bulkActions={bulkActions}

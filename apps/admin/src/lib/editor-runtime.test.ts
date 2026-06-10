@@ -33,6 +33,9 @@ vi.mock('./editor-convex-bridge', () => ({
         bulkDelete: vi.fn(),
         bulkPublish: vi.fn(),
         restoreVersion: vi.fn(),
+        list: vi.fn(),
+        getDocument: vi.fn(),
+        listVersions: vi.fn(),
     },
 }));
 vi.mock('./get-cms-shell-props', () => ({
@@ -57,7 +60,7 @@ describe('editorRuntime', () => {
         expect(typeof editorRuntime.PageHeader).toBe('function');
     });
 
-    it('binds the Convex bridge with all seven editor write methods (CMSDATA-06)', () => {
+    it('binds the Convex bridge with the seven write methods (CMSDATA-06) and three reads (CMSDATA-07)', () => {
         expect(editorRuntime.convex).toBeDefined();
         for (const method of [
             'saveDraft',
@@ -67,6 +70,9 @@ describe('editorRuntime', () => {
             'bulkDelete',
             'bulkPublish',
             'restoreVersion',
+            'list',
+            'getDocument',
+            'listVersions',
         ] as const) {
             expect(typeof editorRuntime.convex?.[method]).toBe('function');
         }
