@@ -8,7 +8,7 @@ import { toFieldConfigs } from '../field-config-bridge';
  * Payload upload config below and the admin upload action's pre-check; the Convex storage layer
  * (`packages/convex/convex/cms/media.ts`) MIRRORS this list rather than importing it, because this
  * module sits behind the payload-coupled `collections` barrel, which is off the Convex isolate's
- * bundle surface — keep the two in sync.
+ * bundle surface — `media-mime-drift.test.ts` fails CI when the mirror diverges.
  */
 export const MEDIA_MIME_TYPES = ['image/*', 'video/mp4', 'application/pdf'] as const;
 

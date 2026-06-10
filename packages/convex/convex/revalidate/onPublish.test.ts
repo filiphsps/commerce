@@ -50,7 +50,7 @@ const dispatchSaveRef = makeFunctionReference<'mutation'>('revalidate/onPublish.
  * Hand-built module map (see `revalidate/idempotency.test.ts` for the rationale): the default
  * `import.meta.glob` convex-test derives excludes the self-importing test module, so the real
  * `revalidate/onPublish` module is mapped explicitly (resolving the `onPublish` system mutation it
- * schedules a notify from), the local `dispatchSave` fixture is mapped under the test path, and the
+ * schedules the durable delivery from), the local `dispatchSave` fixture is mapped under the test path, and the
  * dummy `_generated` key only anchors convex-test's shared `/convex/` module-root detection.
  */
 const modules = {
@@ -102,8 +102,8 @@ afterEach(() => {
     vi.useRealTimers();
 });
 
-describe('onPublish (publish transition → single coalesced notify)', () => {
-    it('schedules exactly one notify after the debounce window and stamps its handle on the coalesced row', async () => {
+describe('onPublish (publish transition → single coalesced durable delivery)', () => {
+    it('schedules exactly one durable delivery after the debounce window and stamps its handle on the coalesced row', async () => {
         const t = convexTest(schema, modules);
         const shopId = await seedShop(t);
 
@@ -121,15 +121,17 @@ describe('onPublish (publish transition → single coalesced notify)', () => {
             'cms',
         ]);
 
+        // The debounced hop targets the retrier entry point (`enqueueDelivery`), never `notify`
+        // directly — attempt #1 must already run under the bounded-backoff durability policy.
         const scheduled = await t.run((ctx) => ctx.db.system.query('_scheduled_functions').collect());
         expect(scheduled).toHaveLength(1);
-        expect(scheduled[0]?.name).toBe('revalidate/notify:notify');
+        expect(scheduled[0]?.name).toBe('revalidate/delivery:enqueueDelivery');
         expect(scheduled[0]?.args[0]?.pendingId).toBe(pending[0]?._id);
         expect(scheduled[0]?.scheduledTime).toBe(NOW + REVALIDATE_DEBOUNCE_MS);
         expect(pending[0]?.scheduledJobId).toBe(scheduled[0]?._id);
     });
 
-    it('collapses a burst of 12 rapid same-collection publishes into a single notify', async () => {
+    it('collapses a burst of 12 rapid same-collection publishes into a single durable delivery', async () => {
         const t = convexTest(schema, modules);
         const shopId = await seedShop(t);
 
@@ -150,7 +152,7 @@ describe('onPublish (publish transition → single coalesced notify)', () => {
 
         const scheduled = await t.run((ctx) => ctx.db.system.query('_scheduled_functions').collect());
         expect(scheduled).toHaveLength(1);
-        expect(scheduled[0]?.name).toBe('revalidate/notify:notify');
+        expect(scheduled[0]?.name).toBe('revalidate/delivery:enqueueDelivery');
     });
 
     it('treats a redelivered eventId as a verified no-op, even across collections', async () => {

@@ -24,7 +24,9 @@ export const CmsMediaErrorCode = {
  * `@nordcom/commerce-cms`'s `collections/media.ts` (the Payload upload collection's `mimeTypes`) —
  * mirrored rather than imported because that module sits behind the payload-coupled `collections`
  * barrel, which is off the Convex isolate's bundle surface (the same pattern as `cms/secrets.ts`'s
- * `SHOP_SECRET_PATHS` mirror).
+ * `SHOP_SECRET_PATHS` mirror). The cms-side drift guard
+ * (`packages/cms/src/collections/media-mime-drift.test.ts`) pins the two lists equal, so a
+ * divergence fails CI instead of silently rejecting (or admitting) uploads on one side only.
  */
 export const MEDIA_MIME_ALLOWLIST = ['image/*', 'video/mp4', 'application/pdf'] as const;
 

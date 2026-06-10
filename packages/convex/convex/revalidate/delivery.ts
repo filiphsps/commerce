@@ -46,7 +46,9 @@ const retrier = new ActionRetrier(components.actionRetrier, DELIVERY_RETRY_OPTIO
  * Durable entry point for delivering a coalesced revalidation window: schedules `revalidate/notify`
  * under the action-retrier so a transient non-2xx storefront response is retried with bounded
  * exponential backoff instead of dropping the cache bust. Replaces a bare `scheduler.runAfter(notify)` —
- * the publish path (BRIDGE-05) arms a window's single delivery through this function. A context row is
+ * both producers route here: the publish path (`revalidate/onPublish.ts`, BRIDGE-05) schedules this as
+ * its debounced delivery so even the FIRST attempt runs under the retrier, and the reconcile cron
+ * (`revalidate/reconcile.ts`, BRIDGE-08) replays lost windows through it. A context row is
  * recorded against the retrier `runId` so {@link onDeliveryComplete} can dead-letter with the full
  * delivery context if every attempt is exhausted (the retrier's `onComplete` callback is handed only the
  * `runId`, never the action's arguments). The context insert and `retrier.run` commit in the same

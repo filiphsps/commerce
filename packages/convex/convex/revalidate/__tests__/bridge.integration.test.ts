@@ -18,9 +18,9 @@ import { deriveRevalidateTags } from '../tags';
 const TRUSTED_ISSUER = 'https://admin.test.nordcom.io';
 
 /**
- * Fixed wall clock for every case, so a scheduled function's `scheduledTime` and the delivered
- * payload's `ts` are exact, assertable functions of {@link REVALIDATE_DEBOUNCE_MS} rather than
- * wobbling real-time deltas.
+ * Fixed wall clock for every case, so a scheduled function's `scheduledTime` is an exact, assertable
+ * function of {@link REVALIDATE_DEBOUNCE_MS} (and the delivered payload's `ts` a bounded one — the
+ * action-retrier owns the attempt's exact firing time) rather than a wobbling real-time delta.
  */
 const NOW = 1_700_000_000_000;
 
@@ -231,6 +231,7 @@ afterEach(() => {
 describe('GATE G3 — publish → debounce → notify → signed delivery (exit criterion 1)', () => {
     it('delivers a real CMS publish end to end and emits exactly the signed payload the storefront route verifies', async () => {
         const t = convexTest(schema, modules);
+        registerActionRetrier(t);
         await seedTenant(t, 'op@gate.example.com', 'legacy-gate');
         const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|op', email: 'op@gate.example.com' });
 
@@ -258,17 +259,20 @@ describe('GATE G3 — publish → debounce → notify → signed delivery (exit 
         expect(pending[0]?.tenantId).toBe('legacy-gate');
         expect(pending[0]?.tags).toEqual(expectedTags);
 
-        // ...and armed the single debounced notify, its handle stamped back onto the window.
-        const notifyJobs = (await scheduledJobs(t)).filter(
-            (job) => job.name === 'revalidate/notify:notify' && job.state.kind === 'pending',
+        // ...and armed the single debounced DURABLE delivery — the retrier entry point, never a bare
+        // notify, so attempt #1 already runs under the bounded-backoff policy — its handle stamped
+        // back onto the window.
+        const deliveryJobs = (await scheduledJobs(t)).filter(
+            (job) => job.name === 'revalidate/delivery:enqueueDelivery' && job.state.kind === 'pending',
         );
-        expect(notifyJobs).toHaveLength(1);
-        expect(notifyJobs[0]?.scheduledTime).toBe(NOW + REVALIDATE_DEBOUNCE_MS);
-        expect(notifyJobs[0]?.args[0]?.pendingId).toBe(pending[0]?._id);
-        expect(pending[0]?.scheduledJobId).toBe(notifyJobs[0]?._id);
+        expect(deliveryJobs).toHaveLength(1);
+        expect(deliveryJobs[0]?.scheduledTime).toBe(NOW + REVALIDATE_DEBOUNCE_MS);
+        expect(deliveryJobs[0]?.args[0]?.pendingId).toBe(pending[0]?._id);
+        expect(pending[0]?.scheduledJobId).toBe(deliveryJobs[0]?._id);
+        expect((await scheduledJobs(t)).filter((job) => job.name === 'revalidate/notify:notify')).toHaveLength(0);
 
         vi.advanceTimersByTime(REVALIDATE_DEBOUNCE_MS);
-        await t.finishInProgressScheduledFunctions();
+        await t.finishAllScheduledFunctions(vi.runAllTimers);
 
         // One POST to the tenant's storefront route — the HTTP boundary the Next side consumes.
         expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -287,7 +291,9 @@ describe('GATE G3 — publish → debounce → notify → signed delivery (exit 
             ts: number;
         };
 
-        // The canonical fixed-key-order body the verifier re-derives, byte for byte.
+        // The canonical fixed-key-order body the verifier re-derives, byte for byte. `ts` is the
+        // attempt's wall clock: the action-retrier owns the attempt's exact scheduling, so it lands AT
+        // or AFTER the debounce boundary rather than being an exact function of the debounce alone.
         expect(Object.keys(parsed)).toEqual(['collection', 'eventId', 'legacyShopId', 'tags', 'tenantId', 'ts']);
         expect(sentBody).toBe(
             JSON.stringify({
@@ -296,7 +302,7 @@ describe('GATE G3 — publish → debounce → notify → signed delivery (exit 
                 legacyShopId: 'legacy-gate',
                 tags: expectedTags,
                 tenantId: 'legacy-gate',
-                ts: NOW + REVALIDATE_DEBOUNCE_MS,
+                ts: parsed.ts,
             }),
         );
 
@@ -305,7 +311,7 @@ describe('GATE G3 — publish → debounce → notify → signed delivery (exit 
         expect(parsed.tenantId).toBe('legacy-gate');
         expect(parsed.legacyShopId).toBe('legacy-gate');
         expect(parsed.collection).toBe('pages');
-        expect(parsed.ts).toBe(NOW + REVALIDATE_DEBOUNCE_MS);
+        expect(parsed.ts).toBeGreaterThanOrEqual(NOW + REVALIDATE_DEBOUNCE_MS);
 
         // The signature round-trips against the BRIDGE-01 verifier contract, including the
         // {current, previous} dual-accept rotation envelope.
@@ -316,14 +322,16 @@ describe('GATE G3 — publish → debounce → notify → signed delivery (exit 
         expect(await verifyBridgeHmac(sentBody, signature, { current: ROTATED_SECRET })).toBe(false);
         expect(await verifyBridgeHmac(sentBody, null, { current: SECRET })).toBe(false);
 
-        // The 2xx acked the window and nothing further is in flight.
+        // The 2xx acked the window, the retrier's in-flight ledger drained, and nothing re-fires.
         expect(await t.run((ctx) => ctx.db.query('pendingRevalidations').collect())).toHaveLength(0);
+        expect(await t.run((ctx) => ctx.db.query('revalidationDeliveries').collect())).toHaveLength(0);
         await t.finishAllScheduledFunctions(vi.runAllTimers);
         expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
     it('collapses a rapid publish burst into one debounced delivery (coalescing + eventId dedup)', async () => {
         const t = convexTest(schema, modules);
+        registerActionRetrier(t);
         await seedTenant(t, 'op@burst.example.com', 'legacy-burst');
         const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|op', email: 'op@burst.example.com' });
 
@@ -346,16 +354,16 @@ describe('GATE G3 — publish → debounce → notify → signed delivery (exit 
 
         await step(t);
 
-        // Five publishes, five distinct recorded events — but ONE window and ONE armed notify.
+        // Five publishes, five distinct recorded events — but ONE window and ONE armed delivery.
         expect(await t.run((ctx) => ctx.db.query('revalidationEvents').collect())).toHaveLength(5);
         expect(await t.run((ctx) => ctx.db.query('pendingRevalidations').collect())).toHaveLength(1);
-        const notifyJobs = (await scheduledJobs(t)).filter(
-            (job) => job.name === 'revalidate/notify:notify' && job.state.kind === 'pending',
+        const deliveryJobs = (await scheduledJobs(t)).filter(
+            (job) => job.name === 'revalidate/delivery:enqueueDelivery' && job.state.kind === 'pending',
         );
-        expect(notifyJobs).toHaveLength(1);
+        expect(deliveryJobs).toHaveLength(1);
 
         vi.advanceTimersByTime(REVALIDATE_DEBOUNCE_MS);
-        await t.finishInProgressScheduledFunctions();
+        await t.finishAllScheduledFunctions(vi.runAllTimers);
 
         // The burst delivered exactly once, with exactly the coalesced fanout.
         expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -398,6 +406,45 @@ describe('GATE G3 — forced non-2xx → bounded retries → dead-letter (exit c
         expect(countAlerts(errorSpy)).toBe(1);
 
         // The poison window is dropped and the in-flight ledger is clean.
+        expect(await t.run((ctx) => ctx.db.query('pendingRevalidations').collect())).toHaveLength(0);
+        expect(await t.run((ctx) => ctx.db.query('revalidationDeliveries').collect())).toHaveLength(0);
+    });
+
+    it('retries a publish whose VERY FIRST delivery attempt fails — the publish path is durable from attempt #1', async () => {
+        const t = convexTest(schema, modules);
+        registerActionRetrier(t);
+        await seedTenant(t, 'op@first.example.com', 'legacy-first');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|op', email: 'op@first.example.com' });
+
+        // The storefront answers non-2xx from attempt #1 onward. Under the pre-fix wiring (onPublish
+        // arming notify via a bare runAfter) the first attempt ran OUTSIDE the retrier: one fetch, no
+        // retry, no dead-letter — the bust silently waited for the reconcile cron. The retried count
+        // and the dead-letter row below pin that attempt #1 itself entered the retrier→DLQ flow.
+        const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(new Response(null, { status: 503 }));
+        vi.stubGlobal('fetch', fetchMock);
+        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+        // The REAL tenant save mutation, publishing — the same production entry point as the e2e case.
+        await asOp.mutation(saveRef, {
+            collection: 'pages',
+            data: { title: 'About us', slug: 'about' },
+            status: 'published',
+        });
+        await t.finishAllScheduledFunctions(vi.runAllTimers);
+
+        // Attempt #1 plus maxFailures bounded retries — the first failure was retried, not dropped.
+        expect(fetchMock).toHaveBeenCalledTimes(DELIVERY_RETRY_OPTIONS.maxFailures + 1);
+
+        // Exhaustion dead-letters exactly once with the publish's delivery context, drops the poison
+        // window, and leaves the in-flight ledger clean.
+        const deadLetters = await t.run((ctx) => ctx.db.query('revalidationDeadLetters').collect());
+        expect(deadLetters).toHaveLength(1);
+        expect(deadLetters[0]?.tenantId).toBe('legacy-first');
+        expect(deadLetters[0]?.collection).toBe('pages');
+        expect(deadLetters[0]?.tags).toEqual(
+            deriveRevalidateTags({ collection: 'pages', key: 'about', tenantId: 'legacy-first' }),
+        );
+        expect(countAlerts(errorSpy)).toBe(1);
         expect(await t.run((ctx) => ctx.db.query('pendingRevalidations').collect())).toHaveLength(0);
         expect(await t.run((ctx) => ctx.db.query('revalidationDeliveries').collect())).toHaveLength(0);
     });

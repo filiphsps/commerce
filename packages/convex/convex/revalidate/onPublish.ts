@@ -79,10 +79,14 @@ export function cmsRevalidateKey(collection: string, data: unknown): string | un
  *   no-op, so an at-least-once replay never double-schedules;
  * - derives the cache tags from the shared descriptor ({@link deriveRevalidateTags}, BRIDGE-03);
  * - folds them into the single per-`(tenant, collection)` coalescing window ({@link coalescePending},
- *   BRIDGE-04) — only the publish that finds NO delivery already armed schedules the lone notify,
+ *   BRIDGE-04) — only the publish that finds NO delivery already armed schedules the lone delivery,
  *   collapsing a burst to one delivery;
- * - and, when it owns scheduling, arms exactly one `internal.revalidate.notify` at
- *   {@link REVALIDATE_DEBOUNCE_MS} and stamps its scheduled handle onto the coalescing row.
+ * - and, when it owns scheduling, arms exactly one debounced `internal.revalidate.delivery.enqueueDelivery`
+ *   at {@link REVALIDATE_DEBOUNCE_MS} and stamps its scheduled handle onto the coalescing row. Routing
+ *   through `enqueueDelivery` — never `notify` directly — is what makes the delivery durable from the
+ *   FIRST attempt: the action-retrier owns every attempt (BRIDGE-07), so a non-2xx on attempt #1
+ *   re-fires with bounded backoff and dead-letters on exhaustion, instead of silently waiting for the
+ *   reconcile cron to adopt the lost window.
  *
  * Built on {@link systemMutation} (raw, un-RLS db): the revalidation bridge tables are platform-global
  * infrastructure with no tenant key, so they sit outside the per-tenant RLS tier — exactly the
@@ -120,9 +124,11 @@ export const onPublish = systemMutation({
             return { scheduled: false };
         }
 
-        const scheduledJobId = await ctx.scheduler.runAfter(REVALIDATE_DEBOUNCE_MS, internal.revalidate.notify.notify, {
-            pendingId,
-        });
+        const scheduledJobId = await ctx.scheduler.runAfter(
+            REVALIDATE_DEBOUNCE_MS,
+            internal.revalidate.delivery.enqueueDelivery,
+            { pendingId },
+        );
         await ctx.db.patch('pendingRevalidations', pendingId, { scheduledJobId });
         return { scheduled: true };
     },
