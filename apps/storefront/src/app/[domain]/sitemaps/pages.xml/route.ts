@@ -14,6 +14,17 @@ type SitemapPage = {
     lastmod: string | null;
 };
 
+/**
+ * Builds the CMS-pages sitemap for a tenant from ONE batched `PagesApi` window.
+ *
+ * Convex budget posture (SFREAD-13, `@/utils/build-budget`): the whole document
+ * list is a single getter call, so the SFREAD-12 dual-read fires at most ONE
+ * shadow comparison per cache fill — never one per sitemap entry — and the
+ * shadow itself is deferred via `after()`, off this route's render path.
+ *
+ * @param params - Route params resolving the tenant `domain`.
+ * @returns A `next-sitemap` XML response listing every published CMS page per locale.
+ */
 export async function GET({}: NextRequest, { params }: { params: DynamicSitemapRouteParams }) {
     'use cache';
     cacheLife('max');
