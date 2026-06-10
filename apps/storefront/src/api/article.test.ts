@@ -17,6 +17,8 @@ describe('ArticleApi', () => {
             shop: { id: 'mock-shop-id', domain: 'staging.storefront.localhost', i18n: { defaultLocale: 'en-US' } },
             locale: { code: 'en-US' },
             slug: 'launch-news',
+            // Outside a request scope draft detection degrades to the published-only default.
+            draft: false,
         });
     });
 

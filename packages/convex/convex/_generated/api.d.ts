@@ -202,7 +202,13 @@ export declare const api: {
       articleBySlug: FunctionReference<
         "query",
         "public",
-        { locale: string; serverSecret: string; shopId: string; slug: string },
+        {
+          draft?: boolean;
+          locale: string;
+          serverSecret: string;
+          shopId: string;
+          slug: string;
+        },
         any
       >;
       articles: FunctionReference<
@@ -215,6 +221,7 @@ export declare const api: {
         "query",
         "public",
         {
+          draft?: boolean;
           handle: string;
           locale: string;
           serverSecret: string;
@@ -225,7 +232,13 @@ export declare const api: {
       pageBySlug: FunctionReference<
         "query",
         "public",
-        { locale: string; serverSecret: string; shopId: string; slug: string },
+        {
+          draft?: boolean;
+          locale: string;
+          serverSecret: string;
+          shopId: string;
+          slug: string;
+        },
         any
       >;
       pages: FunctionReference<
@@ -238,6 +251,7 @@ export declare const api: {
         "query",
         "public",
         {
+          draft?: boolean;
           handle: string;
           locale: string;
           serverSecret: string;
@@ -264,6 +278,7 @@ export declare const api: {
         "public",
         {
           collection: "header" | "footer" | "businessData";
+          draft?: boolean;
           locale: string;
           serverSecret: string;
           shopId: string;

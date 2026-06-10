@@ -174,3 +174,58 @@ describe('LivePreviewIframe', () => {
         expect(localStorageMock.setItem).toHaveBeenCalledWith('cms.live-preview.open', 'true');
     });
 });
+
+// ------------------------------------------------------------------
+// theme-preview-ready handshake — the ADMIN half of the both-directions
+// origin verification: only the storefront origin derived from previewUrl
+// may signal readiness.
+// ------------------------------------------------------------------
+
+/**
+ * Dispatches a `message` event with an explicit sender origin, simulating a
+ * cross-frame `postMessage` arriving at the admin window.
+ *
+ * @param origin - The sender origin the browser would stamp on the event.
+ * @param data - The message payload.
+ */
+function postFrom(origin: string, data: unknown): void {
+    fireEvent(window, new MessageEvent('message', { origin, data }));
+}
+
+describe('LivePreviewIframe theme-preview-ready handshake', () => {
+    const STOREFRONT_ORIGIN = new URL(PREVIEW_URL).origin;
+
+    it('fires onIframeReady for a handshake from the storefront origin', () => {
+        const onIframeReady = vi.fn();
+        render(<LivePreviewIframe {...BASE_PROPS} defaultOpen onIframeReady={onIframeReady} />);
+
+        postFrom(STOREFRONT_ORIGIN, { type: 'theme-preview-ready' });
+        expect(onIframeReady).toHaveBeenCalledTimes(1);
+    });
+
+    it('rejects a handshake from a foreign origin', () => {
+        const onIframeReady = vi.fn();
+        render(<LivePreviewIframe {...BASE_PROPS} defaultOpen onIframeReady={onIframeReady} />);
+
+        postFrom('https://evil.example.net', { type: 'theme-preview-ready' });
+        expect(onIframeReady).not.toHaveBeenCalled();
+    });
+
+    it('rejects a wrong-shaped message even from the storefront origin', () => {
+        const onIframeReady = vi.fn();
+        render(<LivePreviewIframe {...BASE_PROPS} defaultOpen onIframeReady={onIframeReady} />);
+
+        postFrom(STOREFRONT_ORIGIN, { type: 'theme-preview' });
+        postFrom(STOREFRONT_ORIGIN, 'theme-preview-ready');
+        expect(onIframeReady).not.toHaveBeenCalled();
+    });
+
+    it('leaves the handshake unwired for a malformed previewUrl instead of accepting blindly', () => {
+        const onIframeReady = vi.fn();
+        render(<LivePreviewIframe previewUrl="not a url" defaultOpen onIframeReady={onIframeReady} />);
+
+        postFrom(STOREFRONT_ORIGIN, { type: 'theme-preview-ready' });
+        postFrom('https://evil.example.net', { type: 'theme-preview-ready' });
+        expect(onIframeReady).not.toHaveBeenCalled();
+    });
+});

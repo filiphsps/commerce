@@ -261,6 +261,14 @@ export type CmsDualReadOptions<T> = {
     locale: string;
     /** Natural key for keyed getters (slug/handle); recorded on divergence rows. */
     key?: string;
+    /**
+     * Draft-mode (preview) read. Skips the shadow comparison entirely: the
+     * divergence ledger is a bake signal over PUBLISHED content, and a draft
+     * mid-edit legitimately differs between backends on every keystroke —
+     * comparing it would only pollute the ledger. The flip path still serves
+     * Convex; the getter's `convex` closure carries the draft flag itself.
+     */
+    draft?: boolean;
     /** The authoritative Payload-on-Mongo read. */
     mongo: () => Promise<T>;
     /** The Convex shadow read, driven through the injected server-trust query transport. */
@@ -330,7 +338,8 @@ async function runShadowComparison<T>(opts: CmsDualReadOptions<T>, mongoResult: 
 /**
  * The dual-read loader. Serves Mongo (authoritative) by default and schedules the non-blocking
  * Convex shadow when `CMS_READ_SHADOW` is enabled; serves Convex when `CMS_READ_FLIP` names the
- * getter, falling back to Mongo (and recording the failure) if the flipped read throws.
+ * getter, falling back to Mongo (and recording the failure) if the flipped read throws. A
+ * draft-mode invocation (`opts.draft`) never schedules the shadow — see the option's contract.
  *
  * @param opts - The dual-read invocation.
  * @returns The getter's contract-shaped result.
@@ -359,7 +368,7 @@ export async function runCmsDualRead<T>(opts: CmsDualReadOptions<T>): Promise<T>
 
     const result = await opts.mongo();
 
-    if (isCmsShadowEnabled(env)) {
+    if (isCmsShadowEnabled(env) && opts.draft !== true) {
         // Detached on purpose: the comparison must never extend the request path. The promise is
         // tracked so tests can drain it; its own error paths all terminate in swallowed ledger writes.
         track(runShadowComparison(opts, result));

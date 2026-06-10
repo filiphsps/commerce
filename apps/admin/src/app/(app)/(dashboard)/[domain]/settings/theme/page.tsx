@@ -7,7 +7,7 @@ import { PreviewBridge } from '@/components/theme-editor/preview-bridge';
 import { ThemeEditor } from '@/components/theme-editor/theme-editor';
 import * as actions from '@/lib/cms-actions/_generated/shops';
 import { editorRuntime } from '@/lib/editor-runtime';
-import { buildLivePreviewUrl } from '@/payload.config';
+import { buildStorefrontPreviewUrl } from '@/lib/storefront-preview';
 
 export const metadata: Metadata = { title: 'Theme Editor' };
 
@@ -32,14 +32,14 @@ type Props = {
 export default async function ThemeSettingsPage({ params, searchParams }: Props) {
     const { domain } = await params;
     const sp = await searchParams;
-    // Built server-side so the storefront preview secret never crosses the RSC
-    // boundary into the iframe `src` / a client prop. The `shops` collection
-    // isn't a content type, so `buildLivePreviewUrl` previews the tenant's
-    // storefront home (`/<locale>`). On the first request `sp.locale` may be
+    // Built server-side: the URL embeds the storefront preview secret, so it is
+    // assembled in this RSC and handed down as an opaque string. The `shops`
+    // collection isn't a content type, so the builder previews the tenant's
+    // storefront home (`/<locale>/`). On the first request `sp.locale` may be
     // absent, but `EditorEditPage` redirects to the tenant default before this
     // URL ever renders, so the fallback locale here is never user-visible.
-    const previewUrl = buildLivePreviewUrl({
-        tenantId: domain,
+    const previewUrl = buildStorefrontPreviewUrl({
+        domain,
         collection: shopsEditor.collection,
         data: {},
         locale: sp.locale ?? 'en-US',

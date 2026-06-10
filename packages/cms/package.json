@@ -108,6 +108,10 @@
             "./src/editor/richtext/index.ts",
             "./dist/editor/richtext/index.js"
         ],
+        "./editor/preview": [
+            "./src/editor/preview/index.ts",
+            "./dist/editor/preview/index.js"
+        ],
         "./media": [
             "./src/media/sizes.ts",
             "./dist/media/sizes.js"

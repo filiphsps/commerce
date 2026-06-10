@@ -1,5 +1,6 @@
 'use client';
 
+import { isThemePreviewReadyMessage } from '@nordcom/commerce-cms/editor/preview';
 import { Monitor, Smartphone } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -18,15 +19,11 @@ type Viewport = keyof typeof VIEWPORTS;
 
 export type LivePreviewIframeProps = {
     /**
-     * Fully-assembled preview URL. Must be built server-side by the caller
-     * so the storefront preview secret never crosses the RSC boundary —
-     * it would otherwise land in the iframe `src` attribute in the DOM,
-     * letting any signed-in editor lift the bearer token via devtools and
-     * mint draft-mode sessions for themselves.
-     *
-     * `payload.config.ts` defines a private `buildLivePreviewUrl` closure;
-     * Phase 1 will export it (or extract it to a shared lib helper) and the
-     * server-component caller will invoke it to assemble this string.
+     * Fully-assembled preview URL, built server-side by the caller (the
+     * `buildStorefrontPreviewUrl` helper in `lib/storefront-preview.ts`) so
+     * the preview-secret env read stays in the RSC. The URL itself embeds the
+     * secret as the activation token the storefront's `/api/cms-preview`
+     * route verifies before enabling draft mode.
      */
     previewUrl: string;
     /**
@@ -72,11 +69,11 @@ export type LivePreviewIframeProps = {
  * so different shops don't share state in the same browser session.
  *
  * **Security note:** this component is intentionally URL-agnostic. The caller
- * builds the URL server-side and passes the result in via `previewUrl`. This
- * keeps the storefront preview secret out of the RSC payload — passing it as
- * a prop would serialize it across the RSC boundary and embed it in the
- * rendered iframe `src` attribute, where any signed-in editor could lift it
- * from devtools and enable draft mode on their own session.
+ * builds the URL server-side and passes the result in via `previewUrl`, so the
+ * env read for the preview secret stays server-side and this component never
+ * needs to learn the secret-assembly scheme. The URL itself carries the secret
+ * as the draft-mode activation token — visible to the signed-in editor driving
+ * the preview, which is the route's trust model (see `cms-preview/route.ts`).
  *
  * **Cross-origin refresh:** the storefront runs on a different origin than the
  * admin, so `contentWindow.location.reload()` would throw a `SecurityError`.
@@ -142,8 +139,7 @@ export function LivePreviewIframe({
 
         const handleMessage = (event: MessageEvent) => {
             if (event.origin !== storefrontOrigin) return;
-            const data = event.data as { type?: unknown } | null;
-            if (!data || typeof data !== 'object' || data.type !== 'theme-preview-ready') return;
+            if (!isThemePreviewReadyMessage(event.data)) return;
 
             const win = iframeRef.current?.contentWindow;
             if (win) onIframeReady(win);

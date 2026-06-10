@@ -19,11 +19,21 @@ import {
  * `CONVEX_SERVER_SECRET`, scoped manually to the PUBLIC shop id the storefront holds (the migrated
  * Mongo id, resolved through `shopByPublicId` exactly like the `db/shops` seam).
  *
- * Reads serve ONLY `published` documents (drafts are editor-only) and reassemble each row exactly
- * like the editor runtime does: `cms_i18n` shreds are rehydrated first (`readShreddedDocument`),
- * then localized buckets collapse through the `request → shop default → platform default` fallback
- * chain. The result is the Payload-doc shape the SFREAD-01 contract pins:
- * `{ id, ...fields, _status, createdAt, updatedAt }` with ISO timestamps.
+ * Reads serve ONLY `published` documents by default (drafts are editor-only) and reassemble each
+ * row exactly like the editor runtime does: `cms_i18n` shreds are rehydrated first
+ * (`readShreddedDocument`), then localized buckets collapse through the
+ * `request → shop default → platform default` fallback chain. The result is the Payload-doc shape
+ * the SFREAD-01 contract pins: `{ id, ...fields, _status, createdAt, updatedAt }` with ISO
+ * timestamps.
+ *
+ * DRAFT READS (CMSDATA-09, the live-preview seam) are fail-closed by construction: the single-doc
+ * readers accept an EXPLICIT `draft: true` flag that widens the row filter to include
+ * `status: 'draft'` rows (the live row carries the latest draft state — `cms/documents:save`
+ * patches it in place). The flag only exists behind the `CONVEX_SERVER_SECRET` gate every
+ * {@link serverQuery} enforces, and the sole production caller — the storefront's dual-read
+ * getters — sets it exclusively from `draftMode().isEnabled`, which in turn is toggled only by the
+ * secret-checked `/api/cms-preview` activation route. Omitting the flag (every pre-existing call
+ * site) serves published-only, byte-identical to before.
  */
 
 /**
@@ -101,23 +111,30 @@ async function resolveReadScope(ctx: QueryCtx, shopId: string, locale: string): 
 }
 
 /**
- * Gathers the tenant's PUBLISHED live documents for one collection through the budgeted
+ * Gathers the tenant's live documents for one collection through the budgeted
  * `by_shop_collection` range — the same bounded-scan posture as `cms/list.ts`, so a runaway tenant
- * fails typed instead of hitting Convex's hard read limit.
+ * fails typed instead of hitting Convex's hard read limit. Serves PUBLISHED rows only unless the
+ * caller explicitly opts into drafts (the preview seam — see the module contract).
  *
  * @param ctx - The server query context.
  * @param scope - The resolved read scope.
  * @param collection - The collection slug to gather.
- * @returns The published rows in index order.
+ * @param includeDrafts - When `true`, `status: 'draft'` rows are served too (draft-mode preview).
+ * @returns The matching rows in index order.
  * @throws {BoundedScanExceededError} When the tenant/collection range exceeds the scan budget.
  */
-async function publishedDocs(ctx: QueryCtx, scope: CmsReadScope, collection: string): Promise<Doc<'cmsDocuments'>[]> {
+async function liveDocs(
+    ctx: QueryCtx,
+    scope: CmsReadScope,
+    collection: string,
+    includeDrafts = false,
+): Promise<Doc<'cmsDocuments'>[]> {
     const { items } = await collectWithinBudget(
         ctx.db
             .query('cmsDocuments')
             .withIndex('by_shop_collection', (q) => q.eq('shopId', scope.shop._id).eq('collection', collection)),
     );
-    return items.filter((doc) => doc.status === 'published');
+    return items.filter((doc) => doc.status === 'published' || includeDrafts === true);
 }
 
 /**
@@ -146,31 +163,34 @@ async function reassembleDoc(
 }
 
 /**
- * Finds the tenant's published document whose inline `data[field]` equals `value` — the natural-key
- * lookup behind the slug/handle getters. The key fields (`slug`, `shopifyHandle`) are never
- * localized or shredded, so a plain inline comparison is total.
+ * Finds the tenant's document whose inline `data[field]` equals `value` — the natural-key lookup
+ * behind the slug/handle getters. The key fields (`slug`, `shopifyHandle`) are never localized or
+ * shredded, so a plain inline comparison is total. When both a published and a draft row carry the
+ * key under a draft read, the DRAFT row wins — the preview exists to show the in-flight edit (the
+ * live-row model normally keeps one row per document, so the tie is defensive, not a hot path).
  *
  * @param ctx - The server query context.
  * @param scope - The resolved read scope.
  * @param collection - The collection slug.
  * @param field - The natural-key field name.
  * @param value - The natural-key value to match.
+ * @param includeDrafts - When `true`, draft rows participate in the lookup (preview seam).
  * @returns The matching row, or `null` when none matches.
  */
-async function publishedDocByKey(
+async function liveDocByKey(
     ctx: QueryCtx,
     scope: CmsReadScope,
     collection: string,
     field: string,
     value: string,
+    includeDrafts = false,
 ): Promise<Doc<'cmsDocuments'> | null> {
-    const docs = await publishedDocs(ctx, scope, collection);
-    return (
-        docs.find((doc) => {
-            const data = (typeof doc.data === 'object' && doc.data !== null ? doc.data : {}) as Record<string, unknown>;
-            return data[field] === value;
-        }) ?? null
-    );
+    const docs = await liveDocs(ctx, scope, collection, includeDrafts);
+    const matches = docs.filter((doc) => {
+        const data = (typeof doc.data === 'object' && doc.data !== null ? doc.data : {}) as Record<string, unknown>;
+        return data[field] === value;
+    });
+    return (includeDrafts ? matches.find((doc) => doc.status === 'draft') : undefined) ?? matches[0] ?? null;
 }
 
 /**
@@ -188,7 +208,8 @@ function docKey(doc: CmsPublishedDoc, field: string): string {
 /**
  * Reads a tenant singleton (`header`/`footer`/`businessData`) for the storefront. The tenant's
  * single published row for the collection IS the document (mirroring the editor's singleton upsert
- * addressing in `cms/actions.ts`).
+ * addressing in `cms/actions.ts`). With `draft: true` (the preview seam) a draft row is served too,
+ * preferred over a published sibling so the preview shows the in-flight edit.
  *
  * @returns The contract-shaped singleton, or `null` when unseeded or the shop is unresolved.
  */
@@ -197,26 +218,29 @@ export const singleton = serverQuery({
         shopId: v.string(),
         collection: v.union(v.literal('header'), v.literal('footer'), v.literal('businessData')),
         locale: v.string(),
+        draft: v.optional(v.boolean()),
     },
-    handler: async (ctx, { shopId, collection, locale }): Promise<CmsPublishedDoc | null> => {
+    handler: async (ctx, { shopId, collection, locale, draft }): Promise<CmsPublishedDoc | null> => {
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
-        const doc = (await publishedDocs(ctx, scope, collection))[0];
+        const docs = await liveDocs(ctx, scope, collection, draft === true);
+        const doc = (draft === true ? docs.find((row) => row.status === 'draft') : undefined) ?? docs[0];
         return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
     },
 });
 
 /**
- * Reads a published page by slug — the Convex shadow of `getPage`.
+ * Reads a published page by slug — the Convex shadow of `getPage`. `draft: true` (preview seam)
+ * additionally serves the page's draft state, mirroring Payload's `find({ draft: true })`.
  *
- * @returns The contract-shaped page, or `null` when no published page matches the slug.
+ * @returns The contract-shaped page, or `null` when no matching page exists.
  */
 export const pageBySlug = serverQuery({
-    args: { shopId: v.string(), slug: v.string(), locale: v.string() },
-    handler: async (ctx, { shopId, slug, locale }): Promise<CmsPublishedDoc | null> => {
+    args: { shopId: v.string(), slug: v.string(), locale: v.string(), draft: v.optional(v.boolean()) },
+    handler: async (ctx, { shopId, slug, locale, draft }): Promise<CmsPublishedDoc | null> => {
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
-        const doc = await publishedDocByKey(ctx, scope, 'pages', 'slug', slug);
+        const doc = await liveDocByKey(ctx, scope, 'pages', 'slug', slug, draft === true);
         return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
     },
 });
@@ -233,7 +257,7 @@ export const pages = serverQuery({
     handler: async (ctx, { shopId, locale }): Promise<{ docs: CmsPublishedDoc[] }> => {
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return { docs: [] };
-        const rows = await publishedDocs(ctx, scope, 'pages');
+        const rows = await liveDocs(ctx, scope, 'pages');
         const docs = await Promise.all(rows.map((doc) => reassembleDoc(ctx, doc, scope.chain)));
         docs.sort((a, b) => docKey(a, 'slug').localeCompare(docKey(b, 'slug')));
         return { docs };
@@ -242,16 +266,17 @@ export const pages = serverQuery({
 
 /**
  * Reads a published article by slug — the Convex shadow of `getArticle`. Shredded `body` buckets in
- * `cms_i18n` are rehydrated and locale-resolved before return.
+ * `cms_i18n` are rehydrated and locale-resolved before return. `draft: true` (preview seam) serves
+ * the article's draft state too.
  *
- * @returns The contract-shaped article, or `null` when no published article matches the slug.
+ * @returns The contract-shaped article, or `null` when no matching article exists.
  */
 export const articleBySlug = serverQuery({
-    args: { shopId: v.string(), slug: v.string(), locale: v.string() },
-    handler: async (ctx, { shopId, slug, locale }): Promise<CmsPublishedDoc | null> => {
+    args: { shopId: v.string(), slug: v.string(), locale: v.string(), draft: v.optional(v.boolean()) },
+    handler: async (ctx, { shopId, slug, locale, draft }): Promise<CmsPublishedDoc | null> => {
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
-        const doc = await publishedDocByKey(ctx, scope, 'articles', 'slug', slug);
+        const doc = await liveDocByKey(ctx, scope, 'articles', 'slug', slug, draft === true);
         return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
     },
 });
@@ -268,7 +293,7 @@ export const articles = serverQuery({
     handler: async (ctx, { shopId, locale, tag }): Promise<{ docs: CmsPublishedDoc[] }> => {
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return { docs: [] };
-        const rows = await publishedDocs(ctx, scope, 'articles');
+        const rows = await liveDocs(ctx, scope, 'articles');
         let docs = await Promise.all(rows.map((doc) => reassembleDoc(ctx, doc, scope.chain)));
         if (tag !== undefined) {
             docs = docs.filter((doc) => Array.isArray(doc.tags) && (doc.tags as unknown[]).includes(tag));
@@ -280,32 +305,32 @@ export const articles = serverQuery({
 
 /**
  * Reads the published product-metadata overlay for a Shopify handle — the Convex shadow of
- * `getProductMetadata`.
+ * `getProductMetadata`. `draft: true` (preview seam) serves the overlay's draft state too.
  *
  * @returns The contract-shaped overlay, or `null` when no entry exists.
  */
 export const productMetadataByHandle = serverQuery({
-    args: { shopId: v.string(), handle: v.string(), locale: v.string() },
-    handler: async (ctx, { shopId, handle, locale }): Promise<CmsPublishedDoc | null> => {
+    args: { shopId: v.string(), handle: v.string(), locale: v.string(), draft: v.optional(v.boolean()) },
+    handler: async (ctx, { shopId, handle, locale, draft }): Promise<CmsPublishedDoc | null> => {
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
-        const doc = await publishedDocByKey(ctx, scope, 'productMetadata', 'shopifyHandle', handle);
+        const doc = await liveDocByKey(ctx, scope, 'productMetadata', 'shopifyHandle', handle, draft === true);
         return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
     },
 });
 
 /**
  * Reads the published collection-metadata overlay for a Shopify handle — the Convex shadow of
- * `getCollectionMetadata`.
+ * `getCollectionMetadata`. `draft: true` (preview seam) serves the overlay's draft state too.
  *
  * @returns The contract-shaped overlay, or `null` when no entry exists.
  */
 export const collectionMetadataByHandle = serverQuery({
-    args: { shopId: v.string(), handle: v.string(), locale: v.string() },
-    handler: async (ctx, { shopId, handle, locale }): Promise<CmsPublishedDoc | null> => {
+    args: { shopId: v.string(), handle: v.string(), locale: v.string(), draft: v.optional(v.boolean()) },
+    handler: async (ctx, { shopId, handle, locale, draft }): Promise<CmsPublishedDoc | null> => {
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
-        const doc = await publishedDocByKey(ctx, scope, 'collectionMetadata', 'shopifyHandle', handle);
+        const doc = await liveDocByKey(ctx, scope, 'collectionMetadata', 'shopifyHandle', handle, draft === true);
         return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
     },
 });

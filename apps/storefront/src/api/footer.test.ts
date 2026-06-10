@@ -16,6 +16,8 @@ describe('FooterApi', () => {
         expect(getFooter).toHaveBeenCalledWith({
             shop: { id: 'mock-shop-id', domain: 'staging.storefront.localhost', i18n: { defaultLocale: 'en-US' } },
             locale: { code: 'en-US' },
+            // Outside a request scope draft detection degrades to the published-only default.
+            draft: false,
         });
     });
 

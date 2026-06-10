@@ -5,6 +5,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
 import { runCmsDualRead } from './_cms-shadow';
+import { isDraftModeEnabled } from './_draft';
 import { normalizePayloadDoc } from './_normalize-payload';
 
 /** The frozen `getPages` paginated envelope the storefront consumes. */
@@ -69,6 +70,9 @@ export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Loc
 /**
  * Fetches a single CMS page by its slug for a tenant and locale. Routed through
  * the SFREAD-12 dual-read loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=page`).
+ * In draft mode (the CMS preview iframe; toggled by `api/cms-preview`) the draft
+ * flag travels down BOTH legs — Payload's `draft: true` find and the Convex
+ * `cms/read:pageBySlug` draft variant — and the shadow comparison is skipped.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.
@@ -77,19 +81,28 @@ export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Loc
  * @returns The normalized page document, or `null` when no page exists for the slug.
  */
 export async function PageApi({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
+    const draft = await isDraftModeEnabled();
     return runCmsDualRead<Awaited<ReturnType<typeof CmsGetPage>>>({
         getter: 'page',
         shopId: shop.id,
         locale: locale.code,
         key: handle,
+        draft,
         mongo: async () => {
             const page = await CmsGetPage({
                 shop: toShopRef(shop),
                 locale: { code: locale.code },
                 slug: handle,
+                draft,
             });
             return page ? normalizePayloadDoc(page, locale.code) : null;
         },
-        convex: (query) => query('cms/read:pageBySlug', { shopId: shop.id, slug: handle, locale: locale.code }),
+        convex: (query) =>
+            query('cms/read:pageBySlug', {
+                shopId: shop.id,
+                slug: handle,
+                locale: locale.code,
+                ...(draft ? { draft: true } : {}),
+            }),
     });
 }

@@ -1,12 +1,13 @@
 'use client';
 
+import { useFormFields } from '@nordcom/commerce-cms/editor/form';
+import { THEME_PREVIEW_MESSAGE_TYPE, type ThemePreviewMessage } from '@nordcom/commerce-cms/editor/preview';
 import {
     type AccentToken,
     resolveTheme,
     serializeThemeToCssVars,
     type ThemeBranding,
 } from '@nordcom/commerce-db/lib/theme';
-import { useFormFields } from '@payloadcms/ui';
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -16,20 +17,6 @@ import { type FlatThemeFields, unflattenTheme } from './unflatten-theme';
 // `luminance()` is provided by the a11y plugin — register it once at module load
 // so the accent branding sort mirrors the storefront's `getBrandingColors`.
 extend([a11yPlugin]);
-
-/**
- * Message posted to the storefront preview iframe on every (debounced) theme
- * edit. `vars` are the CSS custom properties to `setProperty`; `remove` names
- * properties that were applied by a prior post but no longer differ from the
- * defaults (a token reset) so the bridge `removeProperty`s them, letting derived
- * accent shades and `focusRing: var(--accent)` resume runtime derivation rather
- * than staying pinned to their last preview value.
- */
-export type ThemePreviewMessage = {
-    type: 'theme-preview';
-    vars: Array<[name: string, value: string]>;
-    remove: string[];
-};
 
 /**
  * Debounce window (ms) for coalescing rapid edits (e.g. dragging a color
@@ -61,8 +48,10 @@ function brandingFromAccents(accents: ReadonlyArray<AccentToken>): ThemeBranding
 }
 
 /**
- * Subscribes to the live `theme.*` form state and streams the resolved CSS
- * custom properties to the storefront preview iframe over `postMessage`.
+ * Subscribes to the live `theme.*` form state — through the NATIVE form core's
+ * `useFormFields`, so it must be mounted under the native `<Form>` (the
+ * editor's `DocumentFormBody`) — and streams the resolved CSS custom
+ * properties to the storefront preview iframe over `postMessage`.
  *
  * The flat dotted `theme.*` form fields are un-flattened into a `ResolvedShopTheme`
  * shape, resolved against the platform defaults, and serialized with the *same*
@@ -82,7 +71,7 @@ export function useThemePreview(targetOrigin: string): { onIframeReady: (win: Wi
         const flat: FlatThemeFields = {};
         for (const [path, state] of Object.entries(fields)) {
             if (!path.startsWith('theme.')) continue;
-            flat[path] = (state as { value?: unknown } | undefined)?.value;
+            flat[path] = state.value;
         }
 
         const resolved = resolveTheme({ theme: unflattenTheme(flat) });
@@ -110,7 +99,7 @@ export function useThemePreview(targetOrigin: string): { onIframeReady: (win: Wi
                 if (!currentNames.has(name)) remove.push(name);
             }
 
-            const message: ThemePreviewMessage = { type: 'theme-preview', vars: current, remove };
+            const message: ThemePreviewMessage = { type: THEME_PREVIEW_MESSAGE_TYPE, vars: current, remove };
             win.postMessage(message, targetOrigin);
             appliedRef.current = currentNames;
         },

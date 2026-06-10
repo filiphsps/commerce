@@ -274,3 +274,54 @@ describe('cms/read — storefront-facing published reads', () => {
         ).rejects.toThrow();
     });
 });
+
+describe('cms/read — draft-mode preview reads (CMSDATA-09)', () => {
+    afterEach(() => {
+        delete process.env.CONVEX_SERVER_SECRET;
+    });
+
+    it('serves a draft page only when the explicit draft flag is set', async () => {
+        const t = await corpus();
+        // Fail-closed default: the same slug stays invisible without the flag…
+        await expect(t.query(pageBySlugRef, { ...base, slug: 'secret-draft' })).resolves.toBeNull();
+        await expect(t.query(pageBySlugRef, { ...base, slug: 'secret-draft', draft: false })).resolves.toBeNull();
+        // …and resolves with it, framed in the same SFREAD-01 contract shape.
+        const draft = await t.query(pageBySlugRef, { ...base, slug: 'secret-draft', draft: true });
+        expect(draft).toMatchObject({ slug: 'secret-draft', title: 'Draft', _status: 'draft' });
+    });
+
+    it('keeps published docs readable under a draft read', async () => {
+        const t = await corpus();
+        const page = await t.query(pageBySlugRef, { ...base, slug: 'about', draft: true });
+        expect(page).toMatchObject({ slug: 'about', title: 'About', _status: 'published' });
+    });
+
+    it('prefers the draft row over a published sibling for singletons under draft', async () => {
+        const t = await corpus();
+        await t.run(async (ctx) => {
+            const shops = await ctx.db.query('shops').collect();
+            const shop = shops.find((row) => row.legacyId === SHOP_PUBLIC_ID);
+            if (!shop) throw new TypeError('seed corpus is missing the canonical shop');
+            await ctx.db.insert('cmsDocuments', {
+                shopId: shop._id,
+                collection: 'header',
+                data: { logoLink: '/draft/', items: [] },
+                status: 'draft',
+                createdAt: NOW + 1,
+                updatedAt: NOW + 1,
+            });
+        });
+        // Published render stays pinned to the published row…
+        const published = await t.query(singletonRef, { ...base, collection: 'header' });
+        expect(published).toMatchObject({ logoLink: '/', _status: 'published' });
+        // …while the preview read surfaces the in-flight draft.
+        const draft = await t.query(singletonRef, { ...base, collection: 'header', draft: true });
+        expect(draft).toMatchObject({ logoLink: '/draft/', _status: 'draft' });
+    });
+
+    it('never exposes the draft list through the unflagged list reads', async () => {
+        const t = await corpus();
+        const list = await t.query(pagesRef, base);
+        expect(list.docs.map((doc) => doc.slug)).toEqual(['about', 'home']);
+    });
+});
