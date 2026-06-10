@@ -5,6 +5,9 @@ inputs:
     turbo-cache:
         description: 'Restore the local turbo cache (.turbo).'
         default: 'true'
+    binary-caches:
+        description: 'Restore the mongodb-memory-server and Convex local-backend binary caches. Disable for jobs that never boot a local backend (e.g. production Convex/Vercel deploys).'
+        default: 'true'
 
 outputs:
     node-modules-cache-hit:
@@ -14,10 +17,10 @@ outputs:
         description: 'Whether turbo cache was a hit on restore. Empty when turbo-cache=false.'
         value: ${{ steps.cache-turbo.outputs.cache-hit }}
     mongo-binary-cache-hit:
-        description: 'Whether the mongodb-memory-server binary cache was a hit on restore.'
+        description: 'Whether the mongodb-memory-server binary cache was a hit on restore. Empty when binary-caches=false.'
         value: ${{ steps.cache-mongo-binary.outputs.cache-hit }}
     convex-backend-cache-hit:
-        description: 'Whether the Convex local-backend binary cache was a hit on restore.'
+        description: 'Whether the Convex local-backend binary cache was a hit on restore. Empty when binary-caches=false.'
         value: ${{ steps.cache-convex-backend.outputs.cache-hit }}
 
 runs:
@@ -68,6 +71,7 @@ runs:
 
         - name: 💾 Restore mongodb-memory-server binary
           id: cache-mongo-binary
+          if: inputs.binary-caches == 'true'
           uses: actions/cache/restore@v5
           with:
               path: /home/runner/.cache/mongodb-binaries
@@ -79,6 +83,7 @@ runs:
 
         - name: 💾 Restore Convex local-backend binary
           id: cache-convex-backend
+          if: inputs.binary-caches == 'true'
           uses: actions/cache/restore@v5
           with:
               path: /home/runner/.cache/convex/binaries

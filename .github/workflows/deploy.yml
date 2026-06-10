@@ -20,6 +20,56 @@ env:
     AUTH_SECRET: "development-secret"
 
 jobs:
+    # Pushes packages/convex/convex/** to the PRODUCTION Convex deployment after CI passes on
+    # master. Gated on the CONVEX_DEPLOY_KEY repository secret: until an operator provisions the
+    # production deployment (.specs/2026-05-30-convex-migration/convex-prod-provisioning.md) the
+    # job skips with a loud warning annotation instead of failing the unrelated Vercel deploy.
+    # Deliberately NOT paths-filtered: `convex deploy` is idempotent, and always pushing on master
+    # lets production converge even when an earlier push was skipped (missing key, red CI). The
+    # release.yml twin covers release-triggered pushes; keep both jobs in sync.
+    convex:
+        if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'master' && github.repository == 'filiphsps/commerce' }}
+        name: 🌐 Deploy Convex (production)
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        env:
+            CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.event.workflow_run.head_sha }}
+
+            - name: 🔎 Check for the production deploy key
+              id: deploy-key
+              run: |
+                  if [ -n "$CONVEX_DEPLOY_KEY" ]; then
+                      echo "configured=true" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "configured=false" >> "$GITHUB_OUTPUT"
+                      echo "::warning title=Convex production deploy SKIPPED::CONVEX_DEPLOY_KEY is not configured as a repository secret, so the production Convex deployment was NOT updated. Provision it per .specs/2026-05-30-convex-migration/convex-prod-provisioning.md."
+                  fi
+
+            - name: 🚀 Bootstrap
+              if: steps.deploy-key.outputs.configured == 'true'
+              uses: ./.github/common/bootstrap
+              with:
+                  turbo-cache: "false"
+                  binary-caches: "false"
+
+            # `convex deploy --dry-run` validates codegen, bundling and the schema against the LIVE
+            # production data without promoting anything — the expand/contract pre-promotion gate.
+            - name: 🧪 Convex deploy dry-run
+              if: steps.deploy-key.outputs.configured == 'true'
+              run: pnpm --filter @nordcom/commerce-convex convex:deploy:dry-run
+
+            # Single-pass, unlike ci.yml's two-pass ephemeral deploy: the production deployment's
+            # CONVEX_AUTH_* / CONVEX_SERVER_SECRET / CONVEX_REVALIDATE_SECRET env vars are seeded
+            # once by the provisioning runbook, so auth-config validation passes on the first push.
+            - name: 🌐 Deploy Convex to production
+              if: steps.deploy-key.outputs.configured == 'true'
+              run: pnpm convex:deploy
+
     vercel:
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
         name: 🚚 Deploy to Vercel
