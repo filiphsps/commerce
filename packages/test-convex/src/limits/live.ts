@@ -82,30 +82,47 @@ function resolveConvexBin(): string {
  * backend, and the cloud selectors are blanked for the same dotenv-shadowing reason `start.ts`
  * documents — otherwise `packages/convex/.env.local`'s `CONVEX_DEPLOYMENT` would win.
  *
+ * A freshly booted backend occasionally rejects its first admin commands with a transient 503
+ * (`OptimisticConcurrencyControlFailure` on its internal bootstrap tables), so non-zero exits whose
+ * output matches a transient signature are retried a bounded number of times. Every command the
+ * suites issue (`env set`, `deploy`, `run`) is idempotent against the same input, so a blind
+ * resubmission is safe.
+ *
  * @param live - The backend to target.
  * @param args - CLI argv after the `convex` binary (e.g. `['env', 'set', 'KEY', 'value']`).
  * @returns The CLI's stdout.
- * @throws {ConvexError} When the CLI exits non-zero, carrying its stdout/stderr tails.
+ * @throws {ConvexError} When the CLI exits non-zero past the transient-retry budget.
  */
 export function runConvexCli(live: Pick<LiveConvex, 'url' | 'adminKey'>, args: string[]): string {
-    const result = spawnSync(process.execPath, [resolveConvexBin(), ...args], {
-        cwd: resolveConvexProjectDir(),
-        encoding: 'utf8',
-        env: {
-            ...process.env,
-            CONVEX_SELF_HOSTED_URL: live.url,
-            CONVEX_SELF_HOSTED_ADMIN_KEY: live.adminKey,
-            CONVEX_DEPLOYMENT: '',
-            CONVEX_DEPLOY_KEY: '',
-        },
-    });
-    if (result.status !== 0) {
-        throw new ConvexError(
+    const TRANSIENT = /503|OptimisticConcurrencyControlFailure|ECONNRESET|ECONNREFUSED|socket hang up/i;
+    const ATTEMPTS = 3;
+    let lastFailure = '';
+    for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
+        const result = spawnSync(process.execPath, [resolveConvexBin(), ...args], {
+            cwd: resolveConvexProjectDir(),
+            encoding: 'utf8',
+            env: {
+                ...process.env,
+                CONVEX_SELF_HOSTED_URL: live.url,
+                CONVEX_SELF_HOSTED_ADMIN_KEY: live.adminKey,
+                CONVEX_DEPLOYMENT: '',
+                CONVEX_DEPLOY_KEY: '',
+            },
+        });
+        if (result.status === 0) {
+            return result.stdout ?? '';
+        }
+        lastFailure =
             `[test-convex/limits] convex ${args.join(' ')} exited ${result.status}: ` +
-                `${(result.stdout ?? '').slice(-2000)}\n${(result.stderr ?? '').slice(-2000)}`,
-        );
+            `${(result.stdout ?? '').slice(-2000)}\n${(result.stderr ?? '').slice(-2000)}`;
+        if (attempt < ATTEMPTS && TRANSIENT.test(lastFailure)) {
+            // Synchronous back-off keeps the helper's blocking contract (callers run in hooks).
+            spawnSync(process.execPath, ['-e', `setTimeout(() => {}, ${attempt * 1_000})`]);
+            continue;
+        }
+        break;
     }
-    return result.stdout ?? '';
+    throw new ConvexError(lastFailure);
 }
 
 /**
