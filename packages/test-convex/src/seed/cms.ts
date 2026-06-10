@@ -2,10 +2,14 @@ import { ConvexError } from 'convex/values';
 
 import type { Id } from '../../../convex/convex/_generated/dataModel';
 import type { MutationCtx } from '../../../convex/convex/_generated/server';
+import { articleFixtures } from './fixtures/articles';
 import { businessDataFixture } from './fixtures/business-data';
+import { collectionMetadataFixtures } from './fixtures/collection-metadata';
 import { featureFlagFixtures } from './fixtures/feature-flags';
 import { footerData } from './fixtures/footer';
 import { headerData } from './fixtures/header';
+import { pageFixtures } from './fixtures/pages';
+import { productMetadataFixtures } from './fixtures/product-metadata';
 
 /**
  * Options for the over-the-wire {@link seedCms} stub. Carries the canonical shop id as a plain
@@ -33,16 +37,22 @@ export interface SeedCmsMutationOptions {
 /**
  * The Convex seed mutation re-expressing Mongo's `seed/cms.ts` against the Convex-native CMS tables
  * (CMSDESC-02), with NO Payload boot: it inserts the `header`, `footer`, and `businessData` singletons
- * scoped to `shopId`, then seeds the platform-global `featureFlags` rows and links each to the canonical
- * shop via a `shopFeatureFlags` join row so the flags are genuinely scoped under the tenant.
+ * scoped to `shopId`, seeds the rich-text-bearing content collections (`pages`, `articles`,
+ * `productMetadata`, `collectionMetadata`) under the same shop, then seeds the platform-global
+ * `featureFlags` rows and links each to the canonical shop via a `shopFeatureFlags` join row so the
+ * flags are genuinely scoped under the tenant.
  *
  * Two Payload-era quirks are dropped: there is no separate tenant document (shop == tenant, so docs key
  * straight on `shopId`), and feature-flag values are stored as NATIVE JSON rather than the
  * `JSON.stringify`d-for-Monaco payload the Payload `type: 'json'` field demanded (see the fixture note).
+ * Rich-text bodies are stored as ProseMirror JSON produced by the real CMSRICH-04 codec (see
+ * `fixtures/richtext.ts`), and the small fixture bodies stay INLINE on their rows — nothing is shredded
+ * into `cms_i18n` (the shred path belongs to the `cmsDocuments` editor model, CMSDATA-10).
  *
- * Idempotent — the singletons are guarded by `by_shop`, each global flag by `by_key`, and each join by
- * `by_shop_flag`, so a second run is a no-op. Runs inside one Convex transaction, so all documents land
- * all-or-nothing.
+ * Idempotent — the singletons are guarded by `by_shop`, each content row by its natural key within the
+ * shop's `by_shop` range (`slug` for pages/articles, `shopifyHandle` for the metadata overlays), each
+ * global flag by `by_key`, and each join by `by_shop_flag`, so a second run is a no-op. Runs inside one
+ * Convex transaction, so all documents land all-or-nothing.
  *
  * @param ctx - A Convex mutation context (raw `db` writer), e.g. from `convex-test`'s `run` or a
  *   registered seed mutation.
@@ -74,6 +84,58 @@ export async function seedCmsMutation(ctx: MutationCtx, { shopId }: SeedCmsMutat
         .unique();
     if (!existingBusinessData) {
         await ctx.db.insert('businessData', { shop: shopId, ...businessDataFixture, createdAt: now, updatedAt: now });
+    }
+
+    const existingPageSlugs = new Set(
+        (
+            await ctx.db
+                .query('pages')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect()
+        ).map((page) => page.slug),
+    );
+    for (const page of pageFixtures) {
+        if (existingPageSlugs.has(page.slug)) continue;
+        await ctx.db.insert('pages', { shop: shopId, ...page, createdAt: now, updatedAt: now });
+    }
+
+    const existingArticleSlugs = new Set(
+        (
+            await ctx.db
+                .query('articles')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect()
+        ).map((article) => article.slug),
+    );
+    for (const article of articleFixtures) {
+        if (existingArticleSlugs.has(article.slug)) continue;
+        await ctx.db.insert('articles', { shop: shopId, ...article, createdAt: now, updatedAt: now });
+    }
+
+    const existingProductHandles = new Set(
+        (
+            await ctx.db
+                .query('productMetadata')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect()
+        ).map((row) => row.shopifyHandle),
+    );
+    for (const product of productMetadataFixtures) {
+        if (existingProductHandles.has(product.shopifyHandle)) continue;
+        await ctx.db.insert('productMetadata', { shop: shopId, ...product, createdAt: now, updatedAt: now });
+    }
+
+    const existingCollectionHandles = new Set(
+        (
+            await ctx.db
+                .query('collectionMetadata')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect()
+        ).map((row) => row.shopifyHandle),
+    );
+    for (const collection of collectionMetadataFixtures) {
+        if (existingCollectionHandles.has(collection.shopifyHandle)) continue;
+        await ctx.db.insert('collectionMetadata', { shop: shopId, ...collection, createdAt: now, updatedAt: now });
     }
 
     for (const flag of featureFlagFixtures) {

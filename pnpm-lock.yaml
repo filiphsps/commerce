@@ -1473,6 +1473,9 @@ importers:
 
   packages/test-convex:
     dependencies:
+      '@nordcom/commerce-cms':
+        specifier: workspace:*
+        version: link:../cms
       convex:
         specifier: 1.39.1
         version: 1.39.1(react@19.2.6)

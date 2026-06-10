@@ -1,9 +1,15 @@
+import { lexicalToProseMirror } from '@nordcom/commerce-cms/editor/richtext';
 import { convexTest } from 'convex-test';
 import { describe, expect, it } from 'vitest';
 
 import schema from '../../../convex/convex/schema';
 import { seedCmsMutation } from './cms';
+import { articleFixtures } from './fixtures/articles';
+import { collectionMetadataFixtures } from './fixtures/collection-metadata';
 import { featureFlagFixtures } from './fixtures/feature-flags';
+import { pageFixtures } from './fixtures/pages';
+import { productMetadataFixtures } from './fixtures/product-metadata';
+import { lexicalDoc, list } from './fixtures/richtext';
 import { seedShopMutation } from './shop';
 
 /**
@@ -132,6 +138,10 @@ describe('seedCmsMutation', () => {
             header: (await ctx.db.query('header').collect()).length,
             footer: (await ctx.db.query('footer').collect()).length,
             businessData: (await ctx.db.query('businessData').collect()).length,
+            pages: (await ctx.db.query('pages').collect()).length,
+            articles: (await ctx.db.query('articles').collect()).length,
+            productMetadata: (await ctx.db.query('productMetadata').collect()).length,
+            collectionMetadata: (await ctx.db.query('collectionMetadata').collect()).length,
             featureFlags: (await ctx.db.query('featureFlags').collect()).length,
             shopFeatureFlags: (await ctx.db.query('shopFeatureFlags').collect()).length,
         }));
@@ -140,8 +150,146 @@ describe('seedCmsMutation', () => {
             header: 1,
             footer: 1,
             businessData: 1,
+            pages: pageFixtures.length,
+            articles: articleFixtures.length,
+            productMetadata: productMetadataFixtures.length,
+            collectionMetadata: collectionMetadataFixtures.length,
             featureFlags: featureFlagFixtures.length,
             shopFeatureFlags: featureFlagFixtures.length,
         });
+    });
+
+    it('seeds the full pages/articles/productMetadata/collectionMetadata corpus scoped to the canonical shop id', async () => {
+        const t = convexTest(schema, modules);
+
+        const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
+        await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
+
+        const rows = await t.run(async (ctx) => ({
+            pages: await ctx.db
+                .query('pages')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect(),
+            articles: await ctx.db
+                .query('articles')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect(),
+            productMetadata: await ctx.db
+                .query('productMetadata')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect(),
+            collectionMetadata: await ctx.db
+                .query('collectionMetadata')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect(),
+        }));
+
+        expect(rows.pages).toHaveLength(pageFixtures.length);
+        expect(rows.articles).toHaveLength(articleFixtures.length);
+        expect(rows.productMetadata).toHaveLength(productMetadataFixtures.length);
+        expect(rows.collectionMetadata).toHaveLength(collectionMetadataFixtures.length);
+        for (const collection of Object.values(rows)) {
+            for (const row of collection) {
+                expect(row.shop).toBe(shopId);
+            }
+        }
+    });
+
+    it('reassembles a seeded page and article through the by_shop read path with ProseMirror rich text present', async () => {
+        const t = convexTest(schema, modules);
+
+        const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
+        await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
+
+        const { pages, articles } = await t.run(async (ctx) => ({
+            pages: await ctx.db
+                .query('pages')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect(),
+            articles: await ctx.db
+                .query('articles')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect(),
+        }));
+
+        // The storefront getPage equivalent: the tenant's `by_shop` range narrowed by slug. The real
+        // SFREAD-12 getter is next wave; this pins the row it will reassemble from.
+        const about = pages.find((page) => page.slug === 'about');
+        expect(about).toBeDefined();
+        expect(about?.title).toBe('About Nordcom');
+        const richTextBlock = about?.blocks?.find((block: Record<string, unknown>) => block.blockType === 'rich-text');
+        expect(richTextBlock).toBeDefined();
+        expect(richTextBlock?.body?.type).toBe('doc');
+        expect(richTextBlock?.body?.content?.[0]).toEqual({
+            type: 'heading',
+            attrs: { level: 2 },
+            content: [{ type: 'text', text: 'Our story' }],
+        });
+
+        const article = articles.find((row) => row.slug === 'behind-the-fw25-lookbook');
+        expect(article).toBeDefined();
+        expect(article?.author).toBe('Alma Henriksson');
+        expect(article?.body?.type).toBe('doc');
+        expect(article?.body?.content?.length).toBeGreaterThan(3);
+        expect(article?.body?.content?.[1]).toEqual({
+            type: 'heading',
+            attrs: { level: 2 },
+            content: [{ type: 'text', text: 'Why Lofoten' }],
+        });
+    });
+
+    it('stores metadata descriptionOverride bodies as codec-equivalent ProseMirror with no Lexical artifacts', async () => {
+        const t = convexTest(schema, modules);
+
+        const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
+        await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
+
+        const { productMetadata, collectionMetadata } = await t.run(async (ctx) => ({
+            productMetadata: await ctx.db
+                .query('productMetadata')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect(),
+            collectionMetadata: await ctx.db
+                .query('collectionMetadata')
+                .withIndex('by_shop', (q) => q.eq('shop', shopId))
+                .collect(),
+        }));
+
+        const puffer = productMetadata.find((row) => row.shopifyHandle === 'puffer-jacket');
+        expect(puffer?.descriptionOverride?.type).toBe('doc');
+        const featured = collectionMetadata.find((row) => row.shopifyHandle === 'featured');
+        expect(featured?.descriptionOverride?.type).toBe('doc');
+        expect(featured?.descriptionOverride?.content?.[0]?.attrs).toEqual({ level: 1 });
+
+        // Generator-equivalence: a seeded body is byte-identical to running the real CMSRICH-04 codec
+        // over its Lexical authoring source, proving the fixtures flow through the codec, not a copy.
+        const care = puffer?.blocks?.find((block: Record<string, unknown>) => block.blockType === 'rich-text');
+        expect(care?.body).toEqual(
+            lexicalToProseMirror(
+                lexicalDoc([
+                    list([
+                        'Machine wash cold inside-out with like colours.',
+                        'Tumble dry low or hang to dry.',
+                        'Iron inverse if needed; no bleach.',
+                    ]),
+                ]),
+            ),
+        );
+
+        // No Lexical serializer artifacts survive into storage — the storefront renderer is
+        // ProseMirror-native, so a stray `root`/`listitem` shape would be unrenderable.
+        const serialized = JSON.stringify({ productMetadata, collectionMetadata });
+        expect(serialized).not.toContain('"root"');
+        expect(serialized).not.toContain('"listitem"');
+    });
+
+    it('keeps the small fixture bodies INLINE on their rows: nothing shreds into cms_i18n', async () => {
+        const t = convexTest(schema, modules);
+
+        const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
+        await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
+
+        const sideRows = await t.run((ctx) => ctx.db.query('cms_i18n').collect());
+        expect(sideRows).toHaveLength(0);
     });
 });
