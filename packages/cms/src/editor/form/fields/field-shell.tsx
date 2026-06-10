@@ -4,6 +4,8 @@ import { type ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import type { FieldDescriptorAdmin } from '../../../descriptors/types';
 import { useField, useForm, useFormFields } from '../hooks';
+import { readLocaleSlot, writeLocaleSlot } from '../locale-bucket';
+import { useFormLocale } from '../locale';
 import { reduceFieldsToValues } from '../state';
 
 /**
@@ -111,15 +113,27 @@ export type UseEditorFieldResult<T> = {
  * condition flips back to `true`, the field is restored with the value it held
  * before it was hidden.
  *
- * @param field - The descriptor, read for its `admin.condition` hook.
+ * Localized leaves (descriptor `localized: true` under a mounted
+ * `FormLocaleProvider`) bind through the locale-bucket projection: the leaf
+ * stores the WHOLE per-locale bucket while the widget reads and writes only the
+ * active locale's slot, so editing locale B leaves locale A's slot byte-for-byte
+ * intact (CMSGATE-01). Prune/restore operates on the RAW leaf so a hidden
+ * localized field reappears with every locale's slot, not just the active one.
+ *
+ * @param field - The descriptor, read for its `admin.condition` hook and `localized` flag.
  * @param path - The field's dotted form-state path.
  * @returns The field value, setter, visibility, and validation message.
  * @throws {MissingContextProviderError} When used outside a `<Form>`.
  */
-export function useEditorField<T>(field: { admin?: FieldDescriptorAdmin }, path: string): UseEditorFieldResult<T> {
-    const { value, setValue, valid, errorMessage } = useField<T>({ path });
+export function useEditorField<T>(
+    field: { admin?: FieldDescriptorAdmin; localized?: boolean },
+    path: string,
+): UseEditorFieldResult<T> {
+    const { value: rawValue, setValue: setRawValue, valid, errorMessage } = useField<unknown>({ path });
     const { dispatchFields } = useForm();
     const state = useFormFields(([fields]) => fields);
+    const formLocale = useFormLocale();
+    const localized = field.localized === true && formLocale !== null;
 
     const condition = field.admin?.condition;
     const visible = useMemo(() => {
@@ -128,13 +142,15 @@ export function useEditorField<T>(field: { admin?: FieldDescriptorAdmin }, path:
         return condition(data, getSiblingData(data, path));
     }, [condition, state, path]);
 
-    // Remember the last value seen while visible so a field that reappears can
-    // be restored to what the user had typed before its condition hid it. Skip
-    // the capture while pruned: the field is absent from state then, so `value`
-    // reads `undefined` and would clobber the value we need to restore.
+    // Remember the last RAW value seen while visible so a field that reappears
+    // can be restored to what the user had typed before its condition hid it
+    // (for a localized leaf the raw value is the whole bucket — restoring the
+    // projection would drop the other locales' slots). Skip the capture while
+    // pruned: the field is absent from state then, so `rawValue` reads
+    // `undefined` and would clobber the value we need to restore.
     const pruned = useRef(false);
-    const lastVisibleValue = useRef<T | undefined>(value);
-    if (visible && !pruned.current) lastVisibleValue.current = value;
+    const lastVisibleValue = useRef<unknown>(rawValue);
+    if (visible && !pruned.current) lastVisibleValue.current = rawValue;
 
     // Keep form state in sync with visibility on every state change, not just
     // when `visible` flips: `<Form>` re-seeds the full `initialState` under the
@@ -154,6 +170,15 @@ export function useEditorField<T>(field: { admin?: FieldDescriptorAdmin }, path:
         }
         pruned.current = false;
     }, [condition, visible, state, path, dispatchFields]);
+
+    const value =
+        localized && formLocale
+            ? readLocaleSlot<T>(rawValue, formLocale.locale, formLocale.defaultLocale)
+            : (rawValue as T | undefined);
+    const setValue =
+        localized && formLocale
+            ? (next: T) => setRawValue(writeLocaleSlot(rawValue, formLocale.locale, next, formLocale.defaultLocale))
+            : setRawValue;
 
     return { value, setValue, visible, error: valid ? undefined : errorMessage };
 }

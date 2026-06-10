@@ -110,8 +110,59 @@ describe('<EditorFields>', () => {
         fireEvent.change(controlAt(container, 'sections.0.title', 'input'), { target: { value: 'Support' } });
 
         const { data, modified } = probe(container);
-        expect((data.sections as Array<Record<string, unknown>>)[0]?.title).toBe('Support');
+        // `title` is a LOCALIZED leaf: the edit lands in the active locale's
+        // bucket slot (the default `en-US` here), upgrading the legacy plain
+        // value to bucket shape on first write.
+        expect((data.sections as Array<Record<string, unknown>>)[0]?.title).toEqual({ 'en-US': 'Support' });
         expect(modified).toBe(true);
+    });
+
+    it('writes a localized leaf into the active locale slot, leaving the other locale intact', () => {
+        const { container } = render(
+            <Form
+                action={() => {}}
+                initialState={buildInitialFormState({
+                    localeSwitcher: { enabled: true, label: { 'en-US': 'Region', 'de-DE': 'Region (DE)' } },
+                })}
+            >
+                <EditorFields collection="header" locale="de-DE" defaultLocale="en-US" />
+                <StateProbe />
+            </Form>,
+        );
+
+        const input = controlAt(container, 'localeSwitcher.label', 'input') as HTMLInputElement;
+        // The widget projects ONLY the active locale's slot — never locale A's value.
+        expect(input.value).toBe('Region (DE)');
+
+        fireEvent.change(input, { target: { value: 'Standort' } });
+
+        const { data, modified } = probe(container);
+        const switcher = data.localeSwitcher as Record<string, unknown>;
+        expect(switcher.label).toEqual({ 'en-US': 'Region', 'de-DE': 'Standort' });
+        expect(modified).toBe(true);
+    });
+
+    it('upgrades a legacy plain localized value to a bucket attributed to the tenant default', () => {
+        const { container } = render(
+            <Form
+                action={() => {}}
+                initialState={buildInitialFormState({
+                    localeSwitcher: { enabled: true, label: 'Region' },
+                })}
+            >
+                <EditorFields collection="header" locale="de-DE" defaultLocale="en-US" />
+                <StateProbe />
+            </Form>,
+        );
+
+        const input = controlAt(container, 'localeSwitcher.label', 'input') as HTMLInputElement;
+        // Locale B starts empty — the legacy plain value belongs to the default locale.
+        expect(input.value).toBe('');
+
+        fireEvent.change(input, { target: { value: 'Standort' } });
+
+        const switcher = probe(container).data.localeSwitcher as Record<string, unknown>;
+        expect(switcher.label).toEqual({ 'en-US': 'Region', 'de-DE': 'Standort' });
     });
 
     it('renders the depth-6 header nav structure end to end (CMSGATE-01 prerequisite)', () => {

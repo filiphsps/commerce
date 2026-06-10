@@ -20,31 +20,11 @@ vi.mock('@/components/cms/document-form-body', () => ({
     ),
 }));
 
-// Mock `@nordcom/commerce-cms/ui` so the test bypasses the package's
-// transitive `@payloadcms/ui/css` -> `react-image-crop/dist/ReactCrop.css`
-// side-effect chain. The compiled cms package is loaded by Node (externalized
-// from `node_modules`), so a `vi.mock('@payloadcms/ui', …)` cannot reach
-// EditUpload's CSS import — mocking at this boundary cuts the chain entirely.
-vi.mock('@nordcom/commerce-cms/ui', () => ({
-    PayloadFieldShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}));
-
-// Stub the cms-server-function module — the real one imports `payload.config`
-// which boots the full Payload runtime (Mongo, plugins, etc.).
-vi.mock('@/lib/cms-server-function', () => ({ cmsServerFunction: vi.fn() }));
-
-const STUB_SHELL_PROPS = {
-    config: {} as unknown,
-    serverFunction: vi.fn(),
-    dateFNSKey: 'en-US' as unknown,
-    fallbackLang: 'en' as unknown,
-    languageCode: 'en',
-    languageOptions: [] as unknown,
-    permissions: {} as unknown,
-    theme: 'light',
-    translations: {} as unknown,
-    user: null,
-} as unknown as CmsShellProps;
+// Since CMSGATE-01 the shell-prop bag is opaque and UNCONSUMED here — the
+// Payload field shell moved into the theme route's bespoke field surface, so
+// this chrome needs no `@nordcom/commerce-cms/ui` mock anymore. The prop is
+// still part of the runtime seam's call shape, so the tests keep passing one.
+const STUB_SHELL_PROPS: CmsShellProps = { theme: 'light' };
 
 describe('DocumentForm', () => {
     it('renders the title via PageHeader', () => {

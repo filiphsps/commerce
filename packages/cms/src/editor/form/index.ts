@@ -44,6 +44,14 @@ export {
     useFormFields,
     useFormModified,
 } from './hooks';
+export { type FormLocale, FormLocaleProvider, useFormLocale } from './locale';
+export {
+    isLocaleBucketValue,
+    type LocaleBucket,
+    readLocaleSlot,
+    toLocaleBucket,
+    writeLocaleSlot,
+} from './locale-bucket';
 export { formReducer } from './reducer';
 export {
     createFieldRegistry,

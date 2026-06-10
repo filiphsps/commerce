@@ -201,6 +201,52 @@ describe('cms/read — storefront-facing published reads', () => {
         expect(de?.seo).toEqual({ title: 'Home', description: 'Welcome' });
     });
 
+    it('deep-resolves nested localized buckets in the header/footer singletons (CMSGATE-01)', async () => {
+        const t = await corpus();
+        await t.run(async (ctx) => {
+            const shop = (await ctx.db.query('shops').collect()).find((row) => row.legacyId === SHOP_PUBLIC_ID);
+            if (!shop) throw new TypeError('corpus shop missing');
+            await ctx.db.insert('cmsDocuments', {
+                shopId: shop._id,
+                collection: 'footer',
+                data: {
+                    sections: [
+                        {
+                            title: { 'en-US': 'Shop', 'de-DE': 'Laden' },
+                            links: [{ link: { kind: 'external', label: 'All', url: '/all/' } }],
+                        },
+                    ],
+                    copyrightLine: { 'en-US': '© Acme' },
+                },
+                status: 'published',
+                createdAt: NOW,
+                updatedAt: NOW,
+            });
+        });
+
+        const de = await t.query(singletonRef, { ...base, locale: 'de-DE', collection: 'footer' });
+        const deSections = de?.sections as Array<Record<string, unknown>>;
+        expect(deSections[0]?.title).toBe('Laden');
+        // The non-localized link object passes through untouched — its keys
+        // (`kind`/`label`/`url`) never trip the bucket shape test.
+        expect(deSections[0]?.links).toEqual([{ link: { kind: 'external', label: 'All', url: '/all/' } }]);
+        // `copyrightLine` has no de-DE slot — the chain falls back to the shop default.
+        expect(de?.copyrightLine).toBe('© Acme');
+
+        // A locale outside every bucket falls back through shop default to the stored slot.
+        const sv = await t.query(singletonRef, { ...base, locale: 'sv-SE', collection: 'footer' });
+        expect((sv?.sections as Array<Record<string, unknown>>)[0]?.title).toBe('Shop');
+    });
+
+    it('serves the editor-bucketed header byte-identically for plain values (golden parity)', async () => {
+        const t = await corpus();
+        // The corpus header stores PLAIN values only (the HARNESS-12 shape):
+        // the deep walk must be a structural no-op for it.
+        const header = await t.query(singletonRef, { ...base, collection: 'header' });
+        expect(header?.items).toEqual([{ link: { kind: 'external', label: 'Shop', url: '/shop/' } }]);
+        expect(header?.logoLink).toBe('/');
+    });
+
     it('tolerates HARNESS-12-style unbucketed rows, passing plain values through as resolved', async () => {
         const t = await corpus();
         const page = await t.query(pageBySlugRef, { ...base, slug: 'about' });

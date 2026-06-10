@@ -1,16 +1,22 @@
 import type { FormState } from '@nordcom/commerce-cms/editor/form';
-import { PayloadFieldShell, type PayloadFieldShellProps } from '@nordcom/commerce-cms/ui';
 import type { ReactNode } from 'react';
 
 import { DocumentFormBody } from '@/components/cms/document-form-body';
 import { PageFooter } from '@/components/shell/page-footer';
 import { type Breadcrumb, PageHeader } from '@/components/shell/page-header';
 
-export type CmsShellProps = Omit<PayloadFieldShellProps, 'children'>;
+/**
+ * Opaque runtime shell-prop bag. The editor runtime seam (`EditorRuntime.getShellProps`)
+ * still produces it for every page render, but since the CMSGATE-01 de-Payload pass this
+ * shell no longer consumes it — the last consumer is the theme route, which mounts
+ * `<PayloadFieldShell>` around its own bespoke field surface. TEARDOWN deletes the seam.
+ */
+export type CmsShellProps = Record<string, unknown>;
 
 export type DocumentFormProps = {
     title: string;
     breadcrumbs?: Breadcrumb[];
+    /** Carried for the runtime seam's call shape; unused here (see {@link CmsShellProps}). */
     shellProps: CmsShellProps;
     children: ReactNode;
     onSubmit: (formData: FormData) => Promise<void>;
@@ -22,24 +28,25 @@ export type DocumentFormProps = {
 
 /**
  * Full-page document editor layout combining a PageHeader, the native CMSFORM-01
- * form body, and an optional live-preview pane. The Payload field shell is still
- * mounted around the body as a TEMPORARY provider adapter — legacy Payload field
- * widgets that survive until CMSDATA-07's surface rebind read its contexts;
- * the native form core itself does not.
+ * form body, and an optional live-preview pane. Since CMSGATE-01 the Payload
+ * field shell is GONE from this path: the native form core needs no Payload
+ * providers, so every default editor surface (header, footer, pages, …) renders
+ * with zero `@payloadcms/*` on its import graph. The theme route — the one
+ * surface still hosting legacy `@payloadcms/ui` widgets — mounts the shell
+ * inside its own `fieldSurface` instead.
  *
  * @param props.title - Page heading displayed in PageHeader.
  * @param props.breadcrumbs - Optional breadcrumb trail rendered above the title.
- * @param props.shellProps - Props forwarded to PayloadFieldShell (Payload context providers).
  * @param props.children - Field components rendered inside the form body.
  * @param props.onSubmit - Server action called on explicit form submit.
  * @param props.initialState - Native FormState used to seed the form.
  * @param props.toolbar - Optional toolbar slot rendered in the sticky PageFooter.
  * @param props.livePreview - When provided the form body switches to a two-column grid layout.
+ * @returns The assembled editor page layout.
  */
 export function DocumentForm({
     title,
     breadcrumbs,
-    shellProps,
     children,
     onSubmit,
     initialState,
@@ -51,22 +58,20 @@ export function DocumentForm({
             <PageHeader title={title} breadcrumbs={breadcrumbs} />
 
             <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-6 py-4">
-                <PayloadFieldShell {...shellProps}>
-                    <DocumentFormBody action={onSubmit} initialState={initialState}>
-                        <div
-                            className={
-                                livePreview
-                                    ? 'grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-2'
-                                    : 'flex min-w-0 flex-col gap-4'
-                            }
-                        >
-                            <div className="flex min-w-0 flex-col gap-4 overflow-x-auto">{children}</div>
-                            {livePreview ? <div className="flex min-w-0 flex-col gap-4">{livePreview}</div> : null}
-                        </div>
+                <DocumentFormBody action={onSubmit} initialState={initialState}>
+                    <div
+                        className={
+                            livePreview
+                                ? 'grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-2'
+                                : 'flex min-w-0 flex-col gap-4'
+                        }
+                    >
+                        <div className="flex min-w-0 flex-col gap-4 overflow-x-auto">{children}</div>
+                        {livePreview ? <div className="flex min-w-0 flex-col gap-4">{livePreview}</div> : null}
+                    </div>
 
-                        {toolbar ? <PageFooter>{toolbar}</PageFooter> : null}
-                    </DocumentFormBody>
-                </PayloadFieldShell>
+                    {toolbar ? <PageFooter>{toolbar}</PageFooter> : null}
+                </DocumentFormBody>
             </div>
         </div>
     );

@@ -38,9 +38,6 @@ vi.mock('./editor-convex-bridge', () => ({
         listVersions: vi.fn(),
     },
 }));
-vi.mock('./get-cms-shell-props', () => ({
-    getCmsShellProps: vi.fn(),
-}));
 vi.mock('./payload-ctx', () => ({
     getAuthedPayloadCtx: vi.fn(),
 }));

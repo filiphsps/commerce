@@ -7,6 +7,7 @@ import { editorCollectionSchema } from '../collection-fields';
 import {
     createFieldRegistry,
     type FieldRegistry,
+    FormLocaleProvider,
     registerCompositeFieldWidgets,
     registerDataBoundFieldWidgets,
     registerRichTextFieldWidget,
@@ -34,6 +35,18 @@ export type EditorFieldsProps = {
      * when another surface (e.g. the theme editor) owns the UI for them.
      */
     omitPaths?: string[];
+    /**
+     * The active editing locale (the edit page's narrowed `?locale=`).
+     * Localized leaves bind this locale's slot of their per-field bucket;
+     * omitted falls back to `defaultLocale`.
+     */
+    locale?: string;
+    /**
+     * The tenant's default locale — the slot legacy plain (pre-bucket) values
+     * are attributed to so they survive a locale-aware edit. Defaults to the
+     * platform default `en-US`.
+     */
+    defaultLocale?: string;
 };
 
 /**
@@ -88,20 +101,26 @@ function buildEditorFieldRegistry(richText: boolean): FieldRegistry {
  * @param props.collection - Collection slug to render fields for.
  * @param props.omitPaths - Named top-level fields to skip in the rendered tree
  *   without touching their form-state entries.
+ * @param props.locale - Active editing locale for localized leaves.
+ * @param props.defaultLocale - Tenant default locale (legacy plain-value attribution).
  * @returns The rendered descriptor tree.
  */
-export function EditorFields({ collection, omitPaths }: EditorFieldsProps) {
+export function EditorFields({ collection, omitPaths, locale, defaultLocale }: EditorFieldsProps) {
     const schema = editorCollectionSchema(collection);
     const registry = useMemo(() => buildEditorFieldRegistry(schema.richText === true), [schema.richText]);
 
     const omit = new Set(omitPaths ?? []);
     const fields = schema.fields.filter((field) => !('name' in field && omit.has(field.name)));
 
+    const resolvedDefault = defaultLocale ?? 'en-US';
+
     return (
-        <RelationshipQueryProvider query={emptyRelationshipQuery}>
-            <UploadActionProvider action={unwiredUploadAction}>
-                <RenderFields registry={registry} fields={fields} parentPath="" />
-            </UploadActionProvider>
-        </RelationshipQueryProvider>
+        <FormLocaleProvider locale={locale ?? resolvedDefault} defaultLocale={resolvedDefault}>
+            <RelationshipQueryProvider query={emptyRelationshipQuery}>
+                <UploadActionProvider action={unwiredUploadAction}>
+                    <RenderFields registry={registry} fields={fields} parentPath="" />
+                </UploadActionProvider>
+            </RelationshipQueryProvider>
+        </FormLocaleProvider>
     );
 }

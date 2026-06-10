@@ -179,7 +179,14 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
             }
             livePreview={livePreview}
         >
-            {fieldSurface ?? <EditorFields collection={String(manifest.collection)} omitPaths={omitPaths} />}
+            {fieldSurface ?? (
+                <EditorFields
+                    collection={String(manifest.collection)}
+                    omitPaths={omitPaths}
+                    locale={locale}
+                    defaultLocale={tenantDefault}
+                />
+            )}
         </runtime.DocumentForm>
     );
 }

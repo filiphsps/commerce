@@ -3,12 +3,6 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { fireEvent, render } from '@/utils/test/react';
 
-// The Payload provider shell is a heavy RootProvider tree (and a CSS
-// side-effect import); the smoke test verifies the NATIVE core mounts inside
-// the runtime's DocumentForm, so the shell collapses to a pass-through.
-vi.mock('@nordcom/commerce-cms/ui', () => ({
-    PayloadFieldShell: ({ children }: { children?: React.ReactNode }) => <div data-testid="shell">{children}</div>,
-}));
 vi.mock('@/components/shell/page-header', () => ({
     PageHeader: ({ title }: { title: string }) => <h1>{title}</h1>,
 }));
@@ -24,7 +18,6 @@ vi.mock('@/components/shell/empty-state', () => ({ EmptyState: vi.fn() }));
 
 // Server-side wiring the runtime module imports but this render never calls.
 vi.mock('./editor-convex-bridge', () => ({ editorConvexBridge: {} }));
-vi.mock('./get-cms-shell-props', () => ({ getCmsShellProps: vi.fn() }));
 vi.mock('./payload-ctx', () => ({ getAuthedPayloadCtx: vi.fn() }));
 
 import { editorRuntime } from './editor-runtime';

@@ -104,7 +104,7 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
                 />
             }
         >
-            <EditorFields collection={String(manifest.collection)} />
+            <EditorFields collection={String(manifest.collection)} locale={locale} defaultLocale={tenantDefault} />
         </runtime.DocumentForm>
     );
 }

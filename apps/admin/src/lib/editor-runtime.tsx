@@ -7,7 +7,6 @@ import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
 import { EmptyState } from '@/components/shell/empty-state';
 import { PageHeader } from '@/components/shell/page-header';
 import { editorConvexBridge } from './editor-convex-bridge';
-import { getCmsShellProps } from './get-cms-shell-props';
 import { getAuthedPayloadCtx } from './payload-ctx';
 
 /**
@@ -37,7 +36,12 @@ export const editorRuntime: EditorRuntime = {
         tenantId: ctx.tenant?.id ?? null,
     }),
     buildFormState: async ({ data }) => ({ state: buildInitialFormState(data) }),
-    getShellProps: async (domain, locale) => getCmsShellProps(domain ?? undefined, locale),
+    // The shell-prop bag is empty since CMSGATE-01: `DocumentForm` no longer
+    // mounts the Payload field shell, so building the Payload client config
+    // here would only drag `@payloadcms/ui` back onto every editor page's
+    // import graph. The one remaining consumer — the theme route's bespoke
+    // field surface — calls `getCmsShellProps` itself.
+    getShellProps: async () => ({}),
     convex: editorConvexBridge,
     // Breadcrumb hrefs are `string` on the runtime seam but Next `Route`s in the
     // shell components; the casts below bridge that boundary (same pattern as

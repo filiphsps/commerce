@@ -1,3 +1,4 @@
+import { isLocaleBucketValue } from './locale-bucket';
 import type { FormFieldState, FormState } from './types';
 
 /**
@@ -103,6 +104,14 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  * @param value - The document value at `path`.
  */
 function flattenIntoState(state: FormState, path: string, value: unknown): void {
+    // A localized bucket stays a SINGLE leaf: the locale-aware widget chokepoint
+    // (`useEditorField`) projects the active locale's slot in and out of it, and
+    // splitting it into per-locale paths would re-introduce the locale-clobber
+    // the bucket model exists to prevent (CMSGATE-01).
+    if (isLocaleBucketValue(value)) {
+        state[path] = { value, initialValue: value };
+        return;
+    }
     if (isPlainObject(value) && Object.keys(value).length > 0) {
         for (const [key, child] of Object.entries(value)) {
             flattenIntoState(state, `${path}.${key}`, child);
