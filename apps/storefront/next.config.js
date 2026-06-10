@@ -100,6 +100,13 @@ const config = {
                 protocol: 'https',
                 hostname: '**.gravatar.com',
             },
+            // CMSMEDIA-03: CMS media serves from Convex file storage (`storage.getUrl`, resolved
+            // at read time — see @nordcom/commerce-cms/media/urls). Pinned explicitly so removing
+            // the multi-tenant `*` wildcard above never silently breaks every CMS image.
+            {
+                protocol: 'https',
+                hostname: '**.convex.cloud',
+            },
         ],
         formats: ['image/webp', 'image/avif'],
     },

@@ -128,13 +128,14 @@ function toDerivativeMetadata(doc: Doc<'cmsMediaDerivatives'>): MediaDerivativeM
 /**
  * Reads every derivative row for one asset through the `by_media` index, in the frozen size-name
  * declaration order (index order is `(mediaId, size)` — alphabetical by size — so the frozen order
- * is restored explicitly for a stable wire contract).
+ * is restored explicitly for a stable wire contract). Exported for the CMSMEDIA-03 URL resolution
+ * in `cms/media.ts`, which maps each row to its per-size serving URL.
  *
  * @param db - The (RLS-wrapped) database reader (the writer is assignable, being its extension).
  * @param mediaId - The owning `cmsMedia` row id.
  * @returns The asset's derivative rows in frozen size order.
  */
-async function readDerivativeRows(
+export async function readDerivativeRows(
     db: GenericDatabaseReader<DataModel>,
     mediaId: Id<'cmsMedia'>,
 ): Promise<Doc<'cmsMediaDerivatives'>[]> {

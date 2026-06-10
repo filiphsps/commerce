@@ -22,18 +22,21 @@ const NOW = 1_700_000_000_000;
 
 /**
  * Module map for `convex-test`: the real `cms/media` module is mapped so the upload mutations and
- * read queries resolve by `FunctionReference` and run end to end; the dummy `_generated` key only
- * anchors convex-test's `/convex/` module-root detection (see `cms/access.test.ts`).
+ * read queries resolve by `FunctionReference` and run end to end (`cms/media_derivatives` rides
+ * along for the URL-resolution tests' fulfillment calls); the dummy `_generated` key only anchors
+ * convex-test's `/convex/` module-root detection (see `cms/access.test.ts`).
  */
 const modules = {
     '/convex/_generated/server.js': () => Promise.resolve({}),
     '/convex/cms/media.ts': () => import('./media'),
+    '/convex/cms/media_derivatives.ts': () => import('./media_derivatives'),
 };
 
 const generateUploadUrlRef = makeFunctionReference<'mutation'>('cms/media:generateUploadUrl');
 const finalizeUploadRef = makeFunctionReference<'mutation'>('cms/media:finalizeUpload');
 const listRef = makeFunctionReference<'query'>('cms/media:list');
 const byIdRef = makeFunctionReference<'query'>('cms/media:byId');
+const saveDerivativesRef = makeFunctionReference<'mutation'>('cms/media_derivatives:saveDerivatives');
 
 /**
  * Seeds an isolated tenant — one operator user, one shop, and a collaborator linking them —
@@ -129,8 +132,9 @@ describe('cms media storage', () => {
             filename: 'logo.png',
             mimeType: 'image/png',
             filesize: bytes.byteLength,
-            url: null,
         });
+        // CMSMEDIA-03: the original's serving URL resolves at read time from Convex storage.
+        expect(typeof media.url).toBe('string');
         expect(typeof media.id).toBe('string');
         expect(new Date(media.createdAt).getTime()).toBeGreaterThan(0);
 
@@ -250,6 +254,120 @@ describe('cms media storage', () => {
         await expect(asB.query(listRef, {})).resolves.toEqual([]);
         await expect(asB.query(byIdRef, { mediaId: media.id })).resolves.toBeNull();
         await expect(asA.query(byIdRef, { mediaId: media.id })).resolves.not.toBeNull();
+    });
+
+    it('resolves the original URL plus every ready derivative URL from its own blob (CMSMEDIA-03)', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const originalId = await storeBlob(t, new Uint8Array([0x89, 0x50, 0x4e, 0x47, 1, 2, 3, 4]));
+        const media = await asOp.mutation(finalizeUploadRef, {
+            storageId: originalId,
+            filename: 'photo.png',
+            mimeType: 'image/png',
+            alt: 'photo',
+        });
+
+        const frozenSizes = [
+            { size: 'thumbnail', width: 320, height: 240 },
+            { size: 'card', width: 768, height: 576 },
+            { size: 'feature', width: 1280, height: 720 },
+            { size: 'hero', width: 1920, height: 1080 },
+        ] as const;
+        const derivatives = [];
+        for (const { size, width, height } of frozenSizes) {
+            derivatives.push({ size, width, height, storageId: await storeBlob(t, new Uint8Array([1, 2])) });
+        }
+        await asOp.mutation(saveDerivativesRef, {
+            mediaId: media.id,
+            original: { width: 4000, height: 3000 },
+            derivatives,
+        });
+
+        const resolved = await asOp.query(byIdRef, { mediaId: media.id });
+        expect(typeof resolved?.url).toBe('string');
+        expect(resolved?.sizes).toBeDefined();
+        for (const { size, width, height } of frozenSizes) {
+            const entry = resolved?.sizes?.[size];
+            expect(typeof entry?.url).toBe('string');
+            // A ready derivative serves ITS OWN blob, never the original.
+            expect(entry?.url).not.toBe(resolved?.url);
+            expect(entry?.width).toBe(width);
+            expect(entry?.height).toBe(height);
+            expect(entry?.filesize).toBe(2);
+        }
+        expect(resolved?.thumbnailURL).toBe(resolved?.sizes?.thumbnail?.url);
+    });
+
+    it('falls back to the original URL for pending derivatives so no size ever serves broken', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const originalId = await storeBlob(t, new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
+        const media = await asOp.mutation(finalizeUploadRef, {
+            storageId: originalId,
+            filename: 'fresh.png',
+            mimeType: 'image/png',
+            alt: 'fresh',
+        });
+
+        // Fulfill only the thumbnail; the other three plan rows stay `pending`.
+        const thumbnailBlob = await storeBlob(t, new Uint8Array([9, 9, 9]));
+        await asOp.mutation(saveDerivativesRef, {
+            mediaId: media.id,
+            original: { width: 1024, height: 768 },
+            derivatives: [{ size: 'thumbnail', width: 320, height: 240, storageId: thumbnailBlob }],
+        });
+
+        const resolved = await asOp.query(byIdRef, { mediaId: media.id });
+        expect(typeof resolved?.url).toBe('string');
+        expect(resolved?.sizes?.thumbnail?.url).not.toBe(resolved?.url);
+        for (const pending of ['card', 'feature', 'hero'] as const) {
+            const entry = resolved?.sizes?.[pending];
+            expect(entry?.url).toBe(resolved?.url);
+            // The fallback carries the ORIGINAL's metadata, post-fulfillment dimensions included.
+            expect(entry?.width).toBe(1024);
+            expect(entry?.height).toBe(768);
+            expect(entry?.mimeType).toBe('image/png');
+            expect(entry?.filename).toBe('fresh.png');
+        }
+        expect(resolved?.thumbnailURL).toBe(resolved?.sizes?.thumbnail?.url);
+
+        // An untouched plan (zero fulfillments) serves the original everywhere, thumbnail included.
+        const untouchedId = await storeBlob(t, new Uint8Array([0x89, 0x50]));
+        const untouched = await asOp.mutation(finalizeUploadRef, {
+            storageId: untouchedId,
+            filename: 'untouched.png',
+            mimeType: 'image/png',
+            alt: 'untouched',
+        });
+        expect(typeof untouched.url).toBe('string');
+        expect(untouched.thumbnailURL).toBe(untouched.url);
+        for (const size of ['thumbnail', 'card', 'feature', 'hero'] as const) {
+            expect(untouched.sizes?.[size]?.url).toBe(untouched.url);
+        }
+    });
+
+    it('carries only the original URL for non-image media (no sizes map)', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const storageId = await storeBlob(t, new Uint8Array([0x25, 0x50, 0x44, 0x46]));
+        const media = await asOp.mutation(finalizeUploadRef, {
+            storageId,
+            filename: 'manual.pdf',
+            mimeType: 'application/pdf',
+            alt: 'manual',
+        });
+        expect(typeof media.url).toBe('string');
+        expect(media.thumbnailURL).toBeNull();
+        expect(media.sizes).toBeUndefined();
+
+        const listed = await asOp.query(listRef, {});
+        expect(listed[0]?.url).toBe(media.url);
     });
 
     it('matches mime types case-insensitively, with parameters, and fails closed on garbage', () => {

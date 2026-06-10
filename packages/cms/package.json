@@ -115,6 +115,10 @@
         "./media/derive": [
             "./src/media/derive.ts",
             "./dist/media/derive.js"
+        ],
+        "./media/urls": [
+            "./src/media/urls.ts",
+            "./dist/media/urls.js"
         ]
     },
     "scripts": {

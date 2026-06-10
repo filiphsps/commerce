@@ -1,9 +1,11 @@
 import type { Media } from '@nordcom/commerce-cms/types';
+import type { GenericDatabaseReader, StorageReader } from 'convex/server';
 import { ConvexError, v } from 'convex/values';
 
-import type { Doc } from '../_generated/dataModel';
+import type { DataModel, Doc } from '../_generated/dataModel';
 import { tenantMutation, tenantQuery } from '../lib/tenant';
-import { scheduleDerivativePlan } from './media_derivatives';
+import { MEDIA_DERIVATIVE_SIZE_NAMES } from '../tables/cms_media';
+import { isImageMimeType, readDerivativeRows, scheduleDerivativePlan } from './media_derivatives';
 
 /**
  * Stable string codes carried on every {@link ConvexError} the media storage layer throws, so call
@@ -49,13 +51,13 @@ export function isAllowedMediaMimeType(mimeType: string): boolean {
 
 /**
  * Projects a `cmsMedia` row onto the frozen `Media` read contract (`@nordcom/commerce-cms/types`,
- * the CMSDESC-02 generated shape). Storage fields are populated from the row; `url`/`thumbnailURL`
- * stay `null` until the CDN/consumption layer (CMSMEDIA-03). `focalX`/`focalY` are set at finalize
- * for images (default center) and `width`/`height` once the Node-side derivative pass (CMSMEDIA-02)
- * reports the original's dimensions through `cms/media_derivatives:saveDerivatives`; non-image rows
- * keep them `null`. `sizes` is omitted — per-size metadata is queryable via
- * `cms/media_derivatives:byMedia` instead. The `Media` return annotation is the compile-time
- * contract gate: drift between this projection and the frozen type fails `tsc`.
+ * the CMSDESC-02 generated shape) WITHOUT serving URLs — the synchronous base every read path
+ * passes through {@link resolveMediaUrls}, which fills `url`/`thumbnailURL`/`sizes` at read time.
+ * `focalX`/`focalY` are set at finalize for images (default center) and `width`/`height` once the
+ * Node-side derivative pass (CMSMEDIA-02) reports the original's dimensions through
+ * `cms/media_derivatives:saveDerivatives`; non-image rows keep them `null`. The `Media` return
+ * annotation is the compile-time contract gate: drift between this projection and the frozen type
+ * fails `tsc`.
  *
  * @param doc - The tenant-scoped media row.
  * @returns The `Media`-shaped wire object (Convex `_id`/`shopId` surfaced as plain strings).
@@ -78,6 +80,73 @@ function toMedia(doc: Doc<'cmsMedia'>): Media {
         focalX: doc.focalX ?? null,
         focalY: doc.focalY ?? null,
     };
+}
+
+/** The populated per-size URL map on the frozen `Media` contract (`sizes` made required). */
+type MediaSizes = NonNullable<Media['sizes']>;
+
+/**
+ * The context slice URL resolution needs: the (RLS-wrapped) database reader plus the storage
+ * reader. Both tenant queries and tenant mutations satisfy it, so finalize and the read paths
+ * share one resolver.
+ */
+type MediaUrlResolutionCtx = {
+    db: GenericDatabaseReader<DataModel>;
+    storage: StorageReader;
+};
+
+/**
+ * Resolves a media row's serving URLs AT READ TIME onto the frozen `Media` contract — the
+ * CMSMEDIA-03 canonical scheme (documented in `@nordcom/commerce-cms/media/urls`): every URL comes
+ * from Convex file storage via `storage.getUrl` and is never persisted, which keeps the row valid
+ * if storage URLs rotate and makes derivative regeneration (which REPLACES the blob and its
+ * `storageId`) self-cache-busting. Migrated assets resolve identically because the PIPELINE-02
+ * import copies each preserved S3/R2 object into Convex storage before inserting the row.
+ *
+ * For images, every frozen size is always present on `sizes`: a `ready` derivative serves its own
+ * blob's URL (dimensions from the row, `mimeType`/`filesize` from the blob's recorded storage
+ * metadata), while a `pending` or unplanned size FALLS BACK to the original's URL and metadata so
+ * a consumer that picked a size never renders a broken image while generation is in flight.
+ * `thumbnailURL` mirrors `sizes.thumbnail`. Non-images (video, PDF) carry only the original `url`.
+ * A vanished original blob degrades `url` to `null` rather than throwing — absent media is a
+ * render-nothing condition for every consumer, not a page error.
+ *
+ * @param ctx - The database + storage slice of a tenant query/mutation context.
+ * @param doc - The tenant-scoped media row to resolve.
+ * @returns The `Media`-shaped wire object with `url`, `thumbnailURL`, and `sizes` populated.
+ */
+async function resolveMediaUrls(ctx: MediaUrlResolutionCtx, doc: Doc<'cmsMedia'>): Promise<Media> {
+    const base = toMedia(doc);
+    const url = await ctx.storage.getUrl(doc.storageId);
+    if (!isImageMimeType(doc.mimeType)) return { ...base, url };
+
+    const rows = await readDerivativeRows(ctx.db, doc._id);
+    const rowsBySize = new Map(rows.map((row) => [row.size, row]));
+    const sizes: MediaSizes = {};
+    for (const size of MEDIA_DERIVATIVE_SIZE_NAMES) {
+        const row = rowsBySize.get(size);
+        if (row?.status === 'ready' && row.storageId) {
+            const blob = await ctx.db.system.get(row.storageId);
+            sizes[size] = {
+                url: (await ctx.storage.getUrl(row.storageId)) ?? url,
+                width: row.width ?? null,
+                height: row.height ?? null,
+                mimeType: blob?.contentType ?? null,
+                filesize: blob?.size ?? null,
+                filename: null,
+            };
+            continue;
+        }
+        sizes[size] = {
+            url,
+            width: doc.width ?? null,
+            height: doc.height ?? null,
+            mimeType: doc.mimeType,
+            filesize: doc.filesize,
+            filename: doc.filename,
+        };
+    }
+    return { ...base, url, thumbnailURL: sizes.thumbnail?.url ?? url, sizes };
 }
 
 /**
@@ -172,7 +241,7 @@ export const finalizeUpload = tenantMutation({
                 message: 'Media row vanished within its own transaction.',
             });
         }
-        return toMedia(doc);
+        return resolveMediaUrls(ctx, doc);
     },
 });
 
@@ -187,7 +256,8 @@ const MAX_LIST_LIMIT = 100;
 
 /**
  * Lists the tenant's media documents, newest first, range-bounded via the `by_shop` index and a
- * clamped limit (defense in depth on top of the RLS read predicate).
+ * clamped limit (defense in depth on top of the RLS read predicate). Serving URLs are resolved at
+ * read time per {@link resolveMediaUrls}.
  *
  * @returns Up to `limit` media documents projected onto the frozen `Media` contract.
  * @throws {ConvexError} Any tenant-resolution failure from the `tenantQuery` constructor.
@@ -204,14 +274,14 @@ export const list = tenantQuery({
             .withIndex('by_shop', (q) => q.eq('shopId', ctx.shopId))
             .order('desc')
             .take(bounded);
-        return docs.map(toMedia);
+        return Promise.all(docs.map((doc) => resolveMediaUrls(ctx, doc)));
     },
 });
 
 /**
  * Fetches one media document by id. A cross-tenant id resolves to `null` rather than an error —
  * the RLS read predicate filters the row, making another tenant's media indistinguishable from a
- * nonexistent one.
+ * nonexistent one. Serving URLs are resolved at read time per {@link resolveMediaUrls}.
  *
  * @returns The media document on the frozen `Media` contract, or `null` when absent/foreign.
  * @throws {ConvexError} Any tenant-resolution failure from the `tenantQuery` constructor.
@@ -220,6 +290,6 @@ export const byId = tenantQuery({
     args: { mediaId: v.id('cmsMedia') },
     handler: async (ctx, { mediaId }): Promise<Media | null> => {
         const doc = await ctx.db.get(mediaId);
-        return doc ? toMedia(doc) : null;
+        return doc ? resolveMediaUrls(ctx, doc) : null;
     },
 });
