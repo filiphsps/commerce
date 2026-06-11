@@ -5,7 +5,27 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
 import { PageHeader } from '@/components/shell/page-header';
+import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+
+/**
+ * Derives a human-readable title from a Convex CMS document's serialized field map. Localized
+ * fields may be stored as per-locale buckets, so a bucket-shaped `title` falls back to its first
+ * string slot; the document id is the last resort so a row always renders a clickable label.
+ *
+ * @param data - The document's serialized field map.
+ * @param fallback - Returned when no title-shaped value exists (the document id).
+ * @returns The display title.
+ */
+function titleOf(data: Record<string, unknown>, fallback: string): string {
+    const title = data.title;
+    if (typeof title === 'string' && title.length > 0) return title;
+    if (typeof title === 'object' && title !== null && !Array.isArray(title)) {
+        const slot = Object.values(title).find((value) => typeof value === 'string' && value.length > 0);
+        if (typeof slot === 'string') return slot;
+    }
+    return fallback;
+}
 
 export const metadata: Metadata = {
     title: 'Content',
@@ -87,16 +107,15 @@ export default async function ContentOverviewPage({ params }: { params: Params }
 
     // Fetch recent activity per collection in parallel.
     // Defensive .catch so a single inaccessible collection doesn't break the overview.
+    // `pages` reads the Convex authority (CUTOVER-04 — the Mongo copy is an inert snapshot whose
+    // ids no longer address the native editor routes); the not-yet-flipped cohorts keep reading
+    // Payload-on-Mongo until CUTOVER-05/06 move them.
     const [pages, articles, productMeta, collectionMeta] = await Promise.all([
-        payload
-            .find({
-                collection: 'pages',
-                where: { tenant: { equals: tenant.id } },
-                sort: '-updatedAt',
-                limit: 5,
-                user,
-                overrideAccess: false,
-            })
+        editorConvexBridge
+            .list({ collection: 'pages', pageSize: 5 })
+            .then((page) => ({
+                docs: page.docs.map((doc) => ({ id: doc.documentId, title: titleOf(doc.data, doc.documentId) })),
+            }))
             .catch(() => ({ docs: [] as Array<{ id: string; title: string }> })),
         payload
             .find({

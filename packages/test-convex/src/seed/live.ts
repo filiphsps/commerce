@@ -245,6 +245,19 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
         'pages',
         pageFixtures.map((page) => ({ shop: shopId, ...page, ...stamp })),
     );
+    // The CUTOVER-04 gate cohort also lands as live `cmsDocuments` rows — the editor-model table
+    // the default-flipped storefront getters read (`cms/read.ts`); the pointerless published shape
+    // serves its own `data` as the published content. Mirrors `seedCmsMutation`'s cohort block.
+    importSeedRows(url, 'cmsDocuments', [
+        { shopId, collection: 'header', data: { ...headerData }, status: 'published', ...stamp },
+        ...pageFixtures.map((page) => ({
+            shopId,
+            collection: 'pages',
+            data: { ...page },
+            status: 'published',
+            ...stamp,
+        })),
+    ]);
     importSeedRows(
         url,
         'articles',

@@ -61,7 +61,8 @@ describe('PageApi draft-read branch', () => {
         delete process.env.CMS_READ_FLIP;
     });
 
-    it('forwards draft: true into the Payload find when draft mode is on', async () => {
+    it('forwards draft: true into the Payload find when draft mode is on (emergency-shadow mode)', async () => {
+        process.env.CMS_READ_FLIP = '-page';
         setDraftMode(true);
         vi.mocked(getPage).mockResolvedValue(mockCmsPage({ id: 'p1', slug: 'about' }) as never);
 
@@ -70,7 +71,8 @@ describe('PageApi draft-read branch', () => {
         expect(vi.mocked(getPage)).toHaveBeenCalledWith(expect.objectContaining({ draft: true, slug: 'about' }));
     });
 
-    it('keeps the published-only default when draft mode is off', async () => {
+    it('keeps the published-only default when draft mode is off (emergency-shadow mode)', async () => {
+        process.env.CMS_READ_FLIP = '-page';
         setDraftMode(false);
         vi.mocked(getPage).mockResolvedValue(mockCmsPage({ id: 'p1', slug: 'about' }) as never);
 
@@ -78,9 +80,8 @@ describe('PageApi draft-read branch', () => {
         expect(vi.mocked(getPage)).toHaveBeenCalledWith(expect.objectContaining({ draft: false }));
     });
 
-    it('serves the Convex draft read (draft: true arg) when the getter is flipped', async () => {
+    it('serves the Convex draft read (draft: true arg) in the bare default env — page is default-flipped', async () => {
         setDraftMode(true);
-        process.env.CMS_READ_FLIP = 'page';
         const { queries } = captureTransport();
 
         await PageApi({ shop: mockShop(), locale: Locale.from('en-US'), handle: 'about' });
@@ -93,16 +94,16 @@ describe('PageApi draft-read branch', () => {
         expect(vi.mocked(getPage)).not.toHaveBeenCalled();
     });
 
-    it('omits the draft arg from the flipped Convex read outside draft mode', async () => {
+    it('omits the draft arg from the default-flipped Convex read outside draft mode', async () => {
         setDraftMode(false);
-        process.env.CMS_READ_FLIP = 'page';
         const { queries } = captureTransport();
 
         await PageApi({ shop: mockShop(), locale: Locale.from('en-US'), handle: 'about' });
         expect(queries[0]?.args).not.toHaveProperty('draft');
     });
 
-    it('never schedules the divergence shadow for a draft-mode read', async () => {
+    it('never schedules the divergence shadow for a draft-mode read (emergency-shadow mode)', async () => {
+        process.env.CMS_READ_FLIP = '-page';
         process.env.CMS_READ_SHADOW = '1';
         vi.mocked(getPage).mockResolvedValue(mockCmsPage({ id: 'p1', slug: 'about' }) as never);
 

@@ -26,11 +26,11 @@ import { collectionMetadata } from '../collections/collection-metadata';
 import { media } from '../collections/media';
 import { pages } from '../collections/pages';
 import { productMetadata } from '../collections/product-metadata';
+import { convexCutoverLocked } from './convex-cutover-locked';
 import { publishedOrAuthRead } from './published-or-auth-read';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from './tenant-scoped-read';
 
 const tenantScopedContent: ReadonlyArray<readonly [string, CollectionConfig]> = [
-    ['pages', pages],
     ['articles', articles],
     ['productMetadata', productMetadata],
     ['collectionMetadata', collectionMetadata],
@@ -38,9 +38,15 @@ const tenantScopedContent: ReadonlyArray<readonly [string, CollectionConfig]> = 
 ] as const;
 
 const globals: ReadonlyArray<readonly [string, CollectionConfig]> = [
-    ['header', header],
     ['footer', footer],
     ['businessData', businessData],
+] as const;
+
+// The CUTOVER-04 gate cohort: authored exclusively in the Convex-native editor, so the
+// Payload write surface is locked shut while reads keep serving the inert Mongo snapshot.
+const cutoverLocked: ReadonlyArray<readonly [string, CollectionConfig, unknown]> = [
+    ['pages', pages, tenantScopedRead],
+    ['header', header, publishedOrAuthRead],
 ] as const;
 
 describe('multi-tenant isolation — predicate wiring', () => {
@@ -82,6 +88,23 @@ describe('multi-tenant isolation — predicate wiring', () => {
 
         it('delete is admin-only', () => {
             expect(collection.access?.delete).toBe(adminOnly);
+        });
+    });
+
+    describe.each(cutoverLocked)('Convex-cutover collection (CUTOVER-04): %s', (_slug, collection, readPredicate) => {
+        it('keeps its pre-cutover read predicate — the emergency-shadow leg and dashboard listings still read', () => {
+            expect(collection.access?.read).toBe(readPredicate);
+        });
+
+        it('locks create/update/delete shut — no Payload write may fork the inert snapshot from Convex', () => {
+            // Identity check: a swap back to a permissive write predicate fails this test.
+            expect(collection.access?.create).toBe(convexCutoverLocked);
+            expect(collection.access?.update).toBe(convexCutoverLocked);
+            expect(collection.access?.delete).toBe(convexCutoverLocked);
+        });
+
+        it('unmounts the collection from any Payload admin UI surface', () => {
+            expect(collection.admin?.hidden).toBe(true);
         });
     });
 });

@@ -49,10 +49,19 @@ export interface SeedCmsMutationOptions {
  * `fixtures/richtext.ts`), and the small fixture bodies stay INLINE on their rows — nothing is shredded
  * into `cms_i18n` (the shred path belongs to the `cmsDocuments` editor model, CMSDATA-10).
  *
+ * The CUTOVER-04 gate cohort (`header` + `pages`) is ADDITIONALLY seeded as live `cmsDocuments`
+ * rows — the editor-model table `cms/read.ts` serves — because those storefront getters are
+ * Convex-native by default post-flip: without the rows the canonical tenant would render fallback
+ * chrome and an empty pages surface under e2e. The rows use the pointerless ETL/seed shape
+ * (`status: 'published'`, no `publishedVersionId`), for which the live `data` IS the published
+ * content; CUTOVER-05/06 extend this block as their cohorts flip. The legacy mirror-table rows for
+ * the cohort keep seeding alongside until TEARDOWN-03 retires the seed machinery.
+ *
  * Idempotent — the singletons are guarded by `by_shop`, each content row by its natural key within the
- * shop's `by_shop` range (`slug` for pages/articles, `shopifyHandle` for the metadata overlays), each
- * global flag by `by_key`, and each join by `by_shop_flag`, so a second run is a no-op. Runs inside one
- * Convex transaction, so all documents land all-or-nothing.
+ * shop's `by_shop` range (`slug` for pages/articles, `shopifyHandle` for the metadata overlays), the
+ * cohort's `cmsDocuments` rows by `by_shop_collection` (+ `data.slug` for pages), each global flag by
+ * `by_key`, and each join by `by_shop_flag`, so a second run is a no-op. Runs inside one Convex
+ * transaction, so all documents land all-or-nothing.
  *
  * @param ctx - A Convex mutation context (raw `db` writer), e.g. from `convex-test`'s `run` or a
  *   registered seed mutation.
@@ -97,6 +106,41 @@ export async function seedCmsMutation(ctx: MutationCtx, { shopId }: SeedCmsMutat
     for (const page of pageFixtures) {
         if (existingPageSlugs.has(page.slug)) continue;
         await ctx.db.insert('pages', { shop: shopId, ...page, createdAt: now, updatedAt: now });
+    }
+
+    const existingCohortHeader = await ctx.db
+        .query('cmsDocuments')
+        .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'header'))
+        .unique();
+    if (!existingCohortHeader) {
+        await ctx.db.insert('cmsDocuments', {
+            shopId,
+            collection: 'header',
+            data: { ...headerData },
+            status: 'published',
+            createdAt: now,
+            updatedAt: now,
+        });
+    }
+
+    const existingCohortPageSlugs = new Set(
+        (
+            await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'pages'))
+                .collect()
+        ).map((doc) => (doc.data as { slug?: string }).slug),
+    );
+    for (const page of pageFixtures) {
+        if (existingCohortPageSlugs.has(page.slug)) continue;
+        await ctx.db.insert('cmsDocuments', {
+            shopId,
+            collection: 'pages',
+            data: { ...page },
+            status: 'published',
+            createdAt: now,
+            updatedAt: now,
+        });
     }
 
     const existingArticleSlugs = new Set(

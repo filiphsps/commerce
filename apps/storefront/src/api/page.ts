@@ -23,9 +23,11 @@ const bySlug = <T extends { slug?: string | null }>(docs: readonly T[]): T[] =>
 
 /**
  * Fetches all CMS pages for a tenant, up to 1000 results. Routed through the
- * SFREAD-12 dual-read loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=pages`);
- * the shadow compares the slug-ordered doc lists only — the pagination meta is
- * envelope bookkeeping, not content.
+ * SFREAD-12 dual-read loader; flipped BY DEFAULT since CUTOVER-04 (the Convex
+ * `cms/read:pages` listing is authoritative — one bounded read per window —
+ * and `CMS_READ_FLIP=-pages` is the emergency-shadow lever). In emergency-shadow
+ * mode the comparison covers the slug-ordered doc lists only — the pagination
+ * meta is envelope bookkeeping, not content.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.
@@ -69,10 +71,12 @@ export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Loc
 
 /**
  * Fetches a single CMS page by its slug for a tenant and locale. Routed through
- * the SFREAD-12 dual-read loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=page`).
- * In draft mode (the CMS preview iframe; toggled by `api/cms-preview`) the draft
- * flag travels down BOTH legs — Payload's `draft: true` find and the Convex
- * `cms/read:pageBySlug` draft variant — and the shadow comparison is skipped.
+ * the SFREAD-12 dual-read loader; flipped BY DEFAULT since CUTOVER-04 (the
+ * Convex `cms/read:pageBySlug` read is authoritative, `CMS_READ_FLIP=-page` is
+ * the emergency-shadow lever). In draft mode (the CMS preview iframe; toggled by
+ * `api/cms-preview`) the draft flag travels down BOTH legs — Payload's
+ * `draft: true` find and the Convex `cms/read:pageBySlug` draft variant — and
+ * the shadow comparison is skipped.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.

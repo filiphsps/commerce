@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { convexCutoverLocked } from './convex-cutover-locked';
 import { type CmsUser, isAdmin } from './is-admin';
 import { isTenantMember } from './is-tenant-member';
 import { publicRead } from './public-read';
@@ -106,6 +107,15 @@ describe('access predicates', () => {
             expect(adminOnly(ctx({ role: 'admin' }))).toBe(true);
             expect(adminOnly(ctx({ role: 'editor' }))).toBe(false);
             expect(adminOnly(ctx(null))).toBe(false);
+        });
+    });
+
+    describe('convexCutoverLocked', () => {
+        it('refuses EVERY caller — admins included — so no Payload write can fork a cut-over collection', () => {
+            expect(convexCutoverLocked(ctx({ role: 'admin' }))).toBe(false);
+            expect(convexCutoverLocked(ctx({ role: 'editor' }))).toBe(false);
+            expect(convexCutoverLocked(ctx(editorIn(['t1'])))).toBe(false);
+            expect(convexCutoverLocked(ctx(null))).toBe(false);
         });
     });
 });

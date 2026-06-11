@@ -144,6 +144,7 @@ describe('seedCmsMutation', () => {
             collectionMetadata: (await ctx.db.query('collectionMetadata').collect()).length,
             featureFlags: (await ctx.db.query('featureFlags').collect()).length,
             shopFeatureFlags: (await ctx.db.query('shopFeatureFlags').collect()).length,
+            cmsDocuments: (await ctx.db.query('cmsDocuments').collect()).length,
         }));
 
         expect(counts).toEqual({
@@ -156,7 +157,42 @@ describe('seedCmsMutation', () => {
             collectionMetadata: collectionMetadataFixtures.length,
             featureFlags: featureFlagFixtures.length,
             shopFeatureFlags: featureFlagFixtures.length,
+            // The CUTOVER-04 cohort: one header singleton + every page as a live editor-model row.
+            cmsDocuments: 1 + pageFixtures.length,
         });
+    });
+
+    it('seeds the CUTOVER-04 cohort (header + pages) as published, pointerless cmsDocuments rows', async () => {
+        const t = convexTest(schema, modules);
+
+        const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
+        await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
+
+        const { headerDocs, pageDocs } = await t.run(async (ctx) => ({
+            headerDocs: await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'header'))
+                .collect(),
+            pageDocs: await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'pages'))
+                .collect(),
+        }));
+
+        // One live header singleton in the pointerless ETL/seed shape: `cms/read.ts` serves the
+        // row's own `data` as the published content (no `publishedVersionId` snapshot to resolve).
+        expect(headerDocs).toHaveLength(1);
+        expect(headerDocs[0]?.status).toBe('published');
+        expect(headerDocs[0]?.publishedVersionId).toBeUndefined();
+        expect(headerDocs[0]?.data).toMatchObject({ logoLink: '/' });
+
+        // Every page fixture lands as a live row keyed by its slug — what `cms/read:pages` and
+        // `cms/read:pageBySlug` serve to the default-flipped storefront getters.
+        const slugs = pageDocs.map((doc) => (doc.data as { slug?: string }).slug).sort();
+        expect(slugs).toEqual(pageFixtures.map((page) => page.slug).sort());
+        for (const doc of pageDocs) {
+            expect(doc.status).toBe('published');
+        }
     });
 
     it('seeds the full pages/articles/productMetadata/collectionMetadata corpus scoped to the canonical shop id', async () => {

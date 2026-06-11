@@ -12,15 +12,16 @@ import { normalizePayloadDoc } from './_normalize-payload';
 export type HeaderApiArgs = { shop: OnlineShop; locale: Locale };
 
 /**
- * Reads the Payload `Header` global for this tenant + locale. Detects draft
+ * Reads the `Header` singleton for this tenant + locale. Detects draft
  * mode via `next/headers` so editor previews see autosaved drafts; production
  * renders see published only. Returns `null` when the doc has not been seeded —
  * callers render their minimal fallback chrome in that case.
  *
- * Routed through the SFREAD-12 dual-read loader: Mongo stays authoritative,
- * the Convex `cms/read:singleton` shadow compares behind `CMS_READ_SHADOW`,
- * and `CMS_READ_FLIP=header` serves the Convex result. A draft-mode request
- * forwards the draft flag down BOTH legs and skips the shadow.
+ * Routed through the SFREAD-12 dual-read loader. Since CUTOVER-04 the getter
+ * is flipped BY DEFAULT: the Convex `cms/read:singleton` read is authoritative,
+ * and `CMS_READ_FLIP=-header` is the emergency-shadow lever back to the inert
+ * Payload-on-Mongo snapshot. A draft-mode request forwards the draft flag down
+ * BOTH legs and skips the shadow.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.

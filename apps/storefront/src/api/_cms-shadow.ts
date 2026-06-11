@@ -6,15 +6,19 @@ import { after } from 'next/server';
 
 /**
  * SFREAD-12 — the CMS dual-read shadow. Every storefront CMS getter routes through
- * {@link runCmsDualRead}: Payload-on-Mongo stays the authoritative backend during the bake, while
- * an OPT-IN shadow (`CMS_READ_SHADOW`) also reads the Convex `cms/read` functions, normalizes both
- * results (Mongo's Lexical rich text is converted through the real CMSRICH-04 codec, volatile
- * ids/timestamps are stripped), and records every divergence in the `cmsReadDivergence` Convex
- * ledger. A per-getter flip (`CMS_READ_FLIP`) serves the Convex result instead — the cutover lever.
+ * {@link runCmsDualRead}. For the getters still baking, Payload-on-Mongo is the authoritative
+ * backend while an OPT-IN shadow (`CMS_READ_SHADOW`) also reads the Convex `cms/read` functions,
+ * normalizes both results (Mongo's Lexical rich text is converted through the real CMSRICH-04
+ * codec, volatile ids/timestamps are stripped), and records every divergence in the
+ * `cmsReadDivergence` Convex ledger. The per-getter flip (`CMS_READ_FLIP`) serves the Convex
+ * result instead — the cutover lever — and since CUTOVER-04 the gate cohort
+ * ({@link DEFAULT_FLIPPED_GETTERS}) is flipped BY DEFAULT, with the env lever working in the
+ * opposite direction (`-getter` negation) as the emergency-shadow escape hatch.
  *
  * Safety posture, in order:
- * - With both flags unset NOTHING observable changes: the Mongo result is returned untouched and
- *   the Convex transport is never invoked.
+ * - For an un-flipped getter with both flags unset NOTHING observable changes: the Mongo result is
+ *   returned untouched and the Convex transport is never invoked. A default-flipped getter serves
+ *   Convex instead; its shadow comparison is RETIRED (see {@link DEFAULT_FLIPPED_GETTERS}).
  * - The shadow runs strictly AFTER the Mongo result resolves and is never awaited on the request
  *   path — a Convex error/timeout can only ever produce a ledger row, never break the page. Inside
  *   a Next render the shadow is deferred through `after()` (SFREAD-11), so its execution happens
@@ -134,11 +138,28 @@ export function isCmsShadowEnabled(env: NodeJS.ProcessEnv = process.env): boolea
 }
 
 /**
+ * Getters served Convex-native BY DEFAULT — the CUTOVER-04 gate cohort: the `header` singleton and
+ * the pages surface (`page` by slug plus the `pages` listing that feeds slugs/sitemaps). For these,
+ * Convex IS the repo-default authority: the native editor is the only authoring path and the
+ * cohort's Payload write surface is retired, so the Mongo copies are an inert cutover-time snapshot.
+ *
+ * Shadow design for the flipped cohort (the choice CUTOVER-05/06 inherit): the divergence
+ * comparison RETIRES rather than inverts. An inverted (Mongo-as-shadow) comparison would flag a
+ * mismatch on the first native edit — the snapshot can only fall behind — and that steady noise
+ * would drown the ledger's real signal for the cohorts still baking Mongo-authoritative. The
+ * ledger stays useful: un-flipped getters keep the full comparison, and flipped getters still
+ * record `kind: 'error'` rows when a Convex serve fails and falls back to the Mongo snapshot.
+ */
+export const DEFAULT_FLIPPED_GETTERS: ReadonlySet<CmsReadGetterName> = new Set(['header', 'page', 'pages']);
+
+/**
  * Parses the `CMS_READ_FLIP` per-getter flip map: a comma/space-separated list of getter names
- * (`CMS_READ_FLIP=header,page`), or `*`/`all` to flip every getter at cutover.
+ * (`CMS_READ_FLIP=article,articles`), `*`/`all` to flip every getter, and `-`-prefixed negations
+ * (`-header`, `-*`) to force a getter BACK to Mongo. Negation entries pass through verbatim;
+ * {@link isCmsGetterFlipped} owns the precedence.
  *
  * @param value - The raw env value.
- * @returns The set of flipped getter names (lowercased as authored).
+ * @returns The set of flip entries (lowercased as authored, negations included).
  */
 export function parseCmsReadFlip(value: string | undefined): Set<string> {
     if (!value) return new Set();
@@ -151,15 +172,28 @@ export function parseCmsReadFlip(value: string | undefined): Set<string> {
 }
 
 /**
- * Whether a getter is flipped to serve the Convex result.
+ * Whether a getter serves the Convex result. Precedence, most-specific first: a `-getter` negation
+ * wins, then an explicit getter name, then the `-*`/`-all` wildcard negation, then the `*`/`all`
+ * wildcard, and finally the {@link DEFAULT_FLIPPED_GETTERS} cohort default.
+ *
+ * Since CUTOVER-04 the env lever therefore works in BOTH directions: naming a getter flips it
+ * early (the pre-cutover direction), while negating a default-flipped getter
+ * (`CMS_READ_FLIP=-header,-page,-pages`) is the emergency-shadow lever — it returns the getter to
+ * the pre-flip posture (Mongo-snapshot authoritative, opt-in `CMS_READ_SHADOW` comparison) without
+ * a deploy. The snapshot is frozen at cutover, so emergency-shadow is a degraded mode for riding
+ * out a Convex incident, never a place to author from.
  *
  * @param getter - The getter surface name.
  * @param env - Environment to read (injectable for tests); defaults to `process.env`.
- * @returns `true` when `CMS_READ_FLIP` names the getter (or carries the `*`/`all` wildcard).
+ * @returns `true` when the getter resolves to the Convex side under the precedence above.
  */
 export function isCmsGetterFlipped(getter: CmsReadGetterName, env: NodeJS.ProcessEnv = process.env): boolean {
-    const flips = parseCmsReadFlip(env.CMS_READ_FLIP);
-    return flips.has(getter) || flips.has('*') || flips.has('all');
+    const entries = parseCmsReadFlip(env.CMS_READ_FLIP);
+    if (entries.has(`-${getter}`)) return false;
+    if (entries.has(getter)) return true;
+    if (entries.has('-*') || entries.has('-all')) return false;
+    if (entries.has('*') || entries.has('all')) return true;
+    return DEFAULT_FLIPPED_GETTERS.has(getter);
 }
 
 /**
@@ -364,10 +398,13 @@ async function runShadowComparison<T>(opts: CmsDualReadOptions<T>, mongoResult: 
 }
 
 /**
- * The dual-read loader. Serves Mongo (authoritative) by default and schedules the non-blocking
- * Convex shadow when `CMS_READ_SHADOW` is enabled; serves Convex when `CMS_READ_FLIP` names the
- * getter, falling back to Mongo (and recording the failure) if the flipped read throws. A
- * draft-mode invocation (`opts.draft`) never schedules the shadow — see the option's contract.
+ * The dual-read loader. Serves Convex when the getter is flipped ({@link isCmsGetterFlipped} —
+ * by `CMS_READ_FLIP` or the {@link DEFAULT_FLIPPED_GETTERS} cohort default), falling back to the
+ * Mongo snapshot (and recording the failure) if the flipped read throws; the flipped path never
+ * schedules a comparison (the retired-shadow design). Otherwise serves Mongo (authoritative for
+ * the un-flipped cohorts) and schedules the non-blocking Convex shadow when `CMS_READ_SHADOW` is
+ * enabled. A draft-mode invocation (`opts.draft`) never schedules the shadow — see the option's
+ * contract.
  *
  * @param opts - The dual-read invocation.
  * @returns The getter's contract-shaped result.

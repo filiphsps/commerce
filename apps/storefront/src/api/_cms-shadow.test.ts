@@ -118,9 +118,37 @@ describe('flip + shadow levers', () => {
     it('parses CMS_READ_FLIP as a comma/space separated getter set with a wildcard', () => {
         expect(parseCmsReadFlip(undefined).size).toBe(0);
         expect(parseCmsReadFlip('header, page articles')).toEqual(new Set(['header', 'page', 'articles']));
+        expect(parseCmsReadFlip('-header, -*')).toEqual(new Set(['-header', '-*']));
         expect(isCmsGetterFlipped('page', makeEnv({ CMS_READ_FLIP: 'header,page' }))).toBe(true);
         expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: 'header,page' }))).toBe(false);
         expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: '*' }))).toBe(true);
+    });
+
+    it('defaults the CUTOVER-04 gate cohort (header/page/pages) to Convex; everything else stays Mongo', () => {
+        for (const getter of ['header', 'page', 'pages'] as const) {
+            expect(isCmsGetterFlipped(getter, OFF_ENV)).toBe(true);
+        }
+        for (const getter of ['footer', 'businessData', 'article', 'articles'] as const) {
+            expect(isCmsGetterFlipped(getter, OFF_ENV)).toBe(false);
+        }
+    });
+
+    it('inverts the env lever for the flipped cohort: `-getter` is the per-getter emergency-shadow switch', () => {
+        const env = makeEnv({ CMS_READ_FLIP: '-header' });
+        expect(isCmsGetterFlipped('header', env)).toBe(false);
+        // Only the negated getter unflips — the rest of the cohort keeps serving Convex.
+        expect(isCmsGetterFlipped('page', env)).toBe(true);
+        expect(isCmsGetterFlipped('pages', env)).toBe(true);
+    });
+
+    it('resolves precedence most-specific first: name beats wildcard beats cohort default', () => {
+        // Wildcard negation unflips the cohort defaults…
+        expect(isCmsGetterFlipped('header', makeEnv({ CMS_READ_FLIP: '-*' }))).toBe(false);
+        // …but an explicit name still wins over it.
+        expect(isCmsGetterFlipped('article', makeEnv({ CMS_READ_FLIP: 'article,-*' }))).toBe(true);
+        // A per-getter negation wins over the flip-everything wildcard.
+        expect(isCmsGetterFlipped('header', makeEnv({ CMS_READ_FLIP: '-header,*' }))).toBe(false);
+        expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: '-header,*' }))).toBe(true);
     });
 
     it('treats the shadow as opt-in (default OFF) with kill-style truthy values', () => {
@@ -265,17 +293,60 @@ describe('runCmsDualRead — per-getter flip', () => {
 
         const mongo = vi.fn().mockResolvedValue(MONGO_ARTICLE);
         const result = await runCmsDualRead<unknown>({
-            getter: 'page',
+            getter: 'footer',
             shopId: 'shop-x',
             locale: 'en-US',
             mongo,
-            convex: (query) => query('cms/read:pageBySlug', {}),
+            convex: (query) => query('cms/read:singleton', {}),
             env: FLIP_ENV,
         });
         await flushCmsShadows();
 
         expect(result).toEqual(MONGO_ARTICLE);
         expect(mongo).toHaveBeenCalledTimes(1);
+    });
+
+    it('serves Convex for a default-flipped cohort getter with NO lever set, and retires its shadow', async () => {
+        const transport = makeTransport(CONVEX_ARTICLE);
+        __setCmsShadowTransport(transport);
+
+        const mongo = vi.fn().mockResolvedValue(MONGO_ARTICLE);
+        const result = await runCmsDualRead<unknown>({
+            getter: 'header',
+            shopId: 'shop-x',
+            locale: 'en-US',
+            mongo,
+            convex: (query) => query('cms/read:singleton', {}),
+            // Even with the shadow lever armed, a flipped getter never runs the comparison —
+            // the Mongo snapshot is inert for the cohort and would only produce ledger noise.
+            env: SHADOW_ENV,
+        });
+        await flushCmsShadows();
+
+        expect(result).toEqual(CONVEX_ARTICLE);
+        expect(mongo).not.toHaveBeenCalled();
+        expect(transport.mutation).not.toHaveBeenCalled();
+    });
+
+    it('returns a default-flipped getter to the Mongo-authoritative shadow posture under `-getter`', async () => {
+        const transport = makeTransport(CONVEX_ARTICLE);
+        __setCmsShadowTransport(transport);
+
+        const mongo = vi.fn().mockResolvedValue(MONGO_ARTICLE);
+        const result = await runCmsDualRead<unknown>({
+            getter: 'header',
+            shopId: 'shop-x',
+            locale: 'en-US',
+            mongo,
+            convex: (query) => query('cms/read:singleton', {}),
+            env: makeEnv({ CMS_READ_FLIP: '-header', CMS_READ_SHADOW: '1' }),
+        });
+        await flushCmsShadows();
+
+        // Emergency-shadow mode: the frozen Mongo snapshot serves, the Convex comparison resumes.
+        expect(result).toEqual(MONGO_ARTICLE);
+        expect(mongo).toHaveBeenCalledTimes(1);
+        expect(transport.query).toHaveBeenCalledTimes(1);
     });
 
     it('falls back to Mongo (and records the failure) when the flipped read throws', async () => {
