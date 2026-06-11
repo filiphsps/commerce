@@ -14,14 +14,6 @@
             "./src/index.ts",
             "./dist/index.js"
         ],
-        "./config": [
-            "./src/config/index.ts",
-            "./dist/config/index.js"
-        ],
-        "./collections": [
-            "./src/collections/index.ts",
-            "./dist/collections/index.js"
-        ],
         "./blocks": [
             "./src/blocks/index.ts",
             "./dist/blocks/index.js"
@@ -46,10 +38,6 @@
             "./src/descriptors/index.ts",
             "./dist/descriptors/index.js"
         ],
-        "./access": [
-            "./src/access/index.ts",
-            "./dist/access/index.js"
-        ],
         "./cache": [
             "./src/cache.ts",
             "./dist/cache.js"
@@ -62,25 +50,9 @@
             "./src/api/index.ts",
             "./dist/api/index.js"
         ],
-        "./auth": [
-            "./src/auth/index.ts",
-            "./dist/auth/index.js"
-        ],
-        "./plugins": [
-            "./src/plugins/index.ts",
-            "./dist/plugins/index.js"
-        ],
         "./types": [
             "./src/types/index.ts",
             "./dist/types/index.js"
-        ],
-        "./test-utils": [
-            "./src/test-utils/index.ts",
-            "./dist/test-utils/index.js"
-        ],
-        "./server-functions": [
-            "./src/server-functions/index.ts",
-            "./dist/server-functions/index.js"
         ],
         "./editor": [
             "./src/editor/index.ts",
@@ -109,6 +81,10 @@
         "./media": [
             "./src/media/sizes.ts",
             "./dist/media/sizes.js"
+        ],
+        "./media/mime-types": [
+            "./src/media/mime-types.ts",
+            "./dist/media/mime-types.js"
         ],
         "./media/derive": [
             "./src/media/derive.ts",
@@ -141,38 +117,18 @@
         "tailwind-merge": "3.6.0",
         "@tagtree/core": "workspace:*",
         "@tagtree/next": "workspace:*",
-        "@tagtree/payload": "workspace:*",
         "clsx": "2.1.1",
         "server-only": "0.0.1",
         "sharp": "0.34.5"
     },
     "peerDependencies": {
-        "@faceless-ui/modal": "3.0.0",
-        "@payloadcms/db-mongodb": "3.85.0",
-        "@payloadcms/email-resend": "3.85.0",
-        "@payloadcms/next": "3.85.0",
-        "@payloadcms/plugin-multi-tenant": "3.85.0",
-        "@payloadcms/richtext-lexical": "3.85.0",
-        "@payloadcms/storage-s3": "3.85.0",
-        "@payloadcms/translations": "3.85.0",
-        "@payloadcms/ui": "3.85.0",
         "next": "16.2.6",
         "next-auth": "5.0.0-beta.31",
-        "payload": "3.85.0",
         "react": "19.2.6",
         "react-dom": "19.2.6"
     },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
-        "@faceless-ui/modal": "3.0.0",
-        "@payloadcms/db-mongodb": "3.85.0",
-        "@payloadcms/email-resend": "3.85.0",
-        "@payloadcms/next": "3.85.0",
-        "@payloadcms/plugin-multi-tenant": "3.85.0",
-        "@payloadcms/richtext-lexical": "3.85.0",
-        "@payloadcms/storage-s3": "3.85.0",
-        "@payloadcms/translations": "3.85.0",
-        "@payloadcms/ui": "3.85.0",
         "@testing-library/react": "16.3.2",
         "@types/node": "24.12.4",
         "@types/react": "19.2.14",
@@ -180,7 +136,6 @@
         "happy-dom": "20.9.0",
         "next": "16.2.6",
         "next-auth": "5.0.0-beta.31",
-        "payload": "3.85.0",
         "prosemirror-model": "^1.25.7",
         "react": "19.2.6",
         "react-dom": "19.2.6",

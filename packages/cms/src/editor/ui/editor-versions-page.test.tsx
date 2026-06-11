@@ -77,7 +77,6 @@ const buildRuntime = (doc: EditorCmsDocument | null, versions: EditorCmsVersion[
         Toolbar: () => null,
         PageHeader: ({ title }: { title: string }) => <h1>{title}</h1>,
         buildFormState: async () => ({ state: {} }),
-        getShellProps: async () => ({}),
     }) as never;
 
 describe('<EditorVersionsPage>', () => {

@@ -1,12 +1,11 @@
 /**
  * Descriptor-driven CMS codegen entry point (`pnpm cms:gen`).
  *
- * Replaces the former `payload generate:types` + per-collection codegen. Writes
- * every artifact returned by {@link collectGeneratedOutputs} — the admin editor-
- * action wrappers, the storefront read-contract types (`payload-types.ts`), and
- * the Convex CMS content-table validators (`tables/cms.ts`) — all derived from
- * the CMS field descriptors and editor manifests with no Payload runtime and no
- * Mongo adapter.
+ * Writes every artifact returned by {@link collectGeneratedOutputs} — the admin
+ * editor-action wrappers, the storefront read-contract types
+ * (`content-types.ts`), and the Convex CMS content-table validators
+ * (`tables/cms.ts`) — all derived from the CMS field shapes and editor
+ * manifests.
  *
  * Invoke via `pnpm cms:gen` (root) or `pnpm --filter @nordcom/commerce-cms cms:gen`.
  * CI gate: `pnpm cms:gen:check`.

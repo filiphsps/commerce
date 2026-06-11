@@ -15,6 +15,7 @@ export { buildInitialFormState } from './form/state';
 export type { FormFieldState, FormState } from './form/types';
 export {
     type CollectionEditorManifest,
+    type CollectionSlug,
     defineCollectionEditor,
     type EditorAccess,
     type EditorAccessCtx,
@@ -26,7 +27,7 @@ export {
     refreshEditorPaths,
 } from './revalidate';
 export type {
-    AuthedPayloadCtx,
+    AuthedEditorCtx,
     AuthedUser,
     BuildFormStateArgs,
     CollectionTableShellProps,
@@ -40,5 +41,4 @@ export type {
     EditorToolbarShellProps,
     WithRuntime,
 } from './runtime';
-export { tenantWhere } from './tenant-where';
 export { docUrlSegment } from './url';

@@ -1,6 +1,5 @@
 'use client';
 
-import { ModalContainer, ModalProvider } from '@faceless-ui/modal';
 import { GoogleTagManager } from '@next/third-parties/google';
 
 import { Theme } from '@nordcom/commerce-marketing-common';
@@ -16,8 +15,7 @@ export type ProvidersProps = {
 /**
  * Root client provider tree for the admin shell.
  *
- * Mounts NordstarProvider, NextTopLoader, Toaster, the global faceless-ui ModalProvider
- * (required for Payload document drawers to find a ModalContext), and Google Tag Manager.
+ * Mounts NordstarProvider, NextTopLoader, Toaster, and Google Tag Manager.
  *
  * @param props.children - Application tree wrapped by all providers.
  */
@@ -36,18 +34,7 @@ export function Providers({ children }: ProvidersProps) {
                     <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />
                     <Toaster theme="dark" />
 
-                    {/* Global `@faceless-ui/modal` context. Defense-in-depth so any
-                     *  `@payloadcms/ui` component that mounts a document drawer
-                     *  (upload/relationship fields, lexical upload nodes, …) has
-                     *  `modalState` defined even outside `<PayloadFieldShell>`.
-                     *  Without this fallback, `useDocumentDrawer` blows up with
-                     *  `m is undefined` on the first paint of any media upload
-                     *  field — the optional chain inside Payload's hook only
-                     *  guards `.isOpen`, not the parent subscript access. */}
-                    <ModalProvider classPrefix="payload" transTime={0} zIndex={9999}>
-                        {children}
-                        <ModalContainer />
-                    </ModalProvider>
+                    {children}
 
                     <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
                 </Suspense>

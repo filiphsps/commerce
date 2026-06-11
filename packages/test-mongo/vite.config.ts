@@ -17,14 +17,7 @@ export default mergeConfig(
         build: {
             target: 'esnext',
             rolldownOptions: {
-                external: [
-                    /^node:/,
-                    'mongoose',
-                    'mongodb',
-                    'mongodb-memory-server',
-                    'payload',
-                    '@payloadcms/db-mongodb',
-                ],
+                external: [/^node:/, 'mongoose', 'mongodb', 'mongodb-memory-server'],
                 output: { name },
             },
         },

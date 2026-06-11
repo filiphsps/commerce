@@ -5,7 +5,7 @@ import type { Metadata, Route } from 'next';
 import { CollectionTable } from '@/components/cms/collection-table';
 import { CreateMetadataForHandleForm } from '@/components/cms/create-metadata-for-handle-form';
 import { editorConvexBridge } from '@/lib/editor-convex-bridge';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 
 export const metadata: Metadata = { title: 'Product Metadata' };
 
@@ -22,7 +22,7 @@ export default async function ProductMetadataListPage({ params }: { params: Para
     const { domain } = await params;
 
     // ── Auth + tenant resolution ──────────────────────────────────────────────
-    const { tenant } = await getAuthedPayloadCtx(domain);
+    const { tenant } = await getAuthedCmsCtx(domain);
 
     if (!tenant) {
         return null;

@@ -2,7 +2,7 @@
 
 import 'server-only';
 
-import { MEDIA_MIME_TYPES } from '@nordcom/commerce-cms/collections';
+import { MEDIA_MIME_TYPES } from '@nordcom/commerce-cms/media/mime-types';
 import { generateImageDerivativePass } from '@nordcom/commerce-cms/media/derive';
 import {
     EmptyUploadFileError,
@@ -15,7 +15,7 @@ import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import { mediaStorageTransport } from '@/lib/editor-convex-bridge';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 
 /**
  * POSTs one blob's bytes to a freshly issued Convex file-storage upload URL and returns the stored
@@ -152,7 +152,7 @@ function parseFocalCoordinate(formData: FormData, field: string): number | undef
  * @throws {MediaStorageUploadError} When a byte POST to Convex file storage fails.
  */
 export async function createMediaAction(domain: string | null, formData: FormData): Promise<{ id: string }> {
-    const { user, tenant } = await getAuthedPayloadCtx(domain ?? undefined);
+    const { user, tenant } = await getAuthedCmsCtx(domain ?? undefined);
 
     if (user.role !== 'admin') {
         notFound();

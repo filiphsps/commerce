@@ -1,6 +1,29 @@
 import type { Route } from 'next';
-import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
+
+/**
+ * Every collection slug the editor can address. Replaces the Payload-generated
+ * `CollectionSlug` union (TEARDOWN-02): the members are the CMS content
+ * collections plus the platform surfaces with editor manifests, and the legacy
+ * `tenants` slug whose routes render an empty surface (see
+ * `legacy-tenants-slug.ts`). Adding a manifest for a new collection starts
+ * here — an unknown slug fails the manifest's `defineCollectionEditor` call at
+ * compile time.
+ */
+export type CollectionSlug =
+    | 'users'
+    | 'media'
+    | 'shops'
+    | 'feature-flags'
+    | 'pages'
+    | 'articles'
+    | 'productMetadata'
+    | 'collectionMetadata'
+    | 'reviews'
+    | 'header'
+    | 'footer'
+    | 'businessData'
+    | 'tenants';
 
 /**
  * NextAuth-shaped context passed to every editor access predicate.
@@ -27,8 +50,8 @@ export type EditorAccessCtx = {
 };
 
 /**
- * Route-level gate. Runs alongside Payload's collection-level access predicates
- * (defense in depth). Return false to `notFound()` from the route.
+ * Route-level gate. Runs alongside the Convex functions' own server-side access
+ * enforcement (defense in depth). Return false to `notFound()` from the route.
  *
  * @example
  * const listAccess: EditorAccess = ({ user }) => user?.role === 'admin';
@@ -54,19 +77,19 @@ export type EditorListColumn<TDoc = Record<string, unknown>> = {
 };
 
 /**
- * Editor-route metadata for a single Payload collection.
+ * Editor-route metadata for a single CMS collection.
  *
- * The Payload `CollectionConfig` (looked up at render time via the collection
- * slug) is the source of truth for fields, hooks, collection-level access,
- * drafts/versions/locales. The manifest adds route shape, route-level gates,
- * list shape, live-preview URL, and revalidation paths on top.
+ * The editor schema (`editorCollectionSchema`, looked up at render time via
+ * the collection slug) is the source of truth for fields and draft behavior.
+ * The manifest adds route shape, route-level gates, list shape, live-preview
+ * URL, and revalidation paths on top.
  *
  * @example
  * // Build manifests with {@link defineCollectionEditor}:
  * const manifest: CollectionEditorManifest = defineCollectionEditor({ collection: 'pages', ... });
  */
 export type CollectionEditorManifest<TSlug extends CollectionSlug = CollectionSlug> = {
-    /** Payload collection slug. */
+    /** Collection slug. */
     collection: TSlug;
 
     routes: {

@@ -1,8 +1,8 @@
 /**
  * Descriptor-driven generator for the Convex CMS content-table validators.
  *
- * Walks the same descriptor/runtime field configs the CMS content collections
- * build (`allCollections`) and emits a `packages/convex/convex/tables/cms.ts`
+ * Walks the frozen descriptor field shapes (`allCollectionShapes` in
+ * `content-shapes.ts`) and emits a `packages/convex/convex/tables/cms.ts`
  * module: one `defineTable(v.object({…}))` per CMS-owned content collection,
  * exported as a `Record<string, TableDefinition>` for the schema's reserved
  * `cmsTables` slot (see `convex/tables/index.ts`).
@@ -10,13 +10,13 @@
  * No Payload runtime, no Mongo — pure data. The content fields come straight
  * from the descriptors; the tenant `shop` foreign key and `createdAt`/`updatedAt`
  * timestamps are framework injections (mirroring the existing `reviews` table
- * and the payload-types tenant/timestamp injections), so every tenant-scoped
+ * and the content-types tenant/timestamp injections), so every tenant-scoped
  * table carries the `by_shop` index the multi-tenant schema convention requires.
  * `shop` stays a forward-referenced `v.string()` until the `shops` table lands,
  * exactly as `tables/reviews.ts` documents.
  */
 import { UnknownCollectionSlugError } from '@nordcom/commerce-errors';
-import { allCollections } from '../../src/collections';
+import { allCollectionShapes } from './content-shapes';
 
 /** Structural view of a Payload/descriptor field as walked by the emitter. */
 type EmitField = {
@@ -175,10 +175,10 @@ const HEADER = `/**
  * collections' descriptor fields.
  *
  * @returns The full file contents, newline-terminated.
- * @throws {UnknownCollectionSlugError} When a configured CMS content collection is missing from `allCollections`.
+ * @throws {UnknownCollectionSlugError} When a configured CMS content collection is missing from `allCollectionShapes`.
  */
 export const generateConvexCmsTables = (): string => {
-    const collections = allCollections as unknown as Array<{ slug: string; fields: EmitField[] }>;
+    const collections = allCollectionShapes as unknown as Array<{ slug: string; fields: EmitField[] }>;
     const bySlug = new Map(collections.map((c) => [c.slug, c.fields]));
 
     const tables = CMS_CONTENT_COLLECTIONS.map((slug) => {
@@ -186,7 +186,7 @@ export const generateConvexCmsTables = (): string => {
         if (!fields) {
             throw new UnknownCollectionSlugError(
                 slug,
-                'cms codegen: CMS content collection not found in allCollections',
+                'cms codegen: CMS content collection not found in allCollectionShapes',
             );
         }
         return emitTable(slug, fields);

@@ -1,54 +1,32 @@
 import 'server-only';
 
-import { getHeader } from '@nordcom/commerce-cms/api';
 import type { Header } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
-import { toShopRef } from './_cms';
-import { runCmsDualRead } from './_cms-shadow';
+import { cmsRead } from './_cms-read';
 import { isDraftModeEnabled } from './_draft';
-import { normalizePayloadDoc } from './_normalize-payload';
 
 export type HeaderApiArgs = { shop: OnlineShop; locale: Locale };
 
 /**
- * Reads the `Header` singleton for this tenant + locale. Detects draft
- * mode via `next/headers` so editor previews see autosaved drafts; production
- * renders see published only. Returns `null` when the doc has not been seeded —
- * callers render their minimal fallback chrome in that case.
- *
- * Routed through the SFREAD-12 dual-read loader. Since CUTOVER-04 the getter
- * is flipped BY DEFAULT: the Convex `cms/read:singleton` read is authoritative,
- * and `CMS_READ_FLIP=-header` is the emergency-shadow lever back to the inert
- * Payload-on-Mongo snapshot. A draft-mode request forwards the draft flag down
- * BOTH legs and skips the shadow.
+ * Reads the `Header` singleton for this tenant + locale from the Convex
+ * `cms/read:singleton` query — the authoritative (and since TEARDOWN-02 the
+ * only) backend. Detects draft mode via `next/headers` so editor previews see
+ * autosaved drafts; production renders see published only. Returns `null`
+ * when the doc has not been seeded — callers render their minimal fallback
+ * chrome in that case.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.
- * @param options.locale - Request locale for Payload field resolution.
- * @returns The normalized header document, or `null` when unseeded.
+ * @param options.locale - Request locale for CMS field resolution.
+ * @returns The contract-shaped header document, or `null` when unseeded.
  */
 export async function HeaderApi({ shop, locale }: HeaderApiArgs): Promise<Header | null> {
     const draft = await isDraftModeEnabled();
-    return runCmsDualRead<Header | null>({
-        getter: 'header',
+    return (await cmsRead('cms/read:singleton', {
         shopId: shop.id,
+        collection: 'header',
         locale: locale.code,
-        draft,
-        mongo: async () => {
-            const header = await getHeader({
-                shop: toShopRef(shop),
-                locale: { code: locale.code },
-                draft,
-            });
-            return header ? normalizePayloadDoc(header, locale.code) : null;
-        },
-        convex: (query) =>
-            query('cms/read:singleton', {
-                shopId: shop.id,
-                collection: 'header',
-                locale: locale.code,
-                ...(draft ? { draft: true } : {}),
-            }),
-    });
+        ...(draft ? { draft: true } : {}),
+    })) as Header | null;
 }

@@ -1,12 +1,11 @@
 import type { Route } from 'next';
-import type { Payload } from 'payload';
 import type { ComponentType, ReactNode } from 'react';
 import type { FormState } from './form/types';
 import type { CollectionEditorManifest, EditorAccessCtx, EditorListColumn } from './manifest';
 
 /**
  * Authenticated user as the editor primitives see it. Mirrors the shape the
- * admin app's `getAuthedPayloadCtx` returns.
+ * admin app's `getAuthedCmsCtx` returns.
  *
  * @example
  * const user: AuthedUser = ctx.user;
@@ -22,23 +21,17 @@ export type AuthedUser = {
 
 /**
  * Resolved auth context including the authenticated user and tenant after the
- * admin app's `getAuthedPayloadCtx` call. Passed to every editor primitive as
- * the first argument to `runtime.toAccessCtx`.
- *
- * `payload` is the LAST Payload-typed handle on the runtime seam. Since the
- * CMSDATA-07 shell rebind the editor pages neither read documents nor the
- * collection config through it — reads go through the bridge's
+ * admin app's `getAuthedCmsCtx` call. Passed to every editor primitive as
+ * the first argument to `runtime.toAccessCtx`. Since TEARDOWN-02 the seam is
+ * fully Payload-free: reads go through the bridge's
  * `list`/`getDocument`/`listVersions` and the field schemas come from
- * `collection-fields.ts`. It survives only for the admin's legacy-Payload
- * surfaces (the shell-prop adapter and the theme editor's field widgets) until
- * TEARDOWN removes them.
+ * `collection-fields.ts`.
  *
  * @example
- * const ctx: AuthedPayloadCtx = await runtime.getCtx(domain);
+ * const ctx: AuthedEditorCtx = await runtime.getCtx(domain);
  * const allowed = await manifest.access.read(runtime.toAccessCtx(ctx, domain));
  */
-export type AuthedPayloadCtx = {
-    payload: Payload;
+export type AuthedEditorCtx = {
     user: AuthedUser;
     tenant: {
         id: string;
@@ -73,18 +66,6 @@ export type BuildFormStateArgs = {
     operation: 'create' | 'update';
     locale?: string;
 };
-
-/**
- * Opaque prop bag the admin's `<DocumentForm>` shell consumes. Built per render
- * by `EditorRuntime.getShellProps` and forwarded UNTOUCHED by every editor
- * primitive — the runtime seam deliberately knows nothing about its members so
- * the admin can keep serving the legacy Payload-shaped providers to
- * not-yet-rebuilt shells until CMSDATA-07 deletes them.
- *
- * @example
- * const shellProps: ShellProps = await runtime.getShellProps(domain, locale);
- */
-export type ShellProps = Record<string, unknown>;
 
 /**
  * Document-addressing target the bridge forwards to Convex's `cms/actions.ts` save mutations: a
@@ -239,14 +220,13 @@ export type EditorConvexBridge = {
  * being edited.
  *
  * @example
- * <runtime.DocumentForm title={title} shellProps={shellProps} onSubmit={saveDraft}>
+ * <runtime.DocumentForm title={title} onSubmit={saveDraft}>
  *     <EditorFields collection="pages" />
  * </runtime.DocumentForm>
  */
 export type DocumentFormShellProps = {
     title: string;
     breadcrumbs?: Array<{ label: string; href?: string }>;
-    shellProps: ShellProps;
     onSubmit: (formData: FormData) => Promise<void>;
     initialState?: FormState;
     toolbar?: ReactNode;
@@ -299,19 +279,13 @@ export type EditorToolbarShellProps = {
  * <EditorListPage manifest={pagesEditor} runtime={editorRuntime} domain={domain} />
  */
 export type EditorRuntime = {
-    getCtx: (domain: string | null) => Promise<AuthedPayloadCtx>;
-    toAccessCtx: (ctx: AuthedPayloadCtx, domain: string | null) => EditorAccessCtx;
+    getCtx: (domain: string | null) => Promise<AuthedEditorCtx>;
+    toAccessCtx: (ctx: AuthedEditorCtx, domain: string | null) => EditorAccessCtx;
     /**
      * Resolve the native {@link FormState} that seeds the CMSFORM-01 `<Form>`
-     * for a document — the Payload `buildFormState` replacement.
+     * for a document — the native form-state derivation.
      */
     buildFormState: (args: BuildFormStateArgs) => Promise<{ state: FormState }>;
-    /**
-     * Returns the full shell prop bag the admin's `<DocumentForm>` expects.
-     * The admin builds it via its own `getCmsShellProps(domain)` helper;
-     * editor primitives forward the result opaquely.
-     */
-    getShellProps: (domain: string | null, locale?: string) => Promise<ShellProps>;
     /**
      * The CMSDATA-05 Convex write transport. Optional only so test substrates
      * can omit it; `createCollectionEditorActions` fails loud

@@ -85,7 +85,7 @@ vi.mock('@/components/shell/empty-state', () => ({ EmptyState: vi.fn() }));
 
 // Session/Payload seams the runtime touches but this gate replaces with act-as
 // context (the authoritative enforcement is the Convex side, driven for real).
-vi.mock('./payload-ctx', () => ({ getAuthedPayloadCtx: vi.fn() }));
+vi.mock('./cms-ctx', () => ({ getAuthedCmsCtx: vi.fn() }));
 vi.mock('./convex-auth', () => ({ authenticateConvexClient: vi.fn(async () => 'operator-bearer-token') }));
 vi.mock('./convex-token', () => ({ mintConvexOperatorToken: vi.fn(async () => 'operator-bearer-token') }));
 
@@ -118,7 +118,7 @@ vi.mock('@nordcom/commerce-db', async () => {
 import { revalidatePath } from 'next/cache';
 import { editorConvexBridge } from './editor-convex-bridge';
 import { editorRuntime } from './editor-runtime';
-import { getAuthedPayloadCtx } from './payload-ctx';
+import { getAuthedCmsCtx } from './cms-ctx';
 
 const TRUSTED_ISSUER = 'https://admin.gate.nordcom.io';
 const OPERATOR_EMAIL = 'gate-operator@example.com';
@@ -197,8 +197,7 @@ async function seedTenant(): Promise<SeededTenant> {
  */
 function actAsOperator(shopId: string): void {
     h.identity = { issuer: TRUSTED_ISSUER, subject: 'github|gate-operator', email: OPERATOR_EMAIL };
-    vi.mocked(getAuthedPayloadCtx).mockResolvedValue({
-        payload: {} as never,
+    vi.mocked(getAuthedCmsCtx).mockResolvedValue({
         user: {
             id: 'user_operator',
             email: OPERATOR_EMAIL,
@@ -542,8 +541,7 @@ describe('CMSGATE-01 — header editor end to end (real engine, real Convex func
         // Route layer: an editor with no tenant membership fails the manifest's
         // `tenantMember` read gate and the page 404s.
         h.identity = { issuer: TRUSTED_ISSUER, subject: 'github|gate-outsider', email: OUTSIDER_EMAIL };
-        vi.mocked(getAuthedPayloadCtx).mockResolvedValue({
-            payload: {} as never,
+        vi.mocked(getAuthedCmsCtx).mockResolvedValue({
             user: {
                 id: 'user_outsider',
                 email: OUTSIDER_EMAIL,

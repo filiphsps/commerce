@@ -4,10 +4,10 @@ import { act, fireEvent, render } from '@testing-library/react';
 // Neither <Form> nor useAutosave imports it — proving zero revalidation is
 // exactly the point of the assertion.
 import { revalidatePath } from 'next/cache';
-import type { Field } from 'payload';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useAutosave } from './autosave';
 import { Form } from './form';
+import type { FieldDescriptor } from '../../descriptors';
 import { useField } from './hooks';
 import type { FormState } from './types';
 
@@ -15,7 +15,7 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 const clean = (value: unknown): FormState[string] => ({ value, initialValue: value, valid: true });
 
-const titleFields: Field[] = [{ name: 'title', type: 'text' }];
+const titleFields: FieldDescriptor[] = [{ name: 'title', type: 'text' }];
 
 /**
  * Mounts {@link useAutosave} inside the form so it resolves the provider chain.

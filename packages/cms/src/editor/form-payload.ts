@@ -1,5 +1,5 @@
 import { MalformedFormPayloadError } from '@nordcom/commerce-errors';
-import type { Field } from 'payload';
+import type { FieldDescriptor } from '../descriptors';
 
 /**
  * Parse Payload's `<Form action>` JSON blob. The whole client form state is
@@ -39,7 +39,7 @@ export const parseFormPayload = (formData: FormData): Record<string, unknown> =>
  * @param f - Payload field config.
  * @returns The field's name string, or `null` when absent.
  */
-const fieldName = (f: Field): string | null => {
+const fieldName = (f: FieldDescriptor): string | null => {
     const name = (f as { name?: string }).name;
     return typeof name === 'string' ? name : null;
 };
@@ -61,7 +61,7 @@ const fieldName = (f: Field): string | null => {
  */
 export const pickByFieldNames = (
     values: Record<string, unknown>,
-    fields: readonly Field[],
+    fields: readonly FieldDescriptor[],
 ): Record<string, unknown> => {
     const declared = new Set<string>();
     for (const f of fields) {
@@ -92,7 +92,7 @@ export const pickByFieldNames = (
  * await saveDraftAction(domain, id, formData, locale);
  * ```
  */
-export const serializeFormPayload = (values: Record<string, unknown>, fields: readonly Field[]): FormData => {
+export const serializeFormPayload = (values: Record<string, unknown>, fields: readonly FieldDescriptor[]): FormData => {
     const safe = pickByFieldNames(values, fields);
     const formData = new FormData();
     formData.set('_payload', JSON.stringify(safe));

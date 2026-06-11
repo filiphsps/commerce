@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { editorConvexBridge } from '@/lib/editor-convex-bridge';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 
 type Props = { params: Promise<{ domain: string; id: string }> };
 
@@ -16,7 +16,7 @@ type Props = { params: Promise<{ domain: string; id: string }> };
  */
 export default async function ArticleInspector({ params }: Props) {
     const { domain, id } = await params;
-    const { tenant } = await getAuthedPayloadCtx(domain);
+    const { tenant } = await getAuthedCmsCtx(domain);
     if (!tenant) return null;
 
     const article = await editorConvexBridge.getDocument({ collection: 'articles', documentId: id }).catch(() => null);

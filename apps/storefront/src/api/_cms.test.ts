@@ -1,21 +1,8 @@
 import type { Media } from '@nordcom/commerce-cms/types';
 import { describe, expect, it } from 'vitest';
-import { mockShop } from '@/utils/test/fixtures/shop';
-import { populatedMedia, tenantId, toShopRef } from './_cms';
+import { populatedMedia, tenantId } from './_cms';
 
 describe('_cms utilities', () => {
-    describe('toShopRef', () => {
-        it('maps OnlineShop fields to ShopRef', () => {
-            const shop = mockShop({ overrides: { id: 'abc', domain: 'd.test', i18n: { defaultLocale: 'sv' } } });
-            expect(toShopRef(shop)).toEqual({ id: 'abc', domain: 'd.test', i18n: { defaultLocale: 'sv' } });
-        });
-
-        it("defaults defaultLocale to 'en-US' when shop.i18n is missing", () => {
-            const shop = mockShop({ overrides: { i18n: undefined as any } });
-            expect(toShopRef(shop).i18n.defaultLocale).toBe('en-US');
-        });
-    });
-
     describe('populatedMedia', () => {
         const media: Media = {
             id: 'm1',

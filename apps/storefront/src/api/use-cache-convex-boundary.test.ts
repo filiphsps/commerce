@@ -76,8 +76,8 @@ describe('SFREAD-11 — use cache / Convex transport boundary', () => {
 
     it("no 'use cache' scope imports a Convex transport module (preloadQuery/fetchQuery/ConvexHttpClient stay out of cached scopes)", () => {
         // Inside a cached scope, Convex is reachable ONLY through the audited seams — the
-        // `@nordcom/commerce-db` server-trust services and the `_cms-shadow` dual-read loader —
-        // whose reads become part of the cache entry. The `convex/nextjs` helpers are `no-store`
+        // `@nordcom/commerce-db` server-trust services and the `_cms-read` loader — whose
+        // reads become part of the cache entry. The `convex/nextjs` helpers are `no-store`
         // per-request reads (and `preloadQuery` carries a per-user token): inside `'use cache'`
         // they would bake one request's snapshot/token into a shared entry.
         const offenders = directiveFiles.filter((file) => /from\s+(['"])convex\/[a-z-]+\1/.test(read(file)));
@@ -99,22 +99,11 @@ describe('SFREAD-11 — use cache / Convex transport boundary', () => {
         expect(importers).toEqual([]);
     });
 
-    it('confines the raw server-trust transport to the dual-read shadow loader', () => {
+    it('confines the raw server-trust transport to the CMS read loader', () => {
         // Everything else goes through the typed `@nordcom/commerce-db` services so the audit's
         // seam inventory stays the complete list of RSC-reachable Convex reads.
         const importers = sourceFiles.filter((file) => /convexServer(?:Query|Mutation)/.test(read(file)));
-        expect(importers).toEqual(['api/_cms-shadow.ts']);
-    });
-
-    it('schedules the dual-read shadow through after() and never awaits it on the request path', () => {
-        const source = read('api/_cms-shadow.ts');
-        // The shadow must execute OUTSIDE the cache boundary: `after()` defers it past the
-        // response/prerender, so neither the comparison nor the ledger write participates in
-        // cache-entry creation.
-        expect(source).toMatch(/\bafter\(run\)/);
-        expect(source).toMatch(/scheduleShadow\(\(\) => runShadowComparison\(/);
-        expect(source).not.toMatch(/await runShadowComparison\(/);
-        expect(source).not.toMatch(/await recordDivergence\(\{\s*shop: opts\.shopId/);
+        expect(importers).toEqual(['api/_cms-read.ts']);
     });
 
     it('reads no in-process clock on the Convex loader spine (cacheComponents clock guard)', () => {
@@ -122,9 +111,8 @@ describe('SFREAD-11 — use cache / Convex transport boundary', () => {
         // modules would run during cache creation of every cached page and is one config flip
         // (a future non-cached call site) away from tripping the prerender current-time guard.
         const spine = [
-            'api/_cms-shadow.ts',
+            'api/_cms-read.ts',
             'api/_loaders.ts',
-            'api/_normalize-payload.ts',
             'api/_shop-loader.ts',
             'api/article.ts',
             'api/cms-blog.ts',

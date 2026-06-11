@@ -4,10 +4,10 @@
  * Regenerates every CMS codegen artifact to memory via the same
  * {@link collectGeneratedOutputs} the writer (`cms-gen.ts`) uses, then diffs each
  * against the committed file on disk — the admin editor-action wrappers, the
- * storefront read-contract types (`payload-types.ts`), and the Convex CMS
+ * storefront read-contract types (`content-types.ts`), and the Convex CMS
  * content-table validators (`tables/cms.ts`). Exits non-zero on any missing or
- * divergent file so CI fails when a descriptor changed without re-running
- * `pnpm cms:gen`. No Payload runtime, no Mongo adapter.
+ * divergent file so CI fails when a field shape changed without re-running
+ * `pnpm cms:gen`.
  *
  * Sharing {@link collectGeneratedOutputs} guarantees the gate can never disagree
  * with the writer about what's generated or where it lands.

@@ -18,7 +18,7 @@ vi.mock('@/components/shell/empty-state', () => ({ EmptyState: vi.fn() }));
 
 // Server-side wiring the runtime module imports but this render never calls.
 vi.mock('./editor-convex-bridge', () => ({ editorConvexBridge: {} }));
-vi.mock('./payload-ctx', () => ({ getAuthedPayloadCtx: vi.fn() }));
+vi.mock('./cms-ctx', () => ({ getAuthedCmsCtx: vi.fn() }));
 
 import { editorRuntime } from './editor-runtime';
 
@@ -52,7 +52,7 @@ describe('editorRuntime smoke (CMSDATA-06)', () => {
 
         const DocumentForm = editorRuntime.DocumentForm;
         const { container, getByTestId } = render(
-            <DocumentForm title="Edit page" shellProps={{}} onSubmit={async () => {}} initialState={state}>
+            <DocumentForm title="Edit page" onSubmit={async () => {}} initialState={state}>
                 <TitleField path="title" />
             </DocumentForm>,
         );

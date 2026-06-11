@@ -4,11 +4,10 @@ import { MissingConvexBridgeError, MissingListConfigError } from '@nordcom/comme
 import type { Route } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
 
 import { bridgeErrorCode, EditorBridgeErrorCode } from '../bridge-errors';
-import type { CollectionEditorManifest } from '../manifest';
+import type { CollectionEditorManifest, CollectionSlug } from '../manifest';
 import type { EditorCmsListPage, EditorRuntime } from '../runtime';
 
 /**

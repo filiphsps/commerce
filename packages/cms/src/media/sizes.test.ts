@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { media } from '../collections/media';
 import {
     clampFocalPoint,
     DEFAULT_FOCAL_POINT,
@@ -11,14 +10,16 @@ import {
 } from './sizes';
 
 describe('media sizes', () => {
-    it('mirrors the frozen Payload media collection imageSizes exactly (name, width, height, order)', () => {
-        const upload = media.upload;
-        if (typeof upload !== 'object' || !upload.imageSizes) {
-            throw new TypeError('the media collection upload config lost its imageSizes');
-        }
-        expect(upload.imageSizes.map(({ name, width, height }) => ({ name, width, height }))).toEqual(
-            MEDIA_IMAGE_SIZES.map(({ name, width, height }) => ({ name, width, height })),
-        );
+    it('keeps the frozen Payload-era imageSizes exactly (name, width, height, order)', () => {
+        // The deleted Payload media collection persisted derivatives under these
+        // four sizes; migrated assets and their stored keys depend on the exact
+        // names and dimensions, so the literal pin replaces the config mirror.
+        expect(MEDIA_IMAGE_SIZES.map(({ name, width, height }) => ({ name, width, height }))).toEqual([
+            { name: 'thumbnail', width: 320, height: 240 },
+            { name: 'card', width: 768, height: 576 },
+            { name: 'feature', width: 1280, height: 720 },
+            { name: 'hero', width: 1920, height: 1080 },
+        ]);
     });
 
     it('plans all four sizes for images and zero work for everything else', () => {

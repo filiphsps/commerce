@@ -1,112 +1,74 @@
 import 'server-only';
 
-import { getPage as CmsGetPage, getPages as CmsGetPages } from '@nordcom/commerce-cms/api';
+import type { Page } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
-import { toShopRef } from './_cms';
-import { runCmsDualRead } from './_cms-shadow';
+import type { CmsPaginatedDocs } from './_cms';
+import { cmsRead } from './_cms-read';
 import { isDraftModeEnabled } from './_draft';
-import { normalizePayloadDoc } from './_normalize-payload';
 
-/** The frozen `getPages` paginated envelope the storefront consumes. */
-type PagesApiResult = Awaited<ReturnType<typeof CmsGetPages>>;
+/** The frozen `PagesApi` paginated envelope the storefront consumes. */
+export type PagesApiResult = CmsPaginatedDocs<Page>;
 
-/**
- * Orders contract-shaped docs by slug so the dual-read comparator sees the same sequence from both
- * backends regardless of each backend's native sort.
- *
- * @param docs - Contract-shaped documents carrying a `slug`.
- * @returns A new slug-ordered array.
- */
-const bySlug = <T extends { slug?: string | null }>(docs: readonly T[]): T[] =>
-    [...docs].sort((a, b) => (a.slug ?? '').localeCompare(b.slug ?? ''));
+/** The bounded window the pages listing always fetches — one page in practice. */
+const PAGES_WINDOW_LIMIT = 1000;
 
 /**
- * Fetches all CMS pages for a tenant, up to 1000 results. Routed through the
- * SFREAD-12 dual-read loader; flipped BY DEFAULT since CUTOVER-04 (the Convex
- * `cms/read:pages` listing is authoritative — one bounded read per window —
- * and `CMS_READ_FLIP=-pages` is the emergency-shadow lever). In emergency-shadow
- * mode the comparison covers the slug-ordered doc lists only — the pagination
- * meta is envelope bookkeeping, not content.
+ * Fetches all CMS pages for a tenant from the Convex `cms/read:pages` query —
+ * one bounded read per window, up to 1000 results. The Convex read returns
+ * docs only; the single-window pagination envelope the 1000-doc fetch always
+ * produces in practice is reconstructed here so the SFREAD-01 list contract
+ * stays byte-identical.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.
- * @param options.locale - Request locale for Payload field resolution.
- * @returns Normalized Payload page list result.
+ * @param options.locale - Request locale for CMS field resolution.
+ * @returns The contract-shaped page list result.
  */
 export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<PagesApiResult> {
-    return runCmsDualRead<PagesApiResult>({
-        getter: 'pages',
-        shopId: shop.id,
-        locale: locale.code,
-        mongo: async () => {
-            const result = await CmsGetPages({
-                shop: toShopRef(shop),
-                locale: { code: locale.code },
-                limit: 1000,
-            });
-            return normalizePayloadDoc(result, locale.code);
-        },
-        convex: (query) => query('cms/read:pages', { shopId: shop.id, locale: locale.code }),
-        project: (result) => ({ docs: bySlug(result.docs) }),
-        // The Convex read returns docs only; the flip path reconstructs the single-window
-        // pagination envelope the 1000-doc fetch always produces in practice.
-        fromConvex: (value) => {
-            const docs = (value as { docs: PagesApiResult['docs'] }).docs;
-            return {
-                docs,
-                totalDocs: docs.length,
-                totalPages: 1,
-                page: 1,
-                pagingCounter: 1,
-                hasNextPage: false,
-                hasPrevPage: false,
-                limit: 1000,
-                nextPage: null,
-                prevPage: null,
-            } as PagesApiResult;
-        },
-    });
+    const { docs } = (await cmsRead('cms/read:pages', { shopId: shop.id, locale: locale.code })) as {
+        docs: Page[];
+    };
+    return {
+        docs,
+        totalDocs: docs.length,
+        totalPages: 1,
+        page: 1,
+        pagingCounter: 1,
+        hasNextPage: false,
+        hasPrevPage: false,
+        limit: PAGES_WINDOW_LIMIT,
+        nextPage: null,
+        prevPage: null,
+    };
 }
 
 /**
- * Fetches a single CMS page by its slug for a tenant and locale. Routed through
- * the SFREAD-12 dual-read loader; flipped BY DEFAULT since CUTOVER-04 (the
- * Convex `cms/read:pageBySlug` read is authoritative, `CMS_READ_FLIP=-page` is
- * the emergency-shadow lever). In draft mode (the CMS preview iframe; toggled by
- * `api/cms-preview`) the draft flag travels down BOTH legs — Payload's
- * `draft: true` find and the Convex `cms/read:pageBySlug` draft variant — and
- * the shadow comparison is skipped.
+ * Fetches a single CMS page by its slug for a tenant and locale from the
+ * Convex `cms/read:pageBySlug` query. In draft mode (the CMS preview iframe;
+ * toggled by `api/cms-preview`) the draft flag rides the read so autosaved
+ * drafts serve.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.
- * @param options.locale - Request locale for Payload field resolution.
+ * @param options.locale - Request locale for CMS field resolution.
  * @param options.handle - Page slug to look up.
- * @returns The normalized page document, or `null` when no page exists for the slug.
+ * @returns The contract-shaped page document, or `null` when no page exists for the slug.
  */
-export async function PageApi({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
+export async function PageApi({
+    shop,
+    locale,
+    handle,
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+    handle: string;
+}): Promise<Page | null> {
     const draft = await isDraftModeEnabled();
-    return runCmsDualRead<Awaited<ReturnType<typeof CmsGetPage>>>({
-        getter: 'page',
+    return (await cmsRead('cms/read:pageBySlug', {
         shopId: shop.id,
+        slug: handle,
         locale: locale.code,
-        key: handle,
-        draft,
-        mongo: async () => {
-            const page = await CmsGetPage({
-                shop: toShopRef(shop),
-                locale: { code: locale.code },
-                slug: handle,
-                draft,
-            });
-            return page ? normalizePayloadDoc(page, locale.code) : null;
-        },
-        convex: (query) =>
-            query('cms/read:pageBySlug', {
-                shopId: shop.id,
-                slug: handle,
-                locale: locale.code,
-                ...(draft ? { draft: true } : {}),
-            }),
-    });
+        ...(draft ? { draft: true } : {}),
+    })) as Page | null;
 }

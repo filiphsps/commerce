@@ -1,12 +1,8 @@
 /**
  * Root layout for the admin app. Intentionally a passthrough — the actual
- * `<html>/<body>` shell lives in `(app)/layout.tsx` (regular admin routes)
- * and `(payload)/layout.tsx` (Payload's own RootLayout).
- *
- * Next 16 allows the root layout to skip `<html>/<body>` as long as every
- * top-level route group provides them. That lets Payload's RootLayout render
- * unimpeded — otherwise it would nest its own `<html>` inside ours and break
- * the admin UI.
+ * `<html>/<body>` shell lives in `(app)/layout.tsx`. Next 16 allows the root
+ * layout to skip `<html>/<body>` as long as every top-level route group
+ * provides them.
  */
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';

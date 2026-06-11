@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { type CmsShellProps, DocumentForm } from '@/components/cms/document-form';
+import { DocumentForm } from '@/components/cms/document-form';
 import { render, screen } from '@/utils/test/react';
 
 vi.mock('next/link', () => ({
@@ -24,12 +24,11 @@ vi.mock('@/components/cms/document-form-body', () => ({
 // Payload field shell moved into the theme route's bespoke field surface, so
 // this chrome needs no `@nordcom/commerce-cms/ui` mock anymore. The prop is
 // still part of the runtime seam's call shape, so the tests keep passing one.
-const STUB_SHELL_PROPS: CmsShellProps = { theme: 'light' };
 
 describe('DocumentForm', () => {
     it('renders the title via PageHeader', () => {
         render(
-            <DocumentForm title="Edit Article: Hello" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
+            <DocumentForm title="Edit Article: Hello" onSubmit={vi.fn()}>
                 <p>field</p>
             </DocumentForm>,
         );
@@ -45,7 +44,6 @@ describe('DocumentForm', () => {
                     { label: 'Articles', href: '/abc/content/articles/' as import('next').Route },
                     { label: 'Edit' },
                 ]}
-                shellProps={STUB_SHELL_PROPS}
                 onSubmit={vi.fn()}
             >
                 <p>field</p>
@@ -56,12 +54,7 @@ describe('DocumentForm', () => {
 
     it('renders toolbar via PageFooter when provided', () => {
         const { container } = render(
-            <DocumentForm
-                title="Edit"
-                shellProps={STUB_SHELL_PROPS}
-                onSubmit={vi.fn()}
-                toolbar={<button type="button">Save draft</button>}
-            >
+            <DocumentForm title="Edit" onSubmit={vi.fn()} toolbar={<button type="button">Save draft</button>}>
                 <p>field</p>
             </DocumentForm>,
         );
@@ -71,7 +64,7 @@ describe('DocumentForm', () => {
 
     it('does NOT use the calc(100vh-4.5rem) hack', () => {
         const { container } = render(
-            <DocumentForm title="X" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
+            <DocumentForm title="X" onSubmit={vi.fn()}>
                 <p>x</p>
             </DocumentForm>,
         );

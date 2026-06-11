@@ -4,7 +4,6 @@ import { MissingEnvironmentVariableError, NotFoundError, UnknownShopDomainError 
 import { seedCanonical } from '@nordcom/commerce-test-convex';
 import { ConvexHttpClient } from 'convex/browser';
 import { type FunctionReference, makeFunctionReference } from 'convex/server';
-import mongoose from 'mongoose';
 import { encode } from 'next-auth/jwt';
 
 import { STORAGE_STATE_PATH } from './fixtures/storage-state';
@@ -36,9 +35,9 @@ export interface SetupConvexClient {
 }
 
 /**
- * The injectable substrate behind {@link seedE2eOperator}: the canonical Convex seed, a server-tier
- * client factory, and the pre-cutover Payload principal bridge — so the unit suite can mock every
- * transport and prove the seed sequence without a deployment or a mongod.
+ * The injectable substrate behind {@link seedE2eOperator}: the canonical Convex seed and a
+ * server-tier client factory — so the unit suite can mock every transport and prove the seed
+ * sequence without a deployment.
  */
 export interface GlobalSetupDeps {
     convex: {
@@ -47,56 +46,14 @@ export interface GlobalSetupDeps {
         /** Builds a (server-tier) client for the deployment. */
         createClient(url: string): SetupConvexClient;
     };
-    /** Mirrors the operator into the Payload `users` collection — see {@link seedPayloadPrincipal}. */
-    seedPayloadPrincipal(uri: string, principal: { email: string; domain: string }): Promise<void>;
 }
 
-/**
- * Pre-cutover Payload principal seeding — the ONLY Mongo-side write left in this setup, and the only
- * reason `mongoose`/`MONGODB_URI` still appear in this file. The admin app under test still boots
- * Payload-on-Mongo, and `getAuthedPayloadCtx` (apps/admin/src/lib/payload-ctx.ts) resolves the
- * NextAuth email to a `payload-users` document — without this row every `[domain]` content route
- * bounces to `/auth/login/`. The `tenants` link carries the MONGO shop `_id` (shop == tenant
- * post-UNIFY-03; there is no separate `tenants` collection), looked up here because the Mongo seed
- * does not pin a stable shop id. TEARDOWN-02 deletes this function with the Payload surface.
- *
- * @param uri - The daemon mongod the admin webServer also binds to.
- * @param principal - The operator email plus the canonical shop domain to link as tenant.
- * @returns Resolves once the `payload-users` upsert lands.
- * @throws {NotFoundError} When the demo shop is missing on the Mongo side (predev-mongo seeds it).
- */
-async function seedPayloadPrincipal(uri: string, principal: { email: string; domain: string }): Promise<void> {
-    const conn = await mongoose.createConnection(uri, { bufferCommands: false }).asPromise();
-    try {
-        const shop = await conn.collection('shops').findOne({ domain: principal.domain });
-        if (!shop) {
-            throw new NotFoundError(`demo shop (${principal.domain})`);
-        }
-        const now = new Date();
-        await conn.collection('payload-users').updateOne(
-            { email: principal.email },
-            {
-                $set: {
-                    role: 'admin',
-                    tenants: [{ tenant: shop._id, id: String(shop._id) }],
-                    updatedAt: now,
-                },
-                $setOnInsert: { email: principal.email, loginAttempts: 0, sessions: [], createdAt: now },
-            },
-            { upsert: true },
-        );
-    } finally {
-        await conn.close();
-    }
-}
-
-/** Production wiring: the real test-convex live seed, a real `ConvexHttpClient`, the real Payload bridge. */
+/** Production wiring: the real test-convex live seed plus a real `ConvexHttpClient`. */
 const defaultDeps: GlobalSetupDeps = {
     convex: {
         seed: (url) => seedCanonical(url),
         createClient: (url) => new ConvexHttpClient(url),
     },
-    seedPayloadPrincipal,
 };
 
 /**
@@ -104,16 +61,15 @@ const defaultDeps: GlobalSetupDeps = {
  * the configured Convex deployment, resolves it through the `db/shops:byDomain` server seam, upserts
  * the e2e operator against the unified model (`users` keyed by `by_email`, then ONE
  * `db/shop_write:upsertShop` whose `collaborators` list syncs the `shopCollaborators` join the
- * shell's `Shop.findByCollaborator` reads), and finally mirrors the operator into the pre-cutover
- * Payload `users` collection. Idempotent end-to-end: the canonical seed heals partial corpora, the
- * user upsert is probe-then-create, and the collaborator sync is a delete-diff.
+ * shell's `Shop.findByCollaborator` reads). Idempotent end-to-end: the canonical seed heals
+ * partial corpora, the user upsert is probe-then-create, and the collaborator sync is a
+ * delete-diff.
  *
  * @param env - The environment to read configuration from.
  * @param deps - The transport surface (injectable for unit tests).
  * @returns The operator's Convex `users` document id — the NextAuth JWT `sub`.
- * @throws {MissingEnvironmentVariableError} When `CONVEX_URL`/`NEXT_PUBLIC_CONVEX_URL`,
- *   `CONVEX_SERVER_SECRET`, or `MONGODB_URI` is unset — run via `pnpm test:e2e` so root `.env.local`
- *   loads.
+ * @throws {MissingEnvironmentVariableError} When `CONVEX_URL`/`NEXT_PUBLIC_CONVEX_URL` or
+ *   `CONVEX_SERVER_SECRET` is unset — run via `pnpm test:e2e` so root `.env.local` loads.
  * @throws {UnknownShopDomainError} When the demo shop cannot be resolved after seeding.
  * @throws {NotFoundError} When the keyed shop row vanishes between the resolve and the write.
  */
@@ -132,14 +88,6 @@ export async function seedE2eOperator(
             'It must match the value set on the Convex deployment under test.',
         );
     }
-    const mongoUri = env.MONGODB_URI;
-    if (!mongoUri) {
-        throw new MissingEnvironmentVariableError(
-            'MONGODB_URI',
-            'The admin app under test still boots Payload-on-Mongo pre-cutover (TEARDOWN-02 removes this).',
-        );
-    }
-
     await deps.convex.seed(url);
 
     const client = deps.convex.createClient(url);
@@ -170,7 +118,6 @@ export async function seedE2eOperator(
         throw new NotFoundError(`canonical shop (legacyId=${view.shop.legacyId})`);
     }
 
-    await deps.seedPayloadPrincipal(mongoUri, { email: TEST_EMAIL, domain });
     return user._id;
 }
 
@@ -229,8 +176,8 @@ export default async function globalSetup(): Promise<void> {
 }
 
 /**
- * Playwright globalTeardown: no-op. The Convex deployment under test is owned by its launcher and
- * the daemon mongod by the root dev/test lifecycle hooks (postdev-mongo.ts), never by this file.
+ * Playwright globalTeardown: no-op. The Convex deployment under test is owned by its launcher,
+ * never by this file.
  *
  * @returns Immediately.
  */

@@ -1,9 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
 // ------------------------------------------------------------------
-// Mock the admin components that transitively pull in @payloadcms/ui
-// (and react-image-crop's CSS side-effect) — the test only needs to
-// verify that the runtime wires them in as functions, not render them.
+// Mock the admin shell components — the test only needs to verify that
+// the runtime wires them in as functions, not render them.
 // ------------------------------------------------------------------
 
 vi.mock('@/components/cms/collection-table', () => ({
@@ -39,8 +38,8 @@ vi.mock('./editor-convex-bridge', () => ({
         listRelationshipOptions: vi.fn(),
     },
 }));
-vi.mock('./payload-ctx', () => ({
-    getAuthedPayloadCtx: vi.fn(),
+vi.mock('./cms-ctx', () => ({
+    getAuthedCmsCtx: vi.fn(),
 }));
 vi.mock('./cms-actions/media-upload', () => ({
     createMediaAction: vi.fn(),
@@ -49,11 +48,10 @@ vi.mock('./cms-actions/media-upload', () => ({
 import { editorRuntime } from './editor-runtime';
 
 describe('editorRuntime', () => {
-    it('exposes the nine required handles', () => {
+    it('exposes the eight required handles', () => {
         expect(typeof editorRuntime.getCtx).toBe('function');
         expect(typeof editorRuntime.toAccessCtx).toBe('function');
         expect(typeof editorRuntime.buildFormState).toBe('function');
-        expect(typeof editorRuntime.getShellProps).toBe('function');
         expect(typeof editorRuntime.DocumentForm).toBe('function');
         expect(typeof editorRuntime.EmptyState).toBe('function');
         expect(typeof editorRuntime.Table).toBe('function');
@@ -99,7 +97,6 @@ describe('editorRuntime', () => {
     it('toAccessCtx flattens user.tenants from [{tenant}] to [string]', () => {
         const accessCtx = editorRuntime.toAccessCtx(
             {
-                payload: {} as never,
                 user: {
                     id: 'u',
                     email: 'e',
@@ -118,7 +115,6 @@ describe('editorRuntime', () => {
     it('toAccessCtx forwards the resolved tenant.id as tenantId', () => {
         const accessCtx = editorRuntime.toAccessCtx(
             {
-                payload: {} as never,
                 user: {
                     id: 'u',
                     email: 'e',
@@ -142,7 +138,6 @@ describe('editorRuntime', () => {
     it('toAccessCtx returns tenantId: null when tenant is null (cross-tenant routes)', () => {
         const accessCtx = editorRuntime.toAccessCtx(
             {
-                payload: {} as never,
                 user: {
                     id: 'u',
                     email: 'e',

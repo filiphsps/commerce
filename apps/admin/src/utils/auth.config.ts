@@ -11,7 +11,7 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 // the CSRF/callback cookies (which we don't override and which use Auth.js
 // defaults `authjs.*`) inconsistent with the session token, and the
 // co-located admin routes (which read `await auth()` via
-// `getAuthedPayloadCtx`) would silently fall back to "no session" in prod.
+// `getAuthedCmsCtx`) would silently fall back to "no session" in prod.
 //
 // Only override the cookie OPTIONS here (domain, secure flag) so the cookie
 // is shared across `.${LANDING_DOMAIN}` subdomains.
@@ -45,7 +45,7 @@ export default {
             },
         },
     },
-    // Keep the env-name fallback aligned with payload.config.ts so a prod
+    // Accept either secret env name so a prod
     // deployment that sets only `NEXTAUTH_SECRET` (the Auth.js v5 default) or
     // only `AUTH_SECRET` (the older name) doesn't end up with one half of the
     // app encrypting cookies with one secret and the other half trying to

@@ -69,7 +69,6 @@ const buildRuntime = (
         }),
         convex: { getDocument, listRelationshipOptions: async () => [] },
         buildFormState: async () => ({ state: {} }),
-        getShellProps: async () => ({}),
         DocumentForm: ({ title }: { title: string }) => <div data-testid="doc-form">{title}</div>,
         Table: () => null,
         Toolbar: () => null,

@@ -1,12 +1,5 @@
-export { type GetArticleArgs, getArticle } from './get-article';
-export { type GetArticlesArgs, getArticles } from './get-articles';
-export { type GetBusinessDataArgs, getBusinessData } from './get-business-data';
-export { type GetCollectionMetadataArgs, getCollectionMetadata } from './get-collection-metadata';
-export { type GetFooterArgs, getFooter } from './get-footer';
-export { type GetHeaderArgs, getHeader } from './get-header';
-export { type GetPageArgs, getPage, type LocaleRef, type ShopRef } from './get-page';
-export { type GetPagesArgs, getPages } from './get-pages';
-export { getPayloadInstance } from './get-payload-instance';
-export { type GetProductMetadataArgs, getProductMetadata } from './get-product-metadata';
-export { type LinkValue, resolveLink } from './resolve-link';
-export { resolveTenantId } from './resolve-tenant-id';
+// TEARDOWN-02: the Payload-on-Mongo read getters (getHeader/getPage/…)
+// are gone — the storefront reads CMS content straight from the Convex
+// `cms/read` functions. The pure link resolver is the only surviving
+// member of this entry point.
+export { type LinkValue, type LocaleRef, resolveLink } from './resolve-link';

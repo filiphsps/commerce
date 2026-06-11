@@ -15,8 +15,8 @@ const LEGACY_ID = 'a1b2c3d4e5f6a1b2c3d4e5f6';
 
 /**
  * Builds a fully-mocked transport surface for {@link seedE2eOperator}, dispatching on the exported
- * function references so the suite can prove the seed → resolve → upsert → bridge sequence without
- * a Convex deployment or a mongod.
+ * function references so the suite can prove the seed → resolve → upsert sequence without a Convex
+ * deployment.
  *
  * @param opts - `shop: null` makes the byDomain resolve miss; `existingUserId` makes the operator
  *   probe hit (re-run path).
@@ -43,12 +43,10 @@ function mockDeps(opts: { shop?: { _id: string; legacyId: string } | null; exist
         throw new TypeError('unexpected mutation reference');
     });
     const seed = vi.fn(async () => 'shops|demo');
-    const seedPayloadPrincipal = vi.fn(async () => {});
     const deps: GlobalSetupDeps = {
         convex: { seed, createClient: () => ({ query, mutation }) },
-        seedPayloadPrincipal,
     };
-    return { deps, seed, query, mutation, seedPayloadPrincipal };
+    return { deps, seed, query, mutation };
 }
 
 /** A minimal, fully-configured environment for the seed core under test. */
@@ -56,13 +54,12 @@ function baseEnv(): NodeJS.ProcessEnv {
     return {
         CONVEX_URL: 'https://e2e.convex.cloud',
         CONVEX_SERVER_SECRET: 'server-secret',
-        MONGODB_URI: 'mongodb://127.0.0.1:27017/e2e',
     } as NodeJS.ProcessEnv;
 }
 
 describe('seedE2eOperator', () => {
-    it('seeds, resolves the tenant, creates the operator, syncs the collaborator join, then bridges Payload', async () => {
-        const { deps, seed, query, mutation, seedPayloadPrincipal } = mockDeps();
+    it('seeds, resolves the tenant, creates the operator, then syncs the collaborator join', async () => {
+        const { deps, seed, query, mutation } = mockDeps();
 
         await expect(seedE2eOperator(baseEnv(), deps)).resolves.toBe('users|created');
 
@@ -88,16 +85,10 @@ describe('seedE2eOperator', () => {
             shop: {},
             collaborators: [{ user: 'users|created', permissions: ['admin'] }],
         });
-        expect(seedPayloadPrincipal).toHaveBeenCalledWith('mongodb://127.0.0.1:27017/e2e', {
-            email: 'e2e-test@example.com',
-            domain: 'nordcom-demo-shop.com',
-        });
-
         const order = [
             seed.mock.invocationCallOrder[0],
             query.mock.invocationCallOrder[0],
             mutation.mock.invocationCallOrder[0],
-            seedPayloadPrincipal.mock.invocationCallOrder[0],
         ];
         for (const [index, value] of order.entries()) {
             expect(value).toBeDefined();
@@ -121,9 +112,9 @@ describe('seedE2eOperator', () => {
         });
     });
 
-    it('forwards an E2E_SHOP_DOMAIN override into the byDomain lookup and the Payload bridge', async () => {
+    it('forwards an E2E_SHOP_DOMAIN override into the byDomain lookup', async () => {
         const env = { ...baseEnv(), E2E_SHOP_DOMAIN: 'staging.example.com' };
-        const { deps, query, seedPayloadPrincipal } = mockDeps();
+        const { deps, query } = mockDeps();
 
         await seedE2eOperator(env, deps);
 
@@ -131,16 +122,11 @@ describe('seedE2eOperator', () => {
             serverSecret: 'server-secret',
             domain: 'staging.example.com',
         });
-        expect(seedPayloadPrincipal).toHaveBeenCalledWith('mongodb://127.0.0.1:27017/e2e', {
-            email: 'e2e-test@example.com',
-            domain: 'staging.example.com',
-        });
     });
 
     it.each([
         'CONVEX_URL',
         'CONVEX_SERVER_SECRET',
-        'MONGODB_URI',
     ] as const)('rejects without seeding when %s is unset', async (variable) => {
         const env = baseEnv();
         delete env[variable];
@@ -151,10 +137,9 @@ describe('seedE2eOperator', () => {
     });
 
     it('rejects (writing nothing) when the demo shop cannot be resolved after the seed', async () => {
-        const { deps, mutation, seedPayloadPrincipal } = mockDeps({ shop: null });
+        const { deps, mutation } = mockDeps({ shop: null });
 
         await expect(seedE2eOperator(baseEnv(), deps)).rejects.toBeInstanceOf(UnknownShopDomainError);
         expect(mutation).not.toHaveBeenCalled();
-        expect(seedPayloadPrincipal).not.toHaveBeenCalled();
     });
 });

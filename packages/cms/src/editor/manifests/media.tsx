@@ -1,6 +1,6 @@
 import type { Route } from 'next';
 import type { ReactNode } from 'react';
-import type { Media } from '../../types/payload-types';
+import type { Media } from '../../types/content-types';
 import { adminOnly } from '../access';
 import { defineCollectionEditor } from '../manifest';
 

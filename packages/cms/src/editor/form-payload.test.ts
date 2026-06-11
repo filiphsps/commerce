@@ -1,5 +1,5 @@
-import type { Field } from 'payload';
 import { describe, expect, it } from 'vitest';
+import type { FieldDescriptor } from '../descriptors';
 import { parseFormPayload, pickByFieldNames, serializeFormPayload } from './form-payload';
 
 const fdWith = (entries: Record<string, string>): FormData => {
@@ -30,7 +30,7 @@ describe('parseFormPayload', () => {
 });
 
 describe('pickByFieldNames', () => {
-    const fields: Field[] = [
+    const fields: FieldDescriptor[] = [
         { name: 'name', type: 'text' },
         { name: 'domain', type: 'text' },
         { name: 'design', type: 'group', fields: [{ name: 'logo', type: 'text' }] },
@@ -52,7 +52,7 @@ describe('pickByFieldNames', () => {
 });
 
 describe('serializeFormPayload', () => {
-    const fields: Field[] = [
+    const fields: FieldDescriptor[] = [
         { name: 'name', type: 'text' },
         { name: 'domain', type: 'text' },
     ];

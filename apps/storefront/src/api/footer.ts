@@ -1,51 +1,29 @@
 import 'server-only';
 
-import { getFooter } from '@nordcom/commerce-cms/api';
 import type { Footer } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
-import { toShopRef } from './_cms';
-import { runCmsDualRead } from './_cms-shadow';
+import { cmsRead } from './_cms-read';
 import { isDraftModeEnabled } from './_draft';
-import { normalizePayloadDoc } from './_normalize-payload';
 
 export type FooterApiArgs = { shop: OnlineShop; locale: Locale };
 
 /**
- * Reads the `Footer` singleton for this tenant + locale. Mirrors the
- * draft-detection + null-on-missing policy of HeaderApi and rides the same
- * SFREAD-12 dual-read loader. Since CUTOVER-06 the getter is flipped BY
- * DEFAULT: the Convex `cms/read:singleton` read is authoritative, and
- * `CMS_READ_FLIP=-footer` is the emergency-shadow lever back to the inert
- * Payload-on-Mongo snapshot. A draft-mode request forwards the draft flag
- * down BOTH legs and skips the shadow.
+ * Reads the `Footer` singleton for this tenant + locale from the Convex
+ * `cms/read:singleton` query. Mirrors HeaderApi's draft-detection and
+ * null-on-missing policy.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.
- * @param options.locale - Request locale for Payload field resolution.
- * @returns The normalized footer document, or `null` when the doc has not been seeded.
+ * @param options.locale - Request locale for CMS field resolution.
+ * @returns The contract-shaped footer document, or `null` when the doc has not been seeded.
  */
 export async function FooterApi({ shop, locale }: FooterApiArgs): Promise<Footer | null> {
     const draft = await isDraftModeEnabled();
-    return runCmsDualRead<Footer | null>({
-        getter: 'footer',
+    return (await cmsRead('cms/read:singleton', {
         shopId: shop.id,
+        collection: 'footer',
         locale: locale.code,
-        draft,
-        mongo: async () => {
-            const footer = await getFooter({
-                shop: toShopRef(shop),
-                locale: { code: locale.code },
-                draft,
-            });
-            return footer ? normalizePayloadDoc(footer, locale.code) : null;
-        },
-        convex: (query) =>
-            query('cms/read:singleton', {
-                shopId: shop.id,
-                collection: 'footer',
-                locale: locale.code,
-                ...(draft ? { draft: true } : {}),
-            }),
-    });
+        ...(draft ? { draft: true } : {}),
+    })) as Footer | null;
 }

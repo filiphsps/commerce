@@ -3,11 +3,10 @@ import 'server-only';
 import { MissingConvexBridgeError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
 import { CMS_BASE_VERSION_FIELD, documentTargetFor, type EditorActions } from '../actions';
 import { editorCollectionSchema } from '../collection-fields';
-import type { CollectionEditorManifest } from '../manifest';
+import type { CollectionEditorManifest, CollectionSlug } from '../manifest';
 import { loadRelationshipOptions } from '../relationship-targets';
 import type { EditorRuntime } from '../runtime';
 import { docUrlSegment } from '../url';
@@ -135,8 +134,6 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
         locale,
     });
 
-    const shellProps = await runtime.getShellProps(domain, locale);
-
     // Bind the codegen'd action wrappers to (domain, id, locale). The locale
     // closes over the request-time value the editor is currently viewing so
     // saves write into the correct localized field bucket instead of falling
@@ -186,7 +183,6 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
         <runtime.DocumentForm
             title={title}
             breadcrumbs={breadcrumbs}
-            shellProps={shellProps}
             onSubmit={boundSaveDraft}
             initialState={initialState}
             toolbar={

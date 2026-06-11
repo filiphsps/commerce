@@ -5,19 +5,9 @@ import { DocumentFormBody } from '@/components/cms/document-form-body';
 import { PageFooter } from '@/components/shell/page-footer';
 import { type Breadcrumb, PageHeader } from '@/components/shell/page-header';
 
-/**
- * Opaque runtime shell-prop bag. The editor runtime seam (`EditorRuntime.getShellProps`)
- * still produces it for every page render, but nothing consumes it anymore — THEMEFIX-01
- * moved the last consumer (the theme route's Payload field shell) onto the native form
- * core. TEARDOWN-02 deletes the seam.
- */
-export type CmsShellProps = Record<string, unknown>;
-
 export type DocumentFormProps = {
     title: string;
     breadcrumbs?: Breadcrumb[];
-    /** Carried for the runtime seam's call shape; unused here (see {@link CmsShellProps}). */
-    shellProps: CmsShellProps;
     children: ReactNode;
     onSubmit: (formData: FormData) => Promise<void>;
     initialState?: FormState;
@@ -28,11 +18,9 @@ export type DocumentFormProps = {
 
 /**
  * Full-page document editor layout combining a PageHeader, the native CMSFORM-01
- * form body, and an optional live-preview pane. Since CMSGATE-01 the Payload
- * field shell is GONE from this path: the native form core needs no Payload
- * providers, so every editor surface — including the theme route's bespoke
- * `fieldSurface` since THEMEFIX-01 — renders with zero `@payloadcms/*` on its
- * import graph.
+ * form body, and an optional live-preview pane. The native form core needs no
+ * CMS-framework providers — every editor surface, including the theme route's
+ * bespoke `fieldSurface`, renders from the form core alone.
  *
  * @param props.title - Page heading displayed in PageHeader.
  * @param props.breadcrumbs - Optional breadcrumb trail rendered above the title.

@@ -4,7 +4,6 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { resolveBuildEnv } from '@nordcom/commerce-utils/env';
-import { withPayload } from '@payloadcms/next/withPayload';
 
 const { isDev, environment, gitSHA } = resolveBuildEnv(process.env);
 
@@ -42,11 +41,6 @@ const config = {
     compress: !isDev,
     reactCompiler: true,
     trailingSlash: true,
-    // `@payloadcms/ui` field components are imported directly by routes in
-    // `(app)/(dashboard)/[domain]/content/*`. Without explicit transpilation
-    // Next.js doesn't process the package's `.scss` imports, and the field
-    // wrappers render unstyled.
-    transpilePackages: ['@payloadcms/ui'],
     // cacheComponents: true, // TODO: Enable as soon as possible.
     typedRoutes: true,
     turbopack: {
@@ -56,11 +50,11 @@ const config = {
         authInterrupts: true,
         appNewScrollHandler: true,
         appNavFailHandling: true,
-        caseSensitiveRoutes: false, // TODO: Update payload-related routing to support case-insensitive routes.
+        caseSensitiveRoutes: false, // TODO: Update editor routing to support case-insensitive routes.
         esmExternals: true,
         dynamicOnHover: true,
         // cachedNavigations: true, // TODO: Enable together with cacheComponents.
-        // proxyPrefetch: 'flexible', // TODO: Figure out if this breaks payload.
+        // proxyPrefetch: 'flexible', // TODO: Evaluate for the editor routes.
         optimizePackageImports: undefined,
         // `optimizeServerReact` rewrites RSC trees in ways that can break
         // third-party admin UIs. Off for the admin.
@@ -115,9 +109,6 @@ const config = {
  * @returns
  */
 const wrapConfig = (config) => {
-    // Always include payload.
-    config = withPayload(config);
-
     if (isDev) {
         console.warn('Development mode detected, skipping logging...');
         // TODO: Add logging service.

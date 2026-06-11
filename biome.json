@@ -24,7 +24,7 @@
             "!**/public/sitemap*.xml*",
             "!**/storybook-static",
             "!docs/superpowers",
-            "!packages/cms/src/types/payload-types.ts",
+            "!packages/cms/src/types/content-types.ts",
             "!packages/convex/convex/__fixtures__",
             "!packages/convex/convex/_generated",
             "!packages/convex/convex/tables/cms.ts",

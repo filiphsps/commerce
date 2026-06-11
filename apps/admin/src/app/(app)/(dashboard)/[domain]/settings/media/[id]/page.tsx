@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
 import { PageHeader } from '@/components/shell/page-header';
 import { getMediaById } from '@/lib/editor-convex-bridge';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 
 export const metadata: Metadata = { title: 'Media' };
 
@@ -60,7 +60,7 @@ function MetaRow({ label, value }: { label: string; value: string }) {
 export default async function MediaDetailPage({ params }: Props) {
     const { domain, id } = await params;
 
-    const { user } = await getAuthedPayloadCtx(domain);
+    const { user } = await getAuthedCmsCtx(domain);
     // Defense-in-depth: the media library is admin-only (mirrors the upload page's gate).
     if (user.role !== 'admin') {
         notFound();

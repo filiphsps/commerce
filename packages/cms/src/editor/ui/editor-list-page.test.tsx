@@ -74,7 +74,6 @@ const buildRuntime = (list: () => Promise<EditorCmsListPage>): never =>
         Toolbar: () => null,
         PageHeader: ({ title }: { title: string }) => <h1>{title}</h1>,
         buildFormState: async () => ({ state: {} }),
-        getShellProps: async () => ({}),
     }) as never;
 
 const onePage = (docs: EditorCmsDocument[]): EditorCmsListPage => ({

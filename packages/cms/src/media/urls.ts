@@ -19,12 +19,11 @@ import type { MediaImageSize } from './sizes';
  * served value as an opaque string; the storefront's `images.remotePatterns` admits the Convex
  * storage host explicitly.
  *
- * TRANSITIONAL SCHEME — preserved S3/R2 keys behind the public CDN endpoint. Until the SFREAD-12
- * read flip, the Payload-on-Mongo getters keep serving `${R2_PUBLIC_ENDPOINT}/${key}` (the
- * `@payloadcms/storage-s3` plugin's `generateFileURL`, see `../plugins/storage.ts`) with Payload's
- * `-{width}x{height}` filename convention for sizes. The helpers below reconstruct those URLs
- * byte-identically so transitional consumers (the ETL coverage verifier, pre-cutover serving,
- * parity checks) need no Payload runtime. `MEDIA_CDN_BASE_URL` overrides `R2_PUBLIC_ENDPOINT` when
+ * TRANSITIONAL SCHEME — preserved S3/R2 keys behind the public CDN endpoint. The retired
+ * Payload-era storage plugin served `${R2_PUBLIC_ENDPOINT}/${key}` with a `-{width}x{height}`
+ * filename convention for sizes. The helpers below reconstruct those URLs byte-identically so
+ * transitional consumers (the ETL coverage verifier, migrated-asset fallbacks, parity checks)
+ * need no CMS runtime. `MEDIA_CDN_BASE_URL` overrides `R2_PUBLIC_ENDPOINT` when
  * a different CDN host fronts the same bucket. Key-addressed URLs identify content only by
  * filename — regenerating bytes behind an unchanged key requires CDN invalidation, which is the
  * other reason the read-time Convex scheme is canonical.
@@ -32,8 +31,8 @@ import type { MediaImageSize } from './sizes';
 
 /**
  * The environment variables a key-addressed media CDN base resolves from, in precedence order:
- * the explicit `MEDIA_CDN_BASE_URL` override first, then the legacy Payload storage plugin's
- * `R2_PUBLIC_ENDPOINT` (the value `generateFileURL` historically used, see `../plugins/storage.ts`).
+ * the explicit `MEDIA_CDN_BASE_URL` override first, then the legacy storage plugin's
+ * `R2_PUBLIC_ENDPOINT` (the value its file-URL generator historically used).
  */
 export const MEDIA_CDN_BASE_URL_ENV_VARS = ['MEDIA_CDN_BASE_URL', 'R2_PUBLIC_ENDPOINT'] as const;
 

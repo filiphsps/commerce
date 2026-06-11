@@ -4,8 +4,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Hoisted mock fns
 // ------------------------------------------------------------------
 
-const { mockGetAuthedPayloadCtx, mockNotFound } = vi.hoisted(() => ({
-    mockGetAuthedPayloadCtx: vi.fn(),
+const { mockGetAuthedCmsCtx, mockNotFound } = vi.hoisted(() => ({
+    mockGetAuthedCmsCtx: vi.fn(),
     mockNotFound: vi.fn((): never => {
         throw new Error('NEXT_NOT_FOUND');
     }),
@@ -24,8 +24,8 @@ vi.mock('next/navigation', () => ({
     notFound: mockNotFound,
 }));
 
-vi.mock('@/lib/payload-ctx', () => ({
-    getAuthedPayloadCtx: mockGetAuthedPayloadCtx,
+vi.mock('@/lib/cms-ctx', () => ({
+    getAuthedCmsCtx: mockGetAuthedCmsCtx,
 }));
 
 // ------------------------------------------------------------------
@@ -60,7 +60,6 @@ type AnyUser = typeof ADMIN_USER | typeof EDITOR_USER;
 
 function makeCtx(user: AnyUser = ADMIN_USER) {
     return {
-        payload: {} as never,
         user,
         tenant: { id: 't1', slug: 'acme', name: 'Acme' },
         session: { user: { email: user.email }, expires: '2099-01-01' },
@@ -71,7 +70,7 @@ describe('(dashboard)/[domain]/settings/page', () => {
     const validParams = Promise.resolve({ domain: 'acme.myshopify.com' });
 
     beforeEach(() => {
-        mockGetAuthedPayloadCtx.mockReset();
+        mockGetAuthedCmsCtx.mockReset();
         mockNotFound.mockClear();
     });
 
@@ -80,7 +79,7 @@ describe('(dashboard)/[domain]/settings/page', () => {
     });
 
     it('renders the Settings heading when authenticated as admin', async () => {
-        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(ADMIN_USER));
+        mockGetAuthedCmsCtx.mockResolvedValue(makeCtx(ADMIN_USER));
 
         const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
         const q = within(container as HTMLElement);
@@ -89,7 +88,7 @@ describe('(dashboard)/[domain]/settings/page', () => {
     });
 
     it('renders admin-only cards (Tenants, Users, Media) when role is admin', async () => {
-        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(ADMIN_USER));
+        mockGetAuthedCmsCtx.mockResolvedValue(makeCtx(ADMIN_USER));
 
         const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
         const q = within(container as HTMLElement);
@@ -100,7 +99,7 @@ describe('(dashboard)/[domain]/settings/page', () => {
     });
 
     it('hides admin-only cards when role is editor', async () => {
-        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(EDITOR_USER));
+        mockGetAuthedCmsCtx.mockResolvedValue(makeCtx(EDITOR_USER));
 
         const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
         const q = within(container as HTMLElement);
@@ -111,7 +110,7 @@ describe('(dashboard)/[domain]/settings/page', () => {
     });
 
     it('links Tenants card to /<domain>/settings/tenants/', async () => {
-        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(ADMIN_USER));
+        mockGetAuthedCmsCtx.mockResolvedValue(makeCtx(ADMIN_USER));
 
         const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
         const q = within(container as HTMLElement);

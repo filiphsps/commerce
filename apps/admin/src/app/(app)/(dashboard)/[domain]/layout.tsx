@@ -23,7 +23,7 @@ import type { IconRailItem } from '@/components/shell/icon-rail';
 import { MobileNav } from '@/components/shell/mobile-nav';
 import { ShellHeader } from '@/components/shell/shell-header';
 import { ShellRoot } from '@/components/shell/shell-root';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 import { getShopsForUser } from '@/lib/shops-for-user';
 
 export type ShopLayoutProps = {
@@ -63,7 +63,7 @@ export default async function ShopLayout({ children, subnav, inspector, params }
         throw error;
     }
 
-    const { user } = await getAuthedPayloadCtx(domain);
+    const { user } = await getAuthedCmsCtx(domain);
     const isAdmin = user.role === 'admin';
 
     const urlBase = `/${shop.domain}`;

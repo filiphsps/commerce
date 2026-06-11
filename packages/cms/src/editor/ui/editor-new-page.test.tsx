@@ -38,7 +38,6 @@ const buildRuntime = (overrides: Record<string, unknown> = {}): never =>
         }),
         toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
         buildFormState: async () => ({ state: {} }),
-        getShellProps: async () => ({}),
         DocumentForm: ({ title }: { title: string }) => <div data-testid="doc-form">{title}</div>,
         Table: () => null,
         Toolbar: () => null,

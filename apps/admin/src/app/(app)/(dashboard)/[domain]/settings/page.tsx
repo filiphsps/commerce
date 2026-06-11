@@ -4,7 +4,7 @@ import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
 import { PageHeader } from '@/components/shell/page-header';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 
 export const metadata: Metadata = {
     title: 'Settings',
@@ -18,7 +18,7 @@ export type ShopSettingsPageProps = {
 
 export default async function ShopSettingsPage({ params }: ShopSettingsPageProps) {
     const { domain } = await params;
-    const { user } = await getAuthedPayloadCtx(domain);
+    const { user } = await getAuthedCmsCtx(domain);
     const isAdmin = user.role === 'admin';
 
     return (

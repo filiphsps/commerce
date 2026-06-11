@@ -1,7 +1,8 @@
 'use client';
 
-import type { Field } from 'payload';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+import type { FieldDescriptor } from '../../descriptors';
 
 import { serializeFormPayload } from '../form-payload';
 import { useForm } from './hooks';
@@ -14,7 +15,7 @@ const DEFAULT_AUTOSAVE_INTERVAL_MS = 2_000;
  */
 export type UseAutosaveArgs = {
     /** Top-level collection descriptors — the allow-list {@link serializeFormPayload} scrubs against. */
-    fields: readonly Field[];
+    fields: readonly FieldDescriptor[];
     /**
      * The draft-save round-trip. Bound by the call site to the Convex draft
      * mutation (`cms.documents.save` with `status: 'draft'`) carrying the

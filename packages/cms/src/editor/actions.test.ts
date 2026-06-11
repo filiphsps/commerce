@@ -2,7 +2,7 @@ import type { Route } from 'next';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createCollectionEditorActions, type EditorConvexBridge } from './actions';
 import { defineCollectionEditor } from './manifest';
-import type { AuthedPayloadCtx, EditorRuntime } from './runtime';
+import type { AuthedEditorCtx, EditorRuntime } from './runtime';
 
 const { mockRevalidatePath } = vi.hoisted(() => ({ mockRevalidatePath: vi.fn() }));
 vi.mock('next/cache', () => ({ revalidatePath: mockRevalidatePath }));
@@ -50,17 +50,15 @@ const buildBridge = (): EditorConvexBridge => ({
 
 /**
  * Builds a runtime whose `getCtx`/`toAccessCtx` satisfy the route-level access gates and whose
- * `convex` property is the mocked bridge. The Payload members are inert stubs — the Convex-backed
- * actions must never touch `ctx.payload`.
+ * `convex` property is the mocked bridge.
  */
 const buildRuntime = (bridge?: EditorConvexBridge): EditorRuntime & { convex?: EditorConvexBridge } => {
-    const stableCtx: AuthedPayloadCtx = {
-        payload: {} as never,
+    const stableCtx: AuthedEditorCtx = {
         user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
         tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'en-US', locales: ['en-US'] },
     };
     return {
-        getCtx: vi.fn(async (): Promise<AuthedPayloadCtx> => stableCtx),
+        getCtx: vi.fn(async (): Promise<AuthedEditorCtx> => stableCtx),
         toAccessCtx: (ctx, domain) => ({
             user: ctx.user
                 ? {
@@ -74,7 +72,6 @@ const buildRuntime = (bridge?: EditorConvexBridge): EditorRuntime & { convex?: E
             tenantId: ctx.tenant?.id ?? null,
         }),
         buildFormState: vi.fn(),
-        getShellProps: vi.fn(),
         DocumentForm: () => null,
         EmptyState: () => null,
         Table: () => null,

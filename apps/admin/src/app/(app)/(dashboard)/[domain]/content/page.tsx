@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
 import { PageHeader } from '@/components/shell/page-header';
 import { editorConvexBridge } from '@/lib/editor-convex-bridge';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 
 /**
  * Derives a human-readable title from a Convex CMS document's serialized field map. Localized
@@ -111,7 +111,7 @@ function CollectionCard<T>({
 
 export default async function ContentOverviewPage({ params }: { params: Params }) {
     const { domain } = await params;
-    const { tenant } = await getAuthedPayloadCtx(domain);
+    const { tenant } = await getAuthedCmsCtx(domain);
 
     if (!tenant) {
         notFound();

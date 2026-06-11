@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { getBusinessData } from '@nordcom/commerce-cms/api';
 import type { BusinessDatum } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { NoLocalesAvailableError, ProviderFetchError } from '@nordcom/commerce-errors';
@@ -9,9 +8,7 @@ import { trace } from '@opentelemetry/api';
 import type { Country, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
-import { toShopRef } from './_cms';
-import { runCmsDualRead } from './_cms-shadow';
-import { normalizePayloadDoc } from './_normalize-payload';
+import { cmsRead } from './_cms-read';
 
 const COUNTRIES_QUERY = graphql(`
     query countries {
@@ -204,33 +201,20 @@ export const ShopPaymentSettingsApi = async ({
 export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
 
 /**
- * Reads the `BusinessData` singleton for this tenant + locale. Returns
- * `null` when the doc has not been seeded — InfoBar / Footer call sites
- * collapse to no-render in that case. Routed through the SFREAD-12 dual-read
- * loader; since CUTOVER-06 the getter is flipped BY DEFAULT (the Convex
- * `cms/read:singleton` read is authoritative, `CMS_READ_FLIP=-businessData`
- * is the emergency-shadow lever back to the inert Mongo snapshot). InfoBarApi
- * delegates here, so this single wrap covers both surfaces without
- * double-shadowing.
+ * Reads the `BusinessData` singleton for this tenant + locale from the Convex
+ * `cms/read:singleton` query. Returns `null` when the doc has not been
+ * seeded — InfoBar / Footer call sites collapse to no-render in that case.
+ * InfoBarApi delegates here, so this single read covers both surfaces.
  *
- * @param options - Tenant shop record and locale used to scope the Payload CMS fetch.
+ * @param options - Tenant shop record and locale used to scope the CMS fetch.
  * @param options.shop - Shop record identifying the tenant.
- * @param options.locale - Locale used for payload normalization.
- * @returns Normalized business data, or `null` when the doc has not been seeded.
+ * @param options.locale - Request locale for CMS field resolution.
+ * @returns The contract-shaped business data, or `null` when the doc has not been seeded.
  */
 export const BusinessDataApi = async ({ shop, locale }: BusinessDataApiArgs): Promise<BusinessDatum | null> => {
-    return runCmsDualRead<BusinessDatum | null>({
-        getter: 'businessData',
+    return (await cmsRead('cms/read:singleton', {
         shopId: shop.id,
+        collection: 'businessData',
         locale: locale.code,
-        mongo: async () => {
-            const data = await getBusinessData({
-                shop: toShopRef(shop),
-                locale: { code: locale.code },
-            });
-            return data ? normalizePayloadDoc(data, locale.code) : null;
-        },
-        convex: (query) =>
-            query('cms/read:singleton', { shopId: shop.id, collection: 'businessData', locale: locale.code }),
-    });
+    })) as BusinessDatum | null;
 };

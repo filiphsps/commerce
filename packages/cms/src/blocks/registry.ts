@@ -1,5 +1,4 @@
 import { TypeError } from '@nordcom/commerce-errors';
-import type { Block } from 'payload';
 import {
     arrayField,
     type BlockDescriptor,
@@ -17,28 +16,19 @@ import {
     textField,
 } from '../descriptors';
 import { imageField, linkField } from '../fields';
-import { alertBlock } from './alert';
-import { bannerBlock } from './banner';
-import { collectionBlock } from './collection';
-import { buildColumnsBlock } from './columns';
-import { htmlBlock } from './html';
-import { mediaGridBlock } from './media-grid';
-import { overviewBlock } from './overview';
-import { richTextBlock } from './rich-text';
-import { vendorsBlock } from './vendors';
 
 /**
  * Canonical, ordered list of every CMS block type. This is the single source
  * of truth for "which blocks exist" that every dispatch surface consumes — the
- * Payload block definitions (`allBlocks`), the CMS package's `BlockRenderer`,
- * and the storefront's `Blocks` dispatcher. Adding a block type here forces a
- * compile error in every `Record<BlockType, …>` render registry until the new
- * type is wired up, so the three dispatch surfaces can never silently drift.
+ * editor's `BLOCK_DESCRIPTORS`, the CMS package's `BlockRenderer`, and the
+ * storefront's `Blocks` dispatcher. Adding a block type here forces a compile
+ * error in every `Record<BlockType, …>` render registry until the new type is
+ * wired up, so the dispatch surfaces can never silently drift.
  *
- * Kept CMS-safe on purpose: this module pulls in only Payload block schemas
- * (plain data) and the errors package — never React, Shopify, or storefront
- * code — so the block-loader firewall stays intact when the storefront imports
- * it at runtime.
+ * Kept CMS-safe on purpose: this module pulls in only descriptor data and the
+ * errors package — never React, Shopify, or storefront code — so the
+ * block-loader firewall stays intact when the storefront imports it at
+ * runtime.
  */
 export const BLOCK_TYPES = [
     'columns',
@@ -58,32 +48,6 @@ export const BLOCK_TYPES = [
  * render registries.
  */
 export type BlockType = (typeof BLOCK_TYPES)[number];
-
-/**
- * Leaf (non-columns) block definitions in admin display order. The columns
- * block is assembled separately because its nested `content` field must embed
- * every other block as a sibling (see {@link buildColumnsBlock}).
- */
-const leafBlocks: Block[] = [
-    alertBlock,
-    bannerBlock,
-    collectionBlock,
-    htmlBlock,
-    mediaGridBlock,
-    overviewBlock,
-    richTextBlock,
-    vendorsBlock,
-];
-
-/**
- * Every Payload block definition, columns first so the editor surfaces the
- * layout block ahead of the leaves. Consumed by the `pages`,
- * `collection-metadata`, and `product-metadata` collections' `blocks` fields.
- */
-export const allBlocks: Block[] = [buildColumnsBlock(leafBlocks), ...leafBlocks];
-
-/** Slugs of {@link allBlocks}, in the same order. */
-export const blockSlugs: string[] = allBlocks.map((b) => b.slug);
 
 const BLOCK_TYPE_SET: ReadonlySet<string> = new Set(BLOCK_TYPES);
 
@@ -118,8 +82,7 @@ export function resolveBlockType(value: string): BlockType {
 }
 
 /**
- * Field descriptors for the `alert` block. Mirrors `alertBlock`'s field set in
- * the editor's native descriptor DSL.
+ * Field descriptors for the `alert` block.
  */
 const alertFields: FieldDescriptor[] = [
     required(
@@ -140,7 +103,7 @@ const alertFields: FieldDescriptor[] = [
 ];
 
 /**
- * Field descriptors for the `banner` block. Mirrors `bannerBlock`.
+ * Field descriptors for the `banner` block.
  */
 const bannerFields: FieldDescriptor[] = [
     localized(required(textField({ name: 'heading' }))),
@@ -159,10 +122,9 @@ const bannerFields: FieldDescriptor[] = [
 ];
 
 /**
- * Field descriptors for the `collection` block. Mirrors `collectionBlock`; the
- * raw `handle`/`limit` Payload fields are re-expressed through the DSL (the
- * editor-only `admin.description` and numeric `min`/`max` bounds drop, exactly
- * as the descriptor builders model them elsewhere).
+ * Field descriptors for the `collection` block. The numeric `min`/`max`
+ * bounds of the codegen shape drop here — the DSL models only what the editor
+ * renders.
  */
 const collectionFields: FieldDescriptor[] = [
     required(textField({ name: 'handle' })),
@@ -179,13 +141,13 @@ const collectionFields: FieldDescriptor[] = [
 ];
 
 /**
- * Field descriptors for the `html` block. Mirrors `htmlBlock`; the Payload
- * `access` admin-role gate is a server-side concern the editor descriptor omits.
+ * Field descriptors for the `html` block. Server-side write gating is the
+ * Convex mutations' concern; the editor descriptor only renders the field.
  */
 const htmlFields: FieldDescriptor[] = [required(codeField({ name: 'html', language: 'html' }))];
 
 /**
- * Field descriptors for the `media-grid` block. Mirrors `mediaGridBlock`.
+ * Field descriptors for the `media-grid` block.
  */
 const mediaGridFields: FieldDescriptor[] = [
     required(
@@ -207,8 +169,8 @@ const mediaGridFields: FieldDescriptor[] = [
 ];
 
 /**
- * Field descriptors for the `overview` block. Mirrors `overviewBlock`,
- * including the `collectionHandle` visibility condition.
+ * Field descriptors for the `overview` block, including the
+ * `collectionHandle` visibility condition.
  */
 const overviewFields: FieldDescriptor[] = [
     required(
@@ -228,10 +190,8 @@ const overviewFields: FieldDescriptor[] = [
 ];
 
 /**
- * Field descriptors for the `rich-text` block. Mirrors `richTextBlock`; the
- * Lexical body has no descriptor kind yet, so it is modeled as a localized
- * `json` field (a Lexical document is a serializable JSON tree) until a
- * dedicated rich-text widget lands.
+ * Field descriptors for the `rich-text` block. The body is modeled as a
+ * localized `json` field — a rich-text document is a serializable JSON tree.
  */
 const richTextFields: FieldDescriptor[] = [
     localized(jsonField({ name: 'body' })),
@@ -244,7 +204,7 @@ const richTextFields: FieldDescriptor[] = [
 ];
 
 /**
- * Field descriptors for the `vendors` block. Mirrors `vendorsBlock`.
+ * Field descriptors for the `vendors` block.
  */
 const vendorsFields: FieldDescriptor[] = [
     localized(textField({ name: 'title' })),
@@ -253,8 +213,8 @@ const vendorsFields: FieldDescriptor[] = [
 
 /**
  * The eight non-columns block descriptors a `columns` block may embed in its
- * nested `content`. Excludes `columns` itself, mirroring `buildColumnsBlock`'s
- * sibling filter so a columns block can never nest another columns block.
+ * nested `content`. Excludes `columns` itself so a columns block can never
+ * nest another columns block.
  */
 const columnsContentBlocks: BlockDescriptor[] = [
     { slug: 'alert', fields: alertFields },
@@ -268,10 +228,10 @@ const columnsContentBlocks: BlockDescriptor[] = [
 ];
 
 /**
- * Field descriptors for the `columns` block. Mirrors `buildColumnsBlock`: a
- * 1–4 row `columns` array, each row carrying a `width` choice and a nested
- * `content` blocks field that embeds every sibling block — the recursion the
- * blocks widget walks back through {@link RenderFields}.
+ * Field descriptors for the `columns` block: a 1–4 row `columns` array, each
+ * row carrying a `width` choice and a nested `content` blocks field that
+ * embeds every sibling block — the recursion the blocks widget walks back
+ * through {@link RenderFields}.
  */
 const columnsFields: FieldDescriptor[] = [
     arrayField({
@@ -296,8 +256,8 @@ const columnsFields: FieldDescriptor[] = [
 ];
 
 /**
- * Editor-native counterpart to {@link allBlocks}: maps every {@link BlockType}
- * to the {@link BlockDescriptor} the native form engine renders. The blocks
+ * Maps every {@link BlockType} to the {@link BlockDescriptor} the native form
+ * engine renders. The blocks
  * field widget resolves a row's `blockType` against this set and recurses each
  * block's `fields` through the field registry; the columns block nests the
  * other eight as siblings.

@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 
 import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
 import { PageHeader } from '@/components/shell/page-header';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 
 export const metadata: Metadata = { title: 'Reviews' };
 
@@ -24,7 +24,7 @@ type Params = Promise<{ domain: string }>;
  */
 export default async function ReviewsPage({ params }: { params: Params }) {
     const { domain } = await params;
-    const { tenant } = await getAuthedPayloadCtx(domain);
+    const { tenant } = await getAuthedCmsCtx(domain);
     if (!tenant) {
         notFound();
     }

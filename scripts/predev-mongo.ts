@@ -234,20 +234,16 @@ console.info(
 );
 
 if (!existsSync(SEEDED_FILE)) {
-    console.info(
-        '[predev-mongo] no .seeded marker — seeding canonical fixtures (Shop + Header/Footer/BusinessData/Page/Article)',
-    );
+    console.info('[predev-mongo] no .seeded marker — seeding the canonical Shop fixture');
     const seedStartedAt = Date.now();
     // Set MONGODB_URI in our env before importing the package — its seed
     // chain transitively evaluates `@nordcom/commerce-db`, whose module body
-    // throws when the var is unset. Payload also needs `PAYLOAD_SECRET`;
-    // honour an existing one or fall back to a dev placeholder.
+    // throws when the var is unset. (The CMS half of the canonical corpus is
+    // Convex-seeded; the Payload seed died with TEARDOWN-02.)
     process.env.MONGODB_URI = uri;
-    process.env.PAYLOAD_SECRET = process.env.PAYLOAD_SECRET ?? 'development-secret';
     const { register } = await import('node:module');
-    // seed-loader stubs both `server-only` and `next/cache` — Payload's
-    // afterChange hooks call `revalidateTag` via @tagtree/next, which throws
-    // when invoked outside a Next render context (which this script is).
+    // seed-loader stubs both `server-only` and `next/cache` for the
+    // remaining shop seed chain, which runs outside a Next render context.
     register('@nordcom/commerce-test-mongo/seed-loader', import.meta.url);
     const { seedCanonical } = await import('@nordcom/commerce-test-mongo');
     await seedCanonical(uri);

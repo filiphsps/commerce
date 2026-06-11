@@ -5,9 +5,9 @@
  * so they can never diverge on what's generated or where it lands.
  *
  * Four artifact families, all descriptor/manifest-driven and free of any
- * Payload runtime or Mongo adapter:
+ * CMS runtime:
  *   1. admin editor-action wrappers (one per editor manifest);
- *   2. `packages/cms/src/types/payload-types.ts` (the storefront read-contract types);
+ *   2. `packages/cms/src/types/content-types.ts` (the storefront read-contract types);
  *   3. `packages/convex/convex/tables/cms.ts` (the CMS content-table validators);
  *   4. `packages/convex/convex/cms/localized_paths.ts` (the schema-driven
  *      localized-path + locale-code registry the read seam's bucket detection
@@ -15,9 +15,9 @@
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { generateContentTypes } from './emit-content-types';
 import { generateConvexCmsTables } from './emit-convex-tables';
 import { generateConvexLocalizedPaths } from './emit-localized-paths';
-import { generatePayloadTypes } from './emit-payload-types';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../../../..');
@@ -149,8 +149,8 @@ export const collectGeneratedOutputs = async (): Promise<GeneratedOutput[]> => {
     }
 
     outputs.push({
-        path: path.join(CMS_ROOT, 'src/types/payload-types.ts'),
-        content: generatePayloadTypes(),
+        path: path.join(CMS_ROOT, 'src/types/content-types.ts'),
+        content: generateContentTypes(),
     });
 
     outputs.push({

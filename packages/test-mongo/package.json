@@ -47,12 +47,9 @@
         "typecheck": "tsc -noEmit"
     },
     "dependencies": {
-        "@nordcom/commerce-cms": "workspace:*",
         "@nordcom/commerce-db": "workspace:*",
-        "@payloadcms/db-mongodb": "3.85.0",
         "mongodb-memory-server": "11.2.0",
-        "mongoose": "9.6.3",
-        "payload": "3.85.0"
+        "mongoose": "9.6.3"
     },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",

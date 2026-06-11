@@ -7,8 +7,8 @@ import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
 import { EmptyState } from '@/components/shell/empty-state';
 import { PageHeader } from '@/components/shell/page-header';
 import { createMediaAction } from './cms-actions/media-upload';
+import { getAuthedCmsCtx } from './cms-ctx';
 import { editorConvexBridge } from './editor-convex-bridge';
-import { getAuthedPayloadCtx } from './payload-ctx';
 
 /**
  * Single per-app runtime bundle passed into every editor primitive.
@@ -16,13 +16,12 @@ import { getAuthedPayloadCtx } from './payload-ctx';
  * Built once at module import; consumed via
  * `<EditorEditPage runtime={editorRuntime} ... />`. Form state resolves
  * through the native CMSFORM-01 core (`buildInitialFormState`) and writes
- * post through the CMSDATA-05 Convex bridge (`convex`) — neither path touches
- * Payload's `buildFormState` or local API anymore.
+ * post through the CMSDATA-05 Convex bridge (`convex`).
  */
 export const editorRuntime: EditorRuntime = {
     getCtx: async (domain) => {
-        const { payload, user, tenant } = await getAuthedPayloadCtx(domain ?? undefined);
-        return { payload, user, tenant };
+        const { user, tenant } = await getAuthedCmsCtx(domain ?? undefined);
+        return { user, tenant };
     },
     toAccessCtx: (ctx, domain) => ({
         user: ctx.user
@@ -37,11 +36,6 @@ export const editorRuntime: EditorRuntime = {
         tenantId: ctx.tenant?.id ?? null,
     }),
     buildFormState: async ({ data }) => ({ state: buildInitialFormState(data) }),
-    // The shell-prop bag is empty since CMSGATE-01: no surface mounts the
-    // Payload field shell anymore (the theme route went native in THEMEFIX-01),
-    // so building the Payload client config here would only drag
-    // `@payloadcms/ui` back onto every editor page's import graph.
-    getShellProps: async () => ({}),
     convex: editorConvexBridge,
     // A direct server-action reference, NOT a wrapper: the edit pages close
     // over it inside their inline bound upload actions, and only a registered

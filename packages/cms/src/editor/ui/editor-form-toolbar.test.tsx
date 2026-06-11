@@ -12,8 +12,8 @@ const Toolbar = vi.fn((props: { hasDrafts: boolean }) => (
 
 /**
  * Renders the toolbar inside the REAL native `<Form>` — the context it reads
- * `useForm`/`useFormModified` from since the CMSDATA-06 rewire off
- * `@payloadcms/ui`.
+ * `useForm`/`useFormModified` from since the CMSDATA-06 rewire onto the
+ * native form core.
  *
  * @param children - The toolbar under test.
  * @returns The testing-library render result.

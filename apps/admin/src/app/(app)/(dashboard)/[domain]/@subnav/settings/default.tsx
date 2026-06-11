@@ -3,13 +3,13 @@ import 'server-only';
 import type { Route } from 'next';
 
 import { NavItem } from '@/components/ui/nav-item';
-import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 
 type Props = { params: Promise<{ domain: string }> };
 
 export default async function SettingsSubNav({ params }: Props) {
     const { domain } = await params;
-    const { user } = await getAuthedPayloadCtx(domain);
+    const { user } = await getAuthedCmsCtx(domain);
     const isAdmin = user.role === 'admin';
 
     const base = `/${domain}/settings`;

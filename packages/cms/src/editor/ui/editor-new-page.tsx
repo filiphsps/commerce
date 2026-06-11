@@ -2,13 +2,12 @@ import 'server-only';
 
 import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
 
 import type { EditorActions } from '../actions';
 import { editorCollectionSchema } from '../collection-fields';
 import { parseFormPayload } from '../form-payload';
-import type { CollectionEditorManifest } from '../manifest';
+import type { CollectionEditorManifest, CollectionSlug } from '../manifest';
 import { loadRelationshipOptions } from '../relationship-targets';
 import type { EditorRuntime } from '../runtime';
 import { EditorFields } from './editor-fields';
@@ -81,8 +80,6 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
         operation: 'create',
         locale,
     });
-
-    const shellProps = await runtime.getShellProps(domain, locale);
 
     // Serializable scalars the inline server actions below close over — the
     // manifest itself carries functions, so anything derived from it must be
@@ -169,7 +166,6 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
         <runtime.DocumentForm
             title={`New ${manifest.routes.label.singular}`}
             breadcrumbs={breadcrumbs}
-            shellProps={shellProps}
             onSubmit={boundSubmit}
             initialState={initialState}
             toolbar={
