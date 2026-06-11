@@ -9,7 +9,8 @@ import { readShreddedDocument } from './i18n_shred';
 import {
     buildLocaleFallbackChain,
     CMS_LOCALIZED_FIELDS_BY_COLLECTION,
-    type LocalizedBucket,
+    isLocaleBucket,
+    localizedPathsFor,
     readLocalizedField,
 } from './localization';
 
@@ -58,29 +59,11 @@ type CmsReadScope = {
 };
 
 /**
- * Conservative shape test for a per-field localized bucket. Demands every key look like a locale
- * code AND either multiple slots or a region-tagged single slot (`en-US`), so unbucketed content
- * objects (an inline `seo` group's `{ title, description }`, a depth-0 `{ id }` relation — `id` is
- * the ISO 639-1 code for Indonesian) never false-positive. This tolerance is deliberate: the
- * HARNESS-12 seed rows store localized fields as PLAIN values (not buckets), and the read path
- * accepts both rather than rewriting the fixtures.
- *
- * @param value - Candidate localized-field value.
- * @returns `true` when the value is a locale-keyed bucket to resolve through the fallback chain.
- */
-function isLocaleBucket(value: unknown): value is LocalizedBucket {
-    if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-    const keys = Object.keys(value);
-    if (keys.length === 0) return false;
-    if (!keys.every((key) => /^[a-z]{2,3}(-[A-Z]{2})?$/.test(key))) return false;
-    return keys.length >= 2 || (keys[0]?.includes('-') ?? false);
-}
-
-/**
  * Collapses a document's localized fields to their active-locale values, mirroring
- * `reassembleLocalizedDocument` but tolerating BOTH storage shapes: a locale-keyed bucket resolves
- * through the chain; a plain (unbucketed, HARNESS-12-style) value passes through as already
- * resolved. Non-localized fields always pass through untouched.
+ * `reassembleLocalizedDocument` but tolerating BOTH storage shapes: a locale-keyed bucket
+ * (`isLocaleBucket` — the registered-locale discriminator, G4FIX-02) resolves through the chain; a
+ * plain (unbucketed, HARNESS-12-style) value passes through as already resolved. Non-localized
+ * fields always pass through untouched.
  *
  * @param collection - The document's collection slug, selecting its localized field set.
  * @param data - The reassembled (shred-rehydrated) field map.
@@ -104,8 +87,7 @@ function resolveLocalizedFields(collection: string, data: unknown, chain: readon
 
 /**
  * The collections whose localized fields are NESTED, so the registry-driven top-level resolver
- * above cannot reach them — resolved by the DEEP walk ({@link resolveLocalizedDeep}) instead,
- * collapsing every bucket-shaped value at any depth:
+ * above cannot reach them — resolved by the DEEP walk ({@link resolveLocalizedDeep}) instead:
  * - the tenant singletons `header`/`footer` (array-embedded nav-item descriptions, the header's
  *   `localeSwitcher.label`, the footer's section titles — CMSGATE-01), and
  * - the block-bearing content collections (CMSGATE-02): the native editor buckets every
@@ -113,35 +95,45 @@ function resolveLocalizedFields(collection: string, data: unknown, chain: readon
  *   media-grid caption), which the per-field registry can never reach, so a published page must
  *   deep-collapse to read back on the frozen `Page.blocks` contract shape.
  * `businessData` carries no localized fields and stays on the top-level resolver to keep the
- * shape-test surface minimal.
+ * collapse surface minimal.
  */
 const DEEP_LOCALIZED_COLLECTIONS = new Set(['header', 'footer', 'pages', 'collectionMetadata', 'productMetadata']);
 
 /**
- * Recursively collapses every locale-keyed bucket in a value through the fallback chain — the
- * CMSGATE-01 read seam for the nested-localized singletons. The conservative {@link isLocaleBucket}
- * shape test decides what counts as a bucket, exactly like the top-level resolver, so plain
- * (HARNESS-12-style) values pass through untouched and the SFREAD-01 goldens stay byte-identical;
- * only buckets authored by the locale-aware editor collapse. A bucket empty for the whole chain
- * resolves to `undefined`, and `undefined` members are dropped from rebuilt objects (matching the
- * top-level resolver's field omission) while array slots keep `null` so sibling indices never shift.
+ * Recursively collapses localized buckets through the fallback chain — the CMSGATE-01 read seam
+ * for the nested-localized singletons, SCHEMA-GATED since G4FIX-02: a value may collapse only when
+ * its wildcard-normalized path (array indices become `*`) is a descriptor-derived localized path
+ * (the generated `localized_paths.ts` registry) AND the value passes the registered-locale
+ * {@link isLocaleBucket} discriminator. Content objects anywhere else — including locale-shaped
+ * maps like `{ en, sv }` at non-localized paths and a bucket SLOT whose content is itself
+ * locale-shaped — pass through byte-identical, as do plain (HARNESS-12-style) legacy values at
+ * localized paths. A bucket empty for the whole chain resolves to `undefined`, and `undefined`
+ * members are dropped from rebuilt objects (matching the top-level resolver's field omission)
+ * while array slots keep `null` so sibling indices never shift.
  *
  * @param value - The value to walk (any depth).
  * @param chain - The ordered fallback chain from {@link buildLocaleFallbackChain}.
- * @returns The value with every nested bucket collapsed to its active-locale slot.
+ * @param paths - The collection's localized path-pattern set from `localizedPathsFor`.
+ * @param path - The wildcard-normalized path of `value` within the document.
+ * @returns The value with every schema-localized bucket collapsed to its active-locale slot.
  */
-function resolveLocalizedDeepValue(value: unknown, chain: readonly string[]): unknown {
+function resolveLocalizedDeepValue(
+    value: unknown,
+    chain: readonly string[],
+    paths: ReadonlySet<string>,
+    path: string,
+): unknown {
     if (Array.isArray(value)) {
         return value.map((item) => {
-            const resolved = resolveLocalizedDeepValue(item, chain);
+            const resolved = resolveLocalizedDeepValue(item, chain, paths, `${path}.*`);
             return resolved === undefined ? null : resolved;
         });
     }
     if (typeof value === 'object' && value !== null) {
-        if (isLocaleBucket(value)) return readLocalizedField(value, chain);
+        if (paths.has(path) && isLocaleBucket(value)) return readLocalizedField(value, chain);
         const result: Record<string, unknown> = {};
         for (const [key, member] of Object.entries(value)) {
-            const resolved = resolveLocalizedDeepValue(member, chain);
+            const resolved = resolveLocalizedDeepValue(member, chain, paths, `${path}.${key}`);
             if (resolved !== undefined) result[key] = resolved;
         }
         return result;
@@ -151,17 +143,20 @@ function resolveLocalizedDeepValue(value: unknown, chain: readonly string[]): un
 
 /**
  * Deep-resolves a {@link DEEP_LOCALIZED_COLLECTIONS} document's field map through
- * {@link resolveLocalizedDeepValue}, preserving the top-level record shape.
+ * {@link resolveLocalizedDeepValue}, preserving the top-level record shape and gating every
+ * collapse on the collection's descriptor-derived localized paths (G4FIX-02).
  *
+ * @param collection - The document's collection slug, selecting its localized path set.
  * @param data - The document's serialized field map.
  * @param chain - The ordered fallback chain.
- * @returns A new field map with every nested localized bucket collapsed.
+ * @returns A new field map with every schema-localized nested bucket collapsed.
  */
-function resolveLocalizedDeep(data: unknown, chain: readonly string[]): Record<string, unknown> {
+function resolveLocalizedDeep(collection: string, data: unknown, chain: readonly string[]): Record<string, unknown> {
     const record = (typeof data === 'object' && data !== null ? data : {}) as Record<string, unknown>;
+    const paths = localizedPathsFor(collection);
     const result: Record<string, unknown> = {};
     for (const [field, value] of Object.entries(record)) {
-        const resolved = resolveLocalizedDeepValue(value, chain);
+        const resolved = resolveLocalizedDeepValue(value, chain, paths, field);
         if (resolved !== undefined) result[field] = resolved;
     }
     return result;
@@ -268,7 +263,7 @@ async function reassembleDoc(
     const data = await servedData(ctx, doc, draft);
     const full = await readShreddedDocument(ctx.db, doc._id, data);
     const resolved = DEEP_LOCALIZED_COLLECTIONS.has(doc.collection)
-        ? resolveLocalizedDeep(full, chain)
+        ? resolveLocalizedDeep(doc.collection, full, chain)
         : resolveLocalizedFields(doc.collection, full, chain);
     return {
         id: doc._id,

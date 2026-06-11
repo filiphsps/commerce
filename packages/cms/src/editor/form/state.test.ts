@@ -24,6 +24,19 @@ describe('buildInitialFormState', () => {
         expect(state.nav).toBeUndefined();
     });
 
+    it('flattens {alt,src}/{id,url} content objects into dotted leaves instead of eating them as buckets (G4FIX-02)', () => {
+        const state = buildInitialFormState({
+            logo: { alt: 'Logo', src: '/logo.png' },
+            media: { id: 'media_1', url: '/m/1.png' },
+        });
+        expect(state['logo.alt']?.value).toBe('Logo');
+        expect(state['logo.src']?.value).toBe('/logo.png');
+        expect(state.logo).toBeUndefined();
+        expect(state['media.id']?.value).toBe('media_1');
+        expect(state['media.url']?.value).toBe('/m/1.png');
+        expect(state.media).toBeUndefined();
+    });
+
     it('keeps primitive lists (hasMany values) as a single leaf', () => {
         const state = buildInitialFormState({ keywords: ['a', 'b'] });
         expect(state.keywords?.value).toEqual(['a', 'b']);

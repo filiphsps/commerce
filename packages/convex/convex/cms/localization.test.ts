@@ -4,14 +4,17 @@ import schema from '../schema';
 import {
     buildLocaleFallbackChain,
     CMS_LOCALIZED_FIELDS_BY_COLLECTION,
+    isLocaleBucket,
     isLocalizedValueEmpty,
     type LocalizedBucket,
+    localizedPathsFor,
     PLATFORM_DEFAULT_LOCALE,
     readLocalizedField,
     reassembleLocalizedDocument,
     writeLocalizedDocumentField,
     writeLocalizedField,
 } from './localization';
+import { CMS_LOCALIZED_PATHS_BY_COLLECTION } from './localized_paths';
 
 /** Fixed epoch-ms stamp for seeded rows' managed timestamps; its value is irrelevant to the assertions. */
 const NOW = 1_700_000_000_000;
@@ -109,6 +112,52 @@ describe('CMS_LOCALIZED_FIELDS_BY_COLLECTION', () => {
             collectionMetadata: ['descriptionOverride', 'seo'],
             media: ['caption'],
         });
+    });
+
+    it('stays in lockstep with the generated descriptor-derived path registry (G4FIX-02)', () => {
+        // The hand registry must equal the TOP-LEVEL slice of the cms:gen output
+        // for every collection it names — schema-driven convergence: one
+        // descriptor source feeds both the top-level resolver and the deep walk.
+        for (const [collection, fields] of Object.entries(CMS_LOCALIZED_FIELDS_BY_COLLECTION)) {
+            const topLevel = (CMS_LOCALIZED_PATHS_BY_COLLECTION[collection] ?? []).filter(
+                (path) => !path.includes('.'),
+            );
+            expect([...fields].sort()).toEqual(topLevel);
+        }
+    });
+});
+
+describe('isLocaleBucket — the registered-locale discriminator (G4FIX-02)', () => {
+    it('accepts authored buckets, including region pairs outside the curated list', () => {
+        expect(isLocaleBucket({ 'en-US': 'Hello', 'de-DE': 'Hallo' })).toBe(true);
+        expect(isLocaleBucket({ 'en-US': 'Hello' })).toBe(true);
+        expect(isLocaleBucket({ en: 'Hello', de: 'Hallo' })).toBe(true);
+        expect(isLocaleBucket({ 'en-FI': 'Hello', 'sv-AX': 'Hej' })).toBe(true);
+    });
+
+    it('rejects the {alt,src}/{id,url} false-positive class and other content shapes', () => {
+        // Mirror of the editor form's `isLocaleBucketValue` cases — the two
+        // discriminators must agree on what counts as a bucket.
+        expect(isLocaleBucket({ alt: 'Logo', src: '/logo.png' })).toBe(false);
+        expect(isLocaleBucket({ id: 'media_1', url: '/m/logo.png' })).toBe(false);
+        expect(isLocaleBucket({ kind: 'external', url: '/x/' })).toBe(false);
+        expect(isLocaleBucket({ id: 'doc_1' })).toBe(false);
+        expect(isLocaleBucket({ en: 'only-one-bare-slot' })).toBe(false);
+        expect(isLocaleBucket({})).toBe(false);
+        expect(isLocaleBucket(['en-US'])).toBe(false);
+        expect(isLocaleBucket('en-US')).toBe(false);
+        expect(isLocaleBucket(null)).toBe(false);
+    });
+});
+
+describe('localizedPathsFor', () => {
+    it('serves the generated wildcard patterns per collection and the empty set for unknown slugs', () => {
+        expect(localizedPathsFor('header').has('items.*.description')).toBe(true);
+        expect(localizedPathsFor('header').has('localeSwitcher.label')).toBe(true);
+        expect(localizedPathsFor('pages').has('blocks.*.body')).toBe(true);
+        expect(localizedPathsFor('pages').has('blocks.*.items.*.caption')).toBe(true);
+        expect(localizedPathsFor('businessData').size).toBe(0);
+        expect(localizedPathsFor('no-such-collection').size).toBe(0);
     });
 });
 

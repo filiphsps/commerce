@@ -14,12 +14,76 @@
  * `tenantMutation`) owns reading the trusted `shopId` and the shop's default locale.
  */
 
+import { CMS_LOCALIZED_PATHS_BY_COLLECTION, CMS_REGISTERED_LOCALE_CODES } from './localized_paths';
+
 /**
  * Platform-default locale anchoring the bottom of every fallback chain — the parity of Payload's
  * `localization.defaultLocale`. A read that finds no non-empty bucket entry up the chain falls through
  * to this locale last.
  */
 export const PLATFORM_DEFAULT_LOCALE = 'en-US';
+
+/**
+ * The registered locale-code universe as a set, hydrated once from the generated
+ * `localized_paths.ts` registry (`pnpm cms:gen` mirrors `@nordcom/commerce-cms`'s
+ * `config/locale-codes.ts` here; the isolate cannot import that package).
+ */
+const REGISTERED_LOCALE_CODES: ReadonlySet<string> = new Set(CMS_REGISTERED_LOCALE_CODES);
+
+/**
+ * Grammar a region-tagged bucket key must match (`en-US`, `sv-SE`). Bare keys must instead be
+ * registered codes — the bare 2-3-lowercase shape is exactly what content keys like `alt`/`src`/`url`
+ * collide with (G4FIX-02).
+ */
+const REGION_TAGGED_LOCALE_KEY_PATTERN = /^[a-z]{2,3}-[A-Z]{2}$/;
+
+/**
+ * The G4FIX-02 locale-bucket discriminator, the Convex mirror of the editor form's
+ * `isLocaleBucketValue` (`packages/cms/src/editor/form/locale-bucket.ts`): every key must be a
+ * REGISTERED locale code ({@link CMS_REGISTERED_LOCALE_CODES}) or region-tagged per the BCP-47
+ * `<lang>-<REGION>` grammar, and the object must carry multiple slots or a region-tagged single slot.
+ * The registry lookup kills the verifier's false-positive class — `{ alt, src }` / `{ id, url }`
+ * content objects pass an all-short-lowercase shape test, but `alt`/`src`/`url` are not locale codes.
+ *
+ * Only consulted at SCHEMA-localized paths (the generated {@link CMS_LOCALIZED_PATHS_BY_COLLECTION}
+ * for the deep walk, `CMS_LOCALIZED_FIELDS_BY_COLLECTION` for the top-level resolver), where it
+ * disambiguates an authored bucket from a legacy plain (HARNESS-12/ETL) value. A locale added only
+ * via `NORDCOM_CMS_LOCALES` that is neither in the registered superset nor region-tagged will not be
+ * recognized as a bucket key — extend `config/locale-codes.ts` and rerun `pnpm cms:gen` for such
+ * deployments.
+ *
+ * @param value - Candidate localized-field value.
+ * @returns `true` when the value is a locale-keyed bucket to resolve through the fallback chain.
+ */
+export function isLocaleBucket(value: unknown): value is LocalizedBucket {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+    const keys = Object.keys(value);
+    if (keys.length === 0) return false;
+    if (!keys.every((key) => REGISTERED_LOCALE_CODES.has(key) || REGION_TAGGED_LOCALE_KEY_PATTERN.test(key))) {
+        return false;
+    }
+    return keys.length >= 2 || (keys[0]?.includes('-') ?? false);
+}
+
+/** Per-collection cache of the generated localized path patterns as sets, built lazily. */
+const localizedPathSets = new Map<string, ReadonlySet<string>>();
+
+/**
+ * The schema-localized path patterns for a collection as a membership set — the descriptor-derived
+ * gate the deep read walk consults before any bucket collapse. Patterns come from the generated
+ * {@link CMS_LOCALIZED_PATHS_BY_COLLECTION}; array/blocks indices are wildcarded to `*`, matching the
+ * walk's normalized path accumulation. An unknown collection yields the empty set (nothing collapses).
+ *
+ * @param collection - The collection slug.
+ * @returns The collection's localized path-pattern set.
+ */
+export function localizedPathsFor(collection: string): ReadonlySet<string> {
+    const cached = localizedPathSets.get(collection);
+    if (cached) return cached;
+    const built = new Set(CMS_LOCALIZED_PATHS_BY_COLLECTION[collection] ?? []);
+    localizedPathSets.set(collection, built);
+    return built;
+}
 
 /**
  * A per-field localized bucket: one stored value per BCP-47 locale code. Absent keys mean "no value in

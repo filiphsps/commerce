@@ -4,15 +4,19 @@
  * the drift gate (`scripts/cms-gen-check.ts`) consume {@link collectGeneratedOutputs}
  * so they can never diverge on what's generated or where it lands.
  *
- * Three artifact families, all descriptor/manifest-driven and free of any
+ * Four artifact families, all descriptor/manifest-driven and free of any
  * Payload runtime or Mongo adapter:
  *   1. admin editor-action wrappers (one per editor manifest);
  *   2. `packages/cms/src/types/payload-types.ts` (the storefront read-contract types);
- *   3. `packages/convex/convex/tables/cms.ts` (the CMS content-table validators).
+ *   3. `packages/convex/convex/tables/cms.ts` (the CMS content-table validators);
+ *   4. `packages/convex/convex/cms/localized_paths.ts` (the schema-driven
+ *      localized-path + locale-code registry the read seam's bucket detection
+ *      consumes — G4FIX-02).
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { generateConvexCmsTables } from './emit-convex-tables';
+import { generateConvexLocalizedPaths } from './emit-localized-paths';
 import { generatePayloadTypes } from './emit-payload-types';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -152,6 +156,11 @@ export const collectGeneratedOutputs = async (): Promise<GeneratedOutput[]> => {
     outputs.push({
         path: path.join(REPO_ROOT, 'packages/convex/convex/tables/cms.ts'),
         content: generateConvexCmsTables(),
+    });
+
+    outputs.push({
+        path: path.join(REPO_ROOT, 'packages/convex/convex/cms/localized_paths.ts'),
+        content: generateConvexLocalizedPaths(),
     });
 
     return outputs;

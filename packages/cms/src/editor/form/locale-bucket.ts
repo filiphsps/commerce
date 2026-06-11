@@ -10,13 +10,15 @@
  * the widget chokepoint (`useEditorField`), and the unit suites.
  */
 
+import { REGISTERED_LOCALE_CODES } from '../../config/locale-codes';
+
 /**
- * Key shape a locale-bucket member must match: an ISO 639-1/2 language code
- * with an optional uppercase region tag (`en`, `sv-SE`). Mirrors the Convex
- * read seam's bucket detection (`convex/cms/read.ts`), which cannot import this
- * module across the isolate boundary.
+ * Grammar a region-tagged bucket key must match (`en-US`, `sv-SE`). Bare keys
+ * are NOT matched by grammar — they must be registered ISO 639-1 codes
+ * ({@link REGISTERED_LOCALE_CODES}) — because the bare 2-3-lowercase shape is
+ * exactly what content keys like `alt`/`src`/`url` collide with (G4FIX-02).
  */
-const LOCALE_BUCKET_KEY_PATTERN = /^[a-z]{2,3}(-[A-Z]{2})?$/;
+const REGION_TAGGED_LOCALE_KEY_PATTERN = /^[a-z]{2,3}-[A-Z]{2}$/;
 
 /**
  * A per-field localized bucket: one stored value per BCP-47 locale code. The
@@ -25,13 +27,35 @@ const LOCALE_BUCKET_KEY_PATTERN = /^[a-z]{2,3}(-[A-Z]{2})?$/;
 export type LocaleBucket<T = unknown> = Record<string, T>;
 
 /**
- * Conservative shape test for a per-field localized bucket. Demands every key
- * look like a locale code AND either multiple slots or a region-tagged single
- * slot (`en-US`), so ordinary content objects (`{ id }`, `{ url }` — both
- * locale-shaped two/three-letter keys) never false-positive. Deliberately
- * byte-for-byte the same tolerance as the Convex read seam's `isLocaleBucket`,
- * so what the editor treats as a bucket the storefront read collapses, and
- * nothing else.
+ * Whether a single object key counts as a locale code for bucket detection:
+ * either a member of the registered locale universe (`config/locale-codes`)
+ * or region-tagged per the BCP-47 `<lang>-<REGION>` grammar (which is
+ * unambiguous even for regions outside the curated list).
+ *
+ * @param key - Candidate object key.
+ * @returns `true` when the key is a registered or region-tagged locale code.
+ */
+export function isLocaleBucketKey(key: string): boolean {
+    return REGISTERED_LOCALE_CODES.has(key) || REGION_TAGGED_LOCALE_KEY_PATTERN.test(key);
+}
+
+/**
+ * The G4FIX-02 locale-bucket discriminator: every key must be a REGISTERED (or
+ * region-tagged) locale code ({@link isLocaleBucketKey}), and the object must
+ * carry multiple slots or a region-tagged single slot (`en-US`). The registry
+ * lookup is what kills the verifier's false-positive class — `{ alt, src }`
+ * and `{ id, url }` content objects pass the old all-short-lowercase shape
+ * test but `alt`/`src`/`url` are not locale codes. Deliberately the same
+ * semantics as the Convex read seam's `isLocaleBucket`
+ * (`convex/cms/localization.ts`, fed by the generated
+ * `convex/cms/localized_paths.ts` registry, since the isolate cannot import
+ * this module), so what the editor treats as a bucket the storefront read
+ * collapses, and nothing else.
+ *
+ * Only consulted where the descriptor schema allows a bucket — the widget
+ * chokepoint gates on `field.localized` — so the residual ambiguity is limited
+ * to legacy plain values at localized paths whose keys are ALL genuine locale
+ * codes, which is undecidable by construction.
  *
  * @param value - Candidate leaf value.
  * @returns `true` when the value is a locale-keyed bucket.
@@ -40,7 +64,7 @@ export function isLocaleBucketValue(value: unknown): value is LocaleBucket {
     if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
     const keys = Object.keys(value);
     if (keys.length === 0) return false;
-    if (!keys.every((key) => LOCALE_BUCKET_KEY_PATTERN.test(key))) return false;
+    if (!keys.every(isLocaleBucketKey)) return false;
     return keys.length >= 2 || (keys[0]?.includes('-') ?? false);
 }
 

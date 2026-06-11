@@ -21,6 +21,20 @@ describe('isLocaleBucketValue', () => {
         expect(isLocaleBucketValue('en-US')).toBe(false);
         expect(isLocaleBucketValue(null)).toBe(false);
     });
+
+    it('rejects the {alt,src} and {id,url} content shapes the all-short-lowercase heuristic ate (G4FIX-02)', () => {
+        // The exact false-positive class from the G4 verification: every key is
+        // 2-3 lowercase letters, but `alt`/`src`/`url` are not locale codes.
+        expect(isLocaleBucketValue({ alt: 'Logo', src: '/logo.png' })).toBe(false);
+        expect(isLocaleBucketValue({ id: 'media_1', url: '/m/logo.png' })).toBe(false);
+    });
+
+    it('accepts only registered bare codes alongside the BCP-47 region grammar', () => {
+        // A region-tagged pair outside the curated list still counts (the grammar
+        // is unambiguous), but bare keys must be registered ISO 639-1 codes.
+        expect(isLocaleBucketValue({ 'en-FI': 'Hello', 'sv-AX': 'Hej' })).toBe(true);
+        expect(isLocaleBucketValue({ foo: 'x', bar: 'y' })).toBe(false);
+    });
 });
 
 describe('toLocaleBucket', () => {
@@ -59,6 +73,17 @@ describe('readLocaleSlot / writeLocaleSlot', () => {
             'en-US': 'Region',
             'de-DE': 'Standort',
         });
+    });
+
+    it('round-trips a slot whose CONTENT is itself locale-shaped (pathological nesting, G4FIX-02)', () => {
+        const nested = { en: 'inner-en', sv: 'inner-sv' };
+        const bucket = writeLocaleSlot(undefined, 'en-US', nested, 'en-US');
+        expect(bucket).toEqual({ 'en-US': nested });
+        // The wrapped bucket reads its slot back byte-identical — the inner
+        // locale-shaped content is plain content, never re-collapsed…
+        expect(readLocaleSlot(bucket, 'en-US', 'en-US')).toEqual(nested);
+        // …and the bucket is recognized as one, never double-wrapped.
+        expect(toLocaleBucket(bucket, 'en-US')).toBe(bucket);
     });
 });
 

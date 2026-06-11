@@ -372,6 +372,92 @@ describe('cms/read — draft-mode preview reads (CMSDATA-09)', () => {
     });
 });
 
+describe('cms/read — schema-driven locale-bucket detection (G4FIX-02)', () => {
+    afterEach(() => {
+        delete process.env.CONVEX_SERVER_SECRET;
+    });
+
+    /**
+     * Seeds one published `pages` doc whose blocks carry the exact content shapes the old
+     * all-short-lowercase-keys heuristic misclassified as locale buckets ({alt,src} and {id,url}),
+     * a genuine localized caption bucket, a non-localized locale-shaped content map, and a title
+     * bucket whose SLOT content is itself locale-shaped (pathological nesting).
+     *
+     * @param t - The convex-test harness.
+     */
+    async function seedShapeTrapPage(t: ReturnType<typeof convexTest>): Promise<void> {
+        await t.run(async (ctx) => {
+            const shops = await ctx.db.query('shops').collect();
+            const shop = shops.find((row) => row.legacyId === SHOP_PUBLIC_ID);
+            if (!shop) throw new TypeError('seed corpus is missing the canonical shop');
+            await ctx.db.insert('cmsDocuments', {
+                shopId: shop._id,
+                collection: 'pages',
+                data: {
+                    slug: 'gallery',
+                    title: { 'en-US': { en: 'inner-en', sv: 'inner-sv' } },
+                    blocks: [
+                        {
+                            blockType: 'media-grid',
+                            itemType: 'image',
+                            columns: 3,
+                            items: [
+                                {
+                                    image: { alt: 'Logo', src: '/logo.png' },
+                                    caption: { 'en-US': 'Cap EN', 'de-DE': 'Cap DE' },
+                                    link: { id: 'media_1', url: '/m/1/' },
+                                },
+                            ],
+                        },
+                        { blockType: 'html', html: '<hr />', translations: { en: 'Yes', sv: 'Ja' } },
+                    ],
+                },
+                status: 'published',
+                createdAt: NOW,
+                updatedAt: NOW,
+            });
+        });
+    }
+
+    it('preserves {alt,src} and {id,url} content objects the shape heuristic used to eat', async () => {
+        const t = await corpus();
+        await seedShapeTrapPage(t);
+        const page = await t.query(pageBySlugRef, { ...base, slug: 'gallery' });
+        const blocks = page?.blocks as Array<Record<string, unknown>>;
+        const items = blocks[0]?.items as Array<Record<string, unknown>>;
+        expect(items[0]?.image).toEqual({ alt: 'Logo', src: '/logo.png' });
+        // `link` sits at a SCHEMA-LOCALIZED path (media-grid's linkField), so the
+        // registered-locale key check alone must keep the plain object intact.
+        expect(items[0]?.link).toEqual({ id: 'media_1', url: '/m/1/' });
+    });
+
+    it('still collapses genuine localized buckets at schema-localized paths', async () => {
+        const t = await corpus();
+        await seedShapeTrapPage(t);
+        const en = await t.query(pageBySlugRef, { ...base, slug: 'gallery' });
+        const enItems = (en?.blocks as Array<Record<string, unknown>>)[0]?.items as Array<Record<string, unknown>>;
+        expect(enItems[0]?.caption).toBe('Cap EN');
+        const de = await t.query(pageBySlugRef, { ...base, locale: 'de-DE', slug: 'gallery' });
+        const deItems = (de?.blocks as Array<Record<string, unknown>>)[0]?.items as Array<Record<string, unknown>>;
+        expect(deItems[0]?.caption).toBe('Cap DE');
+    });
+
+    it('passes a locale-shaped content map at a NON-localized path through untouched', async () => {
+        const t = await corpus();
+        await seedShapeTrapPage(t);
+        const page = await t.query(pageBySlugRef, { ...base, slug: 'gallery' });
+        const blocks = page?.blocks as Array<Record<string, unknown>>;
+        expect(blocks[1]?.translations).toEqual({ en: 'Yes', sv: 'Ja' });
+    });
+
+    it('serves pathological bucket-slot content as-is (a slot whose content is locale-shaped)', async () => {
+        const t = await corpus();
+        await seedShapeTrapPage(t);
+        const page = await t.query(pageBySlugRef, { ...base, slug: 'gallery' });
+        expect(page?.title).toEqual({ en: 'inner-en', sv: 'inner-sv' });
+    });
+});
+
 describe('cms/read — published snapshot pinning (G4FIX-01)', () => {
     afterEach(() => {
         delete process.env.CONVEX_SERVER_SECRET;
