@@ -269,7 +269,7 @@ describe('app/[domain]/api/revalidate', () => {
 
         it('returns 503 + Retry-After on non-NotFound infra errors from Shop.findByDomain', async () => {
             const { Shop } = await import('@nordcom/commerce-db');
-            vi.mocked(Shop.findByDomain).mockRejectedValueOnce(new globalThis.Error('MongoNetworkTimeoutError'));
+            vi.mocked(Shop.findByDomain).mockRejectedValueOnce(new globalThis.Error('NetworkTimeoutError'));
 
             const req = makeRequest({
                 method: 'POST',

@@ -19,8 +19,7 @@ export type AuthedSession = {
 };
 
 /**
- * Bundled per-request context for the co-located CMS routes — the TEARDOWN-02
- * replacement for the Payload-backed `getAuthedPayloadCtx`:
+ * Bundled per-request context for the co-located CMS routes:
  *
  * - `session`: the NextAuth session — guaranteed non-null after this call.
  * - `user`: the platform `users` document the NextAuth email maps to,

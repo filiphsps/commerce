@@ -10,7 +10,7 @@ import { getApolloClient } from '@/api/_apollo-pool';
 // The React-cached Shop loader (leaf module): `findByDomain` normalizes the
 // options arg to primitive keys so the per-render `cache()` dedup actually hits,
 // collapsing repeated tenant lookups — this hot path runs for every Storefront
-// client — to a single Mongo round-trip per render pass.
+// client — to a single backend round-trip per render pass.
 import { Shop } from '@/api/_shop-loader';
 import type { ApiConfig } from '@/api/client';
 import { createApolloClient } from '@/api/client';

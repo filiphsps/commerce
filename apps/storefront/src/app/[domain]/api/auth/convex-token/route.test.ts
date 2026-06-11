@@ -120,7 +120,7 @@ describe('GET /api/auth/convex-token', () => {
 
     it('returns 503 with Retry-After on an infra failure resolving the session', async () => {
         stubSigningEnv();
-        seam.findByDomain.mockRejectedValue(new TypeError('mongo timeout'));
+        seam.findByDomain.mockRejectedValue(new TypeError('upstream timeout'));
 
         const response = await GET(REQUEST, routeContext());
 

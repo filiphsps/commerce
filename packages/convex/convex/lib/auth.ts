@@ -87,7 +87,7 @@ export async function getTrustedIdentity(ctx: AuthReadCtx): Promise<UserIdentity
  * Resolves the platform `users` row backing the request's trusted identity.
  *
  * Maps the validated identity onto a user via its `email` claim and the `users.by_email` index —
- * the same email-keyed mapping the Auth.js adapter and the admin `getAuthedPayloadCtx` already use,
+ * the same email-keyed mapping the Auth.js adapter and the admin `getAuthedCmsCtx` already use,
  * and the only user lookup the auth schema indexes (`users` carries no provider-subject column). The
  * email lookup goes through the RAW `ctx.db`: `users` is a platform-global, system-tier-exempt table
  * that sits above any tenant partition, so reading it here is sanctioned un-scoped access, not a

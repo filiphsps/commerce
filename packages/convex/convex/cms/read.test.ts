@@ -14,7 +14,7 @@ import * as read from './read';
 declare const process: { env: Record<string, string | undefined> };
 
 const SERVER_SECRET = 'test-server-secret-value';
-const SHOP_PUBLIC_ID = 'shop_mongo_legacy';
+const SHOP_PUBLIC_ID = 'shop_legacy_public_id';
 const NOW = 1_700_000_000_000;
 
 /**

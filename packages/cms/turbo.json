@@ -3,7 +3,7 @@
     "extends": ["//"],
     "tasks": {
         "generate": {
-            "outputs": ["src/types/payload-types.ts", "dist/**", "*.tsbuildinfo"]
+            "outputs": ["src/types/content-types.ts", "dist/**", "*.tsbuildinfo"]
         }
     }
 }

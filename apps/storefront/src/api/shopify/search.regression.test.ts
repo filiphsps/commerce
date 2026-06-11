@@ -6,8 +6,8 @@ import { describe, expect, it } from 'vitest';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Read the source file directly to introspect the GraphQL query shape WITHOUT
-// importing search.ts, which transitively pulls in @/api/_loaders → RawShop and
-// requires MONGODB_URI at module-load time (would explode in unit tests).
+// importing search.ts, which transitively pulls in @/api/_loaders — a `server-only`
+// module wired to the Convex-backed shop seam (would explode in unit tests).
 // Resolve relative to this file (search.ts is a sibling) so the test is independent
 // of the process cwd — a bare `vitest run` from any directory still finds the source.
 const searchSource = readFileSync(join(__dirname, 'search.ts'), 'utf8');

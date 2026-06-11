@@ -39,11 +39,6 @@ const defaultConvex: GlobalSetupConvex = {
  * `db/shops:byDomain` server seam, and emits the shop's Convex document id as `E2E_TENANT_ID` for
  * the spec workers (header/footer/info-bar/mega-menu pass it back into the per-spec CMS fixture).
  *
- * The app runtime's Mongo side is NOT touched here: until CUTOVER the dual-read CMS getters serve
- * Payload-on-Mongo, which the `pnpm dev` daemon machinery (`predev-mongo.ts`) boots and seeds with
- * the SAME canonical content — the SFREAD-01 goldens pin the two corpora byte-identical, which is
- * what keeps the two seeds coherent.
- *
  * @param env - The environment to read configuration from and emit `E2E_TENANT_ID` into.
  * @param convex - The Convex surface (injectable for unit tests).
  * @returns The emitted tenant id (the canonical `shops` document id).

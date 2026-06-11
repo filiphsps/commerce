@@ -45,7 +45,7 @@ export default defineConfig({
                 'src/**/index.*',
                 '**/src/**/config/*.*',
                 '**/src/test-utils/**/*.*',
-                '**/src/types/payload-types.ts',
+                '**/src/types/content-types.ts',
             ],
         },
     },
