@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
+import { convexCutoverLocked, tenantScopedRead } from '../access';
 import { localized, required, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 
@@ -16,9 +16,16 @@ export const MEDIA_MIME_TYPES = ['image/*', 'video/mp4', 'application/pdf'] as c
  * Payload collection config for `media`. Upload collection scoped to tenants
  * with four image-size variants (thumbnail, card, feature, hero) and a focal
  * point selector. Accepts images, mp4 video, and PDF.
+ *
+ * CUTOVER-06: media lives on the Convex `cmsMedia` table; uploads run the
+ * CMSGATE-02 native pipeline (`cms/media:generateUploadUrl`/`finalizeUpload` +
+ * the Node-side sharp derivative pass), never Payload's upload handler. Every
+ * Payload write operation is `convexCutoverLocked`; reads stay tenant-scoped
+ * for migrated-asset fallbacks until TEARDOWN-02 removes the collection.
  */
 export const media: CollectionConfig = {
     slug: 'media',
+    admin: { hidden: true },
     // `media` participates in `tenantScopedCollections` so the multi-tenant
     // plugin injects a `tenant` field — but without explicit access the
     // Payload defaults (any logged-in user) allow editors from tenant A to
@@ -26,9 +33,9 @@ export const media: CollectionConfig = {
     // the content collections.
     access: {
         read: tenantScopedRead,
-        create: tenantScopedWrite,
-        update: tenantScopedWrite,
-        delete: adminOnly,
+        create: convexCutoverLocked,
+        update: convexCutoverLocked,
+        delete: convexCutoverLocked,
     },
     upload: {
         mimeTypes: [...MEDIA_MIME_TYPES],

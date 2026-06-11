@@ -1,8 +1,10 @@
 import 'server-only';
 
+import type { EditorCmsDocument } from '@nordcom/commerce-cms/editor';
 import type { Metadata, Route } from 'next';
 import { CollectionTable } from '@/components/cms/collection-table';
 import { CreateMetadataForHandleForm } from '@/components/cms/create-metadata-for-handle-form';
+import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 export const metadata: Metadata = { title: 'Collection Metadata' };
@@ -20,29 +22,26 @@ export default async function CollectionMetadataListPage({ params }: { params: P
     const { domain } = await params;
 
     // ── Auth + tenant resolution ──────────────────────────────────────────────
-    const { payload, user, tenant } = await getAuthedPayloadCtx(domain);
+    const { tenant } = await getAuthedPayloadCtx(domain);
 
     if (!tenant) {
         return null;
     }
 
-    // ── Fetch existing metadata docs scoped to this tenant ────────────────────
-    // Only docs that already exist in Payload are shown. The "Open by handle"
-    // form below lets operators navigate to (and implicitly create) a doc for
-    // any handle — Shopify collection-list integration is deferred to a future task.
-    const { docs } = await payload.find({
-        collection: 'collectionMetadata',
-        where: { tenant: { equals: tenant.id } },
-        sort: '-updatedAt',
-        limit: 100,
-        user,
-        overrideAccess: false,
-    });
+    // ── Fetch existing metadata docs from the Convex authority ────────────────
+    // The cohort flipped in CUTOVER-05, so the listing reads `cms/list:list` through the bridge —
+    // the inert Mongo snapshot would miss every natively-authored overlay. Rows route by their
+    // Shopify handle (the `documentTargetFor` keyField), never a backend id. The "Open by handle"
+    // form below lets operators navigate to (and implicitly create) a doc for any handle —
+    // Shopify collection-list integration is deferred to a future task.
+    const { docs } = await editorConvexBridge
+        .list({ collection: 'collectionMetadata', pageSize: 100 })
+        .catch(() => ({ docs: [] as EditorCmsDocument[] }));
 
     const rows: MetadataRow[] = docs.map((doc) => ({
-        id: String(doc.id),
-        shopifyHandle: doc.shopifyHandle,
-        status: doc._status ?? 'draft',
+        id: doc.documentId,
+        shopifyHandle: String((doc.data as { shopifyHandle?: string }).shopifyHandle ?? doc.documentId),
+        status: doc.status,
         updatedAt: new Date(doc.updatedAt).toLocaleString(),
     }));
 

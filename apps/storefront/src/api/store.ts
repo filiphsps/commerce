@@ -204,10 +204,12 @@ export const ShopPaymentSettingsApi = async ({
 export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
 
 /**
- * Reads the Payload `BusinessData` global for this tenant + locale. Returns
+ * Reads the `BusinessData` singleton for this tenant + locale. Returns
  * `null` when the doc has not been seeded — InfoBar / Footer call sites
  * collapse to no-render in that case. Routed through the SFREAD-12 dual-read
- * loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=businessData`); InfoBarApi
+ * loader; since CUTOVER-06 the getter is flipped BY DEFAULT (the Convex
+ * `cms/read:singleton` read is authoritative, `CMS_READ_FLIP=-businessData`
+ * is the emergency-shadow lever back to the inert Mongo snapshot). InfoBarApi
  * delegates here, so this single wrap covers both surfaces without
  * double-shadowing.
  *

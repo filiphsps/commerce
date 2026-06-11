@@ -157,10 +157,11 @@ describe('seedCmsMutation', () => {
             collectionMetadata: collectionMetadataFixtures.length,
             featureFlags: featureFlagFixtures.length,
             shopFeatureFlags: featureFlagFixtures.length,
-            // The flipped cohorts: one header singleton + every page (CUTOVER-04) plus every
-            // article and metadata overlay (CUTOVER-05) as live editor-model rows.
+            // The flipped cohorts: the header/footer/businessData singletons (CUTOVER-04/06) +
+            // every page (CUTOVER-04) plus every article and metadata overlay (CUTOVER-05) as
+            // live editor-model rows.
             cmsDocuments:
-                1 +
+                3 +
                 pageFixtures.length +
                 articleFixtures.length +
                 productMetadataFixtures.length +
@@ -244,6 +245,36 @@ describe('seedCmsMutation', () => {
         for (const doc of [...productDocs, ...collectionDocs]) {
             expect(doc.status).toBe('published');
         }
+    });
+
+    it('seeds the CUTOVER-06 cohort (footer + businessData singletons) as published, pointerless cmsDocuments rows', async () => {
+        const t = convexTest(schema, modules);
+
+        const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
+        await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
+
+        const { footerDocs, businessDocs } = await t.run(async (ctx) => ({
+            footerDocs: await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'footer'))
+                .collect(),
+            businessDocs: await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'businessData'))
+                .collect(),
+        }));
+
+        // One live row per singleton in the pointerless ETL/seed shape — what `cms/read:singleton`
+        // serves to the default-flipped FooterApi/BusinessDataApi getters.
+        expect(footerDocs).toHaveLength(1);
+        expect(footerDocs[0]?.status).toBe('published');
+        expect(footerDocs[0]?.publishedVersionId).toBeUndefined();
+        expect((footerDocs[0]?.data as { sections?: unknown[] }).sections).toHaveLength(4);
+
+        expect(businessDocs).toHaveLength(1);
+        expect(businessDocs[0]?.status).toBe('published');
+        expect(businessDocs[0]?.publishedVersionId).toBeUndefined();
+        expect(businessDocs[0]?.data).toMatchObject({ legalName: 'Nordcom Demo Shop AB' });
     });
 
     it('seeds the full pages/articles/productMetadata/collectionMetadata corpus scoped to the canonical shop id', async () => {

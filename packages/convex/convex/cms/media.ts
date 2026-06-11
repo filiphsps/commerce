@@ -279,17 +279,22 @@ export const list = tenantQuery({
 });
 
 /**
- * Fetches one media document by id. A cross-tenant id resolves to `null` rather than an error —
- * the RLS read predicate filters the row, making another tenant's media indistinguishable from a
- * nonexistent one. Serving URLs are resolved at read time per {@link resolveMediaUrls}.
+ * Fetches one media document by id. The id arrives as a plain string (the admin detail route's URL
+ * segment travels unbranded across the bridge) and is normalized here — an unparseable id reads as
+ * `null` instead of failing argument validation, matching `cms/documents:get`'s null-on-missing
+ * posture. A cross-tenant id also resolves to `null` rather than an error — the RLS read predicate
+ * filters the row, making another tenant's media indistinguishable from a nonexistent one. Serving
+ * URLs are resolved at read time per {@link resolveMediaUrls}.
  *
- * @returns The media document on the frozen `Media` contract, or `null` when absent/foreign.
+ * @returns The media document on the frozen `Media` contract, or `null` when absent/foreign/garbled.
  * @throws {ConvexError} Any tenant-resolution failure from the `tenantQuery` constructor.
  */
 export const byId = tenantQuery({
-    args: { mediaId: v.id('cmsMedia') },
+    args: { mediaId: v.string() },
     handler: async (ctx, { mediaId }): Promise<Media | null> => {
-        const doc = await ctx.db.get(mediaId);
+        const normalized = ctx.db.normalizeId('cmsMedia', mediaId);
+        if (!normalized) return null;
+        const doc = await ctx.db.get(normalized);
         return doc ? resolveMediaUrls(ctx, doc) : null;
     },
 });

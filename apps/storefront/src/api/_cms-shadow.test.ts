@@ -120,13 +120,15 @@ describe('flip + shadow levers', () => {
         expect(parseCmsReadFlip('header, page articles')).toEqual(new Set(['header', 'page', 'articles']));
         expect(parseCmsReadFlip('-header, -*')).toEqual(new Set(['-header', '-*']));
         expect(isCmsGetterFlipped('page', makeEnv({ CMS_READ_FLIP: 'header,page' }))).toBe(true);
-        expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: 'header,page' }))).toBe(false);
+        expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: '-footer' }))).toBe(false);
         expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: '*' }))).toBe(true);
     });
 
-    it('defaults the CUTOVER-04 + CUTOVER-05 cohorts to Convex; only footer/businessData stay Mongo', () => {
+    it('defaults the COMPLETE getter surface to Convex — CUTOVER-06 leaves no Mongo-authoritative getter', () => {
         for (const getter of [
             'header',
+            'footer',
+            'businessData',
             'page',
             'pages',
             'article',
@@ -135,9 +137,6 @@ describe('flip + shadow levers', () => {
             'collectionMetadata',
         ] as const) {
             expect(isCmsGetterFlipped(getter, OFF_ENV)).toBe(true);
-        }
-        for (const getter of ['footer', 'businessData'] as const) {
-            expect(isCmsGetterFlipped(getter, OFF_ENV)).toBe(false);
         }
     });
 
@@ -297,7 +296,7 @@ describe('runCmsDualRead — per-getter flip', () => {
         expect(mongo).not.toHaveBeenCalled();
     });
 
-    it('leaves unflipped getters on Mongo even while others are flipped', async () => {
+    it('confines a `-getter` negation to that getter — the rest of the surface keeps serving Convex', async () => {
         const transport = makeTransport(CONVEX_ARTICLE);
         __setCmsShadowTransport(transport);
 
@@ -308,12 +307,16 @@ describe('runCmsDualRead — per-getter flip', () => {
             locale: 'en-US',
             mongo,
             convex: (query) => query('cms/read:singleton', {}),
-            env: makeEnv({ CMS_READ_FLIP: 'article' }),
+            env: makeEnv({ CMS_READ_FLIP: '-footer' }),
         });
         await flushCmsShadows();
 
         expect(result).toEqual(MONGO_ARTICLE);
         expect(mongo).toHaveBeenCalledTimes(1);
+        // The negation is per-getter: the default-flipped article read still serves Convex.
+        const { result: article, mongo: articleMongo } = await runArticleRead(makeEnv({ CMS_READ_FLIP: '-footer' }));
+        expect(article).toEqual(CONVEX_ARTICLE);
+        expect(articleMongo).not.toHaveBeenCalled();
     });
 
     it('serves Convex for a default-flipped cohort getter with NO lever set, and retires its shadow', async () => {

@@ -7,6 +7,7 @@ import type {
     EditorConvexBridge,
     EditorRelationshipOption,
 } from '@nordcom/commerce-cms/editor';
+import type { Media } from '@nordcom/commerce-cms/types';
 import { convexIdentityMutation, convexIdentityQuery, createConvexIdentityClient } from '@nordcom/commerce-db';
 import { ConvexOperatorTokenMintError } from '@nordcom/commerce-errors';
 
@@ -56,6 +57,28 @@ type ConvexMediaRow = {
     alt: string;
     filename: string;
 };
+
+/**
+ * Projects a `cms/media` `Media` wire row into the bridge's {@link EditorCmsDocument} so the media
+ * settings surfaces ride the same editor shell as the content collections. Media lives on the
+ * tenant `cmsMedia` table — NOT in `cmsDocuments` — so a `cms/list:list` read for the `media`
+ * collection legitimately returns nothing (the CMSDATA-07 empty-list concern); this projection is
+ * how the list/detail reads reach the REAL table. A media row has no draft lifecycle (a row exists
+ * only once `finalizeUpload` persisted it), so `status` is always `published`.
+ *
+ * @param media - The `Media`-shaped wire row from `cms/media:list`/`byId`.
+ * @returns The bridge document whose `data` is the full `Media` shape (the list columns read
+ *   `filename`/`mimeType`/`sizes` straight off it).
+ */
+export function mediaToEditorDocument(media: Media): EditorCmsDocument {
+    return {
+        documentId: media.id,
+        collection: 'media',
+        data: media as unknown as Record<string, unknown>,
+        status: 'published',
+        updatedAt: Date.parse(media.updatedAt),
+    };
+}
 
 /**
  * Hard ceiling on one relationship-option prefetch — mirrors the Convex side's own
@@ -224,6 +247,18 @@ export const editorConvexBridge: EditorConvexBridge = {
         await operatorMutation<ConvexSaveResult>('cms/actions:restoreVersion', { versionId });
     },
     list: async ({ collection, page, pageSize }): Promise<EditorCmsListPage> => {
+        if (collection === 'media') {
+            // Media lives on the tenant `cmsMedia` table behind `cms/media:list`, not in
+            // `cmsDocuments` (CUTOVER-06: the CMSDATA-07 empty-list fix). The read is a single
+            // server-clamped window (max 100), so the library serves as ONE page regardless of the
+            // requested page number — pagination re-enters if/when the Convex side grows a
+            // paginated media read.
+            const media = await operatorQuery<Media[]>('cms/media:list', {
+                limit: pageSize ?? RELATIONSHIP_OPTIONS_LIMIT,
+            });
+            const docs = media.map(mediaToEditorDocument);
+            return { docs, page: 1, pageSize: docs.length, totalDocs: docs.length, totalPages: 1 };
+        }
         const result = await operatorQuery<ConvexCmsListResult>('cms/list:list', {
             collection,
             ...(page !== undefined ? { page } : {}),
@@ -238,6 +273,13 @@ export const editorConvexBridge: EditorConvexBridge = {
         };
     },
     getDocument: async ({ collection, documentId, keyField, keyValue }): Promise<EditorCmsDocument | null> => {
+        if (collection === 'media') {
+            // Same `cmsMedia` routing as `list`: a media document is addressed by its own id and
+            // reads null-on-missing (an unparseable/foreign id is normalized away Convex-side).
+            if (documentId === undefined) return null;
+            const media = await operatorQuery<Media | null>('cms/media:byId', { mediaId: documentId });
+            return media === null ? null : mediaToEditorDocument(media);
+        }
         const row = await operatorQuery<ConvexCmsDocumentRow | null>('cms/documents:get', {
             collection,
             ...(documentId !== undefined ? { documentId } : {}),
@@ -272,6 +314,19 @@ export const editorConvexBridge: EditorConvexBridge = {
         });
     },
 };
+
+/**
+ * Reads one tenant media document on the frozen `Media` contract — the read behind the admin's
+ * media detail page. Same per-call identity-client contract as {@link editorConvexBridge}; tenant
+ * scope is enforced inside Convex, so a foreign or unparseable id reads as `null`.
+ *
+ * @param mediaId - The `cmsMedia` document id from the detail route's URL segment.
+ * @returns The media document with its read-time serving URLs, or `null` when absent.
+ * @throws {ConvexOperatorTokenMintError} When no operator token can be minted.
+ */
+export async function getMediaById(mediaId: string): Promise<Media | null> {
+    return operatorQuery<Media | null>('cms/media:byId', { mediaId });
+}
 
 /**
  * The serialized `Media` wire shape `cms/media:finalizeUpload` returns — the members the upload

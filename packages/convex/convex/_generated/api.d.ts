@@ -117,12 +117,7 @@ export declare const api: {
       >;
     };
     media: {
-      byId: FunctionReference<
-        "query",
-        "public",
-        { mediaId: Id<"cmsMedia"> },
-        any
-      >;
+      byId: FunctionReference<"query", "public", { mediaId: string }, any>;
       finalizeUpload: FunctionReference<
         "mutation",
         "public",

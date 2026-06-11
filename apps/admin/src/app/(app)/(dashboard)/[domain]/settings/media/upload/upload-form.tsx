@@ -13,11 +13,10 @@ export type UploadFormProps = {
      * `createMediaAction.bind(null, domain)`. Signature after binding:
      * `(formData: FormData) => Promise<{ id: string }>`.
      *
-     * We call a server action rather than POSTing directly to Payload's
-     * `/api/media` REST endpoint because the admin app has no Payload auth
-     * strategy mounted — REST requests arrive unauthenticated and
-     * `tenantScopedWrite` rejects them with a 403. The server action threads
-     * the NextAuth session into `payload.create` via `getAuthedPayloadCtx`.
+     * The action runs the CMSGATE-02 native pipeline server-side (Convex
+     * byte-sink upload → `finalizeUpload` → sharp derivative pass), with the
+     * operator's NextAuth session minting the Convex identity — the browser
+     * never holds a storage credential.
      */
     createAction: (formData: FormData) => Promise<{ id: string }>;
 };
@@ -25,9 +24,9 @@ export type UploadFormProps = {
 /**
  * Client upload form for new media files.
  *
- * Invokes a server action that authenticates via NextAuth and dispatches into
- * `payload.create` with the file payload. On success it redirects to the new
- * doc's edit page (or back to the grid on failure).
+ * Invokes a server action that authenticates via NextAuth and runs the native
+ * Convex media pipeline with the file payload. On success it redirects to the
+ * new doc's detail page (or back to the grid on failure).
  *
  * @param props.domain - The current shop domain used to construct the post-upload redirect URL.
  * @param props.createAction - Pre-bound server action `(formData: FormData) => Promise<{ id: string }>`.

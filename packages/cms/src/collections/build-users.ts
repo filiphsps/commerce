@@ -1,5 +1,5 @@
 import type { AuthStrategy, CollectionConfig } from 'payload';
-import { isAdmin } from '../access';
+import { convexCutoverLocked } from '../access';
 
 /**
  * Options for {@link buildUsers}.
@@ -19,6 +19,14 @@ export type BuildUsersOptions = {
  * configuring authentication differently. The collection routes its MongoDB
  * storage to `payload-users` to avoid colliding with the NextAuth `users`
  * collection registered by `@nordcom/commerce-db`.
+ *
+ * CUTOVER-06: user management belongs to the auth adapter surface (NextAuth +
+ * the Convex `users`/`shopCollaborators` tables), not the CMS; the admin's
+ * users settings pages author through the native editor and the Convex bridge.
+ * Every Payload write operation is `convexCutoverLocked`. Reads stay open so
+ * `payload-ctx`/`nextauth-strategy` keep resolving principals from the mirror
+ * until TEARDOWN-02 removes the Payload boot path; the e2e principal seed
+ * writes at the Mongo driver level and never crosses this access surface.
  *
  * @param opts - Optional auth strategies and password-login flag.
  * @returns A Payload CollectionConfig for the `users` collection.
@@ -50,20 +58,16 @@ export const buildUsers = ({
         // flow but keeps the fields.
         disableLocalStrategy: disablePasswordLogin ? { enableFields: true } : undefined,
     },
-    admin: { useAsTitle: 'email' },
+    admin: { useAsTitle: 'email', hidden: true },
     access: {
         read: ({ req }) => {
             if (!req?.user) return false;
             if (req.user.role === 'admin') return true;
             return { id: { equals: req.user.id } };
         },
-        create: isAdmin,
-        update: ({ req }) => {
-            if (!req?.user) return false;
-            if (req.user.role === 'admin') return true;
-            return { id: { equals: req.user.id } };
-        },
-        delete: isAdmin,
+        create: convexCutoverLocked,
+        update: convexCutoverLocked,
+        delete: convexCutoverLocked,
         admin: ({ req }) => Boolean(req?.user),
     },
     fields: [

@@ -168,3 +168,105 @@ reviews/feature-flags/media cohort) remain on Payload-on-Mongo until CUTOVER-06.
 9. **Unfreeze authoring** (native editor only). Emergency-shadow lever per getter:
    `CMS_READ_FLIP=-article,-articles,-productMetadata,-collectionMetadata` (degraded read mode,
    same caveats as §3).
+
+---
+
+# CUTOVER-06 — the final cohort (footer + businessData) and the END of the Payload write surface
+
+The finisher. The branch carrying this section flips the LAST two storefront getters (`footer`,
+`businessData`) to Convex-native and locks EVERY remaining registered Payload collection's write
+surface — after this deploy no collection anywhere accepts a Payload write, which is the
+precondition TEARDOWN-02 (delete the Payload application surface) was waiting on.
+
+## 6.1 What the repo state already is (post-flip; cite, don't re-derive)
+
+- **Reads.** `footer` and `businessData` join `DEFAULT_FLIPPED_GETTERS`
+  (`apps/storefront/src/api/_cms-shadow.ts`) — the set now covers the COMPLETE 9-surface dual-read
+  inventory, so no getter is Mongo-authoritative. Proven by `_cms-shadow.test.ts` (complete-surface
+  default + precedence + retired shadow), `footer.test.ts` / `store.test.ts` / `info-bar.test.ts`
+  (Convex-served defaults via `cms/read:singleton`, identity passthrough, null-on-missing,
+  emergency-shadow legs), and `packages/convex/convex/cms/read.test.ts` (singleton contract frame,
+  CMSGATE-01 deep locale collapse for the footer's nested section titles, null for unseeded
+  singletons). The full SFREAD-01 golden suite
+  (`packages/cms/src/api/cms-read-contract.golden.test.ts`) stays untouched and green — getter
+  signatures and contract shapes did not move.
+- **Writes.** EVERY registered collection now carries `convexCutoverLocked` on
+  `create`/`update`/`delete` plus `admin.hidden`: the 04/05 cohorts, this cohort's
+  `footer`/`businessData`, and the table-backed `reviews`/`feature-flags`/`media` plus the
+  platform `shops`/`users` mirrors. Pinned exhaustively by
+  `packages/cms/src/access/multi-tenant-isolation.test.ts`, whose coverage assertion fails if a
+  new collection ever registers without the lock.
+- **Where the "special" collections actually live** (the CMSDATA-07 reconciliation):
+  - **media** → the Convex `cmsMedia` table. Uploads run the CMSGATE-02 native pipeline
+    (`cms/media:generateUploadUrl` → byte sink → `finalizeUpload` mime-verifies and plants the
+    4-size derivative plan → the Node-side sharp pass fulfills it via
+    `cms/media_derivatives:saveDerivatives`). The four frozen sizes are pinned by
+    `packages/cms/src/media/derive.test.ts` ("produces all four frozen sizes at their exact output
+    dimensions") and `packages/convex/convex/cms/media_derivatives.test.ts` ("finalizing an image
+    plants all four pending plan rows…", "fulfills the plan: four ready rows…"). The admin media
+    library (`settings/media/`) now reads `cms/media:list`/`byId` through the bridge instead of the
+    `cmsDocuments` read that rendered it empty; the detail page is read-only (media is immutable
+    post-upload on the native pipeline — re-author by uploading; a `cmsMedia` alt/caption mutation
+    is future Convex-side work).
+  - **reviews** → the core Convex `reviews` table behind the `db/reviews` seam. The admin reviews
+    page lists real rows via `Review.findByShop`; authoring stays the design-spec'd rework (the
+    stored shape is still skeletal — shop ref + timestamps — so there is nothing to author yet).
+  - **feature-flags** → the `featureFlags` + `shopFeatureFlags` tables behind `db/feature_flags`.
+    No in-app authoring surface exists (the Payload-era one was REST-only); authoring is operator
+    tooling (Convex dashboard / seeds) until a dedicated admin surface lands. The
+    `featureFlagsEditor` manifest + generated actions are dead scaffolding (TEARDOWN-02).
+  - **users** → user management belongs to the auth adapter surface (NextAuth + the Convex
+    `users`/`shopCollaborators` tables), not the CMS. The settings/users pages author through the
+    native editor bridge; the Payload `users` mirror is read-only (principal resolution) until
+    TEARDOWN-02.
+- **Admin reads.** The CUTOVER-05 leftovers are closed: the product/collection-metadata LIST pages
+  read the Convex authority through `editorConvexBridge.list` (the inert snapshot would miss every
+  natively-authored overlay).
+- **Seeds.** The canonical Convex seed (`seedCmsMutation` + `seedCanonicalLive`) lands `footer` +
+  `businessData` as live published `cmsDocuments` rows alongside header — the complete
+  live-document corpus for the whole flipped getter surface.
+
+## 6.2 Payload scaffolding that REMAINS (the TEARDOWN-02 accounting)
+
+All of it is boot-and-read only; none of it can write:
+
+- `apps/admin/src/payload.config.ts` + `buildPayloadConfig` (Payload boots with all collections
+  registered-but-locked; mongooseAdapter still connects).
+- The `(payload)/api/[...slug]` + graphql REST routes (mounted; every write predicate refuses).
+- `apps/admin/src/lib/payload-ctx.ts` + `nextauth-strategy.ts` (session→principal + tenancy reads
+  over the `users`/`shops` mirrors, `overrideAccess: true` reads).
+- `apps/admin/e2e/global-setup.ts`'s `seedPayloadPrincipal` (raw Mongo-driver write below Payload's
+  access surface).
+- The storefront getters' Mongo arms (`packages/cms/src/api/get-*`) — the emergency-shadow leg
+  behind `-getter` negation.
+- The `@nordcom/commerce-test-mongo` dev/e2e machinery and the Mongo seed corpus (inert snapshot).
+- The Payload collection configs themselves (`packages/cms/src/collections/**`) and the
+  Payload-era editor manifests' unused corners (`featureFlagsEditor`, `reviewsEditor`).
+
+## 6.3 Operator steps BEFORE deploying this branch (in order)
+
+1. **Preconditions green:** the CUTOVER-05 deploy is live and §5.2's smoke held.
+2. **Freeze cohort authoring:** no footer/businessData writes during the window (steps 3–5). The
+   reviews/feature-flags/media "collections" need no content freeze — their data already lives on
+   the Convex core tables (imported by the services cutover / PIPELINE media import), and their
+   Payload write paths were REST-only surfaces nothing in the product drives.
+3. **Final cohort export:** `mongoexport` the `footer` + `businessData` collections (plus
+   `_versions` companions) from prod.
+4. **ETL the cohort to Convex:** the PIPELINE transform/shred/versions import for the two
+   singletons into the production deployment. (No rich text in this cohort — G-RICH adds nothing;
+   run the dual-path checksum reconcile for the two collections instead.)
+5. **Shadow-bake check:** with the PRE-flip build still serving, `CMS_READ_SHADOW=1` over the soak
+   window must show a clean `cmsReadDivergence` ledger for `footer`/`businessData`. Zero
+   unexplained divergence gates the deploy.
+6. **Verify the media corpus:** spot-check that migrated media serve URLs resolve (the PIPELINE-02
+   import copied each preserved S3/R2 object into Convex storage) and that a fresh admin upload
+   produces the four derivative sizes.
+7. **Deploy this branch.** The deploy IS the flip — and the end of Payload authoring everywhere.
+8. **Post-deploy smoke:** storefront footer + info bar render real content on the canary tenant; a
+   native footer edit publish revalidates the storefront; the ledger shows no `flip-serve failed`
+   errors; REST writes against `/api/footer`, `/api/businessData`, `/api/reviews`,
+   `/api/feature-flags`, `/api/media`, `/api/shops`, and `/api/users` (any verb) are refused; the
+   admin media library lists the tenant's `cmsMedia` rows with thumbnails.
+9. **Unfreeze authoring** (native editor only). Emergency-shadow lever:
+   `CMS_READ_FLIP=-footer,-businessData` (degraded read mode, same caveats as §3).
+10. **Hand off to TEARDOWN-02**: everything in §6.2 is now deletable scaffolding.

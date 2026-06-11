@@ -12,10 +12,13 @@ import { normalizePayloadDoc } from './_normalize-payload';
 export type FooterApiArgs = { shop: OnlineShop; locale: Locale };
 
 /**
- * Reads the Payload `Footer` global for this tenant + locale. Mirrors the
- * draft-detection + null-on-missing policy of HeaderApi, and rides the same
- * SFREAD-12 dual-read loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=footer`).
- * A draft-mode request forwards the draft flag down BOTH legs and skips the shadow.
+ * Reads the `Footer` singleton for this tenant + locale. Mirrors the
+ * draft-detection + null-on-missing policy of HeaderApi and rides the same
+ * SFREAD-12 dual-read loader. Since CUTOVER-06 the getter is flipped BY
+ * DEFAULT: the Convex `cms/read:singleton` read is authoritative, and
+ * `CMS_READ_FLIP=-footer` is the emergency-shadow lever back to the inert
+ * Payload-on-Mongo snapshot. A draft-mode request forwards the draft flag
+ * down BOTH legs and skips the shadow.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.

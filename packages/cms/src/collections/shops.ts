@@ -2,6 +2,7 @@
 // `server-only`, which the plain-tsx `cms:generate` cannot load.
 import { FONT_FAMILIES } from '@nordcom/commerce-db/lib/theme';
 import type { CollectionConfig } from 'payload';
+import { convexCutoverLocked } from '../access';
 import { arrayField, groupField, numberField, required, selectField, textareaField, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 import { rejectSecretWritesFromNonAdmins, stripSecretsOnRead } from './shops/secrets';
@@ -18,15 +19,22 @@ const FONT_FAMILY_OPTIONS = Object.entries(FONT_FAMILIES).map(([value, label]) =
  * managed by `@nordcom/commerce-db`. Stores editable surface fields (name,
  * domain, design) plus read-only commerce-provider secrets guarded by
  * `rejectSecretWritesFromNonAdmins` and `stripSecretsOnRead` hooks.
+ *
+ * CUTOVER-06: shop data lives on the core Convex `shops` table behind the
+ * `db/shops`/`db/shop_write` seam; the admin's shop/theme settings author
+ * through the native editor and the Convex bridge. Every Payload write
+ * operation is `convexCutoverLocked` (the secret-guard hooks stay as defense
+ * in depth on the dead path); reads stay authed-only for `payload-ctx`'s
+ * tenancy resolution until TEARDOWN-02 removes the Payload boot path.
  */
 export const shops: CollectionConfig = {
     slug: 'shops',
-    admin: { useAsTitle: 'name', defaultColumns: ['name', 'domain', 'updatedAt'] },
+    admin: { useAsTitle: 'name', defaultColumns: ['name', 'domain', 'updatedAt'], hidden: true },
     access: {
         read: ({ req }) => Boolean(req.user),
-        create: ({ req }) => req.user?.role === 'admin',
-        update: ({ req }) => req.user?.role === 'admin' || req.user?.role === 'editor',
-        delete: ({ req }) => req.user?.role === 'admin',
+        create: convexCutoverLocked,
+        update: convexCutoverLocked,
+        delete: convexCutoverLocked,
     },
     hooks: {
         beforeChange: [rejectSecretWritesFromNonAdmins],

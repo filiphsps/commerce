@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
+import { convexCutoverLocked, publishedOrAuthRead } from '../../access';
 import { arrayField, localized, required, selectField, textField } from '../../descriptors';
 import { toFieldConfigs } from '../../field-config-bridge';
 import { linkField } from '../../fields';
@@ -9,17 +9,23 @@ import { buildRevalidateHooks } from '../_hooks/revalidate';
  * Payload collection config for the `footer` singleton. Stores navigation
  * sections, social links, legal links, and a copyright line. One document per
  * tenant, managed by the multi-tenant plugin.
+ *
+ * CUTOVER-06: authoring lives in the Convex-native editor; every Payload write
+ * operation is `convexCutoverLocked` so the inert Mongo snapshot can never fork
+ * from the Convex authority. Reads stay published-or-authed for the
+ * storefront's emergency-shadow leg until TEARDOWN-02 removes the collection.
  */
 export const footer: CollectionConfig = {
     slug: 'footer',
     versions: { drafts: { autosave: { interval: 2000 } } },
+    admin: { hidden: true },
     access: {
         // See header.ts for rationale — autosaved drafts must not leak to anon
         // storefront reads.
         read: publishedOrAuthRead,
-        create: tenantScopedWrite,
-        update: tenantScopedWrite,
-        delete: adminOnly,
+        create: convexCutoverLocked,
+        update: convexCutoverLocked,
+        delete: convexCutoverLocked,
     },
     fields: toFieldConfigs(
         arrayField({

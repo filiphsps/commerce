@@ -256,6 +256,14 @@ describe('cms media storage', () => {
         await expect(asA.query(byIdRef, { mediaId: media.id })).resolves.not.toBeNull();
     });
 
+    it('reads an unparseable byId id as null — the bridge passes the URL segment through unbranded', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asA = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        await expect(asA.query(byIdRef, { mediaId: 'not-a-convex-id' })).resolves.toBeNull();
+    });
+
     it('resolves the original URL plus every ready derivative URL from its own blob (CMSMEDIA-03)', async () => {
         const t = convexTest(schema, modules);
         await seedTenant(t, 'op@a.example.com', 'shop_a');

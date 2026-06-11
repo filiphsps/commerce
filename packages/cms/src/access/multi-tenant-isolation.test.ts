@@ -20,80 +20,60 @@
 
 import type { CollectionConfig } from 'payload';
 import { describe, expect, it } from 'vitest';
+import { allCollections } from '../collections';
 import { businessData, footer, header } from '../collections/_globals';
 import { articles } from '../collections/articles';
 import { collectionMetadata } from '../collections/collection-metadata';
+import { featureFlags } from '../collections/feature-flags';
 import { media } from '../collections/media';
 import { pages } from '../collections/pages';
 import { productMetadata } from '../collections/product-metadata';
+import { reviews } from '../collections/reviews';
+import { shops } from '../collections/shops';
+import { users } from '../collections/users';
 import { convexCutoverLocked } from './convex-cutover-locked';
 import { publishedOrAuthRead } from './published-or-auth-read';
-import { adminOnly, tenantScopedRead, tenantScopedWrite } from './tenant-scoped-read';
+import { tenantScopedRead } from './tenant-scoped-read';
 
-const tenantScopedContent: ReadonlyArray<readonly [string, CollectionConfig]> = [['media', media]] as const;
-
-const globals: ReadonlyArray<readonly [string, CollectionConfig]> = [
-    ['footer', footer],
-    ['businessData', businessData],
-] as const;
-
-// The CUTOVER-04 gate cohort plus the CUTOVER-05 rich-text cohort: authored exclusively in the
-// Convex-native editor, so the Payload write surface is locked shut while reads keep serving the
-// inert Mongo snapshot.
+// Since CUTOVER-06 EVERY registered collection is authored exclusively outside Payload (the
+// Convex-native editor for content, the CMSGATE-02 pipeline for media, the db seam for
+// shops/reviews/flags, the auth adapter surface for users), so the whole Payload write surface is
+// locked shut while reads keep serving the inert Mongo snapshot. Collections whose read predicate
+// is one of our shared named functions are identity-pinned; `feature-flags`/`shops`/`users` keep
+// their inline authed/self read closures, which their own unit tests cover behaviorally (`null`
+// here).
 const cutoverLocked: ReadonlyArray<readonly [string, CollectionConfig, unknown]> = [
     ['pages', pages, tenantScopedRead],
     ['header', header, publishedOrAuthRead],
     ['articles', articles, tenantScopedRead],
     ['productMetadata', productMetadata, tenantScopedRead],
     ['collectionMetadata', collectionMetadata, tenantScopedRead],
+    ['footer', footer, publishedOrAuthRead],
+    ['businessData', businessData, publishedOrAuthRead],
+    ['media', media, tenantScopedRead],
+    ['reviews', reviews, tenantScopedRead],
+    ['feature-flags', featureFlags, null],
+    ['shops', shops, null],
+    ['users', users, null],
 ] as const;
 
 describe('multi-tenant isolation — predicate wiring', () => {
-    describe.each(tenantScopedContent)('tenant-scoped content collection: %s', (_slug, collection) => {
-        it('read uses tenantScopedRead — the boundary that scopes anon reads to published and editor reads to their tenants', () => {
-            // Identity check: a swap to a more permissive function fails this test.
-            expect(collection.access?.read).toBe(tenantScopedRead);
-        });
-
-        it('create uses tenantScopedWrite — editor must belong to the target tenant', () => {
-            expect(collection.access?.create).toBe(tenantScopedWrite);
-        });
-
-        it('update uses tenantScopedWrite — same boundary as create', () => {
-            expect(collection.access?.update).toBe(tenantScopedWrite);
-        });
-
-        it('delete is admin-only — editors cannot destroy other-tenant content (or their own without admin oversight)', () => {
-            expect(collection.access?.delete).toBe(adminOnly);
-        });
-    });
-
-    describe.each(globals)('global collection: %s', (_slug, collection) => {
-        // Globals use `publishedOrAuthRead` (not `tenantScopedRead`) because
-        // every authed CMS user gets the unfiltered read — tenant scoping for
-        // globals is handled by the multi-tenant plugin's `isGlobal` mode,
-        // which auto-partitions on `tenant` server-side.
-        it('read uses publishedOrAuthRead — autosave drafts cannot leak to anon visitors', () => {
-            expect(collection.access?.read).toBe(publishedOrAuthRead);
-        });
-
-        it('create uses tenantScopedWrite', () => {
-            expect(collection.access?.create).toBe(tenantScopedWrite);
-        });
-
-        it('update uses tenantScopedWrite', () => {
-            expect(collection.access?.update).toBe(tenantScopedWrite);
-        });
-
-        it('delete is admin-only', () => {
-            expect(collection.access?.delete).toBe(adminOnly);
-        });
+    it('covers every registered collection — a new collection cannot ship with an unpinned Payload write path', () => {
+        expect(new Set(cutoverLocked.map(([slug]) => slug))).toEqual(
+            new Set(allCollections.map((collection) => collection.slug)),
+        );
     });
 
     describe.each(
         cutoverLocked,
-    )('Convex-cutover collection (CUTOVER-04/05): %s', (_slug, collection, readPredicate) => {
-        it('keeps its pre-cutover read predicate — the emergency-shadow leg and dashboard listings still read', () => {
+    )('Convex-cutover collection (CUTOVER-04/05/06): %s', (_slug, collection, readPredicate) => {
+        it('keeps its pre-cutover read predicate — the emergency-shadow leg and pre-teardown reads still work', () => {
+            if (readPredicate === null) {
+                // Inline read closure (authed-only or self-scoped) — pinned behaviorally by the
+                // collection's own unit tests; here we only assert a read path still exists.
+                expect(typeof collection.access?.read).toBe('function');
+                return;
+            }
             expect(collection.access?.read).toBe(readPredicate);
         });
 

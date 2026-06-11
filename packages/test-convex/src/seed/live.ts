@@ -9,6 +9,7 @@ import { makeFunctionReference } from 'convex/server';
 import { ConvexError } from 'convex/values';
 
 import { resolveConvexProjectDir } from '../start';
+import type { SeedCanonicalOptions } from './canonical';
 import { articleFixtures } from './fixtures/articles';
 import { businessDataFixture } from './fixtures/business-data';
 import { collectionMetadataFixtures } from './fixtures/collection-metadata';
@@ -16,9 +17,8 @@ import { featureFlagFixtures } from './fixtures/feature-flags';
 import { footerData } from './fixtures/footer';
 import { headerData } from './fixtures/header';
 import { pageFixtures } from './fixtures/pages';
-import { buildCanonicalShopFixture } from './fixtures/shop';
 import { productMetadataFixtures } from './fixtures/product-metadata';
-import type { SeedCanonicalOptions } from './canonical';
+import { buildCanonicalShopFixture } from './fixtures/shop';
 
 const requireFromHere = createRequire(import.meta.url);
 
@@ -248,10 +248,12 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
     // The flipped CMS cohorts also land as live `cmsDocuments` rows — the editor-model table the
     // default-flipped storefront getters read (`cms/read.ts`); the pointerless published shape
     // serves its own `data` as the published content. CUTOVER-04: header + pages; CUTOVER-05:
-    // articles (by slug) + the metadata overlays (by Shopify handle). Mirrors `seedCmsMutation`'s
-    // cohort blocks.
+    // articles (by slug) + the metadata overlays (by Shopify handle); CUTOVER-06: the footer and
+    // businessData singletons. Mirrors `seedCmsMutation`'s cohort blocks.
     importSeedRows(url, 'cmsDocuments', [
         { shopId, collection: 'header', data: { ...headerData }, status: 'published', ...stamp },
+        { shopId, collection: 'footer', data: { ...footerData }, status: 'published', ...stamp },
+        { shopId, collection: 'businessData', data: { ...businessDataFixture }, status: 'published', ...stamp },
         ...pageFixtures.map((page) => ({
             shopId,
             collection: 'pages',

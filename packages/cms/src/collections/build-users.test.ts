@@ -1,5 +1,6 @@
 import type { AuthStrategy } from 'payload';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { convexCutoverLocked } from '../access';
 import { buildUsers } from './build-users';
 
 const fakeStrategy: AuthStrategy = {
@@ -94,22 +95,14 @@ describe('buildUsers', () => {
             });
         });
 
-        it('editor can only update themselves', () => {
-            expect(updateAccess?.({ req: { user: { id: 'u-1', role: 'editor' } } })).toEqual({
-                id: { equals: 'u-1' },
-            });
-        });
-
-        it('create is admin-only', () => {
-            expect(createAccess?.({ req: { user: { role: 'admin' } } })).toBe(true);
-            expect(createAccess?.({ req: { user: { role: 'editor' } } })).toBeFalsy();
-            expect(createAccess?.({ req: { user: null } })).toBeFalsy();
-        });
-
-        it('delete is admin-only', () => {
-            expect(deleteAccess?.({ req: { user: { role: 'admin' } } })).toBe(true);
-            expect(deleteAccess?.({ req: { user: { role: 'editor' } } })).toBeFalsy();
-            expect(deleteAccess?.({ req: { user: null } })).toBeFalsy();
+        it('locks every write shut — user management cut over to the auth adapter surface (CUTOVER-06)', () => {
+            // Identity check on the shared lock: a swap back to a permissive predicate fails here.
+            expect(cfg.access?.create).toBe(convexCutoverLocked);
+            expect(cfg.access?.update).toBe(convexCutoverLocked);
+            expect(cfg.access?.delete).toBe(convexCutoverLocked);
+            expect(createAccess?.({ req: { user: { role: 'admin' } } })).toBe(false);
+            expect(updateAccess?.({ req: { user: { id: 'u-1', role: 'editor' } } })).toBe(false);
+            expect(deleteAccess?.({ req: { user: { role: 'admin' } } })).toBe(false);
         });
     });
 

@@ -3,6 +3,7 @@
 import { type FeatureFlagKind, isSectionFlagKey, SECTION_FLAG_PREFIX } from '@nordcom/commerce-db/lib/feature-flag';
 import type { CollectionConfig, TextFieldSingleValidation } from 'payload';
 import { validations } from 'payload';
+import { convexCutoverLocked } from '../access';
 import { arrayField, jsonField, required, selectField, textareaField, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 
@@ -32,16 +33,22 @@ const validateKey: TextFieldSingleValidation = async (value, options) => {
 /**
  * Payload collection config for `feature-flags`. Stores platform-wide feature
  * toggles with default values, allowed options, and per-rule targeting overrides.
- * Readable by any authenticated user; create/update/delete are admin-only.
+ * Readable by any authenticated user.
+ *
+ * CUTOVER-06: flag data lives on the core Convex `featureFlags` +
+ * `shopFeatureFlags` tables behind the `db/feature_flags` seam; authoring is
+ * operator tooling (Convex dashboard / seeds) until a dedicated admin surface
+ * lands. Every Payload write operation is `convexCutoverLocked`; reads stay
+ * authed-only until TEARDOWN-02 removes the collection.
  */
 export const featureFlags: CollectionConfig = {
     slug: 'feature-flags',
-    admin: { useAsTitle: 'key', defaultColumns: ['key', 'kind', 'description', 'updatedAt'] },
+    admin: { useAsTitle: 'key', defaultColumns: ['key', 'kind', 'description', 'updatedAt'], hidden: true },
     access: {
         read: ({ req }) => Boolean(req.user),
-        create: ({ req }) => req.user?.role === 'admin',
-        update: ({ req }) => req.user?.role === 'admin',
-        delete: ({ req }) => req.user?.role === 'admin',
+        create: convexCutoverLocked,
+        update: convexCutoverLocked,
+        delete: convexCutoverLocked,
     },
     fields: toFieldConfigs(
         // `validate`/`unique`/`index` have no descriptor equivalent; raw field

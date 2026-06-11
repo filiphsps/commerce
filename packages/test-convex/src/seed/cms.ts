@@ -54,10 +54,11 @@ export interface SeedCmsMutationOptions {
  * post-flip: without the rows the canonical tenant would render fallback chrome and empty content
  * surfaces under e2e. CUTOVER-04 covers `header` + `pages`; CUTOVER-05 adds the rich-text cohort
  * (`articles` keyed by slug, `productMetadata`/`collectionMetadata` keyed by Shopify handle —
- * the natural keys the flipped getters resolve by). The rows use the pointerless ETL/seed shape
- * (`status: 'published'`, no `publishedVersionId`), for which the live `data` IS the published
- * content; CUTOVER-06 extends this block as the final cohort flips. The legacy mirror-table rows
- * for the cohorts keep seeding alongside until TEARDOWN-03 retires the seed machinery.
+ * the natural keys the flipped getters resolve by); CUTOVER-06 adds the last two singletons
+ * (`footer` + `businessData`), completing the live-document corpus for the whole getter surface.
+ * The rows use the pointerless ETL/seed shape (`status: 'published'`, no `publishedVersionId`),
+ * for which the live `data` IS the published content. The legacy mirror-table rows for the
+ * cohorts keep seeding alongside until TEARDOWN-03 retires the seed machinery.
  *
  * Idempotent — the singletons are guarded by `by_shop`, each content row by its natural key within the
  * shop's `by_shop` range (`slug` for pages/articles, `shopifyHandle` for the metadata overlays), the
@@ -110,19 +111,27 @@ export async function seedCmsMutation(ctx: MutationCtx, { shopId }: SeedCmsMutat
         await ctx.db.insert('pages', { shop: shopId, ...page, createdAt: now, updatedAt: now });
     }
 
-    const existingCohortHeader = await ctx.db
-        .query('cmsDocuments')
-        .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'header'))
-        .unique();
-    if (!existingCohortHeader) {
-        await ctx.db.insert('cmsDocuments', {
-            shopId,
-            collection: 'header',
-            data: { ...headerData },
-            status: 'published',
-            createdAt: now,
-            updatedAt: now,
-        });
+    // The tenant singletons land one live `cmsDocuments` row each — CUTOVER-04's `header` plus the
+    // CUTOVER-06 finishers `footer`/`businessData`.
+    for (const [collection, data] of [
+        ['header', headerData],
+        ['footer', footerData],
+        ['businessData', businessDataFixture],
+    ] as const) {
+        const existingCohortSingleton = await ctx.db
+            .query('cmsDocuments')
+            .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', collection))
+            .unique();
+        if (!existingCohortSingleton) {
+            await ctx.db.insert('cmsDocuments', {
+                shopId,
+                collection,
+                data: { ...data },
+                status: 'published',
+                createdAt: now,
+                updatedAt: now,
+            });
+        }
     }
 
     const existingCohortPageSlugs = new Set(

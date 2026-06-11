@@ -11,8 +11,8 @@ import { after } from 'next/server';
  * normalizes both results (Mongo's Lexical rich text is converted through the real CMSRICH-04
  * codec, volatile ids/timestamps are stripped), and records every divergence in the
  * `cmsReadDivergence` Convex ledger. The per-getter flip (`CMS_READ_FLIP`) serves the Convex
- * result instead — the cutover lever — and since CUTOVER-04/05 the flipped cohorts
- * ({@link DEFAULT_FLIPPED_GETTERS}) serve Convex BY DEFAULT, with the env lever working in the
+ * result instead — the cutover lever — and since CUTOVER-06 EVERY getter
+ * ({@link DEFAULT_FLIPPED_GETTERS}) serves Convex BY DEFAULT, with the env lever working in the
  * opposite direction (`-getter` negation) as the emergency-shadow escape hatch.
  *
  * Safety posture, in order:
@@ -138,23 +138,25 @@ export function isCmsShadowEnabled(env: NodeJS.ProcessEnv = process.env): boolea
 }
 
 /**
- * Getters served Convex-native BY DEFAULT — the CUTOVER-04 gate cohort (the `header` singleton plus
- * the pages surface: `page` by slug and the `pages` listing that feeds slugs/sitemaps) and the
- * CUTOVER-05 rich-text cohort (`article`/`articles` with their ProseMirror bodies, and the
- * Shopify-handle-keyed `productMetadata`/`collectionMetadata` overlays). For these, Convex IS the
- * repo-default authority: the native editor is the only authoring path and each cohort's Payload
- * write surface is retired, so the Mongo copies are an inert cutover-time snapshot. Only `footer`
- * and `businessData` remain Mongo-authoritative until CUTOVER-06.
+ * Getters served Convex-native BY DEFAULT — since CUTOVER-06 this is the COMPLETE getter surface:
+ * the CUTOVER-04 gate cohort (the `header` singleton plus the pages surface), the CUTOVER-05
+ * rich-text cohort (`article`/`articles` and the Shopify-handle-keyed metadata overlays), and the
+ * CUTOVER-06 finisher (`footer` + `businessData`, the last two singletons). Convex IS the
+ * repo-default authority for every getter: the native editor is the only authoring path, the whole
+ * Payload write surface is retired, and the Mongo copies are an inert cutover-time snapshot.
  *
- * Shadow design for the flipped cohorts (the choice CUTOVER-06 inherits): the divergence
- * comparison RETIRES rather than inverts. An inverted (Mongo-as-shadow) comparison would flag a
- * mismatch on the first native edit — the snapshot can only fall behind — and that steady noise
- * would drown the ledger's real signal for the cohorts still baking Mongo-authoritative. The
- * ledger stays useful: un-flipped getters keep the full comparison, and flipped getters still
- * record `kind: 'error'` rows when a Convex serve fails and falls back to the Mongo snapshot.
+ * Shadow design for the flipped cohorts: the divergence comparison RETIRES rather than inverts. An
+ * inverted (Mongo-as-shadow) comparison would flag a mismatch on the first native edit — the
+ * snapshot can only fall behind — and that steady noise would drown the ledger's real signal. With
+ * every getter flipped the ledger's remaining job is incident visibility: flipped getters record
+ * `kind: 'error'` rows when a Convex serve fails and falls back to the Mongo snapshot, and the
+ * full comparison only runs for a getter an operator has forced back via `-getter` negation with
+ * `CMS_READ_SHADOW` armed (the emergency-shadow posture).
  */
 export const DEFAULT_FLIPPED_GETTERS: ReadonlySet<CmsReadGetterName> = new Set([
     'header',
+    'footer',
+    'businessData',
     'page',
     'pages',
     'article',
