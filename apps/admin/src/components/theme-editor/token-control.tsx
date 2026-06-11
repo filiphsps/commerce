@@ -1,8 +1,8 @@
 'use client';
 
+import { useField } from '@nordcom/commerce-cms/editor/form';
 import { THEME_DEFAULTS } from '@nordcom/commerce-db/lib/theme';
 import type { ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
-import { useField } from '@payloadcms/ui';
 
 import { resolveControl } from './control-registry';
 import { type ControlValue, FieldRow } from './controls/field-row';
@@ -40,9 +40,10 @@ export type TokenControlProps = {
 /**
  * Dispatcher that renders the right control for a single catalog token. Resolves
  * the control component through the registry, binds the token's persisted dotted
- * `path` to Payload form state via `useField`, derives the default placeholder
- * from `THEME_DEFAULTS`, and wires reset (clear for `derived` tokens, otherwise
- * write the default) inside a {@link FieldRow}.
+ * `path` to the NATIVE form core via `useField` (the same CMSFORM-01 state the
+ * save toolbar and the CMSDATA-09 preview bridge read), derives the default
+ * placeholder from `THEME_DEFAULTS`, and wires reset (clear for `derived`
+ * tokens, otherwise write the default) inside a {@link FieldRow}.
  *
  * The control writes the raw string/number/bool straight to `theme.*` form state
  * through `setValue`, so the existing `boundSaveDraft`/`boundPublish` toolbar
@@ -50,10 +51,11 @@ export type TokenControlProps = {
  *
  * @param props.token - Catalog metadata for the rendered token.
  * @returns The labelled control row.
+ * @throws {MissingContextProviderError} When mounted outside the native `<Form>`.
  */
 export function TokenControl({ token }: TokenControlProps) {
     const fallback = defaultAtPath(token.path);
-    const { value, setValue, showError } = useField<ControlValue>({ path: token.path });
+    const { value, setValue, valid } = useField<ControlValue>({ path: token.path });
 
     const Control = resolveControl(token);
     const placeholder = fallback === undefined ? undefined : String(fallback);
@@ -61,7 +63,7 @@ export function TokenControl({ token }: TokenControlProps) {
     const onReset = () => setValue(token.derived ? undefined : fallback);
 
     return (
-        <FieldRow token={token} htmlFor={token.path} onReset={onReset} showError={showError}>
+        <FieldRow token={token} htmlFor={token.path} onReset={onReset} showError={!valid}>
             <Control token={token} value={value} onChange={setValue} placeholder={placeholder} id={token.path} />
         </FieldRow>
     );

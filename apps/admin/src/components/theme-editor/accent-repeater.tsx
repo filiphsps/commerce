@@ -1,7 +1,7 @@
 'use client';
 
+import { type FormAction, type FormState, useAllFormFields, useField } from '@nordcom/commerce-cms/editor/form';
 import type { ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
-import { useField, useForm, useFormFields } from '@payloadcms/ui';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,28 @@ function splitArrayPath(path: string): [base: string, key: string] {
 }
 
 /**
+ * Collect the row indices currently present under the accents base path by
+ * inspecting which `${base}.<index>.<key>` leaf paths exist in form state —
+ * the same row derivation the native `ArrayField` uses, since the native core
+ * keeps no separate `rows` metadata. The dot guard stops `accents.1` from
+ * being read out of a sibling leaf like `accentPrimaryLight`.
+ *
+ * @param state - The live form state.
+ * @param basePath - The accents array base path.
+ * @returns The present row indices, ascending.
+ */
+function deriveRowIndices(state: FormState, basePath: string): number[] {
+    const prefix = `${basePath}.`;
+    const seen = new Set<number>();
+    for (const key of Object.keys(state)) {
+        if (!key.startsWith(prefix)) continue;
+        const head = key.slice(prefix.length).split('.')[0];
+        if (head !== undefined && /^\d+$/.test(head)) seen.add(Number(head));
+    }
+    return [...seen].sort((a, b) => a - b);
+}
+
+/**
  * Props for {@link AccentRepeater}.
  */
 export type AccentRepeaterProps = {
@@ -42,52 +64,79 @@ export type AccentRepeaterProps = {
 
 /**
  * Bespoke repeater for `theme.colors.accents[]` — an indexed array of
- * `{ type, color, foreground }` rather than a flat leaf. Reads the live row
- * count from Payload form state, renders one {@link AccentCell} per element
- * token at its indexed path, and adds/removes rows via `useForm().dispatchFields`
- * (`ADD_ROW`/`REMOVE_ROW`) plus `setModified(true)`. The editor writes
- * `theme.colors.accents`, which `resolveTheme` prefers over `design.accents`
- * when non-empty.
+ * `{ type, color, foreground }` rather than a flat leaf — built on the NATIVE
+ * form core. Rows are derived from the indexed leaf paths in form state;
+ * adding a row seeds its element leaves (value `''`, no `initialValue`, so the
+ * form reads as dirty immediately), and removing one re-homes the survivors to
+ * compact indices. Removing the last row writes an explicit `[]` at the base
+ * path so the save serializes the cleared array instead of silently keeping
+ * the published rows. The editor writes `theme.colors.accents`, which
+ * `resolveTheme` prefers over `design.accents` when non-empty.
  *
  * @param props.tokens - The `accents[]` element catalog rows.
  * @returns The accent repeater surface.
- * @throws When invoked outside Payload's `<Form>` (no form context).
+ * @throws {MissingContextProviderError} When mounted outside the native `<Form>`.
  */
 export function AccentRepeater({ tokens }: AccentRepeaterProps) {
     const first = tokens[0];
     const [basePath] = first ? splitArrayPath(first.path) : ['theme.colors.accents'];
-    const { dispatchFields, setModified } = useForm();
-    const rows = useFormFields(([fields]) => fields[basePath]?.rows ?? []);
+    const [state, dispatch] = useAllFormFields();
+    const indices = deriveRowIndices(state, basePath);
 
     const addRow = () => {
-        dispatchFields({ type: 'ADD_ROW', path: basePath, subFieldState: seedRowState(tokens) });
-        setModified(true);
+        const nextIndex = indices.length;
+        for (const token of tokens) {
+            const [, key] = splitArrayPath(token.path);
+            dispatch({ type: 'UPDATE', path: `${basePath}.${nextIndex}.${key}`, value: '' });
+        }
     };
 
     const removeRow = (rowIndex: number) => {
-        dispatchFields({ type: 'REMOVE_ROW', path: basePath, rowIndex });
-        setModified(true);
+        // One-shot snapshot reindex (the ArrayField pattern): drop every indexed
+        // leaf, then re-emit each survivor at its compacted index. The re-emitted
+        // leaves lose their `initialValue`, which is what keeps the form dirty
+        // after a removal.
+        const prefix = `${basePath}.`;
+        const survivors = indices.filter((index) => index !== rowIndex);
+        const actions: FormAction[] = [];
+        for (const key of Object.keys(state)) {
+            if (key.startsWith(prefix)) actions.push({ type: 'REMOVE', path: key });
+        }
+        survivors.forEach((oldIndex, newIndex) => {
+            for (const token of tokens) {
+                const [, key] = splitArrayPath(token.path);
+                actions.push({
+                    type: 'UPDATE',
+                    path: `${basePath}.${newIndex}.${key}`,
+                    value: state[`${basePath}.${oldIndex}.${key}`]?.value ?? '',
+                });
+            }
+        });
+        if (survivors.length === 0) {
+            actions.push({ type: 'UPDATE', path: basePath, value: [] });
+        }
+        for (const action of actions) dispatch(action);
     };
 
     return (
         <div className="flex flex-col gap-3">
-            {rows.map((row, index) => (
-                <div key={row.id} className="flex flex-col gap-2 rounded-md border-2 border-border p-3">
+            {indices.map((rowIndex, position) => (
+                <div key={rowIndex} className="flex flex-col gap-2 rounded-md border-2 border-border p-3">
                     <div className="flex items-center justify-between">
-                        <span className="font-medium text-foreground text-sm">Accent {index + 1}</span>
+                        <span className="font-medium text-foreground text-sm">Accent {position + 1}</span>
                         <Button
                             type="button"
                             variant="ghost"
                             size="icon"
                             aria-label="Remove accent"
                             className="h-7 w-7"
-                            onClick={() => removeRow(index)}
+                            onClick={() => removeRow(rowIndex)}
                         >
                             <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                     </div>
                     {tokens.map((token) => (
-                        <AccentCell key={token.path} token={token} basePath={basePath} rowIndex={index} />
+                        <AccentCell key={token.path} token={token} basePath={basePath} rowIndex={rowIndex} />
                     ))}
                 </div>
             ))}
@@ -97,23 +146,6 @@ export function AccentRepeater({ tokens }: AccentRepeaterProps) {
             </Button>
         </div>
     );
-}
-
-/**
- * Builds the `subFieldState` seed for a freshly added accent row so each element
- * leaf exists in form state immediately (rather than appearing only once edited).
- * Keys are the element tokens' trailing path segments; values start empty.
- *
- * @param tokens - The `accents[]` element catalog rows.
- * @returns A form-state fragment keyed by element key.
- */
-function seedRowState(tokens: ThemeTokenMeta[]): Record<string, { value: string; initialValue: string }> {
-    const seed: Record<string, { value: string; initialValue: string }> = {};
-    for (const token of tokens) {
-        const [, key] = splitArrayPath(token.path);
-        seed[key] = { value: '', initialValue: '' };
-    }
-    return seed;
 }
 
 /**
@@ -130,14 +162,15 @@ type AccentCellProps = {
 
 /**
  * One editable accent cell, bound to its indexed form-state path
- * (`theme.colors.accents.<rowIndex>.<key>`) via `useField`. Resolves and renders
- * the same leaf control the registry would pick for the element token, writing
- * the raw value straight to form state.
+ * (`theme.colors.accents.<rowIndex>.<key>`) via the native `useField`. Resolves
+ * and renders the same leaf control the registry would pick for the element
+ * token, writing the raw value straight to form state.
  *
  * @param props.token - Catalog metadata for the element leaf.
  * @param props.basePath - The accents array base path.
  * @param props.rowIndex - Zero-based row index.
  * @returns The labelled accent cell control.
+ * @throws {MissingContextProviderError} When mounted outside the native `<Form>`.
  */
 function AccentCell({ token, basePath, rowIndex }: AccentCellProps) {
     const [, key] = splitArrayPath(token.path);
@@ -146,7 +179,7 @@ function AccentCell({ token, basePath, rowIndex }: AccentCellProps) {
     const Control = resolveControl(token);
 
     return (
-        <label className="flex flex-col gap-1">
+        <label htmlFor={path} className="flex flex-col gap-1">
             <span className="text-muted-foreground text-xs capitalize">{key}</span>
             <Control token={token} value={value} onChange={setValue} id={path} />
         </label>

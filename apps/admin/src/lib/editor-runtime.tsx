@@ -37,11 +37,10 @@ export const editorRuntime: EditorRuntime = {
         tenantId: ctx.tenant?.id ?? null,
     }),
     buildFormState: async ({ data }) => ({ state: buildInitialFormState(data) }),
-    // The shell-prop bag is empty since CMSGATE-01: `DocumentForm` no longer
-    // mounts the Payload field shell, so building the Payload client config
-    // here would only drag `@payloadcms/ui` back onto every editor page's
-    // import graph. The one remaining consumer — the theme route's bespoke
-    // field surface — calls `getCmsShellProps` itself.
+    // The shell-prop bag is empty since CMSGATE-01: no surface mounts the
+    // Payload field shell anymore (the theme route went native in THEMEFIX-01),
+    // so building the Payload client config here would only drag
+    // `@payloadcms/ui` back onto every editor page's import graph.
     getShellProps: async () => ({}),
     convex: editorConvexBridge,
     // A direct server-action reference, NOT a wrapper: the edit pages close

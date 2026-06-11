@@ -4,9 +4,7 @@
     "version": "0.1.0",
     "private": true,
     "sideEffects": [
-        "**/*.css",
-        "./src/ui/payload-field-shell.tsx",
-        "./dist/ui/payload-field-shell.js"
+        "**/*.css"
     ],
     "type": "module",
     "types": "./dist/index.d.ts",
@@ -83,10 +81,6 @@
         "./server-functions": [
             "./src/server-functions/index.ts",
             "./dist/server-functions/index.js"
-        ],
-        "./ui": [
-            "./src/ui/index.ts",
-            "./dist/ui/index.js"
         ],
         "./editor": [
             "./src/editor/index.ts",

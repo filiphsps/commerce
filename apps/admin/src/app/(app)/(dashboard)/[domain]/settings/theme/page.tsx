@@ -2,13 +2,11 @@ import 'server-only';
 
 import { shopsEditor } from '@nordcom/commerce-cms/editor/manifests';
 import { EditorEditPage } from '@nordcom/commerce-cms/editor/ui';
-import { PayloadFieldShell } from '@nordcom/commerce-cms/ui';
 import type { Metadata } from 'next';
 import { PreviewBridge } from '@/components/theme-editor/preview-bridge';
 import { ThemeEditor } from '@/components/theme-editor/theme-editor';
 import * as actions from '@/lib/cms-actions/_generated/shops';
 import { editorRuntime } from '@/lib/editor-runtime';
-import { getCmsShellProps } from '@/lib/get-cms-shell-props';
 import { buildStorefrontPreviewUrl } from '@/lib/storefront-preview';
 
 export const metadata: Metadata = { title: 'Theme Editor' };
@@ -46,12 +44,6 @@ export default async function ThemeSettingsPage({ params, searchParams }: Props)
         data: {},
         locale: sp.locale ?? 'en-US',
     });
-    // The legacy `@payloadcms/ui` theme widgets (token-control/accent-repeater)
-    // still read the Payload provider contexts, so the shell mounts HERE —
-    // around this route's bespoke field surface only — since CMSGATE-01 removed
-    // it from the shared `<DocumentForm>`. Every other editor surface is
-    // Payload-free; TEARDOWN deletes this wrapper with the widgets.
-    const shellProps = await getCmsShellProps(domain, sp.locale);
     // Shop is keyed by domain (`singleton-by-domain` manifest), so `id === domain`.
     return (
         <EditorEditPage
@@ -59,11 +51,7 @@ export default async function ThemeSettingsPage({ params, searchParams }: Props)
             runtime={editorRuntime}
             params={{ domain, id: domain }}
             searchParams={sp}
-            fieldSurface={
-                <PayloadFieldShell {...shellProps}>
-                    <ThemeEditor />
-                </PayloadFieldShell>
-            }
+            fieldSurface={<ThemeEditor />}
             livePreview={<PreviewBridge previewUrl={previewUrl} domain={domain} />}
             generatedActions={{
                 saveDraft: actions.shopsSaveDraft,
