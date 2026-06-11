@@ -212,6 +212,11 @@ async function detectSupersededBase(
  *   rebinds — while nothing is silently lost, because the publish state is untouchable from this
  *   path and every payload lands in the append-only history. Draft-on-draft divergence (no publish
  *   in between) keeps the existing last-write-wins-with-version-history semantics.
+ * - Every version row it appends stamps `ctx.author` — the acting principal the tenant tier
+ *   resolved from the trusted identity (POLISH-05). Attribution names WHO performed the write that
+ *   materialized the row, so the adopted published-baseline snapshot carries the adopting saver
+ *   (its original migrated author is unknowable), the same policy as a restore crediting the
+ *   restorer.
  * - On the `published` status ONLY it schedules the post-commit revalidation hook
  *   (`internal.revalidate.onPublish`, BRIDGE-05) via `ctx.scheduler.runAfter`, so a draft/autosave save
  *   busts nothing while a publish coalesces into the tenant's debounced cache-revalidation window.
@@ -262,6 +267,7 @@ export const save = tenantMutation({
                     snapshot: existing.data,
                     status: 'published',
                     revision,
+                    author: ctx.author,
                     createdAt: now,
                 });
                 await ctx.db.patch(documentId, { publishedVersionId });
@@ -292,6 +298,7 @@ export const save = tenantMutation({
             snapshot: data,
             status,
             revision,
+            author: ctx.author,
             createdAt: now,
         });
         await ctx.db.patch(

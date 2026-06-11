@@ -72,6 +72,9 @@ export const restore = tenantMutation({
             snapshot: version.snapshot,
             status: 'draft',
             revision,
+            // Attribution credits the RESTORER, not the snapshot's original author — the restore is
+            // itself the auditable act this row records (POLISH-05).
+            author: ctx.author,
             createdAt: now,
         });
         await ctx.db.patch(version.documentId, {

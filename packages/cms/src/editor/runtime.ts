@@ -153,6 +153,16 @@ export type EditorCmsVersion = {
     status: 'draft' | 'published';
     /** The snapshot's creation epoch-ms timestamp. */
     createdAt: number;
+    /**
+     * The acting principal stamped at save time (a restore credits the restorer). Absent on
+     * migrated/pre-stamp rows — never backfilled, so the versions page renders a quiet em-dash.
+     */
+    author?: {
+        /** The platform `users` id behind the trusted identity, as a string. */
+        userId: string;
+        /** The display label frozen at save time (name, or email when the name was blank). */
+        label: string;
+    };
 };
 
 /**

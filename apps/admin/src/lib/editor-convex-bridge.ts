@@ -66,6 +66,8 @@ type ConvexCmsVersionRow = {
     _id: string;
     status: 'draft' | 'published';
     createdAt: number;
+    /** The save-time author stamp (POLISH-05); absent on migrated/pre-stamp rows, never backfilled. */
+    author?: { userId: string; label: string };
 };
 
 /**
@@ -318,7 +320,12 @@ export const editorConvexBridge: EditorConvexBridge = {
     },
     listVersions: async ({ documentId }): Promise<EditorCmsVersion[]> => {
         const rows = await operatorQuery<ConvexCmsVersionRow[]>('cms/versions:list', { documentId });
-        return rows.map((row) => ({ versionId: row._id, status: row.status, createdAt: row.createdAt }));
+        return rows.map((row) => ({
+            versionId: row._id,
+            status: row.status,
+            createdAt: row.createdAt,
+            ...(row.author === undefined ? {} : { author: row.author }),
+        }));
     },
     listRelationshipOptions: async ({ relationTo }): Promise<EditorRelationshipOption[]> => {
         // Media lives in its own tenant table behind the paginated `cms/media:page`; every CMS

@@ -325,6 +325,7 @@ export type DataModel = {
   };
   cmsVersions: {
     document: {
+      author?: { label: string; userId: Id<"users"> };
       collection: string;
       createdAt: number;
       documentId: Id<"cmsDocuments">;
@@ -338,6 +339,9 @@ export type DataModel = {
     fieldPaths:
       | "_creationTime"
       | "_id"
+      | "author"
+      | "author.label"
+      | "author.userId"
       | "collection"
       | "createdAt"
       | "documentId"

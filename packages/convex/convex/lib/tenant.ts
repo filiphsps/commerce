@@ -1,9 +1,19 @@
+import type { Infer } from 'convex/values';
 import { customCtx, customMutation, customQuery } from 'convex-helpers/server/customFunctions';
 
 import { mutation, query } from '../_generated/server';
 import { resolveActiveAdminShopId } from '../auth/admin_shop_resolver';
+import type { cmsVersionAuthorValidator } from '../tables/cmsVersions';
+import { resolveUserFromIdentity } from './auth';
 import { wrapTenantDatabaseReader, wrapTenantDatabaseWriter } from './rls';
 import { tenantSubscriptionRegistry } from './subscription_registry';
+
+/**
+ * The acting principal a {@link tenantMutation} pins onto `ctx.author`: the platform `users` id the
+ * trusted identity resolved to plus a display label frozen at request time. Typed off the
+ * `cmsVersions.author` validator so the ctx shape and the persisted shape can never drift.
+ */
+export type TenantMutationAuthor = Infer<typeof cmsVersionAuthorValidator>;
 
 /**
  * Public, tenant-scoped query constructor. The companion to {@link systemQuery} (lib/system.ts): where
@@ -70,6 +80,14 @@ export const tenantQuery = customQuery(
  * `ctx.subscriptionMode` and `ctx.releaseSubscription` for symmetry and the per-tenant cost/usage metric;
  * the admission is additive context only and never widens the RLS write scope.
  *
+ * It also pins the ACTING PRINCIPAL onto `ctx.author` ({@link TenantMutationAuthor}) so audit-stamping
+ * write paths (the `cmsVersions` author attribution, POLISH-05) read the identity the request already
+ * resolved instead of re-deriving it under the RLS-wrapped db, where the platform-global `users` read
+ * would be denied. Resolved here in `customCtx` — BEFORE the db is wrapped — via the same
+ * {@link resolveUserFromIdentity} chain the shop resolution just walked; the extra indexed point-read is
+ * the cost of keeping `resolveActiveAdminShopId`'s contract (an id, not a tuple) unchanged. The label
+ * prefers the user's name and falls back to the email when the name is blank.
+ *
  * @throws {ConvexError} Any auth-resolution failure from {@link resolveActiveAdminShopId}
  *   (`UNAUTHENTICATED`, `FORGED_IDENTITY`, `IDENTITY_WITHOUT_EMAIL`, `UNKNOWN_USER`,
  *   `NO_SHOP_MEMBERSHIP`, `AMBIGUOUS_SHOP_MEMBERSHIP`, `ACTIVE_SHOP_UNKNOWN`, `ACTIVE_SHOP_FORBIDDEN`).
@@ -78,9 +96,13 @@ export const tenantMutation = customMutation(
     mutation,
     customCtx(async (ctx) => {
         const shopId = await resolveActiveAdminShopId(ctx);
+        const user = await resolveUserFromIdentity(ctx);
+        const name = user.name.trim();
+        const author: TenantMutationAuthor = { userId: user._id, label: name.length > 0 ? name : user.email };
         const subscription = tenantSubscriptionRegistry.open(shopId);
         return {
             shopId,
+            author,
             subscriptionMode: subscription.mode,
             releaseSubscription: subscription.release,
             db: wrapTenantDatabaseWriter(ctx, ctx.db, shopId),

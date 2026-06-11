@@ -10,6 +10,18 @@ import { v } from 'convex/values';
 export const cmsDocumentStatusValidator = v.union(v.literal('draft'), v.literal('published'));
 
 /**
+ * The acting principal stamped onto a `cmsVersions` row at write time — the Payload-parity author
+ * attribution the versions page renders. `userId` is the platform `users` row the save's trusted
+ * identity resolved to; `label` is the display string frozen AT SAVE TIME (the user's name, or
+ * email when the name is blank) so a later rename never rewrites history. Exported so the tenant
+ * mutation tier (`lib/tenant.ts`) derives its `ctx.author` from the SAME shape the schema persists.
+ */
+export const cmsVersionAuthorValidator = v.object({
+    userId: v.id('users'),
+    label: v.string(),
+});
+
+/**
  * Convex-native drafts + version-history table group, replacing Payload's per-collection
  * `_status` column and `_versions` companion tables plus `payload.restoreVersion`. Spread into
  * `coreTables` (NOT `cmsTables`) via `tables/index.ts` because both tables key on a real
@@ -32,7 +44,8 @@ export const cmsDocumentStatusValidator = v.union(v.literal('draft'), v.literal(
  *   `_creationTime`), so a version-list query returns chronological history. `revision` is the
  *   document's monotonic save counter at snapshot time — the clock-free ordering signal the
  *   stale-write guard compares an autosave's optimistic base against (absent on migrated rows,
- *   which compare as 0).
+ *   which compare as 0). `author` is the acting principal stamped at write time; optional because
+ *   ETL-migrated and pre-stamp rows are never backfilled (an absent author renders as an em-dash).
  */
 export const cmsVersionTables = {
     cmsDocuments: defineTable(
@@ -58,6 +71,7 @@ export const cmsVersionTables = {
             snapshot: v.any(),
             status: cmsDocumentStatusValidator,
             revision: v.optional(v.number()),
+            author: v.optional(cmsVersionAuthorValidator),
             createdAt: v.number(),
         }),
     )

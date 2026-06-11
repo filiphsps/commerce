@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { render, screen } from '@testing-library/react';
 import type { Route } from 'next';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { EditorActions } from '../actions';
 import { defineCollectionEditor } from '../manifest';
 import type { EditorCmsDocument, EditorCmsVersion } from '../runtime';
@@ -80,6 +80,10 @@ const buildRuntime = (doc: EditorCmsDocument | null, versions: EditorCmsVersion[
     }) as never;
 
 describe('<EditorVersionsPage>', () => {
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
     it('renders an empty state when no versions exist', async () => {
         const el = await EditorVersionsPage({
             manifest,
@@ -126,6 +130,53 @@ describe('<EditorVersionsPage>', () => {
         expect(rows[0]?.querySelector('button')?.hasAttribute('disabled')).toBe(true);
         expect(rows[1]?.textContent).not.toContain('Current');
         expect(rows[1]?.querySelector('button')?.hasAttribute('disabled')).toBe(false);
+    });
+
+    it('shows the stamped author with a locale-aware relative time, and an em-dash for pre-stamp rows', async () => {
+        // Pin "now" so the relative phrases are deterministic.
+        vi.useFakeTimers();
+        vi.setSystemTime(Date.UTC(2026, 4, 15, 13));
+        const versions: EditorCmsVersion[] = [
+            // A migrated/pre-stamp row: no author was recorded and none is backfilled.
+            { versionId: 'v1', status: 'published', createdAt: Date.UTC(2026, 4, 13, 13) },
+            {
+                versionId: 'v2',
+                status: 'draft',
+                createdAt: Date.UTC(2026, 4, 15, 12),
+                author: { userId: 'u1', label: 'Ada Lovelace' },
+            },
+        ];
+        const el = await EditorVersionsPage({
+            manifest,
+            runtime: buildRuntime(liveDoc, versions),
+            params: { domain: 'a.test', id: '' },
+            searchParams: { locale: 'de' },
+            generatedActions,
+        });
+        const { container } = render(el);
+        const rows = container.querySelectorAll('li');
+        // Newest first: the stamped row renders its author and the German relative phrase…
+        expect(rows[0]?.textContent).toContain('Ada Lovelace');
+        expect(rows[0]?.textContent).toContain('vor 1 Stunde');
+        // …while the pre-stamp row degrades to a quiet em-dash, never an error state. The German
+        // `numeric: 'auto'` idiom for a two-day delta is "vorgestern".
+        expect(rows[1]?.textContent).toContain('—');
+        expect(rows[1]?.textContent).toContain('vorgestern');
+    });
+
+    it('resolves locale switcher labels in the active locale, not hardcoded English', async () => {
+        const el = await EditorVersionsPage({
+            manifest,
+            runtime: buildRuntime(liveDoc, []),
+            params: { domain: 'a.test', id: '' },
+            searchParams: { locale: 'de' },
+            generatedActions,
+        });
+        const { container } = render(el);
+        const options = [...container.querySelectorAll('select#locale-switcher option')].map((o) => o.textContent);
+        // Active locale is `de`, so labels are German display names.
+        expect(options.some((text) => text?.includes('Deutsch'))).toBe(true);
+        expect(options.some((text) => text?.includes('Englisch'))).toBe(true);
     });
 
     it('redirects to tenant.defaultLocale when searchParams.locale is missing', async () => {

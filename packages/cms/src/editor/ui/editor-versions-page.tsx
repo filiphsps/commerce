@@ -11,9 +11,13 @@ import type { EditorCmsVersion, EditorRuntime } from '../runtime';
 import { docUrlSegment } from '../url';
 import { localeLabel } from './locale-label';
 import { LocaleSwitcher } from './locale-switcher';
+import { relativeTimeLabel } from './relative-time';
 
-/** The UI language locale labels resolve in (see `editor-edit-page.tsx`). */
-const UI_LANGUAGE = 'en';
+/**
+ * The quiet placeholder rendered for a version with no author stamp — migrated/pre-stamp rows are
+ * never backfilled, so absence is expected history, not an error state.
+ */
+const ABSENT_AUTHOR = '—';
 
 /** Maximum versions rendered, newest first — mirrors the legacy `limit: 50` read. */
 const MAX_VERSIONS = 50;
@@ -37,7 +41,9 @@ export type EditorVersionsPageProps<TSlug extends CollectionSlug = CollectionSlu
  * document. Resolves the document through the bridge's Convex read
  * (`cms/documents:get`), lists its snapshots via `cms/versions:list`
  * (CMSDATA-07), and renders each — newest first, capped at
- * {@link MAX_VERSIONS} — with a restore button wired to the generated
+ * {@link MAX_VERSIONS} — with the locale-aware relative save time (absolute
+ * timestamp on hover), the stamped author ({@link ABSENT_AUTHOR} for
+ * pre-stamp rows), and a restore button wired to the generated
  * `restoreVersion` action (Convex `cms/versions:restore`, which
  * re-materializes the snapshot as a new draft).
  *
@@ -91,9 +97,12 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
     const backHref =
         `${manifest.routes.basePath(domain)}${docUrlSegment(manifest, id)}?locale=${encodeURIComponent(locale)}` as Route;
 
+    // Labels resolve in the ACTIVE locale (always one of the shop's configured set), so a German
+    // shop reads "Deutsch", not a hardcoded English exonym; an untranslatable code falls back to
+    // itself inside `localeLabel`.
     const localeOptions = allowed.map((code) => ({
         code,
-        label: localeLabel(code, UI_LANGUAGE),
+        label: localeLabel(code, locale),
     }));
 
     return (
@@ -129,11 +138,16 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
                                 <div className="flex flex-col gap-0.5">
                                     <time
                                         dateTime={createdAt.toISOString()}
+                                        title={createdAt.toLocaleString()}
                                         className="font-medium text-gray-900 text-sm"
                                     >
-                                        {createdAt.toLocaleString()}
+                                        {relativeTimeLabel(version.createdAt, locale)}
                                     </time>
-                                    <span className="text-gray-500 text-xs capitalize">{version.status}</span>
+                                    <span className="text-gray-500 text-xs">
+                                        <span className="capitalize">{version.status}</span>
+                                        {' · '}
+                                        {version.author?.label ?? ABSENT_AUTHOR}
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {isLatest && (

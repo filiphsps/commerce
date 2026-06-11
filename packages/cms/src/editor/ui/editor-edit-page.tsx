@@ -16,13 +16,6 @@ import { localeLabel } from './locale-label';
 import { LocaleSwitcher } from './locale-switcher';
 
 /**
- * The UI language locale labels resolve in. Fixed: the admin shell is
- * English-only since the Payload i18n negotiation (cookie/header) left with
- * the legacy form state builder.
- */
-const UI_LANGUAGE = 'en';
-
-/**
  * Props for {@link EditorEditPage}. Carries the manifest, runtime, resolved
  * route params, the codegen'd server-action wrappers, and an optional
  * live-preview slot.
@@ -181,9 +174,12 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
 
     const autosave = schema.drafts?.autosave;
 
+    // Labels resolve in the ACTIVE locale (always one of the shop's configured set), so a German
+    // shop reads "Deutsch", not a hardcoded English exonym; an untranslatable code falls back to
+    // itself inside `localeLabel`.
     const localeOptions = allowed.map((code) => ({
         code,
-        label: localeLabel(code, UI_LANGUAGE),
+        label: localeLabel(code, locale),
     }));
 
     return (

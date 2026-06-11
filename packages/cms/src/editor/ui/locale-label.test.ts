@@ -7,6 +7,13 @@ describe('localeLabel', () => {
         expect(localeLabel('de', 'en')).toBe('German');
     });
 
+    it('resolves labels in a non-en UI language', () => {
+        // The editor passes the ACTIVE locale through, so a German editor reads endonyms/German
+        // exonyms — not hardcoded English strings.
+        expect(localeLabel('de', 'de')).toBe('Deutsch');
+        expect(localeLabel('en', 'de')).toBe('Englisch');
+    });
+
     it('handles BCP-47 region tags', () => {
         // "en-US" should resolve to something containing "English" in `en` UI.
         const label = localeLabel('en-US', 'en');

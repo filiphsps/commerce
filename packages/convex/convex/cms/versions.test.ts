@@ -208,6 +208,50 @@ describe('cms drafts / versions / restore', () => {
         await expect(asB.mutation(restoreRef, { versionId: v1.versionId })).rejects.toThrow(ConvexError);
     });
 
+    it('stamps the acting principal as the version author; restore attribution is the restorer', async () => {
+        const t = convexTest(schema, modules);
+        const shopId = await seedTenant(t, 'op@a.example.com', 'shop_a');
+        // A second collaborator on the SAME shop, with a blank name so the label falls back to the
+        // email — the restorer whose attribution the restore snapshot must carry.
+        const restorerId = await t.run(async (ctx) => {
+            const userId = await ctx.db.insert('users', {
+                email: 'restorer@a.example.com',
+                name: '   ',
+                emailVerified: null,
+                identities: [],
+                createdAt: NOW,
+                updatedAt: NOW,
+            });
+            await ctx.db.insert('shopCollaborators', { shop: shopId, user: userId, permissions: ['admin'] });
+            return userId;
+        });
+        const authorId = await t.run(async (ctx) => {
+            const users: Doc<'users'>[] = await ctx.db.query('users').collect();
+            return users.find((user) => user.email === 'op@a.example.com')?._id;
+        });
+        const asAuthor = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+        const asRestorer = t.withIdentity({
+            issuer: TRUSTED_ISSUER,
+            subject: 'github|r',
+            email: 'restorer@a.example.com',
+        });
+
+        const v1 = await asAuthor.mutation(saveRef, {
+            collection: 'pages',
+            data: { title: 'authored', slug: 'a' },
+            status: 'draft',
+        });
+        const restored = await asRestorer.mutation(restoreRef, { versionId: v1.versionId });
+
+        const history = await asAuthor.query(listRef, { documentId: v1.documentId });
+        expect(history).toHaveLength(2);
+        // The save stamps the saver (display label = the user's name)…
+        expect(history[0]?.author).toEqual({ userId: authorId, label: 'Operator' });
+        // …and the restore stamps the RESTORER, with the blank name falling back to the email.
+        expect(history[1]?._id).toBe(restored.versionId);
+        expect(history[1]?.author).toEqual({ userId: restorerId, label: 'restorer@a.example.com' });
+    });
+
     it('draft save persists with required fields empty; publish enforces them', async () => {
         const t = convexTest(schema, modules);
         await seedTenant(t, 'op@a.example.com', 'shop_a');
