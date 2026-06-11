@@ -11,7 +11,6 @@
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/utils/*"],
             "@/lib/*": ["./src/lib/*"],
-            "@/payload.config": ["./src/payload.config.ts"],
             "@/styles/*": ["./src/scss/*"],
             "@/i18n/*": ["./src/locales/*"],
             "@/i18n/dictionary": ["./src/utils/dictionary.ts"],

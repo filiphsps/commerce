@@ -31,9 +31,9 @@ export const editorOrAdmin: EditorAccess = (ctx) => ctx.user?.role === 'admin' |
  * resolved tenantId is in `user.tenants`. Use for tenant-scoped reads.
  *
  * Both `tenantId` (from `runtime.toAccessCtx`) and `user.tenants` (from
- * `payload-ctx.ts`) carry tenant document ids, so comparing them is sound.
- * Earlier versions compared against `ctx.domain` and silently always
- * returned false for editors.
+ * the admin `cms-ctx` principal) carry tenant document ids, so comparing
+ * them is sound. Earlier versions compared against `ctx.domain` and
+ * silently always returned false for editors.
  */
 export const tenantMember: EditorAccess = (ctx) => {
     if (!ctx.user) return false;

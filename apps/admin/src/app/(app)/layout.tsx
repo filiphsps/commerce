@@ -8,14 +8,9 @@ import { cn } from '@/utils/tailwind';
 
 export default async function AppShellLayout({ children }: { children: ReactNode }) {
     return (
-        // `data-theme="dark"` flips Payload's bundled CSS (input backgrounds,
-        // label colors, focus rings, drawer chrome) into its dark variants on
-        // first paint. Without it, Payload's `<ThemeProvider>` doesn't set
-        // the attribute server-side and the cookie/OS fallback in its
-        // useEffect runs too late — fields render with light defaults
-        // against our hardcoded-dark color tokens (`globals.css :root`),
-        // most visibly hiding input text. Match this with `admin.theme:
-        // 'dark'` in `buildPayloadConfig` so the RootProvider agrees.
+        // `data-theme="dark"` pins the dark variant server-side on first
+        // paint so fields never flash light defaults against the
+        // hardcoded-dark color tokens in `globals.css :root`.
         <html
             lang="en"
             data-theme="dark"

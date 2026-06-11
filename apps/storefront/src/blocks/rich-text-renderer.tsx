@@ -266,9 +266,8 @@ export type RichTextProps = {
  * is empty so callers can avoid emitting an empty wrapper.
  *
  * `data` is expected to be a resolved `{ type: 'doc', content: [...] }`
- * document. Locale-map unwrapping happens upstream in
- * `apps/storefront/src/api/_normalize-payload.ts` — the renderer trusts its
- * input.
+ * document. Locale resolution happens upstream in the Convex read path
+ * (`cms/read` reassembly) — the renderer trusts its input.
  *
  * @param data - The ProseMirror document to render.
  * @param locale - The active locale forwarded to link resolution within the document.
