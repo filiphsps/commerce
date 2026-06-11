@@ -1,8 +1,10 @@
 // @vitest-environment happy-dom
 import { render } from '@testing-library/react';
 import type { Route } from 'next';
+import type { ReactElement } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { defineCollectionEditor } from '../manifest';
+import type { EditorDocumentCreateBinding } from './editor-form-toolbar';
 
 const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
     mockNotFound: vi.fn(() => {
@@ -83,6 +85,42 @@ describe('<EditorNewPage>', () => {
                 },
             }),
         ).rejects.toThrow(/NEXT_REDIRECT:.*locale=sv/);
+    });
+
+    it('threads a create binding that resolves the edit URL and rebinds follow-up saves (G4FIX-04)', async () => {
+        const create = vi.fn(async () => ({ id: 'doc-9' }));
+        const saveDraft = vi.fn(async () => {});
+        const publish = vi.fn(async () => {});
+        const el = (await EditorNewPage({
+            manifest,
+            runtime: buildRuntime(),
+            params: { domain: 'a.test' },
+            searchParams: { locale: 'sv' },
+            generatedActions: {
+                saveDraft,
+                publish,
+                delete: async () => {},
+                create,
+                bulkDelete: async () => {},
+                bulkPublish: async () => {},
+                restoreVersion: async () => {},
+            },
+        })) as ReactElement<{ toolbar: ReactElement<{ createBinding: EditorDocumentCreateBinding }> }>;
+
+        // The binding rides the toolbar element's props — no render needed to
+        // exercise the bound server actions directly.
+        const binding = el.props.toolbar.props.createBinding;
+        const formData = new FormData();
+        formData.set('_payload', JSON.stringify({ title: 'T' }));
+
+        const created = await binding.create(formData);
+        expect(create).toHaveBeenCalledWith('a.test', formData, 'sv');
+        expect(created).toEqual({ id: 'doc-9', editUrl: '/a.test/content/pages/doc-9/?locale=sv' });
+
+        await binding.saveDraftFor('doc-9', formData);
+        expect(saveDraft).toHaveBeenCalledWith('a.test', 'doc-9', formData, 'sv');
+        await binding.publishFor('doc-9', formData);
+        expect(publish).toHaveBeenCalledWith('a.test', 'doc-9', formData, 'sv');
     });
 
     it('calls notFound when the manifest declares no create gate', async () => {

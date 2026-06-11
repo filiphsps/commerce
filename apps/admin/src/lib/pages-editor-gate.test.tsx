@@ -551,6 +551,22 @@ describe('CMSGATE-02 — pages editor end to end (real engine, real Convex funct
             expect(String(call[0])).toMatch(new RegExp(`^/${DOMAIN}/`));
         }
 
+        // ── G4FIX-04: the toolbar bound the created id, so further diverged
+        // ticks on the SAME /new/ mount save drafts against that one row —
+        // never another create. Two more ticks through the REAL engine prove
+        // the row count stays pinned at one. ──
+        await setLeaf(container, 'title', 'input', 'Gate page title v2');
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+        await setLeaf(container, 'title', 'input', 'Gate page title');
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+        const afterBoundTicks = await pageRows();
+        expect(afterBoundTicks).toHaveLength(1);
+        expect(afterBoundTicks[0]?.data.title).toEqual({ 'en-US': 'Gate page title' });
+
         // ── EDIT PAGE: live relationship options come off the REAL Convex list. ──
         const edit = await renderEditPage(draft._id);
         await setLeaf(edit.container, 'blocks.2.cta.kind', 'select', 'page');

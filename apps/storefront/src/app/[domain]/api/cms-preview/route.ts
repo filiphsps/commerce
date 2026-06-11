@@ -34,9 +34,16 @@ const isStorefrontPath = (path: string): boolean => {
 };
 
 /**
- * Toggle draft mode for the CMS preview iframe. Payload's admin live-preview
- * link points at /{domain}/__by-tenant/{tenantId}/{path}?preview=1&secret=...
- * which proxies through this route to enable draft mode before rendering.
+ * Toggle draft mode for the CMS live-preview iframe. The admin builds the
+ * activation URL with `buildPreviewActivationUrl` (`@nordcom/commerce-cms`
+ * editor preview builders): `/api/cms-preview?secret=…&redirect=<path>` on the
+ * tenant storefront origin, where `redirect` is the tenant-relative document
+ * path from `buildPreviewPath`. A timing-safe match against
+ * `STOREFRONT_PREVIEW_SECRET` gates activation (fail-closed when unset);
+ * success enables `draftMode()` and bounces to the storefront-safe `redirect`.
+ *
+ * @param req - The activation request carrying `secret` and `redirect` query params.
+ * @returns A 401 JSON response on a secret mismatch, otherwise a redirect with draft mode enabled.
  */
 export async function GET(req: NextRequest) {
     const secret = req.nextUrl.searchParams.get('secret');

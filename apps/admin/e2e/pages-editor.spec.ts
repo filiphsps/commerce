@@ -85,10 +85,10 @@ async function waitForAutosave(page: Page): Promise<void> {
 test('authors all nine blocks (nested rich-text included), uploads media through the live transport, autosaves, and publishes', async ({
     page,
 }) => {
-    // ── Create the page MINIMALLY on /new/ (title + slug), then move to its
-    // edit page for the heavy authoring: /new/'s autosave issues a `create`
-    // per diverged tick, so every subsequent save must target the one
-    // document id the edit page binds. ──
+    // ── Create on /new/: the first diverged autosave tick creates the
+    // document and BINDS it (G4FIX-04) — the toolbar shallow-replaces the URL
+    // with the edit route and every subsequent save targets that one id, so
+    // no list-page detour is needed before the heavy authoring. ──
     await page.goto(`/${DOMAIN}/content/pages/new/`);
     // The creation page normalizes the URL onto the tenant's default locale.
     await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/new/\\?locale=`));
@@ -97,9 +97,14 @@ test('authors all nine blocks (nested rich-text included), uploads media through
     await fieldControl(page, 'slug', 'input').fill(PAGE_SLUG);
     await waitForAutosave(page);
 
-    await page.goto(`/${DOMAIN}/content/pages/`);
-    await page.getByText(PAGE_TITLE).first().click();
-    await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/[^/]+/\\?locale=`));
+    // The bound create swapped the URL onto the edit route without remounting.
+    await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/(?!new/)[^/]+/\\?locale=`));
+
+    // A real navigation onto the edit route proves exactly ONE document came
+    // out of the /new/ autosaves (a second create would 404 this id or list a
+    // duplicate) and refreshes the relationship options so the CTA picker
+    // below can list this very page.
+    await page.reload();
     await expect(fieldControl(page, 'title', 'input')).toHaveValue(PAGE_TITLE);
 
     // ── Every one of the nine blocks through the real picker. ──
@@ -177,11 +182,11 @@ test('a draft with the required title empty autosaves, but publish fails closed 
     await fieldControl(page, 'slug', 'input').fill(`half-${RUN_TOKEN}`);
     await waitForAutosave(page);
 
-    // Publish on the half-finished draft fails closed; the typed Convex
-    // rejection surfaces inline in the toolbar instead of crashing the page.
-    await page.goto(`/${DOMAIN}/content/pages/`);
-    await page.getByText(`half-${RUN_TOKEN}`).first().click();
-    await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/[^/]+/\\?locale=`));
+    // The create binding already moved the URL onto the half-finished draft's
+    // edit route — publish RIGHT HERE on the same mount. It fails closed; the
+    // typed Convex rejection surfaces inline in the toolbar instead of
+    // crashing the page.
+    await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/(?!new/)[^/]+/\\?locale=`));
     await page.getByRole('button', { name: 'Publish' }).click();
     await expect(page.locator('[role="alert"]')).toContainText(/required field/i);
 });
