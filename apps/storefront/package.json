@@ -60,7 +60,6 @@
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-shopify-graphql": "workspace:*",
         "@nordcom/commerce-shopify-html": "workspace:*",
-        "@nordcom/commerce-test-mongo": "workspace:*",
         "@nordcom/commerce-utils": "workspace:*",
         "@nordcom/nordstar": "0.0.75",
         "@opentelemetry/api": "1.9.1",

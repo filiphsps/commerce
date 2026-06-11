@@ -7,7 +7,7 @@ import { type Doc as SourceDoc, type SourceDataset, transform } from '../../../s
 import { transformCmsDocuments } from '../../../scripts/etl/transform/shred-richtext';
 import type { Doc, Id } from '../../convex/convex/_generated/dataModel';
 import schema from '../../convex/convex/schema';
-import { heading, lexicalDoc, paragraph } from '../../test-mongo/src/seed/fixtures/lexical';
+import { heading, lexicalDoc, paragraph } from '../../../scripts/etl/fixtures/lexical';
 
 /**
  * PIPELINE-04 end-to-end parity proof: seed → export-shape fixtures → PIPELINE-01/02 transform →

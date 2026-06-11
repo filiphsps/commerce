@@ -1,6 +1,6 @@
 /**
  * Collection-metadata fixtures for the seeded demo tenant, ported from the Mongo seed
- * (`@nordcom/commerce-test-mongo`'s `seed/fixtures/collection-metadata.ts`) into the
+ * (the retired Mongo seed harness's `seed/fixtures/collection-metadata.ts`) into the
  * Convex-native `collectionMetadata` table shape — same corpus, but every rich-text body
  * (`descriptionOverride` plus block-embedded bodies) is converted to ProseMirror JSON
  * through the real CMSRICH-04 codec via {@link prose}.

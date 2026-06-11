@@ -2,7 +2,7 @@ import type { Doc } from '../../../../convex/convex/_generated/dataModel';
 
 /**
  * Feature-flag fixtures for the seeded demo tenant, ported from the Mongo seed
- * (`@nordcom/commerce-test-mongo`'s `seed/fixtures/feature-flags.ts`) into the Convex-native
+ * (the retired Mongo seed harness's `seed/fixtures/feature-flags.ts`) into the Convex-native
  * `featureFlags` table shape. Ten flags exercising every field on the global feature-flag
  * table — `defaultValue` + `options` + `targeting` rules — so admin tooling and runtime
  * evaluators both have realistic material to render against.

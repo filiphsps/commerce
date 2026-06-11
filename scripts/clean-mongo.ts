@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
- * Manual recovery script: kill orphan mongod processes spawned by
- * `mongodb-memory-server` and remove their on-disk artifacts.
+ * Manual recovery script: kill orphan mongod processes left behind by the
+ * retired in-process Mongo test harness and remove their on-disk artifacts.
  *
  * Safe by construction:
  *  - matches mongod commandlines that contain BOTH `--replSet` AND `mongo-mem-`,

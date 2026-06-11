@@ -6,7 +6,7 @@ import {
     rollupChecksum,
     sha256Hex,
 } from '../../../packages/convex/convex/lib/checksum';
-import { heading, lexicalDoc, paragraph } from '../../../packages/test-mongo/src/seed/fixtures/lexical';
+import { heading, lexicalDoc, paragraph } from '../fixtures/lexical';
 import type { Doc, SourceDataset } from '../transform/index';
 import { expectedChecksums } from './checksum';
 

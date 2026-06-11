@@ -76,7 +76,7 @@ interface BackendRecord {
 // signal/exit handlers below can reach each running `convex dev` group even
 // when the test that owns it dies mid-flight (vitest worker death, Ctrl-C,
 // uncaught rejection). Without this we leak orphan `convex-local-backend`
-// processes — the very failure mode the test-mongo harness was built to avoid.
+// processes — the very failure mode the retired in-process Mongo harness was built to avoid.
 const activeBackends = new Set<BackendRecord>();
 
 let handlersInstalled = false;
@@ -255,7 +255,7 @@ async function stopRecord(record: BackendRecord): Promise<void> {
  * Registers signal and exit handlers so every backend tracked in
  * `activeBackends` is stopped when the current process exits — preventing
  * orphan `convex-local-backend` processes when vitest workers crash or uncaught
- * exceptions bypass a test's `afterAll`. Mirrors the test-mongo registry:
+ * exceptions bypass a test's `afterAll`. Mirrors the retired Mongo harness's registry:
  * async stop on signals/uncaught, synchronous SIGKILL on hard `exit`.
  */
 function installShutdownHandlers(): void {

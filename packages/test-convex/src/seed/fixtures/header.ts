@@ -2,7 +2,7 @@ import type { Doc } from '../../../../convex/convex/_generated/dataModel';
 
 /**
  * Header fixture for the seeded demo tenant, ported verbatim from the Mongo seed
- * (`@nordcom/commerce-test-mongo`'s `seed/fixtures/header.ts`) into the Convex-native
+ * (the retired Mongo seed harness's `seed/fixtures/header.ts`) into the Convex-native
  * `header` table shape. Exercises every render path the storefront mega-menu cares about:
  *
  *   - all three top-level variants (`editorial-columns`, `featured-promo`, `compact-list`)

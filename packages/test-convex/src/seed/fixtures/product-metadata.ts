@@ -1,6 +1,6 @@
 /**
  * Product-metadata fixtures for the seeded demo tenant, ported from the Mongo seed
- * (`@nordcom/commerce-test-mongo`'s `seed/fixtures/product-metadata.ts`) into the
+ * (the retired Mongo seed harness's `seed/fixtures/product-metadata.ts`) into the
  * Convex-native `productMetadata` table shape — same 29-product corpus, but every
  * rich-text body (`descriptionOverride` plus block-embedded bodies) is converted to
  * ProseMirror JSON through the real CMSRICH-04 codec via {@link prose}.

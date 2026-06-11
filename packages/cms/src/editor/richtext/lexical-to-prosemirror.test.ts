@@ -56,7 +56,7 @@ const assertValidProseMirror = (doc: ProseMirrorDocument): Node => {
 /**
  * Wraps block-level Lexical children in the serializer's root envelope, including the
  * artifact fields (`version`, `direction`, `format`, `indent`) Lexical emits on every node,
- * mirroring `packages/test-mongo/src/seed/fixtures/lexical.ts`.
+ * mirroring `scripts/etl/fixtures/lexical.ts`.
  *
  * @param children - Block-level Lexical nodes.
  * @returns A complete stored Lexical document.
@@ -415,7 +415,7 @@ describe('lexicalToProseMirror', () => {
 
     it('round-trips the seed-fixture corpus losslessly (validated against the schema)', () => {
         // Mirrors the article bodies seeded through the builders in
-        // packages/test-mongo/src/seed/fixtures/lexical.ts: heading + paragraphs + lists,
+        // scripts/etl/fixtures/lexical.ts: heading + paragraphs + lists,
         // every node carrying the serializer artifact fields.
         const heading = (value: string, tag: string): Record<string, unknown> => ({
             type: 'heading',

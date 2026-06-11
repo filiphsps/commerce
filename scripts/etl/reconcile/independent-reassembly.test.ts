@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { lexicalToProseMirror } from '../../../packages/cms/src/editor/richtext/lexical-to-prosemirror';
 import { reassembleShreddedFields, shredLocalizedFields } from '../../../packages/convex/convex/cms/i18n_shred';
 import { checksumDocument } from '../../../packages/convex/convex/lib/checksum';
-import { heading, lexicalDoc, paragraph } from '../../../packages/test-mongo/src/seed/fixtures/lexical';
+import { heading, lexicalDoc, paragraph } from '../fixtures/lexical';
 import { groupSideRowsByParent, independentReassembly, type ShreddedSideRowRecord } from './independent-reassembly';
 
 /** A converted multi-locale article field map with a registered shredded field (`articles.body`). */

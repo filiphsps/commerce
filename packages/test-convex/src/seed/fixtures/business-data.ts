@@ -5,7 +5,7 @@ export type BusinessDataSeed = Omit<Doc<'businessData'>, '_id' | '_creationTime'
 
 /**
  * Business-data fixture for the seeded demo tenant, ported verbatim from the Mongo seed
- * (`@nordcom/commerce-test-mongo`'s `seed/fixtures/business-data.ts`) into the Convex-native
+ * (the retired Mongo seed harness's `seed/fixtures/business-data.ts`) into the Convex-native
  * `businessData` table shape. Carries a complete mailing address and a handful of public
  * profiles so storefront SEO / structured-data renderers have real strings to interpolate.
  */

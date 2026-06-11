@@ -2,15 +2,14 @@
  * PIPELINE-05 freeze-window write capture, append half: the transactional outbox primitives the
  * admin's Payload write paths adopt for the duration of the maintenance freeze.
  *
- * Design (same-session transactional outbox): the deployment topology — the dev/e2e
- * `MongoMemoryReplSet` (`packages/test-mongo/src/start.ts`) and the production Atlas replica set —
- * supports multi-document transactions, and Payload's `@payloadcms/db-mongodb` adapter already wraps
+ * Design (same-session transactional outbox): the production Atlas replica set the freeze window
+ * runs against supports multi-document transactions, and Payload's `@payloadcms/db-mongodb` adapter already wraps
  * every write operation in one (the request's `ClientSession` is reachable as
  * `payload.db.sessions[req.transactionID]`). The outbox append therefore composes into the SAME
  * Mongo transaction as the write it captures: {@link appendOutboxEntry} REQUIRES the session — there
  * is deliberately no session-less overload — so the append commits or aborts atomically with the
  * wrapped write and an aborted write can never leave an orphan outbox row (pinned by
- * `append.test.ts` against a real replica set).
+ * `append.test.ts`).
  *
  * Freeze-time wiring (see `./runbook.md` for the verbatim hook): the admin Payload app is the ONLY
  * live writer during the freeze, so a global `afterChange`/`afterDelete` hook pair added to every

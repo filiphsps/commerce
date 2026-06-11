@@ -16,9 +16,10 @@ Modules: `./append.ts` (same-transaction capture), `./drainer.ts` (idempotent re
 
 Both deployment topologies support multi-document transactions:
 
-- **dev/e2e**: `packages/test-mongo` boots a single-node `MongoMemoryReplSet` (WiredTiger), and its
-  own comment records that *"Payload wraps every write in a multi-doc transaction"* — transactions
-  are not just available, they are already exercised on every Payload write.
+- **dev/e2e** (at decision time; the harness has since been deleted in the teardown): the
+  in-process Mongo harness booted a single-node `MongoMemoryReplSet` (WiredTiger), and its own
+  comment recorded that *"Payload wraps every write in a multi-doc transaction"* — transactions
+  were not just available, they were already exercised on every Payload write.
 - **production**: MongoDB Atlas replica set — same guarantee.
 
 `@payloadcms/db-mongodb@3.85.0` exposes the per-request `ClientSession` registry as

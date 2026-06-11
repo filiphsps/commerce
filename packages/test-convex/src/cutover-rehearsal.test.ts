@@ -14,7 +14,7 @@ import {
 import type { Doc as SourceDoc } from '../../../scripts/etl/transform/index';
 import type { Doc, Id } from '../../convex/convex/_generated/dataModel';
 import schema from '../../convex/convex/schema';
-import { heading, lexicalDoc, list, paragraph } from '../../test-mongo/src/seed/fixtures/lexical';
+import { heading, lexicalDoc, list, paragraph } from '../../../scripts/etl/fixtures/lexical';
 
 /**
  * CUTOVER-01 dress rehearsal: the full export-shaped-input → transform → import → PIPELINE-04

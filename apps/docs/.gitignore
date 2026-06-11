@@ -10,7 +10,6 @@ content/packages/cart/
 content/packages/core/
 content/packages/shopify/
 content/packages/tagtree/
-content/packages/test-mongo/
 content/packages/ui/
 content/packages/utils/
 lib/source-meta.generated.ts

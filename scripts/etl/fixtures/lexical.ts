@@ -1,12 +1,13 @@
 /**
- * Minimal builders for Lexical richText documents. Payload validates the
- * `richText` field against the Lexical editor schema, so seed values must
- * round-trip through this shape — bare strings or stripped nodes are
- * rejected with cryptic errors during the `payload.create()` call.
+ * Minimal builders for Lexical richText documents in the exact shape the legacy
+ * CMS persisted them — the corpus shape every ETL transform and parity suite is
+ * proven against. Survived the Mongo teardown (formerly the Mongo seed
+ * harness's `fixtures/lexical.ts`) because the prod-cutover ETL still converts
+ * mongoexport files carrying this serialization.
  *
  * Every node carries `version: 1`, `direction: null`, `format: ''`, and
  * `indent: 0` because Lexical's default serializer emits them on every node;
- * omitting them yields a "node failed validation" error at create time.
+ * omitting them would diverge from the exported corpus the transforms read.
  */
 
 type LexicalNode = Record<string, unknown>;

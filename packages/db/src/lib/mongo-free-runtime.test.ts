@@ -99,9 +99,9 @@ describe('mongo-free runtime gate', () => {
             expect(
                 findForbiddenMongoDependencies({
                     dependencies: { mongoose: '9.0.0', mongodb: '6.0.0', convex: '1.0.0' },
-                    peerDependencies: { '@nordcom/commerce-test-mongo': 'workspace:*' },
+                    peerDependencies: { '@mongodb-js/saslprep': '5.0.0' },
                 }),
-            ).toEqual(['@nordcom/commerce-test-mongo', 'mongodb']);
+            ).toEqual(['@mongodb-js/saslprep', 'mongodb']);
         });
     });
 });

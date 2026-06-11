@@ -1,5 +1,0 @@
-{
-    "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": ["./tsconfig.json", "../../tsconfig.test.json"],
-    "include": ["./src/**/*.test.ts", "vitest.setup.ts"]
-}

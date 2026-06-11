@@ -1,6 +1,6 @@
 /**
  * Page fixtures for the seeded demo tenant, ported from the Mongo seed
- * (`@nordcom/commerce-test-mongo`'s `seed/fixtures/pages.ts`) into the Convex-native
+ * (the retired Mongo seed harness's `seed/fixtures/pages.ts`) into the Convex-native
  * `pages` table shape — same ten-page corpus, but every rich-text body is converted to
  * ProseMirror JSON through the real CMSRICH-04 codec via {@link prose}. Ten pages, each
  * exercising a different combination of blocks so storefront renderers and visual tests

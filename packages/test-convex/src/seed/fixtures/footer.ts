@@ -2,7 +2,7 @@ import type { Doc } from '../../../../convex/convex/_generated/dataModel';
 
 /**
  * Footer fixture for the seeded demo tenant, ported verbatim from the Mongo seed
- * (`@nordcom/commerce-test-mongo`'s `seed/fixtures/footer.ts`) into the Convex-native
+ * (the retired Mongo seed harness's `seed/fixtures/footer.ts`) into the Convex-native
  * `footer` table shape. Mirrors a real brand footer: four content sections (Shop, Help,
  * Company, Account), every supported social platform, a full legal-links row, and a
  * copyright line. URLs resolve to real mock.shop collections or seeded CMS pages so every

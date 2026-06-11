@@ -1,6 +1,6 @@
 /**
  * Article fixtures for the seeded demo tenant, ported from the Mongo seed
- * (`@nordcom/commerce-test-mongo`'s `seed/fixtures/articles.ts`) into the Convex-native
+ * (the retired Mongo seed harness's `seed/fixtures/articles.ts`) into the Convex-native
  * `articles` table shape — same ten-article corpus, but every body is converted to
  * ProseMirror JSON through the real CMSRICH-04 codec via {@link prose}. Ten published
  * articles spanning a full year of publish dates, varied authors, varied tag sets, and

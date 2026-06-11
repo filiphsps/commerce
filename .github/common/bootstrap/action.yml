@@ -6,7 +6,7 @@ inputs:
         description: 'Restore the local turbo cache (.turbo).'
         default: 'true'
     binary-caches:
-        description: 'Restore the mongodb-memory-server and Convex local-backend binary caches. Disable for jobs that never boot a local backend (e.g. production Convex/Vercel deploys).'
+        description: 'Restore the Convex local-backend binary cache. Disable for jobs that never boot a local backend (e.g. production Convex/Vercel deploys).'
         default: 'true'
 
 outputs:
@@ -16,9 +16,6 @@ outputs:
     turbo-cache-hit:
         description: 'Whether turbo cache was a hit on restore. Empty when turbo-cache=false.'
         value: ${{ steps.cache-turbo.outputs.cache-hit }}
-    mongo-binary-cache-hit:
-        description: 'Whether the mongodb-memory-server binary cache was a hit on restore. Empty when binary-caches=false.'
-        value: ${{ steps.cache-mongo-binary.outputs.cache-hit }}
     convex-backend-cache-hit:
         description: 'Whether the Convex local-backend binary cache was a hit on restore. Empty when binary-caches=false.'
         value: ${{ steps.cache-convex-backend.outputs.cache-hit }}
@@ -68,18 +65,6 @@ runs:
                   ${{ runner.os }}-turbo-${{ github.ref_name }}-
                   ${{ runner.os }}-turbo-master-
                   ${{ runner.os }}-turbo-
-
-        - name: 💾 Restore mongodb-memory-server binary
-          id: cache-mongo-binary
-          if: inputs.binary-caches == 'true'
-          uses: actions/cache/restore@v5
-          with:
-              path: /home/runner/.cache/mongodb-binaries
-              key: ${{ runner.os }}-mongoms-${{ github.head_ref || github.ref_name }}-${{ env.MONGOMS_VERSION }}
-              restore-keys: |
-                  ${{ runner.os }}-mongoms-${{ github.head_ref || github.ref_name }}-
-                  ${{ runner.os }}-mongoms-master-
-                  ${{ runner.os }}-mongoms-
 
         - name: 💾 Restore Convex local-backend binary
           id: cache-convex-backend

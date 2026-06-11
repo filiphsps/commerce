@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { lexicalToProseMirror } from '../../../packages/cms/src/editor/richtext/lexical-to-prosemirror';
 import { MAX_SHREDDED_VALUE_BYTES, reassembleShreddedFields } from '../../../packages/convex/convex/cms/i18n_shred';
-import { heading, lexicalDoc, list, paragraph } from '../../../packages/test-mongo/src/seed/fixtures/lexical';
+import { heading, lexicalDoc, list, paragraph } from '../fixtures/lexical';
 import { type Doc, deriveId, remapObjectId } from './id-remap';
 import { transformCmsDocuments } from './shred-richtext';
 

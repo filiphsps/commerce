@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { heading, lexicalDoc, paragraph } from '../../../packages/test-mongo/src/seed/fixtures/lexical';
+import { heading, lexicalDoc, paragraph } from '../fixtures/lexical';
 import type { CollectionChecksum } from '../reconcile/checksum';
 import type { Doc } from '../transform/id-remap';
 import {

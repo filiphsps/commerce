@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { lexicalToProseMirror } from '../../../packages/cms/src/editor/richtext/lexical-to-prosemirror';
-import { lexicalDoc, paragraph } from '../../../packages/test-mongo/src/seed/fixtures/lexical';
+import { lexicalDoc, paragraph } from '../fixtures/lexical';
 import { type Doc, remapObjectId } from './id-remap';
 import { transformCmsDocuments } from './shred-richtext';
 import { applyLatestVersionPointers, transformCmsVersions } from './versions';

@@ -19,12 +19,10 @@ concurrency:
 
 env:
     CI: true
-    MONGOMS_VERSION: 8.0.4
-    MONGOMS_DOWNLOAD_DIR: /home/runner/.cache/mongodb-binaries
     # Convex local-backend binary tag. Unlike the convex npm CLI, this is fetched remotely from
-    # version.convex.dev (NOT pinned by pnpm-lock.yaml), so pin + bump it explicitly here — same
-    # model as MONGOMS_VERSION. It also keys the backend-binary cache, so a bump invalidates stale
-    # binaries instead of silently re-downloading on every run.
+    # version.convex.dev (NOT pinned by pnpm-lock.yaml), so pin + bump it explicitly here. It also
+    # keys the backend-binary cache, so a bump invalidates stale binaries instead of silently
+    # re-downloading on every run.
     CONVEX_LOCAL_BACKEND_VERSION: precompiled-2026-05-27-e85ff37
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
@@ -66,7 +64,6 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
                   save-node-modules: 'true'
 
     typecheck:
@@ -99,7 +96,6 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
 
     test:
         name: 🧪 Test
@@ -150,8 +146,6 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
-                  save-mongo-binary: 'true'
 
     build:
         name: 🔨 Build
@@ -209,7 +203,6 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
                   save-turbo: 'true'
 
     convex:
@@ -379,7 +372,6 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
 
     cleanup-artifacts:
         name: 🧹 Cleanup
