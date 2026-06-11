@@ -94,8 +94,9 @@ function resolveConvexBin(): string {
  * @throws {ConvexError} When the CLI exits non-zero past the transient-retry budget.
  */
 export function runConvexCli(live: Pick<LiveConvex, 'url' | 'adminKey'>, args: string[]): string {
-    const TRANSIENT = /503|OptimisticConcurrencyControlFailure|ECONNRESET|ECONNREFUSED|socket hang up/i;
-    const ATTEMPTS = 3;
+    const TRANSIENT =
+        /503|500 Internal Server Error|InternalServerError|Unable to wait for schema|OptimisticConcurrencyControlFailure|ECONNRESET|ECONNREFUSED|socket hang up/i;
+    const ATTEMPTS = 5;
     let lastFailure = '';
     for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
         const result = spawnSync(process.execPath, [resolveConvexBin(), ...args], {
@@ -117,7 +118,9 @@ export function runConvexCli(live: Pick<LiveConvex, 'url' | 'adminKey'>, args: s
             `${(result.stdout ?? '').slice(-2000)}\n${(result.stderr ?? '').slice(-2000)}`;
         if (attempt < ATTEMPTS && TRANSIENT.test(lastFailure)) {
             // Synchronous back-off keeps the helper's blocking contract (callers run in hooks).
-            spawnSync(process.execPath, ['-e', `setTimeout(() => {}, ${attempt * 1_000})`]);
+            // Linear-growth waits (3s/6s/9s/12s) because the dominant transient is a freshly
+            // booted backend still warming on a cold CI runner, not a momentary blip.
+            spawnSync(process.execPath, ['-e', `setTimeout(() => {}, ${attempt * 3_000})`]);
             continue;
         }
         break;
@@ -143,6 +146,17 @@ export async function startLiveConvex(): Promise<LiveConvex> {
         runConvexCli(backend, ['env', 'set', 'CONVEX_AUTH_APPLICATION_ID', 'convex']);
         runConvexCli(backend, ['env', 'set', 'CONVEX_AUTH_JWKS_URL', `${LIMITS_ISSUER}/.well-known/jwks.json`]);
         runConvexCli(backend, ['env', 'set', 'CONVEX_SERVER_SECRET', serverSecret]);
+        // Read the issuer back before deploying: a transiently failing `env set` that slipped
+        // through otherwise surfaces minutes later as an opaque FORGED_IDENTITY inside a test
+        // (observed on cold CI runners). One corrective re-set, then fail loud.
+        if (!runConvexCli(backend, ['env', 'get', 'CONVEX_AUTH_ISSUER']).includes(LIMITS_ISSUER)) {
+            runConvexCli(backend, ['env', 'set', 'CONVEX_AUTH_ISSUER', LIMITS_ISSUER]);
+            if (!runConvexCli(backend, ['env', 'get', 'CONVEX_AUTH_ISSUER']).includes(LIMITS_ISSUER)) {
+                throw new ConvexError(
+                    '[test-convex/limits] CONVEX_AUTH_ISSUER failed to seed onto the ephemeral backend; refusing to run suites against an unconfigured deployment.',
+                );
+            }
+        }
         runConvexCli(backend, ['deploy', '--yes', '--typecheck', 'disable', '--codegen', 'disable']);
     } catch (err) {
         await backend.stop();
