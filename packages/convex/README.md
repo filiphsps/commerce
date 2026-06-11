@@ -33,10 +33,13 @@ packages/convex/convex/
 
 ## Trust tiers
 
-Every public function is built with one of three constructors (`_constructors.ts`):
+Every public function is built with one of four constructors (`_constructors.ts`):
 
 -   **`tenantQuery`/`tenantMutation`** — requires a validated end-user identity
     (the NextAuth-derived RS256 JWT) and resolves the caller's shop membership.
+-   **`authedQuery`/`authedMutation`** — requires a validated identity but no
+    shop membership; the customer tier behind the storefront account surface
+    (`account/profile`).
 -   **`serverQuery`/`serverMutation`** — admits an identity-less server caller
     only when it presents `CONVEX_SERVER_SECRET`; used by the `packages/db` seam
     for pre-tenant reads (`Shop.findByDomain` in middleware) and the Auth.js
@@ -66,6 +69,11 @@ pnpm --filter @nordcom/commerce-convex test        # convex-test unit suites
 The deployment needs its own env vars set via `convex env set`:
 `CONVEX_AUTH_ISSUER`, `CONVEX_AUTH_APPLICATION_ID`, `CONVEX_AUTH_JWKS_URL`,
 `CONVEX_SERVER_SECRET`, and `CONVEX_REVALIDATE_SECRET`.
+
+Build-time: `scripts/build.mjs` runs codegen only when `CONVEX_DEPLOYMENT` or
+`CONVEX_DEPLOY_KEY` is set, falling back to the committed `convex/_generated`
+otherwise; the deploy dry-run also accepts `CONVEX_AGENT_MODE=anonymous` (CI's
+ephemeral local backend) as a configured target.
 
 ## Testing
 

@@ -21,7 +21,7 @@ export type PreviewBridgeProps = {
  *
  * Composes {@link LivePreviewIframe} (the storefront iframe + manual refresh)
  * with {@link useThemePreview} (the form-state → `postMessage` stream). Lives
- * inside the Payload `<Form>` context so the hook can subscribe to `theme.*`
+ * inside the editor `<Form>` context so the hook can subscribe to `theme.*`
  * fields. The `postMessage` target origin is derived from `previewUrl` so it
  * always matches the storefront origin the iframe loads; the handshake is wired
  * through `onIframeReady`. The iframe defaults to open here so the merchant sees

@@ -10,7 +10,7 @@ import { cache } from 'react';
  * `findByDomain(domain, { sensitiveData: true })` passes a fresh object literal
  * each call, so the key never matches and dedup silently degrades to nothing.
  * Flattening the options into primitives (and joining `populate` to a stable
- * string) makes equivalent calls collapse to a single Mongo round-trip per
+ * string) makes equivalent calls collapse to a single Convex round-trip per
  * render pass.
  *
  * Lives in its own leaf module — depending only on `@nordcom/commerce-db` and
@@ -20,7 +20,7 @@ import { cache } from 'react';
  * @param domain - Hostname to resolve.
  * @param sensitiveData - Whether to skip credential masking.
  * @param convert - Whether to return the normalized shape vs the raw lean doc.
- * @param populate - Comma-joined Mongoose population paths (empty string = none).
+ * @param populate - Comma-joined population paths (empty string = none); inert on the Convex seam but part of the frozen `findByDomain` contract.
  * @returns The matched shop.
  * @throws {UnknownShopDomainError} When no shop claims the domain.
  * @throws {InvalidShopDomainError} When `domain` is empty.

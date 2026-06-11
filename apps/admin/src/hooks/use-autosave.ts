@@ -42,12 +42,12 @@ export type UseAutosaveResult = {
  * Debounced autosave hook for document edit forms.
  *
  * `state` is read on every render; the effect re-arms the debounce timer when
- * its identity changes. Pass Payload's `FormState` directly — it's unstable by
- * design (changes on every keystroke), which is exactly what triggers the
- * debounce to reset. No `useMemo` needed.
+ * its identity changes. Pass the editor form's `FormState` directly — it's
+ * unstable by design (changes on every keystroke), which is exactly what
+ * triggers the debounce to reset. No `useMemo` needed.
  *
  * Dirty checking: referential equality only. JSON.stringify deep-comparison is
- * intentionally avoided — it is expensive for large Payload FormState objects.
+ * intentionally avoided — it is expensive for large `FormState` objects.
  *
  * On unmount the pending timer is cancelled and NO save fires.
  *

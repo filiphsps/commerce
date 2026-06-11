@@ -1,7 +1,7 @@
 import type { ShopThemeTokens } from '@nordcom/commerce-db/lib/theme';
 
 /**
- * A single flattened form-state value. The Payload editor stores every leaf at
+ * A single flattened form-state value. The editor form stores every leaf at
  * a dotted path, so a subtree is a plain record from path → primitive value.
  */
 export type FlatThemeFields = Record<string, unknown>;
@@ -17,8 +17,8 @@ const isIndexSegment = (segment: string): boolean => /^\d+$/.test(segment);
 
 /**
  * Rebuilds a nested {@link ShopThemeTokens} shape from a flat map of dotted
- * `theme.*` paths to leaf values (the form-state representation Payload writes
- * through `useField`). The leading `theme.` root is stripped; numeric segments
+ * `theme.*` paths to leaf values (the form-state representation the editor
+ * form writes through `useField`). The leading `theme.` root is stripped; numeric segments
  * (`colors.accents.0.type`) materialize arrays so `accents[]` round-trips, and
  * `undefined` leaves are skipped so an unset optional token stays absent rather
  * than pinning a default (`noUncheckedIndexedAccess`-safe at every hop).

@@ -56,7 +56,7 @@ function buildNavSections(): NavSection[] {
 }
 
 /**
- * Catalog-driven Theme Editor field surface. Mounted inside Payload's `<Form>` as
+ * Catalog-driven Theme Editor field surface. Mounted inside the editor `<Form>` as
  * the `fieldSurface` slot, it renders a left-rail group/cluster nav (generated
  * 100% from `deriveCatalog()`) and the active cluster's controls. The active
  * cluster is deep-linked via the `?cluster=` search param so nav state survives

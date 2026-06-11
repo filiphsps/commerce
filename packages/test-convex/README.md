@@ -41,6 +41,17 @@ its own time budget.
 The backend binary is fetched from `version.convex.dev` and pinned by
 `CONVEX_LOCAL_BACKEND_VERSION` in CI — it is NOT covered by `pnpm-lock.yaml`.
 
+## Environment variables
+
+| Variable | Purpose |
+| --- | --- |
+| `CONVEX_LIMITS_TESTS=1` | Opts in the `src/limits/` suites (they boot a real backend and deploy; skipped otherwise). |
+| `TEST_CONVEX_INTEGRATION=1` | Opts in the `startConvex` integration spec in `src/start.test.ts`. |
+| `CONVEX_PROJECT_DIR` | Overrides the functions directory the launcher pushes (defaults to `packages/convex`). |
+| `CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS` | Forwarded to the Convex CLI so cold-cache binary downloads don't trip the startup timeout. |
+| `CONVEX_SELF_HOSTED_URL` / `CONVEX_SELF_HOSTED_ADMIN_KEY` | Set by the launcher/CLI to pin the Convex CLI at the ephemeral backend; the live seed accepts the admin key (or `CONVEX_DEPLOY_KEY` for a cloud deployment) as its import credential. |
+| `CONVEX_LOCAL_BACKEND_VERSION` | Pins the backend binary version in CI (see above). |
+
 ## Scripts
 
 ```bash

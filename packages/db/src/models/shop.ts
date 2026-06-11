@@ -3,24 +3,6 @@ import type { AccentToken, ShopThemeTokens } from '../lib/theme';
 import type { FeatureFlagBase } from './feature-flag';
 import type { LegacyObjectIdRef } from './query-types';
 
-// TODO: Remove this.
-/**
- * Legacy header theme configuration superseded by the `design` property on `ShopBase`. Retained
- * until existing theme-reading callsites are migrated to `ShopBase.design`.
- *
- * @example
- * ```ts
- * import type { ShopTheme } from '@nordcom/commerce-db';
- * const theme: ShopTheme = { header: { theme: 'primary', themeVariant: 'default' } };
- * ```
- */
-export type ShopTheme = {
-    header: {
-        theme: 'primary' | 'secondary';
-        themeVariant: 'default' | 'light' | 'dark';
-    };
-};
-
 /**
  * Auth and connection configuration for the Shopify commerce integration. Identifies the
  * storefront via `domain` and `storefrontId`, carries the Storefront API credentials, and
