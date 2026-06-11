@@ -507,10 +507,15 @@ describe('CMSGATE-01 — header editor end to end (real engine, real Convex func
         expect(label.value).toBe('');
         const description = controlAt(container, 'items.0.items.0.description', 'textarea') as HTMLTextAreaElement;
         expect(description.value).toBe('');
+        // The nav link's LABEL is a localized leaf since G4FIX-03 — locale B's
+        // slot starts empty even though locale A holds 'Shop'.
+        const navLabel = controlAt(container, 'items.0.link.label', 'input') as HTMLInputElement;
+        expect(navLabel.value).toBe('');
 
         await act(async () => {
             fireEvent.change(label, { target: { value: 'Standort' } });
             fireEvent.change(description, { target: { value: 'Deutscher Text' } });
+            fireEvent.change(navLabel, { target: { value: 'Laden' } });
         });
         await act(async () => {
             await vi.advanceTimersByTimeAsync(2000);
@@ -522,8 +527,13 @@ describe('CMSGATE-01 — header editor end to end (real engine, real Convex func
         expect(switcher.label).toEqual({ 'en-US': 'Region', 'de-DE': 'Standort' });
         const child = navNodeAt(row?.data ?? {}, 2);
         expect(child.description).toEqual({ 'en-US': 'English copy', 'de-DE': 'Deutscher Text' });
-        // The non-localized link object is untouched by the locale-B save.
-        expect(navNodeAt(row?.data ?? {}, 1).link).toEqual({ kind: 'external', label: 'Shop', url: '/shop/' });
+        // The canonical localized-group case (G4FIX-03): the nav label carries
+        // one slot per locale while the destination stays a single shared
+        // value — editing locale B never disturbed locale A's label.
+        const link = navNodeAt(row?.data ?? {}, 1).link as Record<string, unknown>;
+        expect(link.label).toEqual({ 'en-US': 'Shop', 'de-DE': 'Laden' });
+        expect(link.kind).toBe('external');
+        expect(link.url).toBe('/shop/');
     });
 
     it('denies a non-member at the route gate AND at the authoritative Convex layer', async () => {

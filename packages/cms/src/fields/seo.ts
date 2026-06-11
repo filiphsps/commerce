@@ -1,5 +1,5 @@
 import type { GroupFieldDescriptor } from '../descriptors';
-import { checkboxField, groupField, textareaField, textField, uploadField } from '../descriptors';
+import { checkboxField, groupField, localized, textareaField, textField, uploadField } from '../descriptors';
 
 /**
  * Shared return-type name for the group-producing field builders ({@link seoGroup}
@@ -13,8 +13,10 @@ export type NamedGroupField = GroupFieldDescriptor;
 
 /**
  * Builds the standard SEO group field (title, description, keywords, image,
- * noindex). Localized — content is per-locale so each language gets
- * independent metadata.
+ * noindex). Localization is LEAF-LEVEL on the text members (title, description,
+ * keywords) so each language gets independent metadata; the shared image and
+ * noindex toggle are locale-invariant. The group itself is never localized —
+ * composite localization is rejected by the descriptor system (G4FIX-03).
  *
  * @returns A named group field descriptor.
  *
@@ -24,11 +26,10 @@ export type NamedGroupField = GroupFieldDescriptor;
 export const seoGroup = (): NamedGroupField =>
     groupField({
         name: 'seo',
-        localized: true,
         fields: [
-            textField({ name: 'title' }),
-            textareaField({ name: 'description' }),
-            textField({ name: 'keywords', hasMany: true }),
+            localized(textField({ name: 'title' })),
+            localized(textareaField({ name: 'description' })),
+            localized(textField({ name: 'keywords', hasMany: true })),
             uploadField({ name: 'image', relationTo: 'media' }),
             checkboxField({ name: 'noindex', defaultValue: false }),
         ],

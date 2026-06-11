@@ -1062,6 +1062,7 @@ export enum GenericErrorKind {
     GENERIC_MISSING_REQUEST_CONTEXT = 'GENERIC_MISSING_REQUEST_CONTEXT',
     GENERIC_DUPLICATE_WORKSPACE_SLUG = 'GENERIC_DUPLICATE_WORKSPACE_SLUG',
     GENERIC_MISSING_TYPEDOC_OUTPUT = 'GENERIC_MISSING_TYPEDOC_OUTPUT',
+    GENERIC_LOCALIZED_COMPOSITE_FIELD = 'GENERIC_LOCALIZED_COMPOSITE_FIELD',
 }
 
 /**
@@ -1414,6 +1415,40 @@ export class MissingTypeDocOutputError extends GenericError {
 }
 
 /**
+ * Signals that a CMS field descriptor declares `localized: true` on a composite kind (group, array,
+ * or blocks). Composite localization was silently ignored by the native editor (the whole composite
+ * was shared across locales), so the descriptor codegen rejects it outright — localize the text-ish
+ * leaf members instead (G4FIX-03).
+ *
+ * @param path - The dotted descriptor path of the offending field; embedded in the description when provided.
+ * @param kind - The composite descriptor kind (`group`, `array`, `blocks`); embedded when provided.
+ * @example
+ * ```ts
+ * throw new LocalizedCompositeFieldError('items.*.link', 'group');
+ * ```
+ */
+export class LocalizedCompositeFieldError extends GenericError {
+    name = 'LocalizedCompositeFieldError';
+    details = 'Localized composite field';
+    description =
+        'A CMS field descriptor declares `localized: true` on a composite kind; localize its leaf members instead';
+    code = GenericErrorKind.GENERIC_LOCALIZED_COMPOSITE_FIELD;
+
+    constructor(path?: string, kind?: string) {
+        super();
+        if (path) {
+            this.description = this.description.replace(
+                'A CMS field descriptor',
+                `The CMS field descriptor at "${path}"`,
+            );
+        }
+        if (kind) {
+            this.description = this.description.replace('a composite kind', `the composite kind "${kind}"`);
+        }
+    }
+}
+
+/**
  * Returns all error code string values from both {@link GenericErrorKind} and {@link ApiErrorKind} enums in a single flat array.
  *
  * @returns An array of every `GenericErrorKind` and `ApiErrorKind` string value.
@@ -1477,6 +1512,8 @@ export const getErrorFromCode = (
             return DuplicateWorkspaceSlugError as unknown as typeof GenericError;
         case GenericErrorKind.GENERIC_MISSING_TYPEDOC_OUTPUT:
             return MissingTypeDocOutputError as unknown as typeof GenericError;
+        case GenericErrorKind.GENERIC_LOCALIZED_COMPOSITE_FIELD:
+            return LocalizedCompositeFieldError as unknown as typeof GenericError;
 
         // Api Errors.
         case ApiErrorKind.API_UNKNOWN_ERROR:

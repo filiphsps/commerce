@@ -82,7 +82,9 @@ function seedCorpus(t: ReturnType<typeof convexTest>): Promise<Id<'shops'>> {
             data: {
                 slug: 'home',
                 title: { 'en-US': 'Home', 'de-DE': 'Startseite' },
-                seo: { 'en-US': { title: 'Home', description: 'Welcome' } },
+                // SEO localization is LEAF-LEVEL (G4FIX-03): the group itself
+                // is never a bucket, its text members are.
+                seo: { title: { 'en-US': 'Home' }, description: { 'en-US': 'Welcome' } },
             },
             status: 'published',
             createdAt: NOW,

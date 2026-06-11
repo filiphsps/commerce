@@ -11,6 +11,7 @@ import type {
     FieldDescriptor,
     GroupFieldDescriptor,
     JsonFieldDescriptor,
+    LocalizableFieldDescriptor,
     NamedFieldDescriptor,
     NumberFieldDescriptor,
     RelationshipFieldDescriptor,
@@ -212,15 +213,19 @@ export const collapsibleField = (config: BuilderConfig<CollapsibleFieldDescripto
 export const block = (config: BlockDescriptor): BlockDescriptor => config;
 
 /**
- * Marks a named field as localized so the editor stores one value per locale.
+ * Marks a named leaf field as localized so the editor stores one value per
+ * locale. Composite kinds (group/array/blocks) are rejected at the type level:
+ * the native editor localizes leaves through per-field locale buckets and has
+ * no per-locale storage for whole containers, so accepting them would silently
+ * locale-share the container (G4FIX-03).
  *
- * @param field - The named field descriptor to localize.
+ * @param field - The named leaf field descriptor to localize.
  * @returns The same descriptor with `localized` set to `true`.
  *
  * @example
  * localized(textField({ name: 'title' }));
  */
-export const localized = <TField extends NamedFieldDescriptor>(field: TField): TField => ({
+export const localized = <TField extends LocalizableFieldDescriptor>(field: TField): TField => ({
     ...field,
     localized: true,
 });

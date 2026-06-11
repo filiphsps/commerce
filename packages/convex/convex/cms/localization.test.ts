@@ -104,12 +104,15 @@ describe('writeLocalizedField isolation', () => {
 });
 
 describe('CMS_LOCALIZED_FIELDS_BY_COLLECTION', () => {
-    it('names the collection members of the frozen 35-field localized set', () => {
+    it('names the TOP-LEVEL members of the frozen localized set', () => {
+        // `seo` left this registry with G4FIX-03: SEO localization is
+        // leaf-level (`seo.title`/`seo.description`/`seo.keywords`), which the
+        // deep, path-gated walk in `read.ts` resolves instead.
         expect(CMS_LOCALIZED_FIELDS_BY_COLLECTION).toEqual({
-            pages: ['title', 'seo'],
-            articles: ['title', 'excerpt', 'body', 'seo'],
-            productMetadata: ['descriptionOverride', 'seo'],
-            collectionMetadata: ['descriptionOverride', 'seo'],
+            pages: ['title'],
+            articles: ['title', 'excerpt', 'body'],
+            productMetadata: ['descriptionOverride'],
+            collectionMetadata: ['descriptionOverride'],
             media: ['caption'],
         });
     });
@@ -167,14 +170,17 @@ describe('document-level reassemble and write', () => {
             shop: 'shop_loc',
             slug: 'about',
             title: { 'sv-SE': 'Om oss' },
-            seo: { 'en-US': { title: 'About' } },
+            // `seo` is no longer a top-level localized field (G4FIX-03): its
+            // leaf buckets belong to the deep walk, so the group passes
+            // through this resolver untouched.
+            seo: { title: { 'en-US': 'About' } },
         };
         const chain = buildLocaleFallbackChain('de-DE', 'sv-SE');
         expect(reassembleLocalizedDocument('pages', data, chain)).toEqual({
             shop: 'shop_loc',
             slug: 'about',
             title: 'Om oss',
-            seo: { title: 'About' },
+            seo: { title: { 'en-US': 'About' } },
         });
     });
 

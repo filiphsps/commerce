@@ -13,13 +13,22 @@ import { LINK_KINDS, type LinkKind, type LinkRef } from './link';
 const nameOf = (field: FieldDescriptor): string => ('name' in field ? field.name : '');
 
 describe('reusable field configs', () => {
-    it('seoGroup is a localized group with title/description/keywords/noindex', () => {
+    it('seoGroup is a leaf-localized group with title/description/keywords/noindex', () => {
         const cfg = seoGroup();
         expect(cfg.type).toBe('group');
         expect(cfg.name).toBe('seo');
-        expect(cfg.localized).toBe(true);
+        // The GROUP is never localized (G4FIX-03) — its text leaves are.
+        expect('localized' in cfg).toBe(false);
         const names = cfg.fields.map(nameOf);
         expect(names).toEqual(expect.arrayContaining(['title', 'description', 'keywords', 'image', 'noindex']));
+        for (const leaf of ['title', 'description', 'keywords']) {
+            const field = cfg.fields.find((f) => 'name' in f && f.name === leaf);
+            expect(field).toMatchObject({ localized: true });
+        }
+        for (const leaf of ['image', 'noindex']) {
+            const field = cfg.fields.find((f) => 'name' in f && f.name === leaf);
+            expect(field && 'localized' in field && field.localized).toBeFalsy();
+        }
     });
 
     it('linkField is a typed group with kind discriminator', () => {
@@ -111,14 +120,18 @@ describe('reusable field configs', () => {
     });
 
     describe('linkField', () => {
-        it('defaults to localized: true', () => {
+        it('localizes the label LEAF by default — never the group (G4FIX-03)', () => {
             const cfg = linkField({ name: 'link' });
-            expect(cfg.localized).toBe(true);
+            expect('localized' in cfg).toBe(false);
+            const label = cfg.fields.find((f) => 'name' in f && f.name === 'label');
+            expect(label).toMatchObject({ type: 'text', localized: true });
         });
 
-        it('respects localized: false', () => {
+        it('respects localized: false by leaving the label locale-shared', () => {
             const cfg = linkField({ name: 'link', localized: false });
-            expect(cfg.localized).toBe(false);
+            expect('localized' in cfg).toBe(false);
+            const label = cfg.fields.find((f) => 'name' in f && f.name === 'label');
+            expect(label && 'localized' in label && label.localized).toBeFalsy();
         });
 
         it('forwards a custom label', () => {
@@ -258,10 +271,13 @@ describe('reusable field configs', () => {
             expect(nested).toBeUndefined();
         });
 
-        it('each level includes a localized link field', () => {
+        it('each level includes a link group with a localized label leaf', () => {
             const cfg = navItemField({ depth: 2 });
             const link = cfg.fields.find((f) => 'name' in f && f.name === 'link');
-            expect(link).toMatchObject({ type: 'group', localized: true });
+            expect(link).toMatchObject({ type: 'group' });
+            const label =
+                link && 'fields' in link ? link.fields.find((f) => 'name' in f && f.name === 'label') : undefined;
+            expect(label).toMatchObject({ type: 'text', localized: true });
         });
     });
 

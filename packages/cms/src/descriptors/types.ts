@@ -49,6 +49,16 @@ export type NamedFieldDescriptorBase = {
 };
 
 /**
+ * Base shape for the composite (container) descriptors — group, array, blocks.
+ * Deliberately drops `localized`: composite localization was silently ignored
+ * by the native editor (the whole container was shared across locales), so the
+ * type system forbids declaring it at all — localize the text-ish leaf members
+ * instead (G4FIX-03). The descriptor codegen enforces the same rule at runtime
+ * for structurally-built schemas.
+ */
+export type CompositeFieldDescriptorBase = Omit<NamedFieldDescriptorBase, 'localized'>;
+
+/**
  * Single-line text field descriptor. `hasMany` turns it into an ordered list of
  * strings (e.g. SEO keywords).
  */
@@ -160,7 +170,7 @@ export type UploadFieldDescriptor<TRelation extends string = string> = NamedFiel
  * Repeatable list of homogeneous rows, each row built from the same nested
  * field set. The recursive `fields` reference is what lets nav menus nest.
  */
-export type ArrayFieldDescriptor = NamedFieldDescriptorBase & {
+export type ArrayFieldDescriptor = CompositeFieldDescriptorBase & {
     type: 'array';
     fields: FieldDescriptor[];
     minRows?: number;
@@ -170,7 +180,7 @@ export type ArrayFieldDescriptor = NamedFieldDescriptorBase & {
 /**
  * Named grouping of nested fields stored under a single key.
  */
-export type GroupFieldDescriptor = NamedFieldDescriptorBase & {
+export type GroupFieldDescriptor = CompositeFieldDescriptorBase & {
     type: 'group';
     fields: FieldDescriptor[];
 };
@@ -191,7 +201,7 @@ export type BlockDescriptor = {
  * Polymorphic list of blocks — the editor picks a block variant per row from
  * {@link BlockDescriptor.slug}.
  */
-export type BlocksFieldDescriptor = NamedFieldDescriptorBase & {
+export type BlocksFieldDescriptor = CompositeFieldDescriptorBase & {
     type: 'blocks';
     blocks: BlockDescriptor[];
     minRows?: number;
@@ -228,6 +238,16 @@ export type NamedFieldDescriptor =
     | ArrayFieldDescriptor
     | GroupFieldDescriptor
     | BlocksFieldDescriptor;
+
+/**
+ * The named descriptors that may legally carry `localized: true` — every named
+ * kind except the composites (group/array/blocks), whose types omit the flag
+ * entirely (G4FIX-03).
+ */
+export type LocalizableFieldDescriptor = Exclude<
+    NamedFieldDescriptor,
+    ArrayFieldDescriptor | GroupFieldDescriptor | BlocksFieldDescriptor
+>;
 
 /**
  * The full descriptor union accepted anywhere a field can appear, including the

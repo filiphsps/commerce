@@ -93,11 +93,21 @@ function resolveLocalizedFields(collection: string, data: unknown, chain: readon
  * - the block-bearing content collections (CMSGATE-02): the native editor buckets every
  *   `localized: true` leaf INSIDE `blocks` rows (an alert's title, a rich-text block's body, a
  *   media-grid caption), which the per-field registry can never reach, so a published page must
- *   deep-collapse to read back on the frozen `Page.blocks` contract shape.
+ *   deep-collapse to read back on the frozen `Page.blocks` contract shape, and
+ * - every `seoGroup()` collection, `articles` included: G4FIX-03 moved SEO localization from the
+ *   whole group to its text leaves (`seo.title`/`seo.description`/`seo.keywords`), which sit one
+ *   level below the top-level registry's reach.
  * `businessData` carries no localized fields and stays on the top-level resolver to keep the
  * collapse surface minimal.
  */
-const DEEP_LOCALIZED_COLLECTIONS = new Set(['header', 'footer', 'pages', 'collectionMetadata', 'productMetadata']);
+const DEEP_LOCALIZED_COLLECTIONS = new Set([
+    'header',
+    'footer',
+    'pages',
+    'articles',
+    'collectionMetadata',
+    'productMetadata',
+]);
 
 /**
  * Recursively collapses localized buckets through the fallback chain — the CMSGATE-01 read seam

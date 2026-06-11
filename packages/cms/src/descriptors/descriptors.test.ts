@@ -120,6 +120,23 @@ describe('descriptor modifiers', () => {
         expect(base.localized).toBeUndefined();
     });
 
+    it('rejects localized on composite kinds at the type level (G4FIX-03)', () => {
+        // The compile-time half of the guard — the descriptor codegen throws
+        // LocalizedCompositeFieldError for structurally-built schemas, and
+        // these pins prove the builders cannot produce the silent class at all.
+        // @ts-expect-error groups omit `localized` from their descriptor type
+        const localizedGroup = groupField({ name: 'link', localized: true, fields: [] });
+        // @ts-expect-error arrays omit `localized` from their descriptor type
+        const localizedArray = arrayField({ name: 'rows', localized: true, fields: [] });
+        // @ts-expect-error blocks omit `localized` from their descriptor type
+        const localizedBlocks = blocksField({ name: 'content', localized: true, blocks: [] });
+        // @ts-expect-error the localized() modifier only accepts leaf descriptors
+        const wrappedGroup = localized(groupField({ name: 'seo', fields: [] }));
+        // @ts-expect-error the localized() modifier only accepts leaf descriptors
+        const wrappedArray = localized(arrayField({ name: 'items', fields: [] }));
+        expect([localizedGroup, localizedArray, localizedBlocks, wrappedGroup, wrappedArray]).toHaveLength(5);
+    });
+
     it('required sets required: true without mutating the input', () => {
         const base = uploadField({ name: 'cover', relationTo: 'media' });
         const result = required(base);

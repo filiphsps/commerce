@@ -1,4 +1,12 @@
-import { checkboxField, condition, groupField, relationshipField, selectField, textField } from '../descriptors';
+import {
+    checkboxField,
+    condition,
+    groupField,
+    localized,
+    relationshipField,
+    selectField,
+    textField,
+} from '../descriptors';
 import type { NamedGroupField } from './seo';
 
 /**
@@ -46,6 +54,7 @@ export type LinkRef =
 export type LinkFieldOptions = {
     name: string;
     label?: string;
+    /** When `true` (the default), the presentational `label` leaf is localized. */
     localized?: boolean;
 };
 
@@ -54,17 +63,22 @@ export type LinkFieldOptions = {
  * article, product, collection, external URL, or anchor. A `kind` select drives
  * conditional visibility so only the relevant sub-field is shown in the editor.
  *
- * @param options - {@link LinkFieldOptions} controlling the field name, label, and localization.
+ * Localization is LEAF-LEVEL on the presentational `label` only (G4FIX-03): the
+ * Mongo-era corpus never stored per-locale link groups (destinations are
+ * locale-invariant), and whole-group localization was silently ignored by the
+ * native editor, so the group itself is never localized — composite kinds
+ * reject the flag outright.
+ *
+ * @param options - {@link LinkFieldOptions} controlling the field name, label, and label localization.
  * @returns A named group field descriptor.
  *
  * @example
  * linkField({ name: 'primaryCta', localized: true });
  */
-export const linkField = ({ name, label, localized = true }: LinkFieldOptions): NamedGroupField =>
+export const linkField = ({ name, label, localized: localizeLabel = true }: LinkFieldOptions): NamedGroupField =>
     groupField({
         name,
         label,
-        localized,
         fields: [
             selectField({
                 name: 'kind',
@@ -100,7 +114,7 @@ export const linkField = ({ name, label, localized = true }: LinkFieldOptions): 
             // doc that just hasn't filled the CTA yet (header drafts, nav items
             // pending content). The validation belongs in the consuming render
             // path, not in the editor schema.
-            textField({ name: 'label' }),
+            localizeLabel ? localized(textField({ name: 'label' })) : textField({ name: 'label' }),
             checkboxField({ name: 'openInNewTab', defaultValue: false }),
         ],
     });

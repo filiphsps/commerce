@@ -12,6 +12,7 @@
  * generated mirror instead — schema-driven, never shape-guessed, with the
  * `cms:gen:check` drift gate keeping it in lockstep with the descriptors.
  */
+import { LocalizedCompositeFieldError } from '@nordcom/commerce-errors';
 import { REGISTERED_LOCALE_CODES } from '../../src/config/locale-codes';
 import { editorCollectionSchema } from '../../src/editor/collection-fields';
 import { allManifests } from '../../src/editor/manifests';
@@ -25,11 +26,18 @@ type WalkField = {
     blocks?: Array<{ slug: string; fields: WalkField[] }>;
 };
 
+/** The descriptor kinds that may never carry `localized: true` (G4FIX-03). */
+const COMPOSITE_KINDS = new Set(['group', 'array', 'blocks']);
+
 /**
  * Collects the localized path patterns of one descriptor tree into `out`.
- * A `localized: true` descriptor contributes its own path and is NOT recursed:
- * the whole stored value at that path is the bucket (its children live inside
- * a locale slot, mirroring Payload's localized-group storage). Array and
+ * Only LEAF descriptors may be localized — a `localized: true` composite
+ * (group/array/blocks) is rejected with a typed error, because the native
+ * editor has no per-locale storage for whole containers and would silently
+ * locale-share them (G4FIX-03); the descriptor types forbid the flag on
+ * composites, so this runtime guard exists for structurally-built schemas
+ * that bypass the builders. A localized leaf contributes its own path and is
+ * NOT recursed: the whole stored value at that path is the bucket. Array and
  * blocks rows contribute a `*` wildcard segment; block variants sharing a leaf
  * name union into one pattern — acceptable because the value-level
  * registered-locale check still guards collapsing.
@@ -37,8 +45,9 @@ type WalkField = {
  * @param fields - The descriptor list to walk.
  * @param prefix - The dotted/wildcarded path accumulated so far (empty at the root).
  * @param out - The pattern accumulator.
+ * @throws {LocalizedCompositeFieldError} When a group/array/blocks descriptor declares `localized: true`.
  */
-const collectLocalizedPatterns = (fields: readonly WalkField[], prefix: string, out: Set<string>): void => {
+export const collectLocalizedPatterns = (fields: readonly WalkField[], prefix: string, out: Set<string>): void => {
     for (const field of fields) {
         if (field.type === 'collapsible') {
             collectLocalizedPatterns(field.fields ?? [], prefix, out);
@@ -46,6 +55,9 @@ const collectLocalizedPatterns = (fields: readonly WalkField[], prefix: string, 
         }
         if (field.name === undefined) continue;
         const path = prefix === '' ? field.name : `${prefix}.${field.name}`;
+        if (field.localized === true && COMPOSITE_KINDS.has(field.type)) {
+            throw new LocalizedCompositeFieldError(path, field.type);
+        }
         if (field.localized === true) {
             out.add(path);
             continue;
@@ -124,9 +136,9 @@ ${codes}
  * Per-collection localized field paths derived from the editor descriptor
  * schemas (\`localized: true\`), with array/blocks indices wildcarded to \`*\`.
  * A path names where a per-field locale bucket may legally sit; everywhere
- * else the read seam passes values through untouched (G4FIX-02). A localized
- * container (group/array) contributes ONE path — its whole value is the
- * bucket.
+ * else the read seam passes values through untouched (G4FIX-02). Only LEAF
+ * descriptors may be localized — the generator rejects \`localized: true\` on
+ * composite kinds (G4FIX-03).
  */
 // biome-ignore format: generated output must stay byte-stable under the cms:gen drift gate
 export const CMS_LOCALIZED_PATHS_BY_COLLECTION: Record<string, readonly string[]> = {

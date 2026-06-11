@@ -165,6 +165,39 @@ describe('<EditorFields>', () => {
         expect(switcher.label).toEqual({ 'en-US': 'Region', 'de-DE': 'Standort' });
     });
 
+    it('localizes a nav link LABEL per locale while the destination stays locale-shared (G4FIX-03)', () => {
+        // The canonical localized-group case: editing a nav label in locale B
+        // must leave locale A intact. Since G4FIX-03 the link GROUP is never a
+        // bucket — its `label` leaf is localized and its destination
+        // (`kind`/`url`) is locale-invariant by declaration, not by accident.
+        const { container } = render(
+            <Form
+                action={() => {}}
+                initialState={buildInitialFormState({
+                    items: [{ link: { kind: 'external', label: 'Shop', url: '/shop/', openInNewTab: false } }],
+                })}
+            >
+                <EditorFields collection="header" locale="de-DE" defaultLocale="en-US" />
+                <StateProbe />
+            </Form>,
+        );
+
+        const label = controlAt(container, 'items.0.link.label', 'input') as HTMLInputElement;
+        // Locale B starts empty — the legacy plain label belongs to the default locale.
+        expect(label.value).toBe('');
+
+        fireEvent.change(label, { target: { value: 'Laden' } });
+
+        const { data, modified } = probe(container);
+        const link = (data.items as Array<Record<string, unknown>>)[0]?.link as Record<string, unknown>;
+        // Locale A's label survives byte-for-byte; locale B lands in its own slot.
+        expect(link.label).toEqual({ 'en-US': 'Shop', 'de-DE': 'Laden' });
+        // The destination is a single shared slot — no per-locale duplication.
+        expect(link.kind).toBe('external');
+        expect(link.url).toBe('/shop/');
+        expect(modified).toBe(true);
+    });
+
     it('renders the depth-6 header nav structure end to end (CMSGATE-01 prerequisite)', () => {
         // Build a nav doc nested the full six levels deep; every level carries
         // a `backgroundColor` leaf so the flattener emits a row at each depth.

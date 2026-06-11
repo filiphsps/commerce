@@ -94,17 +94,18 @@ export type LocalizedBucket<T = unknown> = Record<string, T>;
 /**
  * Server-trusted registry of the TOP-LEVEL localized field names per `cmsDocuments`-backed collection,
  * the Convex parity of the descriptor `localized: true` flag (mirroring `documents.ts`'s
- * `REQUIRED_FIELDS_BY_COLLECTION`). It names exactly the collection members of the frozen 35-field
- * localized set (`packages/cms/src/collections/localized-fields.test.ts`); the `header`/`footer`
- * singletons' deeply nested, array-embedded localized fields use a different storage model and are not
- * `cmsDocuments` rows, so they are intentionally absent here. A collection absent from this map has no
+ * `REQUIRED_FIELDS_BY_COLLECTION`). It names exactly the top-level members of the frozen localized
+ * set (`packages/cms/src/collections/localized-fields.test.ts`); NESTED localized leaves — the
+ * `seo.title`/`seo.description`/`seo.keywords` members since G4FIX-03 dropped whole-group
+ * localization, plus the `header`/`footer` singletons' array-embedded fields — are resolved by the
+ * deep, path-gated walk in `read.ts` instead. A collection absent from this map has no top-level
  * localized fields and is reassembled unchanged.
  */
 export const CMS_LOCALIZED_FIELDS_BY_COLLECTION: Record<string, readonly string[]> = {
-    pages: ['title', 'seo'],
-    articles: ['title', 'excerpt', 'body', 'seo'],
-    productMetadata: ['descriptionOverride', 'seo'],
-    collectionMetadata: ['descriptionOverride', 'seo'],
+    pages: ['title'],
+    articles: ['title', 'excerpt', 'body'],
+    productMetadata: ['descriptionOverride'],
+    collectionMetadata: ['descriptionOverride'],
     media: ['caption'],
 };
 

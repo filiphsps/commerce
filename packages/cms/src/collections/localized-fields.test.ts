@@ -44,25 +44,33 @@ describe('localized field set', () => {
         )
         .sort();
 
-    // This set is the contract the descriptor re-expression must preserve. Any
-    // field that gains or loses `localized` — in a collection, a shared field
-    // builder (seo/link/nav-item/image), or the nav-menu recursion depth — moves
-    // this snapshot and fails the test, surfacing an unintended localization
-    // change for review.
-    it('matches the frozen 35-field set across all collections', () => {
+    // This set is the localization contract. Any field that gains or loses
+    // `localized` — in a collection, a shared field builder
+    // (seo/link/nav-item/image), or the nav-menu recursion depth — moves this
+    // snapshot and fails the test, surfacing an unintended localization change
+    // for review. G4FIX-03 consciously moved it once: composite (group)
+    // localization was silently locale-shared by the native editor and the
+    // corpus held no per-locale group data, so the seo/link groups were
+    // re-declared with leaf-level localization on their text members and the
+    // descriptor system now rejects `localized: true` on composite kinds.
+    it('matches the frozen 43-field set across all collections', () => {
         expect(localizedPaths).toMatchInlineSnapshot(`
           [
             "articles.body",
             "articles.excerpt",
-            "articles.seo",
+            "articles.seo.description",
+            "articles.seo.keywords",
+            "articles.seo.title",
             "articles.title",
             "collectionMetadata.descriptionOverride",
-            "collectionMetadata.seo",
+            "collectionMetadata.seo.description",
+            "collectionMetadata.seo.keywords",
+            "collectionMetadata.seo.title",
             "footer.copyrightLine",
-            "footer.legal.link",
-            "footer.sections.links.link",
+            "footer.legal.link.label",
+            "footer.sections.links.link.label",
             "footer.sections.title",
-            "header.cta",
+            "header.cta.label",
             "header.items.description",
             "header.items.image",
             "header.items.items.description",
@@ -75,23 +83,27 @@ describe('localized field set', () => {
             "header.items.items.items.items.items.image",
             "header.items.items.items.items.items.items.description",
             "header.items.items.items.items.items.items.image",
-            "header.items.items.items.items.items.items.link",
-            "header.items.items.items.items.items.link",
-            "header.items.items.items.items.link",
-            "header.items.items.items.link",
-            "header.items.items.link",
-            "header.items.link",
+            "header.items.items.items.items.items.items.link.label",
+            "header.items.items.items.items.items.link.label",
+            "header.items.items.items.items.link.label",
+            "header.items.items.items.link.label",
+            "header.items.items.link.label",
+            "header.items.link.label",
             "header.localeSwitcher.label",
             "media.caption",
-            "pages.seo",
+            "pages.seo.description",
+            "pages.seo.keywords",
+            "pages.seo.title",
             "pages.title",
             "productMetadata.descriptionOverride",
-            "productMetadata.seo",
+            "productMetadata.seo.description",
+            "productMetadata.seo.keywords",
+            "productMetadata.seo.title",
           ]
         `);
     });
 
-    it('contains exactly 35 localized fields', () => {
-        expect(localizedPaths).toHaveLength(35);
+    it('contains exactly 43 localized fields', () => {
+        expect(localizedPaths).toHaveLength(43);
     });
 });
