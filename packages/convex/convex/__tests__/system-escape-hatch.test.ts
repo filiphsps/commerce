@@ -13,7 +13,7 @@ const { systemMutation, systemQuery, tenantQuery } = constructors;
  * Completes the contrast `lib/system.test.ts` deferred until the tenant tier existed: the SAME exempt
  * platform-global tables (`featureFlags`, `users`) that the deny-default tenant tier reads as empty are
  * fully readable and writable through `systemQuery`/`systemMutation`, proving the raw-db escape hatch is
- * the one sanctioned path to them. The barrel-shape case pins `_constructors` to exactly the six
+ * the one sanctioned path to them. The barrel-shape case pins `_constructors` to exactly the eight
  * sanctioned builders so an RLS-bypassing raw builder can never leak through the documented entrypoint.
  */
 
