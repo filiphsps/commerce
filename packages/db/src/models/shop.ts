@@ -1,8 +1,7 @@
-import type { Document } from 'mongoose';
-
-import type { BaseDocument, DocumentExtras } from '../db';
+import type { BaseDocument } from '../db';
 import type { AccentToken, ShopThemeTokens } from '../lib/theme';
 import type { FeatureFlagBase } from './feature-flag';
+import type { LegacyObjectIdRef } from './query-types';
 
 // TODO: Remove this.
 /**
@@ -101,9 +100,10 @@ export type CommerceProviders = (typeof CommerceProviders)[number];
 /**
  * Embedded reference in a shop's `featureFlags` array. The Convex-backed seam always resolves the
  * `shopFeatureFlags` join, so `flag` arrives as the full `FeatureFlagBase` document; the legacy
- * `ObjectId` arm of the union is retained because consumers (e.g. the storefront's flag evaluator)
- * narrow by shape — `typeof flag === 'object' && 'key' in flag` — and must keep compiling against
- * historical unpopulated refs.
+ * unpopulated-ref arm of the union (now the structural `LegacyObjectIdRef`, since the mongoose
+ * `ObjectId` class left with TEARDOWN-04) is retained because consumers (e.g. the storefront's
+ * flag evaluator) narrow by shape — `typeof flag === 'object' && 'key' in flag` — and must keep
+ * compiling against historical unpopulated refs.
  *
  * @example
  * ```ts
@@ -114,7 +114,7 @@ export type CommerceProviders = (typeof CommerceProviders)[number];
  * ```
  */
 export interface FeatureFlagRef {
-    flag: import('mongoose').Types.ObjectId | FeatureFlagBase;
+    flag: LegacyObjectIdRef | FeatureFlagBase;
 }
 
 /**
@@ -220,11 +220,12 @@ export interface ShopBase extends BaseDocument {
 }
 
 /**
- * Client-safe shop shape derived from `ShopBase` with the (historical) Mongoose document methods
- * stripped. Returned by all `ShopService` read methods; safe to pass to Client Components or server
- * actions. Credential fields (`authentication.token`, `customers.clientSecret`) live in the
- * split-out Convex `shopCredentials` table and are only attached when `sensitiveData: true` is
- * passed to `ShopService.findByDomain`.
+ * Client-safe shop shape returned by all `ShopService` read methods; safe to pass to Client
+ * Components or server actions. Historically this stripped the hydrated Mongoose document methods
+ * off `ShopBase`; the Convex-backed seam returns plain rows, so the only remaining difference is
+ * that `collaborators` becomes optional. Credential fields (`authentication.token`,
+ * `customers.clientSecret`) live in the split-out Convex `shopCredentials` table and are only
+ * attached when `sensitiveData: true` is passed to `ShopService.findByDomain`.
  *
  * @example
  * ```ts
@@ -234,6 +235,6 @@ export interface ShopBase extends BaseDocument {
  * }
  * ```
  */
-export type OnlineShop = Omit<ShopBase, keyof Omit<Document, keyof DocumentExtras> | 'collaborators' | 'schema'> & {
+export type OnlineShop = Omit<ShopBase, 'collaborators'> & {
     collaborators?: ShopBase['collaborators'];
 };

@@ -19,7 +19,6 @@ export default mergeConfig(
         build: {
             target: 'esnext',
             rolldownOptions: {
-                external: ['mongoose', 'mongodb'],
                 output: {
                     name,
                 },

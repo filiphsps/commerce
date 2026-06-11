@@ -1,11 +1,7 @@
 import { NotFoundError } from '@nordcom/commerce-errors';
-// Type-only Mongoose imports: the SFREAD-02 service-seam contract snapshot pins every public
-// signature to these query types, so they stay the seam's public argument vocabulary even though
-// the implementation is Convex-backed. Mongoose is a TYPE dependency only — no runtime mongoose
-// (no connect, no models) exists anywhere in this package.
-import type { ProjectionType, Query, QueryFilter, QueryOptions, UpdateQuery } from 'mongoose';
 
 import type { BaseDocument } from '../db';
+import type { ProjectionType, QueryFilter, QueryOptions, SortSpec, UpdateQuery } from '../models/query-types';
 
 type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
@@ -14,7 +10,7 @@ type MergeTypes<T extends unknown[]> =
 
 interface BaseQuery {
     count?: number;
-    sort?: Parameters<Query<unknown, unknown>['sort']>[0];
+    sort?: SortSpec;
 }
 
 interface ReturnsOneQuery {

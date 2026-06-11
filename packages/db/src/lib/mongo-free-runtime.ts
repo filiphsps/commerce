@@ -1,68 +1,49 @@
 /**
- * Structural gate for the seam's zero-Mongo-runtime invariant (CUTOVER-03): post-flip,
- * `@nordcom/commerce-db` must hold NO runtime path to a Mongo driver. `mongoose` survives strictly
- * as the frozen TYPE vocabulary of the SFREAD-02 service contract (`import type` in
- * `services/service.ts`, the model Base types) — a value import, a `require`, or an awaited dynamic
- * import would resurrect a second authoritative write path after the cutover, so it must fail
- * mechanically rather than by review. Like `single-mutation-gate.ts`, this is deliberately a
- * convention-anchored textual gate over in-repo sources, not a full parser.
+ * Structural gate for the seam's zero-Mongo invariant (CUTOVER-03, tightened by TEARDOWN-04):
+ * `@nordcom/commerce-db` must hold NO reference to a Mongo driver module — runtime OR type-level.
+ * The cutover-era gate sanctioned `mongoose` as the frozen TYPE vocabulary of the SFREAD-02
+ * service contract; TEARDOWN-04 re-homed that vocabulary onto the local structural aliases in
+ * `models/query-types` and removed the dependency, so the exemption is revoked: any import (even
+ * `import type`), `require`, or dynamic `import()` of a Mongo module would resurrect the
+ * dependency and must fail mechanically rather than by review. Like `single-mutation-gate.ts`,
+ * this is deliberately a convention-anchored textual gate over in-repo sources, not a full parser.
  */
 
 /** The detection rules the source scan applies, named so a violation message says WHICH shape hit. */
-export type RuntimeMongoImportRule =
-    | 'value-import'
-    | 'side-effect-import'
-    | 'require-call'
-    | 'awaited-dynamic-import'
-    | 'assigned-dynamic-import';
+export type MongoModuleReferenceRule = 'static-import' | 'require-call' | 'dynamic-import';
 
-/** One detected runtime-capable Mongo module reference in a source file. */
-export interface RuntimeMongoImportViolation {
+/** One detected Mongo module reference in a source file. */
+export interface MongoModuleReferenceViolation {
     /** Which detection rule matched. */
-    rule: RuntimeMongoImportRule;
+    rule: MongoModuleReferenceRule;
     /** The matched source slice, for actionable test output. */
     snippet: string;
 }
 
-/**
- * Mongo driver module specifiers a runtime reference to is forbidden. `mongoose` is listed even
- * though it remains a manifest dependency: the dependency is sanctioned ONLY as a type vocabulary,
- * which exactly this scan (no value imports anywhere) is what proves.
- */
+/** Mongo driver module specifiers any reference to is forbidden — type-level included. */
 const MONGO_MODULES = `['"](?:mongoose|mongodb)['"]`;
 
-const RULES: ReadonlyArray<{ rule: RuntimeMongoImportRule; pattern: RegExp }> = [
-    // `import mongoose from 'mongoose'` / `import { connect } from 'mongoose'` — anything that is
-    // not an `import type` statement emits a runtime binding. Inline `{ type X }` specifiers are
-    // also flagged: the statement still parses as a value import, and the committed sources use
-    // whole-statement `import type` exclusively.
-    {
-        rule: 'value-import',
-        pattern: new RegExp(String.raw`^\s*import\s+(?!type\b)[^;]*?\bfrom\s*${MONGO_MODULES}`, 'gm'),
-    },
-    // `import 'mongoose'` — a bare side-effect import executes the module.
-    { rule: 'side-effect-import', pattern: new RegExp(String.raw`^\s*import\s*${MONGO_MODULES}`, 'gm') },
+const RULES: ReadonlyArray<{ rule: MongoModuleReferenceRule; pattern: RegExp }> = [
+    // Any import statement targeting a Mongo module — value, whole-statement `import type`, or a
+    // bare side-effect import. The pre-teardown gate exempted type-only statements; with the
+    // vocabulary re-homed locally there is no sanctioned Mongo import left to allow.
+    { rule: 'static-import', pattern: new RegExp(String.raw`^\s*import\b[^;]*?${MONGO_MODULES}`, 'gm') },
     // CommonJS escape hatch.
     { rule: 'require-call', pattern: new RegExp(String.raw`\brequire\s*\(\s*${MONGO_MODULES}\s*\)`, 'g') },
-    // An awaited or assigned dynamic `import()` of a Mongo module loads it at runtime. The
-    // TYPE-position forms the models legitimately use (`.Types.ObjectId` member access, `typeof`)
-    // are never awaited or assigned, so they pass. Wordings here avoid the literal patterns so the
-    // gate's own source survives its sweep.
-    {
-        rule: 'awaited-dynamic-import',
-        pattern: new RegExp(String.raw`\bawait\s+import\s*\(\s*${MONGO_MODULES}\s*\)`, 'g'),
-    },
-    { rule: 'assigned-dynamic-import', pattern: new RegExp(String.raw`=\s*import\s*\(\s*${MONGO_MODULES}\s*\)`, 'g') },
+    // Any dynamic `import()` — awaited, assigned, or the type-position forms the models carried
+    // pre-teardown (member access on the namespace, `typeof` queries). All of them keep the module
+    // resolvable, so all of them are violations now.
+    { rule: 'dynamic-import', pattern: new RegExp(String.raw`\bimport\s*\(\s*${MONGO_MODULES}\s*\)`, 'g') },
 ];
 
 /**
- * Scans one TypeScript source for runtime-capable references to a Mongo driver module.
+ * Scans one TypeScript source for references to a Mongo driver module, type-level included.
  *
  * @param source - The TypeScript source text to scan.
- * @returns All violations found; empty when every Mongo module reference is type-only.
+ * @returns All violations found; empty when the source never references a Mongo module.
  */
-export function findRuntimeMongoImports(source: string): RuntimeMongoImportViolation[] {
-    const violations: RuntimeMongoImportViolation[] = [];
+export function findMongoModuleReferences(source: string): MongoModuleReferenceViolation[] {
+    const violations: MongoModuleReferenceViolation[] = [];
     for (const { rule, pattern } of RULES) {
         for (const match of source.matchAll(pattern)) {
             violations.push({ rule, snippet: match[0].trim().slice(0, 160) });
@@ -79,16 +60,17 @@ export interface RuntimeDependencyManifest {
 
 /**
  * Returns every runtime dependency (dependencies + peerDependencies) whose name points at the
- * Mongo ecosystem, EXCEPT `mongoose` — the one sanctioned entry, allowed solely because
- * {@link findRuntimeMongoImports} proves no source ever loads it at runtime. `devDependencies` are
- * deliberately out of scope: they never ship in the package's runtime surface.
+ * Mongo ecosystem. `mongoose` is no longer exempted: the type vocabulary it used to provide lives
+ * in `models/query-types`, so any Mongo-lineage manifest entry is a teardown regression.
+ * `devDependencies` are deliberately out of scope: they never ship in the package's runtime
+ * surface.
  *
  * @param manifest - The parsed `package.json` slice.
- * @returns The offending dependency names; empty when the runtime surface is Mongo-driver-free.
+ * @returns The offending dependency names; empty when the dependency surface is Mongo-free.
  */
 export function findForbiddenMongoDependencies(manifest: RuntimeDependencyManifest): string[] {
     const runtime = { ...manifest.dependencies, ...manifest.peerDependencies };
     return Object.keys(runtime)
-        .filter((name) => name.toLowerCase().includes('mongo') && name !== 'mongoose')
+        .filter((name) => name.toLowerCase().includes('mongo'))
         .sort();
 }

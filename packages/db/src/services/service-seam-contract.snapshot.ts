@@ -1,4 +1,8 @@
-import type { ProjectionType, QueryFilter, QueryOptions, UpdateQuery } from 'mongoose';
+// TEARDOWN-04 amendment: `mongoose` left the dependency graph, so the pinned query-type vocabulary
+// now resolves from the local structural aliases in `../models/query-types`. ONLY this import
+// source changed; every pinned signature line below is byte-identical to the frozen SFREAD-02
+// artifact.
+import type { ProjectionType, QueryFilter, QueryOptions, UpdateQuery } from '../models/query-types';
 
 import type { BaseDocument } from '../db';
 import type { FeatureFlagBase, IdentityBase, OnlineShop, ReviewBase, SessionBase, ShopBase, UserBase } from '../models';
