@@ -122,6 +122,7 @@
         {
             "includes": [
                 "packages/convex/convex/lib/tenant.ts",
+                "packages/convex/convex/lib/authed.ts",
                 "packages/convex/convex/lib/system.ts",
                 "packages/convex/convex/lib/rls.ts",
                 "packages/convex/convex/lib/server.ts"

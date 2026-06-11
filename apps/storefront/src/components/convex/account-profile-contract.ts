@@ -17,6 +17,18 @@ import type { FunctionReference } from 'convex/server';
 export const ACCOUNT_PROFILE_QUERY_NAME = 'account/profile:get';
 
 /**
+ * Wire name of the first-visit provisioning mutation
+ * (`packages/convex/convex/account/profile.ts` → `provision`). Storefront
+ * customers sign in through the Shopify provider with pure JWT sessions — no
+ * Auth.js adapter ever runs for them — so unlike admin operators they have no
+ * platform `users` row until the authenticated server path materializes one.
+ * Zero client args: the row derives entirely from the validated token's claims,
+ * and the call is idempotent, so invoking it on every authenticated preload is
+ * safe.
+ */
+export const ACCOUNT_PROFILE_PROVISION_MUTATION_NAME = 'account/profile:provision';
+
+/**
  * Read-only profile slice rendered by the account island. Doubles as the
  * server-derived snapshot shape (built from the trusted NextAuth session inside
  * the dynamic PPR hole) and the live Convex query's return shape, so the island
@@ -42,4 +54,26 @@ export type AccountProfileQuery = FunctionReference<
     'public',
     Record<string, never>,
     AccountProfileSnapshot | null
+>;
+
+/**
+ * Result shape of the provisioning mutation: whether THIS call materialized the
+ * caller's `users` row (`true` on the genuine first visit, `false` once the row
+ * exists). Mirrors `ProvisionResult` in `packages/convex/convex/account/profile.ts`.
+ */
+export type AccountProfileProvisionResult = {
+    created: boolean;
+};
+
+/**
+ * Typed reference for the first-visit provisioning mutation: public visibility
+ * (wire-callable with the customer's bearer JWT — the identity-gated customer
+ * tier, never the secret-guarded server tier), zero client args, and the
+ * idempotent {@link AccountProfileProvisionResult}.
+ */
+export type AccountProfileProvisionMutation = FunctionReference<
+    'mutation',
+    'public',
+    Record<string, never>,
+    AccountProfileProvisionResult
 >;

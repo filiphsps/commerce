@@ -23,6 +23,7 @@ export declare const api: {
   account: {
     profile: {
       get: FunctionReference<"query", "public", {}, any>;
+      provision: FunctionReference<"mutation", "public", {}, any>;
     };
   };
   cms: {

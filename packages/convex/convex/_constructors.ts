@@ -2,10 +2,12 @@
  * Public function-constructor barrel for `@nordcom/commerce-convex`.
  *
  * This is the ONLY constructor surface apps and `packages/db` are meant to import from. It deliberately
- * re-exports exactly six builders — the two tenant-scoped constructors ({@link tenantQuery},
- * {@link tenantMutation}), the two server-trusted system-tier constructors ({@link systemQuery},
- * {@link systemMutation}), and the two shared-secret server-trust constructors ({@link serverQuery},
- * {@link serverMutation}) for the identity-less `packages/db` seam — and NOTHING from `_generated/server`.
+ * re-exports exactly eight builders — the two tenant-scoped constructors ({@link tenantQuery},
+ * {@link tenantMutation}), the two customer-tier constructors ({@link authedQuery},
+ * {@link authedMutation}) for identity-bearing-but-tenant-less storefront customers, the two
+ * server-trusted system-tier constructors ({@link systemQuery}, {@link systemMutation}), and the two
+ * shared-secret server-trust constructors ({@link serverQuery}, {@link serverMutation}) for the
+ * identity-less `packages/db` seam — and NOTHING from `_generated/server`.
  *
  * The omission is the point: the raw `query` / `mutation` / `internalQuery` / `internalMutation`
  * builders from `_generated/server` bypass row-level security entirely (no tenant pinning, raw `ctx.db`).
@@ -15,6 +17,7 @@
  * entrypoint makes the safe path the default path.
  */
 
+export { authedMutation, authedQuery } from './lib/authed';
 export { serverMutation, serverQuery } from './lib/server';
 export { systemMutation, systemQuery } from './lib/system';
 export { tenantMutation, tenantQuery } from './lib/tenant';

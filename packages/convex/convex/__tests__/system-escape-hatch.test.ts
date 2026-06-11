@@ -168,10 +168,14 @@ describe('Phase 2 exit: system-tier escape hatch for exempt/global tables', () =
 });
 
 describe('Phase 2 exit: the _constructors barrel surface', () => {
-    it('exposes exactly the six sanctioned builders and no raw _generated escape', () => {
+    it('exposes exactly the eight sanctioned builders and no raw _generated escape', () => {
         // Pinned by exact value so adding (or leaking) ANY export — especially a raw `query`/`mutation`/
         // `internalQuery` re-export from `_generated/server` — fails this gate and forces a review.
+        // `authedQuery`/`authedMutation` joined deliberately in POLISH-04: the customer tier whose db is
+        // RLS-scoped to the caller's own email-keyed `users` row (see `lib/authed.test.ts` for its gate).
         expect(Object.keys(constructors).sort()).toEqual([
+            'authedMutation',
+            'authedQuery',
             'serverMutation',
             'serverQuery',
             'systemMutation',

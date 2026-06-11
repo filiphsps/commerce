@@ -169,6 +169,77 @@ export function tenantRules(shopId: Id<'shops'>): Rules<TenantRuleCtx, DataModel
 }
 
 /**
+ * Builds the fail-closed RLS rule set for the CUSTOMER tier (`authedQuery`/`authedMutation`,
+ * lib/authed.ts): an authenticated identity that is NOT a shop collaborator — a storefront
+ * customer — may touch exactly ONE row in the whole database: its own platform `users` row,
+ * keyed by the trusted identity's email claim.
+ *
+ * This is deliberately the narrowest possible scope, and the WHY is tenant safety: the customer
+ * tier exists so customers can read and provision their own profile WITHOUT inheriting any of the
+ * tenant tier's reach. Every tenant-owned table (and every other platform-global table — sessions,
+ * identities, featureFlags, the CMS tables) carries {@link denyEveryTable}'s unconditional deny,
+ * so a customer-tier function is structurally unable to widen into operator-tier tenant access no
+ * matter what its handler does. Total table coverage also closes the bare-id inference bypass,
+ * exactly as in {@link tenantRules}.
+ *
+ * The `users` predicate applies to read, modify, AND insert: a customer can only ever see its own
+ * row, only patch its own row, and can only insert a row carrying its own email — which is what
+ * makes first-visit provisioning safe to expose on a public, identity-gated mutation.
+ *
+ * @param email - The trusted identity's email claim (from `requireIdentityEmail`, never a client arg).
+ * @returns The RLS {@link Rules} map covering every schema table, allowing only the caller's own `users` row.
+ */
+export function customerRules(email: string): Rules<TenantRuleCtx, DataModel> {
+    const ownRow = scopedTo<{ email: string }>((doc) => doc.email === email);
+
+    return {
+        ...denyEveryTable,
+        users: {
+            read: ownRow,
+            modify: ownRow,
+            insert: ownRow,
+        },
+    };
+}
+
+/**
+ * Wraps a raw database READER in the fail-closed customer RLS for {@link customerRules}, pinning
+ * `defaultPolicy: 'deny'`. This is the reader the customer tier (`authedQuery`, lib/authed.ts)
+ * substitutes for the raw `ctx.db`.
+ *
+ * @param ctx - The Convex read context the rule predicates receive (unused by the customer predicate).
+ * @param db - The raw database reader to wrap.
+ * @param email - The trusted identity's email claim every read is scoped to.
+ * @returns A database reader exposing only the caller's own `users` row, denying everything else.
+ */
+export function wrapCustomerDatabaseReader(
+    ctx: GenericQueryCtx<DataModel>,
+    db: GenericDatabaseReader<DataModel>,
+    email: string,
+): GenericDatabaseReader<DataModel> {
+    return wrapDatabaseReader(ctx, db, customerRules(email), { defaultPolicy: 'deny' });
+}
+
+/**
+ * Wraps a raw database WRITER in the fail-closed customer RLS for {@link customerRules}, pinning
+ * `defaultPolicy: 'deny'`. Writes re-check the read predicate first (the wrapped writer reads the
+ * target row before mutating), so a customer can never patch or delete another user's row. This is
+ * the writer the customer tier (`authedMutation`, lib/authed.ts) substitutes for the raw `ctx.db`.
+ *
+ * @param ctx - The Convex mutation context the rule predicates receive (unused by the customer predicate).
+ * @param db - The raw database writer to wrap.
+ * @param email - The trusted identity's email claim every read and write is scoped to.
+ * @returns A database writer confined to the caller's own `users` row, denying everything else.
+ */
+export function wrapCustomerDatabaseWriter(
+    ctx: GenericMutationCtx<DataModel>,
+    db: GenericDatabaseWriter<DataModel>,
+    email: string,
+): GenericDatabaseWriter<DataModel> {
+    return wrapDatabaseWriter(ctx, db, customerRules(email), { defaultPolicy: 'deny' });
+}
+
+/**
  * Wraps a raw database READER in the fail-closed tenant RLS for {@link tenantRules}, pinning
  * `defaultPolicy: 'deny'` so any table without a rule (auth tables, global `featureFlags`, CMS content
  * tables, or a future un-scoped table) reads as empty rather than leaking rows. This is the reader the

@@ -1,11 +1,14 @@
 import 'server-only';
 
-import { preloadQuery } from 'convex/nextjs';
+import { fetchMutation, preloadQuery } from 'convex/nextjs';
 import type { Preloaded } from 'convex/react';
 import { makeFunctionReference } from 'convex/server';
 import type { Session } from 'next-auth';
 import {
+    ACCOUNT_PROFILE_PROVISION_MUTATION_NAME,
     ACCOUNT_PROFILE_QUERY_NAME,
+    type AccountProfileProvisionMutation,
+    type AccountProfileProvisionResult,
     type AccountProfileQuery,
     type AccountProfileSnapshot,
 } from '@/components/convex/account-profile-contract';
@@ -99,6 +102,29 @@ export function accountProfileQueryReference(): AccountProfileQuery {
 }
 
 /**
+ * Builds the typed reference for the first-visit provisioning mutation by wire
+ * name — the companion to {@link accountProfileQueryReference}.
+ *
+ * @returns The {@link AccountProfileProvisionMutation} reference for `account/profile:provision`.
+ */
+export function accountProfileProvisionReference(): AccountProfileProvisionMutation {
+    return makeFunctionReference<'mutation', Record<string, never>, AccountProfileProvisionResult>(
+        ACCOUNT_PROFILE_PROVISION_MUTATION_NAME,
+    );
+}
+
+/**
+ * The `fetchMutation` slice {@link preloadAccountProfile} uses to provision the
+ * customer's `users` row, narrowed to the provisioning mutation so tests can
+ * inject a spy without pulling the Convex HTTP client.
+ */
+export type AccountProfileProvisioner = (
+    mutation: AccountProfileProvisionMutation,
+    args: Record<string, never>,
+    options: { token: string },
+) => Promise<AccountProfileProvisionResult>;
+
+/**
  * Runs `preloadQuery` for the account profile island — STRICTLY inside the
  * dynamic PPR hole. This module reads the per-request session and env, so it
  * must never be imported into a `'use cache'` scope (the account page's cached
@@ -112,19 +138,35 @@ export function accountProfileQueryReference(): AccountProfileQuery {
  * mounting the live client module. Errors are deliberately swallowed: degrading
  * to the snapshot IS the SFREAD-08 contract, not a failure to surface.
  *
+ * Once a token has been minted — the AUTHENTICATED branch, and only there —
+ * the customer's platform `users` row is provisioned first (idempotent,
+ * claims-derived; storefront customers have no Auth.js adapter to create it),
+ * so the genuine first visit upgrades to live instead of bouncing off
+ * `UNKNOWN_USER`. A provisioning failure is swallowed and the preload still
+ * decides the outcome: if the row exists anyway the island goes live, and if
+ * not the preload's own rejection degrades to the snapshot as before. Every
+ * unauthenticated/degraded branch above returns BEFORE provisioning, so no
+ * row is ever created for a request that could not mint a valid token.
+ *
  * @param session - The authenticated customer session.
- * @param overrides - Injectable seams for tests: the token minter, the preloader, and the env.
+ * @param overrides - Injectable seams for tests: the token minter, the provisioner, the preloader, and the env.
  * @returns The serializable `Preloaded` handle for the island, or `null` to render snapshot-only.
  */
 export async function preloadAccountProfile(
     session: Session,
     overrides: {
         mint?: ConvexCustomerTokenMinter;
+        provision?: AccountProfileProvisioner;
         preload?: AccountProfilePreloader;
         env?: NodeJS.ProcessEnv;
     } = {},
 ): Promise<Preloaded<AccountProfileQuery> | null> {
-    const { mint = mintAccountConvexToken, preload = preloadQuery, env = process.env } = overrides;
+    const {
+        mint = mintAccountConvexToken,
+        provision = fetchMutation,
+        preload = preloadQuery,
+        env = process.env,
+    } = overrides;
 
     if (isAccountLiveIslandKilled(env)) {
         return null;
@@ -146,6 +188,13 @@ export async function preloadAccountProfile(
     });
     if (!token) {
         return null;
+    }
+
+    try {
+        await provision(accountProfileProvisionReference(), {}, { token });
+    } catch {
+        // Deliberate: the preload below is the decider. A transient provisioning failure must not
+        // downgrade a customer whose row already exists, and a missing row fails the preload anyway.
     }
 
     try {

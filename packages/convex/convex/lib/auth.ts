@@ -84,6 +84,28 @@ export async function getTrustedIdentity(ctx: AuthReadCtx): Promise<UserIdentity
 }
 
 /**
+ * Extracts the email claim a trusted identity must carry to be mapped onto the platform `users`
+ * table. Factored out of {@link resolveUserFromIdentity} because the customer tier
+ * (`authedQuery`/`authedMutation`, lib/authed.ts) needs the email BEFORE a `users` row exists —
+ * provisioning keys the new row on exactly this claim, so the requirement has to be assertable
+ * without also requiring the row.
+ *
+ * @param identity - A validated {@link UserIdentity} (already issuer-asserted).
+ * @returns The trimmed email claim.
+ * @throws {ConvexError} `IDENTITY_WITHOUT_EMAIL` when the identity carries no email claim.
+ */
+export function requireIdentityEmail(identity: UserIdentity): string {
+    const email = identity.email?.trim();
+    if (!email) {
+        throw new ConvexError({
+            code: AuthErrorCode.IDENTITY_WITHOUT_EMAIL,
+            message: 'Trusted identity carries no email claim to map to a user.',
+        });
+    }
+    return email;
+}
+
+/**
  * Resolves the platform `users` row backing the request's trusted identity.
  *
  * Maps the validated identity onto a user via its `email` claim and the `users.by_email` index —
@@ -101,14 +123,7 @@ export async function getTrustedIdentity(ctx: AuthReadCtx): Promise<UserIdentity
  */
 export async function resolveUserFromIdentity(ctx: AuthReadCtx): Promise<Doc<'users'>> {
     const identity = await getTrustedIdentity(ctx);
-
-    const email = identity.email?.trim();
-    if (!email) {
-        throw new ConvexError({
-            code: AuthErrorCode.IDENTITY_WITHOUT_EMAIL,
-            message: 'Trusted identity carries no email claim to map to a user.',
-        });
-    }
+    const email = requireIdentityEmail(identity);
 
     const user = await ctx.db
         .query('users')

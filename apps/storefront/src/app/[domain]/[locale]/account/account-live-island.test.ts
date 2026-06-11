@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 import type { AccountProfileQuery } from '@/components/convex/account-profile-contract';
 import {
     type AccountProfilePreloader,
+    type AccountProfileProvisioner,
+    accountProfileProvisionReference,
     accountProfileQueryReference,
     isAccountLiveIslandKilled,
     mintAccountConvexToken,
@@ -12,11 +14,12 @@ import {
     toAccountProfileSnapshot,
 } from './account-live-island';
 
-// The real `preloadQuery` performs a `no-store` HTTP round-trip against the
-// deployment; the seam under test injects its own preloader, so the module
-// import is stubbed to keep the suite network-free.
+// The real `preloadQuery`/`fetchMutation` perform `no-store` HTTP round-trips
+// against the deployment; the seam under test injects its own preloader and
+// provisioner, so the module import is stubbed to keep the suite network-free.
 vi.mock('convex/nextjs', () => ({
     preloadQuery: vi.fn(),
+    fetchMutation: vi.fn(),
 }));
 
 /**
@@ -102,6 +105,12 @@ describe('toAccountProfileSnapshot', () => {
 describe('accountProfileQueryReference', () => {
     it('addresses the identity-derived account profile query by wire name', () => {
         expect(getFunctionName(accountProfileQueryReference())).toBe('account/profile:get');
+    });
+});
+
+describe('accountProfileProvisionReference', () => {
+    it('addresses the first-visit provisioning mutation by wire name', () => {
+        expect(getFunctionName(accountProfileProvisionReference())).toBe('account/profile:provision');
     });
 });
 
@@ -216,6 +225,82 @@ describe('preloadAccountProfile', () => {
         });
 
         expect(result).toBeNull();
+        expect(preload).toHaveBeenCalledTimes(1);
+    });
+
+    it('provisions the customer users row on the authenticated branch, before the preload and with the same token', async () => {
+        const order: string[] = [];
+        const provision = vi.fn<AccountProfileProvisioner>(async () => {
+            order.push('provision');
+            return { created: true };
+        });
+        const preload = vi.fn<AccountProfilePreloader>(async () => {
+            order.push('preload');
+            return PRELOADED;
+        });
+
+        const result = await preloadAccountProfile(sessionFixture(), {
+            mint: async () => 'minted-jwt',
+            provision,
+            preload,
+            env: liveEnv(),
+        });
+
+        expect(result).toBe(PRELOADED);
+        expect(order).toEqual(['provision', 'preload']);
+        const call = provision.mock.calls[0];
+        expect(call).toBeDefined();
+        if (!call) {
+            return;
+        }
+        const [mutation, args, options] = call;
+        expect(getFunctionName(mutation)).toBe('account/profile:provision');
+        expect(args).toEqual({});
+        expect(options).toEqual({ token: 'minted-jwt' });
+    });
+
+    it('never provisions on the unauthenticated/degraded branches (kill switch, no email, no token)', async () => {
+        const provision = vi.fn<AccountProfileProvisioner>(async () => ({ created: true }));
+        const preload = vi.fn(async () => PRELOADED);
+
+        await preloadAccountProfile(sessionFixture(), {
+            mint: async () => 'token',
+            provision,
+            preload,
+            env: liveEnv({ STOREFRONT_ACCOUNT_LIVE_ISLAND: 'off' }),
+        });
+        await preloadAccountProfile(sessionFixture({ email: '   ' }), {
+            mint: async () => 'token',
+            provision,
+            preload,
+            env: liveEnv(),
+        });
+        await preloadAccountProfile(sessionFixture(), {
+            mint: async () => null,
+            provision,
+            preload,
+            env: liveEnv(),
+        });
+
+        expect(provision).not.toHaveBeenCalled();
+        expect(preload).not.toHaveBeenCalled();
+    });
+
+    it('still preloads when provisioning rejects — the preload decides live versus snapshot', async () => {
+        const provision = vi.fn<AccountProfileProvisioner>(async () => {
+            throw new TypeError('provisioning hiccup');
+        });
+        const preload = vi.fn<AccountProfilePreloader>(async () => PRELOADED);
+
+        const result = await preloadAccountProfile(sessionFixture(), {
+            mint: async () => 'minted-jwt',
+            provision,
+            preload,
+            env: liveEnv(),
+        });
+
+        expect(result).toBe(PRELOADED);
+        expect(provision).toHaveBeenCalledTimes(1);
         expect(preload).toHaveBeenCalledTimes(1);
     });
 });
