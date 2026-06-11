@@ -141,6 +141,58 @@ describe('<EditorListPage>', () => {
         expect(queryByTestId('empty-state')).toBeNull();
     });
 
+    it('renders a pager addressing the next bounded page, preserving the locale param', async () => {
+        const el = await EditorListPage({
+            manifest,
+            runtime: buildRuntime(async () => ({
+                docs: [doc('1', 'Hello')],
+                page: 1,
+                pageSize: 25,
+                totalDocs: 60,
+                totalPages: 3,
+            })),
+            params: { domain: 'a.test' },
+            searchParams: { locale: 'fr' },
+        });
+        const { getByTestId, queryByText, getByText } = render(el);
+        expect(getByTestId('list-pager').textContent).toContain('Page 1 of 3');
+        // First page: no Previous link, a Next link that keeps the resolved locale. (`Link`
+        // normalizes the pre-query trailing slash out of the rendered attribute; the runtime's
+        // `trailingSlash: true` restores it on navigation.)
+        expect(queryByText('Previous')).toBeNull();
+        expect(getByText('Next').getAttribute('href')).toBe('/a.test/content/pages?locale=fr&page=2');
+    });
+
+    it('marks the last page with a friendly end-of-list instead of a Next link', async () => {
+        const el = await EditorListPage({
+            manifest,
+            runtime: buildRuntime(async () => ({
+                docs: [doc('1', 'Hello')],
+                page: 3,
+                pageSize: 25,
+                totalDocs: 60,
+                totalPages: 3,
+            })),
+            params: { domain: 'a.test' },
+            searchParams: { locale: 'fr', page: '3' },
+        });
+        const { getByTestId, getByText, queryByText } = render(el);
+        expect(getByTestId('end-of-list').textContent).toBe('End of list');
+        expect(queryByText('Next')).toBeNull();
+        expect(getByText('Previous').getAttribute('href')).toBe('/a.test/content/pages?locale=fr&page=2');
+    });
+
+    it('omits the pager entirely for a single-page collection', async () => {
+        const el = await EditorListPage({
+            manifest,
+            runtime: buildRuntime(async () => onePage([doc('1', 'Hello')])),
+            params: { domain: 'a.test' },
+            searchParams: { locale: 'fr' },
+        });
+        const { queryByTestId } = render(el);
+        expect(queryByTestId('list-pager')).toBeNull();
+    });
+
     it('refuses an out-of-range page with notFound (typed CMS_LIST_PAGE_OUT_OF_RANGE)', async () => {
         await expect(
             EditorListPage({

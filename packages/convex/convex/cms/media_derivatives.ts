@@ -74,12 +74,13 @@ function clampUnit(value: number): number {
 
 /**
  * Normalizes an optional focal point onto the `{x, y} ∈ 0..1` contract, defaulting to the image
- * center.
+ * center. Exported for `cms/media:updateMediaMetadata`, which compares the stored and requested
+ * focal points on the SAME normalized scale to decide whether a derivative re-arm is warranted.
  *
  * @param focal - The candidate focal point, possibly absent.
  * @returns A complete, clamped focal point.
  */
-function clampFocal(focal?: { x: number; y: number }): { x: number; y: number } {
+export function clampFocal(focal?: { x: number; y: number }): { x: number; y: number } {
     return { x: clampUnit(focal?.x ?? 0.5), y: clampUnit(focal?.y ?? 0.5) };
 }
 

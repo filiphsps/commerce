@@ -3,8 +3,9 @@ import { ConvexError } from 'convex/values';
 import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Id } from '../_generated/dataModel';
+import type { Doc, Id } from '../_generated/dataModel';
 import schema from '../schema';
+import { CmsListErrorCode } from './list';
 import { CmsMediaErrorCode, isAllowedMediaMimeType } from './media';
 
 /**
@@ -36,6 +37,8 @@ const generateUploadUrlRef = makeFunctionReference<'mutation'>('cms/media:genera
 const finalizeUploadRef = makeFunctionReference<'mutation'>('cms/media:finalizeUpload');
 const listRef = makeFunctionReference<'query'>('cms/media:list');
 const byIdRef = makeFunctionReference<'query'>('cms/media:byId');
+const pageRef = makeFunctionReference<'query'>('cms/media:page');
+const updateMediaMetadataRef = makeFunctionReference<'mutation'>('cms/media:updateMediaMetadata');
 const saveDerivativesRef = makeFunctionReference<'mutation'>('cms/media_derivatives:saveDerivatives');
 
 /**
@@ -376,6 +379,245 @@ describe('cms media storage', () => {
 
         const listed = await asOp.query(listRef, {});
         expect(listed[0]?.url).toBe(media.url);
+    });
+
+    it('updates alt and caption post-upload, and an explicit null clears the caption', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const storageId = await storeBlob(t, new Uint8Array([0x25, 0x50, 0x44, 0x46]));
+        const media = await asOp.mutation(finalizeUploadRef, {
+            storageId,
+            filename: 'manual.pdf',
+            mimeType: 'application/pdf',
+            alt: 'manual',
+            caption: 'v1 manual',
+        });
+
+        const updated = await asOp.mutation(updateMediaMetadataRef, {
+            mediaId: media.id,
+            alt: 'Product manual',
+            caption: 'Second edition',
+        });
+        expect(updated.rearmedDerivatives).toBe(false);
+        expect(updated.media).toMatchObject({ alt: 'Product manual', caption: 'Second edition' });
+
+        const cleared = await asOp.mutation(updateMediaMetadataRef, { mediaId: media.id, caption: null });
+        expect(cleared.media.caption).toBeNull();
+        // The clear removed the optional column, not just the wire value.
+        const row = await t.run(async (ctx) => ctx.db.get(media.id as Id<'cmsMedia'>));
+        expect(row?.caption).toBeUndefined();
+        expect(row?.alt).toBe('Product manual');
+    });
+
+    it('denies a cross-tenant metadata update with the stable MEDIA_NOT_FOUND code', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        await seedTenant(t, 'op@b.example.com', 'shop_b');
+        const asA = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+        const asB = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|b', email: 'op@b.example.com' });
+
+        const storageId = await storeBlob(t, new Uint8Array([1, 2]));
+        const media = await asA.mutation(finalizeUploadRef, {
+            storageId,
+            filename: 'a.png',
+            mimeType: 'image/png',
+            alt: 'a',
+        });
+
+        let caught: unknown;
+        try {
+            await asB.mutation(updateMediaMetadataRef, { mediaId: media.id, alt: 'stolen' });
+        } catch (error) {
+            caught = error;
+        }
+        expect(codeOf(caught)).toBe(CmsMediaErrorCode.MEDIA_NOT_FOUND);
+        // The foreign row is untouched, and an unparseable id reads the same as a foreign one.
+        const fetched = await asA.query(byIdRef, { mediaId: media.id });
+        expect(fetched?.alt).toBe('a');
+        let garbled: unknown;
+        try {
+            await asA.mutation(updateMediaMetadataRef, { mediaId: 'not-a-convex-id', alt: 'x' });
+        } catch (error) {
+            garbled = error;
+        }
+        expect(codeOf(garbled)).toBe(CmsMediaErrorCode.MEDIA_NOT_FOUND);
+    });
+
+    it('re-arms every ready derivative on a focal move, and regeneration re-fulfills idempotently', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const originalId = await storeBlob(t, new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
+        const media = await asOp.mutation(finalizeUploadRef, {
+            storageId: originalId,
+            filename: 'photo.png',
+            mimeType: 'image/png',
+            alt: 'photo',
+        });
+
+        const sizes = ['thumbnail', 'card', 'feature', 'hero'] as const;
+        const firstPass = [];
+        for (const size of sizes) {
+            firstPass.push({ size, width: 100, height: 100, storageId: await storeBlob(t, new Uint8Array([7])) });
+        }
+        await asOp.mutation(saveDerivativesRef, {
+            mediaId: media.id,
+            original: { width: 2000, height: 1000 },
+            derivatives: firstPass,
+        });
+
+        // The raw `t.run` ctx is typed off the spread-erased schema (no app index typing), so this
+        // unscoped test-only read scans and filters instead of using `by_media`.
+        const readRows = async (): Promise<Doc<'cmsMediaDerivatives'>[]> =>
+            t.run(async (ctx) => {
+                const rows = await ctx.db.query('cmsMediaDerivatives').collect();
+                return rows.filter((row) => row.mediaId === (media.id as Id<'cmsMedia'>));
+            });
+        expect((await readRows()).every((row) => row.status === 'ready')).toBe(true);
+
+        const updated = await asOp.mutation(updateMediaMetadataRef, {
+            mediaId: media.id,
+            focal: { x: 0.2, y: 0.8 },
+        });
+        expect(updated.rearmedDerivatives).toBe(true);
+        expect(updated.media.focalX).toBe(0.2);
+        expect(updated.media.focalY).toBe(0.8);
+
+        // All four sizes are focal-aware cover crops, so the whole plan re-pends — keeping each
+        // row's storageId so the regeneration fulfillment can replace + delete the stale blob.
+        const rearmed = await readRows();
+        expect(rearmed).toHaveLength(sizes.length);
+        for (const row of rearmed) {
+            expect(row.status).toBe('pending');
+            expect(row.storageId).toBeDefined();
+        }
+        // A pending row falls back to the original's URL at read time, so nothing serves broken.
+        const midRegeneration = await asOp.query(byIdRef, { mediaId: media.id });
+        for (const size of sizes) {
+            expect(midRegeneration?.sizes?.[size]?.url).toBe(midRegeneration?.url);
+        }
+
+        // The CMSMEDIA-02 regeneration contract: re-fulfillment patches the SAME rows back to
+        // ready, replaces their storageIds, and deletes the superseded blobs — row count is stable.
+        const staleBlobIds = rearmed.map((row) => row.storageId);
+        const secondPass = [];
+        for (const size of sizes) {
+            secondPass.push({ size, width: 100, height: 100, storageId: await storeBlob(t, new Uint8Array([8])) });
+        }
+        await asOp.mutation(saveDerivativesRef, {
+            mediaId: media.id,
+            original: { width: 2000, height: 1000 },
+            focal: { x: 0.2, y: 0.8 },
+            derivatives: secondPass,
+        });
+        const regenerated = await readRows();
+        expect(regenerated).toHaveLength(sizes.length);
+        expect(regenerated.every((row) => row.status === 'ready')).toBe(true);
+        for (const staleId of staleBlobIds) {
+            expect(staleId).toBeDefined();
+            const blob = await t.run(async (ctx) => (staleId ? ctx.storage.get(staleId) : null));
+            expect(blob).toBeNull();
+        }
+    });
+
+    it('leaves ready derivatives alone when the focal point is unchanged or only text changes', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const originalId = await storeBlob(t, new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
+        const media = await asOp.mutation(finalizeUploadRef, {
+            storageId: originalId,
+            filename: 'still.png',
+            mimeType: 'image/png',
+            alt: 'still',
+        });
+        const derivatives = [];
+        for (const size of ['thumbnail', 'card', 'feature', 'hero'] as const) {
+            derivatives.push({ size, width: 10, height: 10, storageId: await storeBlob(t, new Uint8Array([3])) });
+        }
+        await asOp.mutation(saveDerivativesRef, {
+            mediaId: media.id,
+            original: { width: 800, height: 600 },
+            derivatives,
+        });
+
+        // Fulfillment defaulted the focal to center; resubmitting center is NOT a focal move.
+        const sameFocal = await asOp.mutation(updateMediaMetadataRef, {
+            mediaId: media.id,
+            alt: 'still life',
+            focal: { x: 0.5, y: 0.5 },
+        });
+        expect(sameFocal.rearmedDerivatives).toBe(false);
+        const textOnly = await asOp.mutation(updateMediaMetadataRef, { mediaId: media.id, caption: 'quiet' });
+        expect(textOnly.rearmedDerivatives).toBe(false);
+
+        const rows = await t.run(async (ctx) => {
+            const all = await ctx.db.query('cmsMediaDerivatives').collect();
+            return all.filter((row) => row.mediaId === (media.id as Id<'cmsMedia'>));
+        });
+        expect(rows.every((row) => row.status === 'ready')).toBe(true);
+        expect(textOnly.media.alt).toBe('still life');
+    });
+
+    it('pages through the full library with list.ts addressing metadata, newest first', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        for (let index = 1; index <= 5; index += 1) {
+            const storageId = await storeBlob(t, new Uint8Array([index]));
+            await asOp.mutation(finalizeUploadRef, {
+                storageId,
+                filename: `doc-${index}.pdf`,
+                mimeType: 'application/pdf',
+                alt: `doc ${index}`,
+            });
+        }
+
+        const first = await asOp.query(pageRef, { page: 1, pageSize: 2 });
+        expect(first).toMatchObject({ page: 1, pageSize: 2, totalDocs: 5, totalPages: 3, isDone: false });
+        expect(first.docs.map((doc: { filename: string }) => doc.filename)).toEqual(['doc-5.pdf', 'doc-4.pdf']);
+
+        const second = await asOp.query(pageRef, { page: 2, pageSize: 2 });
+        expect(second.docs.map((doc: { filename: string }) => doc.filename)).toEqual(['doc-3.pdf', 'doc-2.pdf']);
+        expect(second.isDone).toBe(false);
+
+        const last = await asOp.query(pageRef, { page: 3, pageSize: 2 });
+        expect(last.docs.map((doc: { filename: string }) => doc.filename)).toEqual(['doc-1.pdf']);
+        expect(last.isDone).toBe(true);
+
+        // An empty library still serves page 1 (the friendly zero-state, not a refusal).
+        await seedTenant(t, 'op@b.example.com', 'shop_b');
+        const asB = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|b', email: 'op@b.example.com' });
+        const empty = await asB.query(pageRef, {});
+        expect(empty).toMatchObject({ docs: [], page: 1, totalDocs: 0, totalPages: 1, isDone: true });
+    });
+
+    it('refuses a page past the last addressable page with the shared typed code', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const storageId = await storeBlob(t, new Uint8Array([1]));
+        await asOp.mutation(finalizeUploadRef, {
+            storageId,
+            filename: 'only.pdf',
+            mimeType: 'application/pdf',
+            alt: 'only',
+        });
+
+        let caught: unknown;
+        try {
+            await asOp.query(pageRef, { page: 2, pageSize: 25 });
+        } catch (error) {
+            caught = error;
+        }
+        // The SAME code `cms/list:list` throws, so the editor shell's notFound mapping inherits.
+        expect(codeOf(caught)).toBe(CmsListErrorCode.PAGE_OUT_OF_RANGE);
     });
 
     it('matches mime types case-insensitively, with parameters, and fails closed on garbage', () => {

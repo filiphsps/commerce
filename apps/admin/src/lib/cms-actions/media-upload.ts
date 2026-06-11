@@ -3,10 +3,8 @@
 import 'server-only';
 
 import { MEDIA_MIME_TYPES } from '@nordcom/commerce-cms/media/mime-types';
-import { generateImageDerivativePass } from '@nordcom/commerce-cms/media/derive';
 import {
     EmptyUploadFileError,
-    MediaStorageUploadError,
     MissingRequiredFieldError,
     MissingUploadFileError,
     UnsupportedUploadMimeTypeError,
@@ -14,82 +12,9 @@ import {
 import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
 
+import { fulfillDerivativePlan, postBlobToStorage } from '@/lib/cms-actions/media-pipeline';
 import { mediaStorageTransport } from '@/lib/editor-convex-bridge';
 import { getAuthedCmsCtx } from '@/lib/cms-ctx';
-
-/**
- * POSTs one blob's bytes to a freshly issued Convex file-storage upload URL and returns the stored
- * blob's id — the byte-sink leg shared by the original upload and every generated derivative. The
- * `Content-Type` header carries the blob's mime type so Convex records it as the blob's
- * `contentType`, which is what `finalizeUpload`'s allowlist check trusts over the client's claim.
- *
- * @param mimeType - The blob's mime type.
- * @param data - The blob's bytes.
- * @returns The Convex storage id of the stored blob.
- * @throws {MediaStorageUploadError} When the byte sink responds non-2xx or without a `storageId`.
- */
-async function postBlobToStorage(mimeType: string, data: Uint8Array): Promise<string> {
-    const { url } = await mediaStorageTransport.generateUploadUrl();
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': mimeType },
-        body: data as unknown as BodyInit,
-    });
-    if (!response.ok) {
-        throw new MediaStorageUploadError(response.status);
-    }
-    const body = (await response.json()) as { storageId?: unknown };
-    if (typeof body.storageId !== 'string' || body.storageId.length === 0) {
-        throw new MediaStorageUploadError(response.status, 'byte sink response carried no storageId');
-    }
-    return body.storageId;
-}
-
-/**
- * Runs the Node-side sharp derivative pass for a finalized image upload and persists the results
- * through `cms/media_derivatives:saveDerivatives` — the CMSMEDIA-02 option-(b) production caller:
- * sharp cannot run in the Convex isolate, so the four frozen sizes are generated here in the
- * trusted Node layer, each derivative blob is POSTed to its own storage byte sink, and only the
- * resulting metadata travels into Convex. A non-image source is a no-op (finalize scheduled zero
- * derivative work for it).
- *
- * @param args.mediaId - The finalized `cmsMedia` document id whose plan this fulfills.
- * @param args.mimeType - The finalize-verified effective mime type.
- * @param args.data - The original upload's bytes.
- * @param args.focal - Optional focal point in `0..1` unit coordinates (defaults to center).
- * @throws {UnsupportedUploadMimeTypeError} When the bytes claim to be an image but cannot be decoded.
- * @throws {MediaStorageUploadError} When a derivative blob's byte POST fails.
- */
-async function fulfillDerivativePlan(args: {
-    mediaId: string;
-    mimeType: string;
-    data: Uint8Array;
-    focal?: { x: number; y: number };
-}): Promise<void> {
-    const pass = await generateImageDerivativePass({
-        data: args.data,
-        mimeType: args.mimeType,
-        focal: args.focal ?? null,
-    });
-    if (!pass) return;
-
-    const derivatives = [];
-    for (const derivative of pass.derivatives) {
-        const storageId = await postBlobToStorage(derivative.mimeType, derivative.data);
-        derivatives.push({
-            size: derivative.size,
-            storageId,
-            width: derivative.width,
-            height: derivative.height,
-        });
-    }
-    await mediaStorageTransport.saveDerivatives({
-        mediaId: args.mediaId,
-        original: pass.original,
-        ...(args.focal ? { focal: args.focal } : {}),
-        derivatives,
-    });
-}
 
 /**
  * Whether a mime type is inside the frozen media allowlist (`MEDIA_MIME_TYPES`): parameters

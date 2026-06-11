@@ -133,6 +133,23 @@ export declare const api: {
       >;
       generateUploadUrl: FunctionReference<"mutation", "public", {}, any>;
       list: FunctionReference<"query", "public", { limit?: number }, any>;
+      page: FunctionReference<
+        "query",
+        "public",
+        { page?: number; pageSize?: number },
+        any
+      >;
+      updateMediaMetadata: FunctionReference<
+        "mutation",
+        "public",
+        {
+          alt?: string;
+          caption?: string | null;
+          focal?: { x: number; y: number };
+          mediaId: string;
+        },
+        any
+      >;
     };
     media_derivatives: {
       byMedia: FunctionReference<

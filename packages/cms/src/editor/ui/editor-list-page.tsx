@@ -30,10 +30,13 @@ export type EditorListPageProps<TSlug extends CollectionSlug = CollectionSlug> =
  * (redirecting when absent), enforces list access, fetches one page through
  * the bridge's bounded Convex list (`cms/list:list` — CMSDATA-11), surfaces
  * the aggregate `totalDocs` count, and renders the runtime's `Table` (or
- * `EmptyState` when zero docs). Two typed refusals from the bounded read map
- * to UI states instead of crashes: a page past the last addressable page is
- * refused with `notFound()`, and a tenant whose collection crosses the scan
- * budget gets a friendly bounded-list notice.
+ * `EmptyState` when zero docs). Multi-page collections get a pager (previous/
+ * next links addressing the bounded read's 1-based `page` param, other search
+ * params preserved) with a friendly end-of-list marker on the last page. Two
+ * typed refusals from the bounded read map to UI states instead of crashes: a
+ * page past the last addressable page is refused with `notFound()`, and a
+ * tenant whose collection crosses the scan budget gets a friendly bounded-list
+ * notice.
  *
  * @param props - {@link EditorListPageProps} carrying manifest, runtime, params, and search params.
  * @returns The rendered list page with a page header, document count, optional new-doc link, and table.
@@ -132,6 +135,45 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
         updatedAt: new Date(doc.updatedAt).toISOString(),
     }));
 
+    /**
+     * Builds the href that addresses another page of this list, preserving every other search
+     * param (locale included) so paging never drops the resolved locale back into the redirect.
+     *
+     * @param target - The 1-based page to address.
+     * @returns The list route with the page param applied.
+     */
+    const pageHref = (target: number): Route => {
+        const next = new URLSearchParams();
+        for (const [key, value] of Object.entries(searchParams)) {
+            if (key !== 'page' && typeof value === 'string') next.set(key, value);
+        }
+        next.set('page', String(target));
+        return `${manifest.routes.basePath(domain)}?${next.toString()}` as Route;
+    };
+
+    const pager =
+        result.totalPages > 1 ? (
+            <nav aria-label="Pagination" data-testid="list-pager" className="flex items-center gap-4 text-sm">
+                {result.page > 1 ? (
+                    <Link href={pageHref(result.page - 1)} className="text-primary hover:underline">
+                        Previous
+                    </Link>
+                ) : null}
+                <span className="text-muted-foreground">
+                    Page {result.page} of {result.totalPages}
+                </span>
+                {result.page < result.totalPages ? (
+                    <Link href={pageHref(result.page + 1)} className="text-primary hover:underline">
+                        Next
+                    </Link>
+                ) : (
+                    <span data-testid="end-of-list" className="text-muted-foreground">
+                        End of list
+                    </span>
+                )}
+            </nav>
+        ) : null;
+
     const keyField = manifest.routes.keyField ?? 'id';
     return (
         <>
@@ -155,6 +197,7 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
                     bulkActions={bulkActions}
                 />
             )}
+            {pager}
         </>
     );
 }

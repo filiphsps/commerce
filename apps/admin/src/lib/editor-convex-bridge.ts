@@ -51,11 +51,16 @@ type ConvexCmsVersionRow = {
     createdAt: number;
 };
 
-/** The slice of `cms/media:list`'s `Media` wire shape the relationship-option projection reads. */
-type ConvexMediaRow = {
-    id: string;
-    alt: string;
-    filename: string;
+/**
+ * The wire shape of Convex `cms/media:page`'s result — the paginated media library read
+ * (`CmsMediaPage`), mirroring `cms/list:list`'s addressing metadata with `Media`-shaped docs.
+ */
+type ConvexMediaPageResult = {
+    docs: Media[];
+    page: number;
+    pageSize: number;
+    totalDocs: number;
+    totalPages: number;
 };
 
 /**
@@ -248,16 +253,22 @@ export const editorConvexBridge: EditorConvexBridge = {
     },
     list: async ({ collection, page, pageSize }): Promise<EditorCmsListPage> => {
         if (collection === 'media') {
-            // Media lives on the tenant `cmsMedia` table behind `cms/media:list`, not in
-            // `cmsDocuments` (CUTOVER-06: the CMSDATA-07 empty-list fix). The read is a single
-            // server-clamped window (max 100), so the library serves as ONE page regardless of the
-            // requested page number — pagination re-enters if/when the Convex side grows a
-            // paginated media read.
-            const media = await operatorQuery<Media[]>('cms/media:list', {
-                limit: pageSize ?? RELATIONSHIP_OPTIONS_LIMIT,
+            // Media lives on the tenant `cmsMedia` table behind `cms/media:page`, not in
+            // `cmsDocuments` (CUTOVER-06: the CMSDATA-07 empty-list fix). The paginated read
+            // shares `cms/list:list`'s addressing metadata AND its typed refusals
+            // (`CMS_LIST_PAGE_OUT_OF_RANGE`, `CMS_BOUNDED_SCAN_EXCEEDED`), so the editor list
+            // shell pages the library exactly like a content collection.
+            const result = await operatorQuery<ConvexMediaPageResult>('cms/media:page', {
+                ...(page !== undefined ? { page } : {}),
+                ...(pageSize !== undefined ? { pageSize } : {}),
             });
-            const docs = media.map(mediaToEditorDocument);
-            return { docs, page: 1, pageSize: docs.length, totalDocs: docs.length, totalPages: 1 };
+            return {
+                docs: result.docs.map(mediaToEditorDocument),
+                page: result.page,
+                pageSize: result.pageSize,
+                totalDocs: result.totalDocs,
+                totalPages: result.totalPages,
+            };
         }
         const result = await operatorQuery<ConvexCmsListResult>('cms/list:list', {
             collection,
@@ -293,16 +304,16 @@ export const editorConvexBridge: EditorConvexBridge = {
         return rows.map((row) => ({ versionId: row._id, status: row.status, createdAt: row.createdAt }));
     },
     listRelationshipOptions: async ({ relationTo }): Promise<EditorRelationshipOption[]> => {
-        // Media lives in its own tenant table behind `cms/media:list`; every CMS content
-        // collection routes through the page-bounded `cms/list:list`. Both reads clamp the
-        // requested window server-side, so this prefetch can never unbound. A `relationTo`
+        // Media lives in its own tenant table behind the paginated `cms/media:page`; every CMS
+        // content collection routes through the page-bounded `cms/list:list`. Both reads clamp
+        // the requested window server-side, so this prefetch can never unbound. A `relationTo`
         // outside the cmsDocuments world (e.g. the platform `shops` table) simply lists zero
         // documents — a degraded picker, never a crash.
         if (relationTo === 'media') {
-            const media = await operatorQuery<ConvexMediaRow[]>('cms/media:list', {
-                limit: RELATIONSHIP_OPTIONS_LIMIT,
+            const result = await operatorQuery<ConvexMediaPageResult>('cms/media:page', {
+                pageSize: RELATIONSHIP_OPTIONS_LIMIT,
             });
-            return media.map((row) => ({ id: row.id, label: row.alt || row.filename }));
+            return result.docs.map((row) => ({ id: row.id, label: row.alt || row.filename || row.id }));
         }
         const page = await operatorQuery<ConvexCmsListResult>('cms/list:list', {
             collection: relationTo,
@@ -383,4 +394,20 @@ export const mediaStorageTransport = {
     }): Promise<void> => {
         await operatorMutation<unknown>('cms/media_derivatives:saveDerivatives', args);
     },
+    /**
+     * Updates a media row's post-upload editorial metadata (alt/caption/focal). A focal move
+     * re-arms the derivative plan Convex-side and reports it via `rearmedDerivatives`, which is
+     * the caller's cue to run the Node-side sharp regeneration pass (the CMSMEDIA-02 fulfillment
+     * leg) against the original's bytes.
+     *
+     * @param args - The media id plus the metadata fields to update; `caption: null` clears.
+     * @returns The updated `Media` wire document and the derivative re-arm signal.
+     */
+    updateMediaMetadata: (args: {
+        mediaId: string;
+        alt?: string;
+        caption?: string | null;
+        focal?: { x: number; y: number };
+    }): Promise<{ media: Media; rearmedDerivatives: boolean }> =>
+        operatorMutation<{ media: Media; rearmedDerivatives: boolean }>('cms/media:updateMediaMetadata', args),
 };

@@ -3,9 +3,11 @@ import type { GenericDatabaseReader, StorageReader } from 'convex/server';
 import { ConvexError, v } from 'convex/values';
 
 import type { DataModel, Doc } from '../_generated/dataModel';
+import { countWithinBudget } from '../lib/scan_budget';
 import { tenantMutation, tenantQuery } from '../lib/tenant';
 import { MEDIA_DERIVATIVE_SIZE_NAMES } from '../tables/cms_media';
-import { isImageMimeType, readDerivativeRows, scheduleDerivativePlan } from './media_derivatives';
+import { clampPageSize, CmsListErrorCode, normalizePage } from './list';
+import { clampFocal, isImageMimeType, readDerivativeRows, scheduleDerivativePlan } from './media_derivatives';
 
 /**
  * Stable string codes carried on every {@link ConvexError} the media storage layer throws, so call
@@ -19,6 +21,8 @@ export const CmsMediaErrorCode = {
     UNSUPPORTED_MIME_TYPE: 'CMS_MEDIA_UNSUPPORTED_MIME_TYPE',
     /** A finalize referenced a storage id with no stored blob behind it. */
     BLOB_NOT_FOUND: 'CMS_MEDIA_BLOB_NOT_FOUND',
+    /** A metadata update addressed a media row that is absent, foreign, or unparseable. */
+    MEDIA_NOT_FOUND: 'CMS_MEDIA_NOT_FOUND',
 } as const;
 
 /**
@@ -296,5 +300,161 @@ export const byId = tenantQuery({
         if (!normalized) return null;
         const doc = await ctx.db.get(normalized);
         return doc ? resolveMediaUrls(ctx, doc) : null;
+    },
+});
+
+/**
+ * One page of the tenant's media library — the wire shape {@link page} returns. Mirrors
+ * `cms/list.ts`'s `CmsListPage` addressing metadata (1-based page coordinates over a
+ * budget-counted total) with the docs already projected onto the frozen `Media` contract, so the
+ * admin bridge binds both list reads to one pagination model.
+ */
+export type CmsMediaPage = {
+    /** The page's media documents, newest first, with read-time serving URLs resolved. */
+    readonly docs: Media[];
+    /** The 1-based page index actually served. */
+    readonly page: number;
+    /** The page size in force. */
+    readonly pageSize: number;
+    /** Total media documents for the tenant, from a bounded counted scan. */
+    readonly totalDocs: number;
+    /** Last addressable page = `ceil(totalDocs / pageSize)`, at least 1. */
+    readonly totalPages: number;
+    /** Whether the served page is the final page of results. */
+    readonly isDone: boolean;
+};
+
+/**
+ * Tenant-scoped, page-bounded media library read — the paginated successor to the single
+ * server-clamped {@link list} window, built on the same `cms/list.ts`/scan-budget conventions:
+ * `totalDocs` from {@link countWithinBudget} (an over-large library fails with the typed
+ * `CMS_BOUNDED_SCAN_EXCEEDED` instead of truncating silently), the requested page range-checked
+ * against `totalPages` (the SAME `CMS_LIST_PAGE_OUT_OF_RANGE` code as `cms/list:list`, so the
+ * editor shell's existing typed-refusal handling applies unchanged), and the page reached by
+ * walking Convex's native cursor pagination — never an unbounded `.collect()`.
+ *
+ * @returns The {@link CmsMediaPage} for the requested page.
+ * @throws {ConvexError} `CMS_LIST_PAGE_OUT_OF_RANGE` when `page` exceeds the last addressable
+ *   page; any tenant-resolution failure from the `tenantQuery` constructor.
+ * @throws {BoundedScanExceededError} When counting the tenant's media reaches the scan budget.
+ */
+export const page = tenantQuery({
+    args: { page: v.optional(v.number()), pageSize: v.optional(v.number()) },
+    handler: async (ctx, args): Promise<CmsMediaPage> => {
+        const size = clampPageSize(args.pageSize);
+        const requestedPage = normalizePage(args.page);
+
+        // A fresh, single-use query per read — the same indexed range is re-issued for the count
+        // and for every page-walk step rather than reusing a drained iterator.
+        const scoped = () =>
+            ctx.db
+                .query('cmsMedia')
+                .withIndex('by_shop', (q) => q.eq('shopId', ctx.shopId))
+                .order('desc');
+
+        const totalDocs = await countWithinBudget(scoped());
+        const totalPages = Math.max(1, Math.ceil(totalDocs / size));
+
+        if (requestedPage > totalPages) {
+            throw new ConvexError({
+                code: CmsListErrorCode.PAGE_OUT_OF_RANGE,
+                message: `Page ${requestedPage} is past the last addressable page (${totalPages}).`,
+                requestedPage,
+                totalPages,
+            });
+        }
+
+        let cursor: string | null = null;
+        let result = await scoped().paginate({ numItems: size, cursor });
+        for (let walked = 2; walked <= requestedPage; walked += 1) {
+            cursor = result.continueCursor;
+            result = await scoped().paginate({ numItems: size, cursor });
+        }
+
+        return {
+            docs: await Promise.all(result.page.map((doc) => resolveMediaUrls(ctx, doc))),
+            page: requestedPage,
+            pageSize: size,
+            totalDocs,
+            totalPages,
+            isDone: result.isDone,
+        };
+    },
+});
+
+/**
+ * Updates a media row's post-upload editorial metadata — alt text, caption, and the focal point —
+ * closing the immutability gap the cutover left (media rows previously froze at finalize). Each
+ * field updates only when supplied; an explicit `null` caption CLEARS the stored caption (the
+ * optional column is removed, reading as `null` on the wire).
+ *
+ * A focal change on an image RE-ARMS the derivative plan: every `ready` row flips back to
+ * `pending` — all four frozen sizes are focal-aware cover crops (`resolveCoverCrop` in
+ * `@nordcom/commerce-cms/media`), so a focal move invalidates each of them — and
+ * {@link scheduleDerivativePlan} re-runs for its established idempotency (focal persisted onto the
+ * media row, any missing plan rows backfilled, never a duplicate). Re-pended rows KEEP their
+ * `storageId`: per the CMSMEDIA-02 regeneration contract, the next `saveDerivatives` fulfillment
+ * replaces the blob and deletes the superseded one inside its own transaction, and a `pending` row
+ * meanwhile serves the original's URL at read time, so nothing ever renders broken.
+ * `rearmedDerivatives` tells the trusted Node caller whether to run the sharp regeneration pass;
+ * an unchanged focal (or a non-image) schedules nothing.
+ *
+ * @returns The updated document on the frozen `Media` contract plus the re-arm signal.
+ * @throws {ConvexError} `CMS_MEDIA_NOT_FOUND` when the id is absent, foreign (RLS-filtered), or
+ *   unparseable; any tenant-resolution failure from the `tenantMutation` constructor.
+ */
+export const updateMediaMetadata = tenantMutation({
+    args: {
+        mediaId: v.string(),
+        alt: v.optional(v.string()),
+        caption: v.optional(v.union(v.string(), v.null())),
+        focal: v.optional(v.object({ x: v.number(), y: v.number() })),
+    },
+    handler: async (ctx, { mediaId, alt, caption, focal }): Promise<{ media: Media; rearmedDerivatives: boolean }> => {
+        const normalized = ctx.db.normalizeId('cmsMedia', mediaId);
+        const doc = normalized ? await ctx.db.get(normalized) : null;
+        if (!doc) {
+            throw new ConvexError({
+                code: CmsMediaErrorCode.MEDIA_NOT_FOUND,
+                message: 'No media row for this id.',
+            });
+        }
+
+        const now = Date.now();
+        await ctx.db.patch(doc._id, {
+            ...(alt === undefined ? {} : { alt }),
+            // `undefined` removes the optional column — Convex's field-clear semantics.
+            ...(caption === undefined ? {} : { caption: caption ?? undefined }),
+            updatedAt: now,
+        });
+
+        let rearmedDerivatives = false;
+        if (focal !== undefined && isImageMimeType(doc.mimeType)) {
+            const next = clampFocal(focal);
+            const current = clampFocal(
+                doc.focalX !== undefined && doc.focalY !== undefined ? { x: doc.focalX, y: doc.focalY } : undefined,
+            );
+            await ctx.db.patch(doc._id, { focalX: next.x, focalY: next.y, updatedAt: now });
+            if (next.x !== current.x || next.y !== current.y) {
+                for (const row of await readDerivativeRows(ctx.db, doc._id)) {
+                    if (row.status === 'ready') {
+                        await ctx.db.patch(row._id, { status: 'pending', updatedAt: now });
+                    }
+                }
+                await scheduleDerivativePlan(ctx, { mediaId: doc._id, mimeType: doc.mimeType, focal: next });
+                rearmedDerivatives = true;
+            }
+        }
+
+        const updated = await ctx.db.get(doc._id);
+        if (!updated) {
+            // Unreachable in practice (same transaction as the patches); guarded so the projection
+            // never fabricates a row.
+            throw new ConvexError({
+                code: CmsMediaErrorCode.MEDIA_NOT_FOUND,
+                message: 'Media row vanished within its own transaction.',
+            });
+        }
+        return { media: await resolveMediaUrls(ctx, updated), rearmedDerivatives };
     },
 });

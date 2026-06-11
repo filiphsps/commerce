@@ -5,8 +5,10 @@ import type { Metadata, Route } from 'next';
 import { notFound } from 'next/navigation';
 import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
 import { PageHeader } from '@/components/shell/page-header';
+import { updateMediaMetadataAction } from '@/lib/cms-actions/media-metadata';
 import { getMediaById } from '@/lib/editor-convex-bridge';
 import { getAuthedCmsCtx } from '@/lib/cms-ctx';
+import { MediaMetadataForm } from './metadata-form';
 
 export const metadata: Metadata = { title: 'Media' };
 
@@ -46,12 +48,13 @@ function MetaRow({ label, value }: { label: string; value: string }) {
 }
 
 /**
- * Read-only media detail page over the Convex `cmsMedia` authority (CUTOVER-06). Media documents
- * are immutable post-upload on the native pipeline — the original blob, its finalize-verified
- * metadata, and the four CMSGATE-02 derivative sizes — so this surface presents rather than edits:
- * re-authoring is a fresh upload, and a `cmsMedia` metadata mutation (alt/caption edits) is future
- * Convex-side work. Replaces the Payload-era `EditorEditPage` mount whose generated save actions
- * would have forked media into `cmsDocuments`, away from the real table.
+ * Media detail page over the Convex `cmsMedia` authority (CUTOVER-06). The STORAGE half stays
+ * immutable post-upload — the original blob, its finalize-verified mime/filesize, and the four
+ * CMSGATE-02 derivative sizes; re-authoring the asset is a fresh upload. The EDITORIAL half
+ * (alt/caption/focal) edits in place through `updateMediaMetadataAction` →
+ * `cms/media:updateMediaMetadata` (POLISH-01): a focal move re-arms the derivative plan and the
+ * action re-runs the sharp pass. Replaces the Payload-era `EditorEditPage` mount whose generated
+ * save actions would have forked media into `cmsDocuments`, away from the real table.
  *
  * @param props - Route params carrying the tenant domain and the media document id.
  * @returns The rendered detail view.
@@ -102,8 +105,6 @@ export default async function MediaDetailPage({ params }: Props) {
                 )}
 
                 <dl className="flex flex-col gap-2">
-                    <MetaRow label="Alt text" value={media.alt || '—'} />
-                    <MetaRow label="Caption" value={media.caption ?? '—'} />
                     <MetaRow label="Mime type" value={media.mimeType ?? '—'} />
                     <MetaRow label="File size" value={formatFilesize(media.filesize)} />
                     <MetaRow
@@ -112,6 +113,22 @@ export default async function MediaDetailPage({ params }: Props) {
                     />
                     <MetaRow label="Uploaded" value={new Date(media.createdAt).toLocaleString()} />
                 </dl>
+
+                <section className="flex max-w-xl flex-col gap-3">
+                    <h2 className="font-semibold text-base">Metadata</h2>
+                    <MediaMetadataForm
+                        mediaId={media.id}
+                        alt={media.alt}
+                        caption={media.caption ?? null}
+                        isImage={isImage}
+                        focal={
+                            typeof media.focalX === 'number' && typeof media.focalY === 'number'
+                                ? { x: media.focalX, y: media.focalY }
+                                : null
+                        }
+                        updateAction={updateMediaMetadataAction.bind(null, domain)}
+                    />
+                </section>
 
                 {isImage && (
                     <section className="flex flex-col gap-3">

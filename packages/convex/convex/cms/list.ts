@@ -29,24 +29,26 @@ const MAX_PAGE_SIZE = 100;
 
 /**
  * Normalizes a caller-supplied page size to a positive integer within `[1, MAX_PAGE_SIZE]`, falling
- * back to {@link DEFAULT_PAGE_SIZE} for absent or non-finite input.
+ * back to {@link DEFAULT_PAGE_SIZE} for absent or non-finite input. Exported so `cms/media:page`
+ * clamps with the SAME bounds — one definition of "page-bounded" across the cms list reads.
  *
  * @param requested - The raw `pageSize` argument.
  * @returns A safe page size.
  */
-function clampPageSize(requested: number | undefined): number {
+export function clampPageSize(requested: number | undefined): number {
     if (requested === undefined || !Number.isFinite(requested)) return DEFAULT_PAGE_SIZE;
     return Math.min(MAX_PAGE_SIZE, Math.max(1, Math.floor(requested)));
 }
 
 /**
  * Normalizes a caller-supplied 1-based page number to a positive integer, falling back to the first
- * page for absent or non-finite input.
+ * page for absent or non-finite input. Exported for `cms/media:page` (same rationale as
+ * {@link clampPageSize}).
  *
  * @param requested - The raw `page` argument.
  * @returns A 1-based page index `>= 1`.
  */
-function normalizePage(requested: number | undefined): number {
+export function normalizePage(requested: number | undefined): number {
     if (requested === undefined || !Number.isFinite(requested)) return 1;
     return Math.max(1, Math.floor(requested));
 }
