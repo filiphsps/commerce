@@ -6,6 +6,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Form, type FormState, useField } from '../form';
 import { type EditorDocumentCreateBinding, EditorFormToolbar } from './editor-form-toolbar';
 
+const { mockRefresh } = vi.hoisted(() => ({ mockRefresh: vi.fn() }));
+vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh: mockRefresh }) }));
+
 const Toolbar = vi.fn((props: { hasDrafts: boolean }) => (
     <div data-testid="t" data-has-drafts={String(props.hasDrafts)} />
 ));
@@ -25,7 +28,7 @@ describe('<EditorFormToolbar>', () => {
         const { getByTestId } = renderInForm(
             <EditorFormToolbar
                 Toolbar={Toolbar as never}
-                saveDraftAction={async () => {}}
+                saveDraftAction={async () => ({})}
                 publishAction={async () => {}}
                 autosave={{ interval: 2000 }}
             />,
@@ -37,7 +40,7 @@ describe('<EditorFormToolbar>', () => {
         const { getByTestId } = renderInForm(
             <EditorFormToolbar
                 Toolbar={Toolbar as never}
-                saveDraftAction={async () => {}}
+                saveDraftAction={async () => ({})}
                 publishAction={async () => {}}
             />,
         );
@@ -48,7 +51,7 @@ describe('<EditorFormToolbar>', () => {
         const { getByTestId } = renderInForm(
             <EditorFormToolbar
                 Toolbar={Toolbar as never}
-                saveDraftAction={async () => {}}
+                saveDraftAction={async () => ({})}
                 publishAction={async () => {}}
                 localeSwitcher={<div data-testid="switcher" />}
             />,
@@ -60,7 +63,7 @@ describe('<EditorFormToolbar>', () => {
         const { queryByTestId } = renderInForm(
             <EditorFormToolbar
                 Toolbar={Toolbar as never}
-                saveDraftAction={async () => {}}
+                saveDraftAction={async () => ({})}
                 publishAction={async () => {}}
             />,
         );
@@ -232,6 +235,159 @@ describe('<EditorFormToolbar> interval autosave', () => {
         const second = postedPayload(save, 1);
         expect(second.title).toBe('Typed mid-flight');
         expect(second.summary).toBe('Edited summary');
+    });
+});
+
+describe('<EditorFormToolbar> publish-superseded-base notice (POLISH-02)', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.clearAllMocks();
+    });
+
+    const NOTICE_TEXT = /started before the latest publish/;
+
+    /**
+     * Renders the toolbar plus edit probes inside the real `<Form>` with the
+     * 2s autosave armed against the spied draft action — the surface the
+     * stale-base notice lives on.
+     *
+     * @param save - The draft action spy whose resolution drives the notice.
+     * @param probes - Edit probes to mount alongside the toolbar.
+     * @returns The render result.
+     */
+    const renderNoticeSurface = (save: ReturnType<typeof vi.fn>, probes: ReactNode) =>
+        render(
+            <Form action={async () => {}} initialState={{ title: clean('Server') }}>
+                {probes}
+                <EditorFormToolbar
+                    Toolbar={Toolbar as never}
+                    saveDraftAction={save}
+                    publishAction={async () => {}}
+                    autosave={{ interval: 2000 }}
+                />
+            </Form>,
+        );
+
+    it('surfaces the notice when a draft save reports the conflict marker', async () => {
+        const save = vi.fn().mockResolvedValue({ conflict: 'publish-superseded-base' });
+        const { getByTestId, getByRole } = renderNoticeSurface(save, <EditProbe path="title" next="Diverged" />);
+
+        act(() => {
+            fireEvent.click(getByTestId('edit-title-Diverged'));
+        });
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+
+        expect(save).toHaveBeenCalledTimes(1);
+        expect(getByRole('status').textContent).toMatch(NOTICE_TEXT);
+    });
+
+    it('renders no notice when saves resolve without the marker', async () => {
+        const save = vi.fn().mockResolvedValue({});
+        const { getByTestId, queryByRole } = renderNoticeSurface(save, <EditProbe path="title" next="Diverged" />);
+
+        act(() => {
+            fireEvent.click(getByTestId('edit-title-Diverged'));
+        });
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+
+        expect(save).toHaveBeenCalledTimes(1);
+        expect(queryByRole('status')).toBeNull();
+    });
+
+    it('keeps autosaving while the notice shows, and the refresh affordance clears it', async () => {
+        const save = vi.fn().mockResolvedValue({ conflict: 'publish-superseded-base' });
+        const { getByTestId, getByRole, queryByRole, getByText } = renderNoticeSurface(
+            save,
+            <>
+                <EditProbe path="title" next="First" />
+                <EditProbe path="title" next="Second" />
+            </>,
+        );
+
+        act(() => {
+            fireEvent.click(getByTestId('edit-title-First'));
+        });
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+        expect(getByRole('status').textContent).toMatch(NOTICE_TEXT);
+
+        // Non-blocking: the next divergence still autosaves with the notice up.
+        act(() => {
+            fireEvent.click(getByTestId('edit-title-Second'));
+        });
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+        expect(save).toHaveBeenCalledTimes(2);
+        expect(postedPayload(save, 1).title).toBe('Second');
+        expect(getByRole('status').textContent).toMatch(NOTICE_TEXT);
+
+        // The affordance fires the RSC refresh (rebinding the draft action to
+        // the post-publish base server-side) and lowers the notice.
+        act(() => {
+            fireEvent.click(getByText('Refresh to latest'));
+        });
+        expect(mockRefresh).toHaveBeenCalledTimes(1);
+        expect(queryByRole('status')).toBeNull();
+    });
+
+    it('lowers the notice once a save resolves clean (base advanced after refresh/publish)', async () => {
+        const save = vi.fn().mockResolvedValueOnce({ conflict: 'publish-superseded-base' }).mockResolvedValue({});
+        const { getByTestId, getByRole, queryByRole } = renderNoticeSurface(
+            save,
+            <>
+                <EditProbe path="title" next="Stale" />
+                <EditProbe path="title" next="Rebased" />
+            </>,
+        );
+
+        act(() => {
+            fireEvent.click(getByTestId('edit-title-Stale'));
+        });
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+        expect(getByRole('status').textContent).toMatch(NOTICE_TEXT);
+
+        act(() => {
+            fireEvent.click(getByTestId('edit-title-Rebased'));
+        });
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+        expect(save).toHaveBeenCalledTimes(2);
+        expect(queryByRole('status')).toBeNull();
+    });
+
+    it('clears the notice when the operator publishes', async () => {
+        const save = vi.fn().mockResolvedValue({ conflict: 'publish-superseded-base' });
+        const { getByTestId, getByRole, queryByRole } = renderNoticeSurface(
+            save,
+            <EditProbe path="title" next="Diverged" />,
+        );
+
+        act(() => {
+            fireEvent.click(getByTestId('edit-title-Diverged'));
+        });
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(2000);
+        });
+        expect(getByRole('status').textContent).toMatch(NOTICE_TEXT);
+
+        const shell = Toolbar.mock.calls.at(-1)?.[0] as unknown as { publishAction: () => Promise<void> };
+        await act(async () => {
+            await shell.publishAction();
+        });
+        expect(queryByRole('status')).toBeNull();
     });
 });
 

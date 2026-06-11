@@ -1,8 +1,9 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { type ComponentType, type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from '../form';
-import type { EditorToolbarShellProps } from '../runtime';
+import type { EditorSaveDraftResult, EditorToolbarShellProps } from '../runtime';
 
 /**
  * The /new/-page document binding. The toolbar starts with no document; the
@@ -51,8 +52,11 @@ export type EditorFormToolbarProps = {
     localeSwitcher?: ReactNode;
 } & (
     | {
-          /** Server action (domain + id already bound). */
-          saveDraftAction: (formData: FormData) => Promise<void>;
+          /**
+           * Server action (domain + id already bound). The resolved
+           * {@link EditorSaveDraftResult} feeds the stale-base notice.
+           */
+          saveDraftAction: (formData: FormData) => Promise<EditorSaveDraftResult>;
           /** Server action (domain + id already bound). */
           publishAction: (formData: FormData) => Promise<void>;
           createBinding?: undefined;
@@ -71,7 +75,15 @@ export type EditorFormToolbarProps = {
  *   - the interval autosave loop that posts `saveDraftAction` every
  *     `autosave.interval` milliseconds while the serialized form diverges from
  *     the last round-tripped blob,
- *   - an optional locale switcher slot on the left.
+ *   - an optional locale switcher slot on the left,
+ *   - the non-blocking stale-base notice (POLISH-02): when a draft save
+ *     resolves with the G4FIX-01 `publish-superseded-base` marker the toolbar
+ *     shows a status line with a "Refresh to latest" affordance that
+ *     `router.refresh()`es — the RSC re-render rebinding the draft action to
+ *     the post-publish base and re-seeding `initialState` through the
+ *     reducer's `REPLACE_STATE` gate. Saves and autosave keep running while
+ *     the notice shows; a publish (the merged draft becoming the published
+ *     snapshot) clears it.
  *
  * The autosave loop upholds the CMSFORM-05 invariants through the FULL action
  * path (this component posts the real bound server action, not an injected
@@ -112,9 +124,13 @@ export function EditorFormToolbar({
     localeSwitcher,
 }: EditorFormToolbarProps) {
     const { createFormData } = useForm();
+    const router = useRouter();
 
     const [isSaving, setIsSaving] = useState(false);
     const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+    // Whether the last draft save reported the G4FIX-01 publish-superseded-base
+    // marker — the draft branched from a base a publish has since superseded.
+    const [hasStaleBase, setHasStaleBase] = useState(false);
 
     const saveActionRef = useRef(saveDraftAction);
     saveActionRef.current = saveDraftAction;
@@ -174,7 +190,11 @@ export function EditorFormToolbar({
 
     /**
      * Posts a draft save through the pre-bound action, or — on /new/ —
-     * through the create-then-bind dispatch.
+     * through the create-then-bind dispatch. On the pre-bound path the
+     * resolved result drives the stale-base notice: a conflicted save raises
+     * it, a clean resolution lowers it (the base advanced — the bound action
+     * was rebuilt after a refresh or publish). /new/ has no optimistic base
+     * yet, so the binding path never touches it.
      *
      * @param formData - The serialized form snapshot.
      */
@@ -182,7 +202,8 @@ export function EditorFormToolbar({
         async (formData: FormData): Promise<void> => {
             const binding = createBindingRef.current;
             if (binding === undefined) {
-                await saveActionRef.current?.(formData);
+                const result = await saveActionRef.current?.(formData);
+                if (result !== undefined) setHasStaleBase(result.conflict === 'publish-superseded-base');
                 return;
             }
             const { id, createdNow } = await ensureCreated(binding, formData);
@@ -275,11 +296,39 @@ export function EditorFormToolbar({
         await postPublish(formData);
         lastSentRef.current = String(formData.get('_payload'));
         setLastSavedAt(new Date());
+        // Publishing makes THIS form's content the published snapshot, so the
+        // stale-base concern the notice flagged is resolved by definition.
+        setHasStaleBase(false);
+    };
+
+    /**
+     * The notice's rebase affordance: clears the notice and `router.refresh()`es so the edit
+     * page's RSC pass re-reads the document, rebinds the draft action to the post-publish
+     * `latestVersionId`, and re-seeds `initialState` (the reducer's `REPLACE_STATE` gate keeps
+     * unsaved keystrokes alive through it).
+     */
+    const refreshToLatestBase = (): void => {
+        setHasStaleBase(false);
+        router.refresh();
     };
 
     return (
         <>
-            {localeSwitcher ? <div>{localeSwitcher}</div> : <div />}
+            <div className="flex items-center gap-3">
+                {localeSwitcher}
+                {hasStaleBase ? (
+                    <p role="status" className="text-amber-700 text-sm dark:text-amber-500">
+                        Your draft was started before the latest publish — review before republishing.{' '}
+                        <button
+                            type="button"
+                            onClick={refreshToLatestBase}
+                            className="font-medium underline underline-offset-2"
+                        >
+                            Refresh to latest
+                        </button>
+                    </p>
+                ) : null}
+            </div>
             <Toolbar
                 saveDraftAction={saveDraft}
                 publishAction={publish}

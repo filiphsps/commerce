@@ -149,6 +149,13 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
         if (baseVersionId !== undefined) formData.set(CMS_BASE_VERSION_FIELD, baseVersionId);
         return generatedActions.saveDraft(domain, id, formData, locale);
     };
+    // The form element's implicit-submit path. Same draft save, result
+    // swallowed: only the toolbar reads the POLISH-02 conflict marker back,
+    // and the shell's `onSubmit` contract is void.
+    const boundSubmit = async (formData: FormData): Promise<void> => {
+        'use server';
+        await boundSaveDraft(formData);
+    };
     const boundPublish = async (formData: FormData) => {
         'use server';
         return generatedActions.publish(domain, id, formData, locale);
@@ -183,7 +190,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
         <runtime.DocumentForm
             title={title}
             breadcrumbs={breadcrumbs}
-            onSubmit={boundSaveDraft}
+            onSubmit={boundSubmit}
             initialState={initialState}
             toolbar={
                 <EditorFormToolbar

@@ -13,7 +13,9 @@ describe('generateActionWrapper', () => {
         expect(output).toContain("'use server';");
         expect(output).toContain("import 'server-only';");
         expect(output).toContain("import { businessDataEditor } from '@nordcom/commerce-cms/editor/manifests';");
-        expect(output).toContain("import { createCollectionEditorActions } from '@nordcom/commerce-cms/editor';");
+        expect(output).toContain(
+            "import { createCollectionEditorActions, type EditorSaveDraftResult } from '@nordcom/commerce-cms/editor';",
+        );
         expect(output).toContain("import { editorRuntime } from '@/lib/editor-runtime';");
         expect(output).toContain('export async function businessDataSaveDraft');
         expect(output).toContain('export async function businessDataPublish');

@@ -30,7 +30,7 @@ const baseManifest = defineCollectionEditor({
 });
 
 const generatedActions: EditorActions = {
-    saveDraft: async () => {},
+    saveDraft: async () => ({}),
     publish: async () => {},
     delete: async () => {},
     create: async () => ({ id: 'new' }),

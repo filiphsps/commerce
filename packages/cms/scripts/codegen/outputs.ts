@@ -65,7 +65,7 @@ export const generateActionWrapper = (input: { slug: string; importName: string 
 
 import 'server-only';
 
-import { createCollectionEditorActions } from '@nordcom/commerce-cms/editor';
+import { createCollectionEditorActions, type EditorSaveDraftResult } from '@nordcom/commerce-cms/editor';
 import { ${importName} } from '@nordcom/commerce-cms/editor/manifests';
 
 import { editorRuntime } from '@/lib/editor-runtime';
@@ -82,7 +82,7 @@ export async function ${fn('saveDraft')}(
     id: string,
     formData: FormData,
     locale: string,
-): Promise<void> {
+): Promise<EditorSaveDraftResult> {
     return a.saveDraft(domain, id, formData, locale);
 }
 export async function ${fn('publish')}(

@@ -52,7 +52,7 @@ describe('<EditorNewPage>', () => {
             params: { domain: 'a.test' },
             searchParams: { locale: 'sv' },
             generatedActions: {
-                saveDraft: async () => {},
+                saveDraft: async () => ({}),
                 publish: async () => {},
                 delete: async () => {},
                 create: async () => ({ id: 'new' }),
@@ -74,7 +74,7 @@ describe('<EditorNewPage>', () => {
                 params: { domain: 'a.test' },
                 searchParams: {},
                 generatedActions: {
-                    saveDraft: async () => {},
+                    saveDraft: async () => ({}),
                     publish: async () => {},
                     delete: async () => {},
                     create: async () => ({ id: 'new' }),
@@ -134,7 +134,7 @@ describe('<EditorNewPage>', () => {
                 params: { domain: 'a.test' },
                 searchParams: { locale: 'sv' },
                 generatedActions: {
-                    saveDraft: async () => {},
+                    saveDraft: async () => ({}),
                     publish: async () => {},
                     delete: async () => {},
                     create: async () => ({ id: 'new' }),

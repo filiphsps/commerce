@@ -156,6 +156,17 @@ export type EditorCmsVersion = {
 };
 
 /**
+ * What a draft save reports back to the editor surface beyond persistence itself. `conflict` is
+ * the G4FIX-01 merge-forward marker: the draft's optimistic base (`baseVersionId`) predated a
+ * publish, so Convex merged the draft forward instead of clobbering the published snapshot — the
+ * toolbar surfaces a non-blocking rebase notice off it (POLISH-02). Lives here, not in
+ * `actions.ts`, because the client toolbar consumes it and `actions.ts` is `server-only`.
+ */
+export type EditorSaveDraftResult = {
+    conflict?: 'publish-superseded-base';
+};
+
+/**
  * The Convex transport the editor server actions post through — the same injected-callback seam as
  * the CMSFORM-05 autosave `save` prop, lifted to all seven operations. The admin app binds each
  * method to the matching `cms/actions.ts` mutation over a `ConvexHttpClient` authenticated with the
@@ -186,7 +197,7 @@ export type EditorConvexBridge = {
             locale: string;
             baseVersionId?: string;
         } & EditorDocumentTarget,
-    ) => Promise<{ documentId: string; conflict?: 'publish-superseded-base' }>;
+    ) => Promise<{ documentId: string } & EditorSaveDraftResult>;
     publish: (
         args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
     ) => Promise<{ documentId: string }>;

@@ -141,6 +141,24 @@ describe('createCollectionEditorActions.saveDraft', () => {
         });
     });
 
+    it('returns the publish-superseded-base conflict marker when the bridge reports one (POLISH-02)', async () => {
+        const bridge = buildBridge();
+        vi.mocked(bridge.saveDraft).mockResolvedValue({
+            documentId: 'doc-1',
+            conflict: 'publish-superseded-base',
+        });
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        await expect(actions.saveDraft('a.test', 'doc-1', fd({ title: 'Acme' }), 'en-US')).resolves.toEqual({
+            conflict: 'publish-superseded-base',
+        });
+    });
+
+    it('returns an empty result when the bridge reports no conflict', async () => {
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        await expect(actions.saveDraft('a.test', 'doc-1', fd({ title: 'Acme' }), 'en-US')).resolves.toEqual({});
+    });
+
     it('throws notFound() when access.update returns false, without touching the bridge', async () => {
         const bridge = buildBridge();
         const manifest = defineCollectionEditor({

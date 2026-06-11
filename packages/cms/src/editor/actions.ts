@@ -7,9 +7,9 @@ import { notFound } from 'next/navigation';
 import { parseFormPayload } from './form-payload';
 import type { CollectionEditorManifest, EditorAccess } from './manifest';
 import { refreshEditorPaths } from './revalidate';
-import type { EditorConvexBridge, EditorDocumentTarget, EditorRuntime } from './runtime';
+import type { EditorConvexBridge, EditorDocumentTarget, EditorRuntime, EditorSaveDraftResult } from './runtime';
 
-export type { EditorConvexBridge, EditorDocumentTarget } from './runtime';
+export type { EditorConvexBridge, EditorDocumentTarget, EditorSaveDraftResult } from './runtime';
 
 /**
  * The out-of-band `FormData` key carrying the optimistic base version a draft save branched from
@@ -29,7 +29,17 @@ export const CMS_BASE_VERSION_FIELD = '_cms_base_version';
  *   createCollectionEditorActions(pagesEditor, editorRuntime);
  */
 export type EditorActions = {
-    saveDraft: (domain: string | null, id: string, formData: FormData, locale: string) => Promise<void>;
+    /**
+     * Returns the {@link EditorSaveDraftResult} so the client toolbar can surface the G4FIX-01
+     * `publish-superseded-base` marker — the only save-shaped method whose result the editor UI
+     * reads back.
+     */
+    saveDraft: (
+        domain: string | null,
+        id: string,
+        formData: FormData,
+        locale: string,
+    ) => Promise<EditorSaveDraftResult>;
     publish: (domain: string | null, id: string, formData: FormData, locale: string) => Promise<void>;
     create: (domain: string | null, formData: FormData, locale: string) => Promise<{ id: string }>;
     delete: (domain: string | null, id: string) => Promise<void>;
@@ -122,13 +132,14 @@ export const createCollectionEditorActions = (
             // `revalidatePath` on the edit URL re-seeds `<Form>`'s `initialState` mid-keystroke,
             // and the Convex draft save schedules no storefront revalidation either (BRIDGE-05
             // arms only on the published transition).
-            await bridge().saveDraft({
+            const { conflict } = await bridge().saveDraft({
                 collection: manifest.collection,
                 data,
                 locale,
                 ...(typeof base === 'string' && base.length > 0 ? { baseVersionId: base } : {}),
                 ...documentTargetFor(manifest, id),
             });
+            return conflict === undefined ? {} : { conflict };
         },
         async publish(domain, id, formData, locale) {
             await assertAccess(domain, manifest.access.update);

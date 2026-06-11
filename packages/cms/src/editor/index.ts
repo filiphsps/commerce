@@ -38,6 +38,7 @@ export type {
     EditorMediaUploadAction,
     EditorRelationshipOption,
     EditorRuntime,
+    EditorSaveDraftResult,
     EditorToolbarShellProps,
     WithRuntime,
 } from './runtime';
