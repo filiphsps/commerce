@@ -112,8 +112,10 @@ function stripVolatile<T extends { _id: unknown; _creationTime: number }>(row: T
  * - volatile `_id`/`_creationTime` stripped everywhere ({@link stripVolatile});
  * - id-reference columns (`shop`, `shopId`, `flag`) replaced by the referenced row's `legacyId`
  *   ({@link makeLegacyIdResolver});
- * - `cmsDocuments`: `latestVersionId` dropped (a volatile pointer into the separately-verified
- *   version history) and `data` replaced by the FULL reassembled field map — inline data plus every
+ * - `cmsDocuments`: `latestVersionId`/`publishedVersionId`/`revision` dropped (volatile pointers
+ *   and a save counter into the separately-verified version history — the expected side stages
+ *   documents before the pointer pass, so neither side hashes them) and `data` replaced by the
+ *   FULL reassembled field map — inline data plus every
  *   `cms_i18n` side row rehydrated through the runtime's own `reassembleShreddedFields`. The
  *   script-side expected corpus reassembles the SAME rows through the clean-room
  *   `independent-reassembly.ts` implementation, so a reassembly/shred transform bug surfaces as
@@ -203,7 +205,7 @@ export const checksumPage = systemQuery({
                         locale: side.locale,
                         value: side.value,
                     }));
-                    const { latestVersionId, ...content } = stripVolatile(row);
+                    const { latestVersionId, publishedVersionId, revision, ...content } = stripVolatile(row);
                     await push(`cmsDocuments:${row.collection}`, {
                         ...content,
                         shopId: await legacyIdOf('shops', row.shopId),

@@ -416,9 +416,10 @@ describe('CMSGATE-01 — header editor end to end (real engine, real Convex func
         await actions.restoreVersion(DOMAIN, '', versionId);
 
         const restored = await headerRow();
-        // Restore re-materializes the snapshot as a NEW draft; the depth-6 tree
-        // and the localized bucket round-trip byte-for-byte.
-        expect(restored?.status).toBe('draft');
+        // Restore re-materializes the snapshot as a NEW draft into the working data; the
+        // published state stays pinned (a restore never unpublishes — G4FIX-01) and the depth-6
+        // tree and the localized bucket round-trip byte-for-byte.
+        expect(restored?.status).toBe('published');
         expect(navNodeAt(restored?.data ?? {}, 6).description).toEqual({ 'en-US': 'Level-six leaf copy' });
         expect(navNodeAt(restored?.data ?? {}, 1).variant).toBe('compact-list');
         expect(restored?.data).toEqual(published?.data);

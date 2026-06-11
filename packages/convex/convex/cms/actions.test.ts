@@ -356,7 +356,9 @@ describe('cms editor actions — restoreVersion', () => {
 
         const live = await t.run((ctx) => ctx.db.get(v1.documentId));
         expect((live?.data as { title: string }).title).toBe('original');
-        expect(live?.status).toBe('draft');
+        // The restore re-materializes into the WORKING DRAFT only — the published snapshot (and
+        // the derived status) stay pinned, so the storefront keeps serving the publish (G4FIX-01).
+        expect(live?.status).toBe('published');
 
         // A restore lands as a draft, so it arms no additional revalidation work.
         expect(await scheduledFunctions(t)).toHaveLength(scheduledAfterPublish);
@@ -371,6 +373,47 @@ describe('cms editor actions — restoreVersion', () => {
 
         const v1 = await asA.mutation(createRef, { collection: 'pages', data: { title: 't' } });
         await expect(asB.mutation(restoreRef, { versionId: v1.versionId })).rejects.toThrow(ConvexError);
+    });
+});
+
+describe('cms editor actions — the CMSGATE-02 publish race (G4FIX-01)', () => {
+    it('a stale in-flight saveDraft arriving after publish cannot revert the doc to draft', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asA = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        // The editor branches from the first draft tick…
+        const base = await asA.mutation(createRef, { collection: 'pages', data: { title: 'WIP', slug: 'race' } });
+        // …the operator publishes…
+        const published = await asA.mutation(publishRef, {
+            collection: 'pages',
+            documentId: base.documentId,
+            data: { title: 'Live title', slug: 'race' },
+        });
+        // …and THEN the diverged autosave crafted before the publish lands.
+        const stale = await asA.mutation(saveDraftRef, {
+            collection: 'pages',
+            documentId: base.documentId,
+            data: { title: 'WIP again', slug: 'race' },
+            baseVersionId: base.versionId,
+        });
+
+        // Merge-forward: the payload became the working draft, flagged as superseded, while the
+        // published state (status + snapshot pointer) is untouched — the doc was NOT reverted.
+        expect(stale.conflict).toBe('publish-superseded-base');
+        const live = await t.run((ctx) => ctx.db.get(base.documentId));
+        expect(live?.status).toBe('published');
+        expect(live?.publishedVersionId).toBe(published.versionId);
+        expect((live?.data as { title: string }).title).toBe('WIP again');
+
+        // A follow-up draft based on the publish (the rebased editor) carries no marker.
+        const rebased = await asA.mutation(saveDraftRef, {
+            collection: 'pages',
+            documentId: base.documentId,
+            data: { title: 'Post-publish draft', slug: 'race' },
+            baseVersionId: published.versionId,
+        });
+        expect(rebased.conflict).toBeUndefined();
     });
 });
 

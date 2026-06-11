@@ -159,3 +159,159 @@ describe('cms/documents.get (CMSDATA-07 shell read)', () => {
         ).rejects.toMatchObject({ data: { code: 'CMS_INVALID_DOCUMENT_TARGET' } });
     });
 });
+
+describe('cms/documents.save — published state vs working draft (G4FIX-01)', () => {
+    it('keeps a published doc published when a draft save lands afterwards (the CMSGATE-02 race)', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const published = await asOp.mutation(saveRef, {
+            collection: 'pages',
+            data: { title: 'Live', slug: 'race' },
+            status: 'published',
+        });
+
+        // The stale autosave arrives AFTER the publish. It must update the working draft only —
+        // never the published snapshot or the row's published state.
+        const draft = await asOp.mutation(saveRef, {
+            documentId: published.documentId,
+            collection: 'pages',
+            data: { title: 'In-flight draft', slug: 'race' },
+            status: 'draft',
+        });
+
+        const doc: Doc<'cmsDocuments'> | null = await asOp.query(getRef, {
+            collection: 'pages',
+            documentId: published.documentId,
+        });
+        expect(doc?.status).toBe('published');
+        expect(doc?.publishedVersionId).toBe(published.versionId);
+        expect(doc?.latestVersionId).toBe(draft.versionId);
+        expect((doc?.data as { title: string }).title).toBe('In-flight draft');
+    });
+
+    it('publishing again moves the published snapshot to the new version', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const first = await asOp.mutation(saveRef, {
+            collection: 'pages',
+            data: { title: 'v1', slug: 'repub' },
+            status: 'published',
+        });
+        await asOp.mutation(saveRef, {
+            documentId: first.documentId,
+            collection: 'pages',
+            data: { title: 'v2 draft', slug: 'repub' },
+            status: 'draft',
+        });
+        const second = await asOp.mutation(saveRef, {
+            documentId: first.documentId,
+            collection: 'pages',
+            data: { title: 'v2', slug: 'repub' },
+            status: 'published',
+        });
+
+        const doc: Doc<'cmsDocuments'> | null = await asOp.query(getRef, {
+            collection: 'pages',
+            documentId: first.documentId,
+        });
+        expect(doc?.status).toBe('published');
+        expect(doc?.publishedVersionId).toBe(second.versionId);
+        expect(doc?.latestVersionId).toBe(second.versionId);
+    });
+
+    it('flags a draft save whose optimistic base predates the publish, but still applies it forward', async () => {
+        const t = convexTest(schema, modules);
+        await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        const seed = await asOp.mutation(saveRef, {
+            collection: 'pages',
+            data: { title: 'v1', slug: 'stale' },
+            status: 'draft',
+        });
+        const published = await asOp.mutation(saveRef, {
+            documentId: seed.documentId,
+            collection: 'pages',
+            data: { title: 'v1', slug: 'stale' },
+            status: 'published',
+        });
+
+        // The stale wire save was crafted against the pre-publish version: merged forward as the
+        // working draft, surfaced via the conflict marker, and the publish state untouched.
+        const stale = await asOp.mutation(saveRef, {
+            documentId: seed.documentId,
+            collection: 'pages',
+            data: { title: 'stale payload', slug: 'stale' },
+            status: 'draft',
+            baseVersionId: seed.versionId,
+        });
+        expect(stale.conflict).toBe('publish-superseded-base');
+
+        const doc: Doc<'cmsDocuments'> | null = await asOp.query(getRef, {
+            collection: 'pages',
+            documentId: seed.documentId,
+        });
+        expect(doc?.status).toBe('published');
+        expect(doc?.publishedVersionId).toBe(published.versionId);
+        expect((doc?.data as { title: string }).title).toBe('stale payload');
+
+        // Draft-on-draft divergence (no publish in between) keeps last-write-wins WITHOUT a marker.
+        const peer = await asOp.mutation(saveRef, {
+            documentId: seed.documentId,
+            collection: 'pages',
+            data: { title: 'peer draft', slug: 'stale' },
+            status: 'draft',
+            baseVersionId: stale.versionId,
+        });
+        expect(peer.conflict).toBeUndefined();
+
+        // A base AT the published snapshot is current — no marker either.
+        const rebased = await asOp.mutation(saveRef, {
+            documentId: seed.documentId,
+            collection: 'pages',
+            data: { title: 'rebased draft', slug: 'stale' },
+            status: 'draft',
+            baseVersionId: published.versionId,
+        });
+        expect(rebased.conflict).toBeUndefined();
+    });
+
+    it('adopts a pointer-less published row (migrated shape) before the first draft save touches it', async () => {
+        const t = convexTest(schema, modules);
+        const shopId = await seedTenant(t, 'op@a.example.com', 'shop_a');
+        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op@a.example.com' });
+
+        // An ETL/seed-shaped row: published, but with no publishedVersionId pointer.
+        const migratedId = await t.run(async (ctx) =>
+            ctx.db.insert('cmsDocuments', {
+                shopId,
+                collection: 'pages',
+                data: { title: 'Migrated live', slug: 'migrated' },
+                status: 'published',
+                createdAt: NOW,
+                updatedAt: NOW,
+            }),
+        );
+
+        await asOp.mutation(saveRef, {
+            documentId: migratedId,
+            collection: 'pages',
+            data: { title: 'Draft over migrated', slug: 'migrated' },
+            status: 'draft',
+        });
+
+        const doc = await t.run(async (ctx) => ctx.db.get(migratedId));
+        expect(doc?.status).toBe('published');
+        expect(doc?.publishedVersionId).toBeDefined();
+        const baseline = await t.run(async (ctx) =>
+            doc?.publishedVersionId ? ctx.db.get(doc.publishedVersionId) : null,
+        );
+        expect(baseline?.status).toBe('published');
+        expect((baseline?.snapshot as { title: string }).title).toBe('Migrated live');
+        expect((doc?.data as { title: string }).title).toBe('Draft over migrated');
+    });
+});

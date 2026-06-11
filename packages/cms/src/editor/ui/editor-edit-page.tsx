@@ -5,7 +5,7 @@ import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
-import { documentTargetFor, type EditorActions } from '../actions';
+import { CMS_BASE_VERSION_FIELD, documentTargetFor, type EditorActions } from '../actions';
 import { editorCollectionSchema } from '../collection-fields';
 import type { CollectionEditorManifest } from '../manifest';
 import { loadRelationshipOptions } from '../relationship-targets';
@@ -141,8 +141,15 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     // closes over the request-time value the editor is currently viewing so
     // saves write into the correct localized field bucket instead of falling
     // back to the platform default.
+    //
+    // The draft binding also closes over the document's latestVersionId at render time — the
+    // optimistic base the G4FIX-01 stale-write contract carries. A publish refreshes the edit
+    // path (refreshEditorPaths), so the rebound action advances the base past the publish; a
+    // diverged autosave still on the wire keeps the old base and is flagged server-side.
+    const baseVersionId = existing?.latestVersionId;
     const boundSaveDraft = async (formData: FormData) => {
         'use server';
+        if (baseVersionId !== undefined) formData.set(CMS_BASE_VERSION_FIELD, baseVersionId);
         return generatedActions.saveDraft(domain, id, formData, locale);
     };
     const boundPublish = async (formData: FormData) => {

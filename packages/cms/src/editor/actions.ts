@@ -12,6 +12,13 @@ import type { EditorConvexBridge, EditorDocumentTarget, EditorRuntime } from './
 export type { EditorConvexBridge, EditorDocumentTarget } from './runtime';
 
 /**
+ * The out-of-band `FormData` key carrying the optimistic base version a draft save branched from
+ * (G4FIX-01). The edit page's bound action stamps it server-side from the document read that seeded
+ * the form, so it never round-trips through (or collides with) the `_payload` field blob.
+ */
+export const CMS_BASE_VERSION_FIELD = '_cms_base_version';
+
+/**
  * Seven server-action methods generated per collection by `pnpm cms:gen`.
  * Each method is a plain async function that must be re-exported from a
  * `'use server'` module before being passed across an RSC boundary.
@@ -106,6 +113,11 @@ export const createCollectionEditorActions = (
         async saveDraft(domain, id, formData, locale) {
             await assertAccess(domain, manifest.access.update);
             const data = parseFormPayload(formData);
+            // The optimistic base rides OUTSIDE `_payload` (set by the edit page's bound action,
+            // never by form state) so `parseFormPayload`'s field scrubbing can't confuse it with
+            // content. It names the version the editor branched from; the Convex side uses it to
+            // flag a draft whose base a publish superseded (G4FIX-01) while merging it forward.
+            const base = formData.get(CMS_BASE_VERSION_FIELD);
             // ZERO revalidation on the draft path — by contract. A draft autosave landing a
             // `revalidatePath` on the edit URL re-seeds `<Form>`'s `initialState` mid-keystroke,
             // and the Convex draft save schedules no storefront revalidation either (BRIDGE-05
@@ -114,6 +126,7 @@ export const createCollectionEditorActions = (
                 collection: manifest.collection,
                 data,
                 locale,
+                ...(typeof base === 'string' && base.length > 0 ? { baseVersionId: base } : {}),
                 ...documentTargetFor(manifest, id),
             });
         },

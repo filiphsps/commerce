@@ -26,10 +26,17 @@ import {
  * the SFREAD-01 contract pins: `{ id, ...fields, _status, createdAt, updatedAt }` with ISO
  * timestamps.
  *
+ * PUBLISHED CONTENT (G4FIX-01) resolves through the live row's `publishedVersionId`: the live
+ * row's `data` is the WORKING DRAFT, so a draft save after a publish never changes what these
+ * reads serve — the last-published `cmsVersions` snapshot stays pinned until the next publish.
+ * Rows without the pointer (the ETL/seed shape, which predates it) serve their own `data`
+ * unchanged — for those rows the live data IS the published content, byte-identical to before.
+ * A never-published document (`status: 'draft'`) stays invisible to published reads.
+ *
  * DRAFT READS (CMSDATA-09, the live-preview seam) are fail-closed by construction: the single-doc
  * readers accept an EXPLICIT `draft: true` flag that widens the row filter to include
- * `status: 'draft'` rows (the live row carries the latest draft state — `cms/documents:save`
- * patches it in place). The flag only exists behind the `CONVEX_SERVER_SECRET` gate every
+ * `status: 'draft'` rows and serves the live row's `data` (the working draft) instead of the
+ * published snapshot. The flag only exists behind the `CONVEX_SERVER_SECRET` gate every
  * {@link serverQuery} enforces, and the sole production caller — the storefront's dual-read
  * getters — sets it exclusively from `draftMode().isEnabled`, which in turn is toggled only by the
  * secret-checked `/api/cms-preview` activation route. Omitting the flag (every pre-existing call
@@ -203,39 +210,84 @@ async function liveDocs(
 }
 
 /**
- * Reassembles one live document to the SFREAD-01 contract shape: rehydrate `cms_i18n` shreds,
- * collapse localized buckets for the request chain, then frame with the Payload bookkeeping fields
- * (`id`, `_status`, ISO `createdAt`/`updatedAt`).
+ * Resolves the field map a read should serve for one live row (G4FIX-01):
+ * - a DRAFT read serves the live row's `data` — the working draft `cms/documents:save` patches in
+ *   place on every save;
+ * - a PUBLISHED read resolves the `publishedVersionId` snapshot, so newer drafts never leak into
+ *   live serving; a row without the pointer (the ETL/seed shape) serves its own `data`, for which
+ *   the live data IS the published content. A dangling pointer (a deleted snapshot — never written
+ *   by the mutation paths) falls back to `data` defensively rather than dropping the document.
+ *
+ * @param ctx - The server query context.
+ * @param doc - The live `cmsDocuments` row.
+ * @param draft - Whether this is a draft (preview) read.
+ * @returns The serialized field map to serve.
+ */
+async function servedData(ctx: QueryCtx, doc: Doc<'cmsDocuments'>, draft: boolean): Promise<unknown> {
+    if (draft || doc.publishedVersionId === undefined) return doc.data;
+    const snapshot = await ctx.db.get(doc.publishedVersionId);
+    return snapshot === null ? doc.data : snapshot.snapshot;
+}
+
+/**
+ * The `_status` a read reports for one live row. Published reads always report `published` (the
+ * snapshot served IS the published state). A draft read reports `draft` when the row never
+ * published OR when the working draft has moved past the published snapshot — mirroring Payload's
+ * `find({ draft: true })`, where the newest version's status is what the preview sees.
+ *
+ * @param doc - The live `cmsDocuments` row.
+ * @param draft - Whether this is a draft (preview) read.
+ * @returns The contract `_status` value.
+ */
+function servedStatus(doc: Doc<'cmsDocuments'>, draft: boolean): 'draft' | 'published' {
+    if (!draft) return 'published';
+    if (doc.status === 'draft') return 'draft';
+    return doc.publishedVersionId !== undefined && doc.latestVersionId !== doc.publishedVersionId
+        ? 'draft'
+        : 'published';
+}
+
+/**
+ * Reassembles one live document to the SFREAD-01 contract shape: resolve the served field map
+ * ({@link servedData}), rehydrate `cms_i18n` shreds, collapse localized buckets for the request
+ * chain, then frame with the Payload bookkeeping fields (`id`, `_status`, ISO
+ * `createdAt`/`updatedAt`).
  *
  * @param ctx - The server query context.
  * @param doc - The live `cmsDocuments` row.
  * @param chain - The ordered locale fallback chain.
+ * @param draft - Whether this is a draft (preview) read; defaults to the published view.
  * @returns The contract-shaped document.
  */
 async function reassembleDoc(
     ctx: QueryCtx,
     doc: Doc<'cmsDocuments'>,
     chain: readonly string[],
+    draft = false,
 ): Promise<CmsPublishedDoc> {
-    const full = await readShreddedDocument(ctx.db, doc._id, doc.data);
+    const data = await servedData(ctx, doc, draft);
+    const full = await readShreddedDocument(ctx.db, doc._id, data);
     const resolved = DEEP_LOCALIZED_COLLECTIONS.has(doc.collection)
         ? resolveLocalizedDeep(full, chain)
         : resolveLocalizedFields(doc.collection, full, chain);
     return {
         id: doc._id,
         ...resolved,
-        _status: doc.status,
+        _status: servedStatus(doc, draft),
         createdAt: new Date(doc.createdAt).toISOString(),
         updatedAt: new Date(doc.updatedAt).toISOString(),
     };
 }
 
 /**
- * Finds the tenant's document whose inline `data[field]` equals `value` — the natural-key lookup
+ * Finds the tenant's document whose SERVED `data[field]` equals `value` — the natural-key lookup
  * behind the slug/handle getters. The key fields (`slug`, `shopifyHandle`) are never localized or
- * shredded, so a plain inline comparison is total. When both a published and a draft row carry the
- * key under a draft read, the DRAFT row wins — the preview exists to show the in-flight edit (the
- * live-row model normally keeps one row per document, so the tie is defensive, not a hot path).
+ * shredded, so a plain comparison is total. The match runs against the view the read will serve
+ * ({@link servedData}): a published lookup matches the published snapshot's key, so a draft that
+ * renames a slug neither hides the published page nor exposes the draft slug to live traffic.
+ * When both a published and a draft row carry the key under a draft read, the DRAFT row wins —
+ * the preview exists to show the in-flight edit (the live-row model normally keeps one row per
+ * document, so the tie is defensive, not a hot path).
  *
  * @param ctx - The server query context.
  * @param scope - The resolved read scope.
@@ -254,10 +306,12 @@ async function liveDocByKey(
     includeDrafts = false,
 ): Promise<Doc<'cmsDocuments'> | null> {
     const docs = await liveDocs(ctx, scope, collection, includeDrafts);
-    const matches = docs.filter((doc) => {
-        const data = (typeof doc.data === 'object' && doc.data !== null ? doc.data : {}) as Record<string, unknown>;
-        return data[field] === value;
-    });
+    const matches: Doc<'cmsDocuments'>[] = [];
+    for (const doc of docs) {
+        const served = await servedData(ctx, doc, includeDrafts);
+        const data = (typeof served === 'object' && served !== null ? served : {}) as Record<string, unknown>;
+        if (data[field] === value) matches.push(doc);
+    }
     return (includeDrafts ? matches.find((doc) => doc.status === 'draft') : undefined) ?? matches[0] ?? null;
 }
 
@@ -293,7 +347,7 @@ export const singleton = serverQuery({
         if (!scope) return null;
         const docs = await liveDocs(ctx, scope, collection, draft === true);
         const doc = (draft === true ? docs.find((row) => row.status === 'draft') : undefined) ?? docs[0];
-        return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
+        return doc ? reassembleDoc(ctx, doc, scope.chain, draft === true) : null;
     },
 });
 
@@ -309,7 +363,7 @@ export const pageBySlug = serverQuery({
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
         const doc = await liveDocByKey(ctx, scope, 'pages', 'slug', slug, draft === true);
-        return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
+        return doc ? reassembleDoc(ctx, doc, scope.chain, draft === true) : null;
     },
 });
 
@@ -345,7 +399,7 @@ export const articleBySlug = serverQuery({
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
         const doc = await liveDocByKey(ctx, scope, 'articles', 'slug', slug, draft === true);
-        return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
+        return doc ? reassembleDoc(ctx, doc, scope.chain, draft === true) : null;
     },
 });
 
@@ -383,7 +437,7 @@ export const productMetadataByHandle = serverQuery({
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
         const doc = await liveDocByKey(ctx, scope, 'productMetadata', 'shopifyHandle', handle, draft === true);
-        return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
+        return doc ? reassembleDoc(ctx, doc, scope.chain, draft === true) : null;
     },
 });
 
@@ -399,7 +453,7 @@ export const collectionMetadataByHandle = serverQuery({
         const scope = await resolveReadScope(ctx, shopId, locale);
         if (!scope) return null;
         const doc = await liveDocByKey(ctx, scope, 'collectionMetadata', 'shopifyHandle', handle, draft === true);
-        return doc ? reassembleDoc(ctx, doc, scope.chain) : null;
+        return doc ? reassembleDoc(ctx, doc, scope.chain, draft === true) : null;
     },
 });
 

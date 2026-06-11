@@ -606,7 +606,7 @@ describe('CMSGATE-02 — pages editor end to end (real engine, real Convex funct
         expect(readNested?.body).toEqual(PM_DOC);
         expect((contractBlocks[5]?.items as Array<Record<string, unknown>>)[0]?.image).toBe(media._id);
 
-        // ── EDIT AGAIN (draft v3), then RESTORE the published snapshot. ──
+        // ── EDIT AGAIN (draft v3): the live read stays pinned to the publish. ──
         await setLeaf(edit.container, 'title', 'input', 'Overwritten title');
         const saveDraftButton = Array.from(edit.container.querySelectorAll('button')).find(
             (button) => button.textContent === 'Save Draft',
@@ -618,7 +618,44 @@ describe('CMSGATE-02 — pages editor end to end (real engine, real Convex funct
         });
         const [overwritten] = await pageRows();
         expect(overwritten?.data.title).toEqual({ 'en-US': 'Overwritten title' });
+        // The post-publish draft NEVER reaches the storefront read: the published snapshot is
+        // pinned through publishedVersionId until the next publish (G4FIX-01), and the doc keeps
+        // its published state.
+        expect(overwritten?.status).toBe('published');
+        const pinned = (await t.query(pageBySlugRef, {
+            serverSecret: SERVER_SECRET,
+            shopId: SHOP_PUBLIC_ID,
+            slug: 'gate-page',
+            locale: 'en-US',
+        })) as (Page & Record<string, unknown>) | null;
+        expect(pinned?.title).toBe('Gate page title');
+        expect(pinned?._status).toBe('published');
 
+        // ── THE CMSGATE-02 RACE: a stale in-flight autosave (crafted against the pre-publish
+        // version) lands AFTER the publish. It must merge forward as a draft — flagged, never
+        // unpublishing, never changing what the storefront serves. ──
+        const history = await editorConvexBridge.listVersions({ documentId: draft._id });
+        const prePublishVersion = history[0];
+        if (!prePublishVersion) throw new TypeError('version history missing');
+        const staleResult = await editorConvexBridge.saveDraft({
+            collection: 'pages',
+            data: overwritten?.data ?? {},
+            locale: 'en-US',
+            documentId: draft._id,
+            baseVersionId: prePublishVersion.versionId,
+        });
+        expect(staleResult.conflict).toBe('publish-superseded-base');
+        const [afterStale] = await pageRows();
+        expect(afterStale?.status).toBe('published');
+        const stillPinned = (await t.query(pageBySlugRef, {
+            serverSecret: SERVER_SECRET,
+            shopId: SHOP_PUBLIC_ID,
+            slug: 'gate-page',
+            locale: 'en-US',
+        })) as (Page & Record<string, unknown>) | null;
+        expect(stillPinned?.title).toBe('Gate page title');
+
+        // ── RESTORE the published snapshot. ──
         const versions = await editorConvexBridge.listVersions({ documentId: draft._id });
         const publishedVersion = versions.find((version) => version.status === 'published');
         if (!publishedVersion) throw new TypeError('published version missing');
@@ -626,7 +663,9 @@ describe('CMSGATE-02 — pages editor end to end (real engine, real Convex funct
         await actions.restoreVersion(DOMAIN, draft._id, publishedVersion.versionId);
 
         const [restored] = await pageRows();
-        expect(restored?.status).toBe('draft');
+        // A restore re-materializes into the WORKING DRAFT: the published state stays pinned
+        // (no unpublish — G4FIX-01) and a publish is still required to make it live.
+        expect(restored?.status).toBe('published');
         expect(restored?.data).toEqual(published?.data);
         const restoredItems = (restored?.data.blocks as Array<Record<string, unknown>>)[5]?.items as Array<
             Record<string, unknown>

@@ -73,6 +73,7 @@ export declare const api: {
         "mutation",
         "public",
         {
+          baseVersionId?: string;
           collection: string;
           data: any;
           documentId?: string;
@@ -98,6 +99,7 @@ export declare const api: {
         "mutation",
         "public",
         {
+          baseVersionId?: string;
           collection: string;
           data: any;
           documentId?: Id<"cmsDocuments">;

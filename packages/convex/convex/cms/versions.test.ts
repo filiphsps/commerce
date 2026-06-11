@@ -176,9 +176,12 @@ describe('cms drafts / versions / restore', () => {
         expect(restored.documentId).toBe(v1.documentId);
 
         const live = await t.run((ctx) => ctx.db.get(v1.documentId));
-        // Live doc carries v1's snapshot again, but as a fresh draft pointing at the appended version.
+        // Live doc carries v1's snapshot again as the WORKING DRAFT pointing at the appended
+        // version — while the published snapshot (and the derived status) stay pinned, so a
+        // restore never unpublishes (G4FIX-01): a publish is still required to make it live.
         expect((live?.data as { title: string }).title).toBe('original');
-        expect(live?.status).toBe('draft');
+        expect(live?.status).toBe('published');
+        expect(live?.publishedVersionId).toBeDefined();
         expect(live?.latestVersionId).toBe(restored.versionId);
 
         const history = await asA.query(listRef, { documentId: v1.documentId });

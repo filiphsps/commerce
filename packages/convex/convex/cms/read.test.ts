@@ -371,3 +371,100 @@ describe('cms/read — draft-mode preview reads (CMSDATA-09)', () => {
         expect(list.docs.map((doc) => doc.slug)).toEqual(['about', 'home']);
     });
 });
+
+describe('cms/read — published snapshot pinning (G4FIX-01)', () => {
+    afterEach(() => {
+        delete process.env.CONVEX_SERVER_SECRET;
+    });
+
+    /**
+     * Seeds one `pages` doc in the post-G4FIX-01 shape: a published snapshot in `cmsVersions`
+     * referenced by `publishedVersionId`, with the live row's `data` already diverged to a newer
+     * working draft — the exact state a 2s autosave leaves behind after a publish.
+     *
+     * @param t - The convex-test harness.
+     */
+    async function seedDivergedPage(t: ReturnType<typeof convexTest>): Promise<void> {
+        await t.run(async (ctx) => {
+            const shops = await ctx.db.query('shops').collect();
+            const shop = shops.find((row) => row.legacyId === SHOP_PUBLIC_ID);
+            if (!shop) throw new TypeError('seed corpus is missing the canonical shop');
+            const documentId = await ctx.db.insert('cmsDocuments', {
+                shopId: shop._id,
+                collection: 'pages',
+                data: { title: 'Draft rewrite', slug: 'pinned-draft-slug' },
+                status: 'published',
+                revision: 2,
+                createdAt: NOW,
+                updatedAt: NOW + 1,
+            });
+            const publishedVersionId = await ctx.db.insert('cmsVersions', {
+                shopId: shop._id,
+                documentId,
+                collection: 'pages',
+                snapshot: { title: 'Pinned live title', slug: 'pinned' },
+                status: 'published',
+                revision: 1,
+                createdAt: NOW,
+            });
+            const latestVersionId = await ctx.db.insert('cmsVersions', {
+                shopId: shop._id,
+                documentId,
+                collection: 'pages',
+                snapshot: { title: 'Draft rewrite', slug: 'pinned-draft-slug' },
+                status: 'draft',
+                revision: 2,
+                createdAt: NOW + 1,
+            });
+            await ctx.db.patch(documentId, { publishedVersionId, latestVersionId });
+        });
+    }
+
+    it('live reads keep serving the published snapshot while a newer draft exists', async () => {
+        const t = await corpus();
+        await seedDivergedPage(t);
+
+        // The published slug serves the published snapshot — not the diverged working draft.
+        const live = await t.query(pageBySlugRef, { ...base, slug: 'pinned' });
+        expect(live).toMatchObject({ title: 'Pinned live title', slug: 'pinned', _status: 'published' });
+        // The draft's renamed slug is invisible to live traffic…
+        await expect(t.query(pageBySlugRef, { ...base, slug: 'pinned-draft-slug' })).resolves.toBeNull();
+        // …but the preview seam serves the working draft under it, flagged as a draft.
+        const preview = await t.query(pageBySlugRef, { ...base, slug: 'pinned-draft-slug', draft: true });
+        expect(preview).toMatchObject({ title: 'Draft rewrite', slug: 'pinned-draft-slug', _status: 'draft' });
+
+        // The list read serves the published view of the diverged doc too.
+        const list = await t.query(pagesRef, base);
+        expect(list.docs.map((doc) => doc.slug)).toEqual(['about', 'home', 'pinned']);
+    });
+
+    it('publishing again moves live serving to the new snapshot', async () => {
+        const t = await corpus();
+        await seedDivergedPage(t);
+
+        await t.run(async (ctx) => {
+            const docs = await ctx.db.query('cmsDocuments').collect();
+            const doc = docs.find((row) => (row.data as { slug?: string }).slug === 'pinned-draft-slug');
+            if (!doc) throw new TypeError('diverged page missing');
+            const versionId = await ctx.db.insert('cmsVersions', {
+                shopId: doc.shopId,
+                documentId: doc._id,
+                collection: 'pages',
+                snapshot: { title: 'Republished title', slug: 'pinned' },
+                status: 'published',
+                revision: 3,
+                createdAt: NOW + 2,
+            });
+            await ctx.db.patch(doc._id, {
+                data: { title: 'Republished title', slug: 'pinned' },
+                latestVersionId: versionId,
+                publishedVersionId: versionId,
+                revision: 3,
+                updatedAt: NOW + 2,
+            });
+        });
+
+        const live = await t.query(pageBySlugRef, { ...base, slug: 'pinned' });
+        expect(live).toMatchObject({ title: 'Republished title', slug: 'pinned', _status: 'published' });
+    });
+});

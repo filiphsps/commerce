@@ -33,9 +33,15 @@ type EditorActionCtx = Pick<GenericMutationCtx<DataModel>, 'db' | 'runQuery' | '
  * The result shape `cms/documents.ts`'s `save` returns, re-stated here as an explicit annotation on
  * every action handler. The annotation is load-bearing: these actions call back into the generated
  * `api` object from inside the same function tree, and without an explicit return type TypeScript's
- * inference for `api` becomes self-referential.
+ * inference for `api` becomes self-referential. `conflict` is the G4FIX-01 merge-forward marker: a
+ * draft save whose optimistic base predates the current publish still applies, but the caller
+ * learns its base was superseded.
  */
-type SaveResult = { documentId: Id<'cmsDocuments'>; versionId: Id<'cmsVersions'> };
+type SaveResult = {
+    documentId: Id<'cmsDocuments'>;
+    versionId: Id<'cmsVersions'>;
+    conflict?: 'publish-superseded-base';
+};
 
 /**
  * Resolves the CMS principal backing the request's trusted identity for the active shop.
@@ -200,15 +206,20 @@ const saveTargetArgs = {
  * required-field contract is skipped and — critically — ZERO revalidation is scheduled: the
  * publish-only `onPublish` hook never arms on a draft save.
  *
+ * `baseVersionId` is the editor's optimistic base (the version it branched from). A draft save can
+ * NEVER unpublish — `cms/documents.ts`'s `save` only touches the working draft on this path — and
+ * when the base predates a publish that landed in between, the save merges forward and the result
+ * carries the `publish-superseded-base` conflict marker (see the `save` mutation's policy note).
+ *
  * @param ctx - The tenant mutation context.
- * @param args - The collection, serialized `data`, and document target.
- * @returns The live `documentId` and the appended draft `versionId`.
+ * @param args - The collection, serialized `data`, document target, and optional optimistic base.
+ * @returns The live `documentId`, the appended draft `versionId`, and the optional conflict marker.
  * @throws {ConvexError} `CMS_WRITE_FORBIDDEN` on access denial; `CMS_DOCUMENT_NOT_FOUND` for a
  *   target outside the tenant.
  */
 export const saveDraft = tenantMutation({
-    args: saveTargetArgs,
-    handler: async (ctx, { collection, data, documentId, keyField, keyValue }): Promise<SaveResult> => {
+    args: { ...saveTargetArgs, baseVersionId: v.optional(v.string()) },
+    handler: async (ctx, { collection, data, documentId, keyField, keyValue, baseVersionId }): Promise<SaveResult> => {
         await requireWritePrincipal(ctx);
         const target = await resolveTargetDocumentId(ctx, { collection, documentId, keyField, keyValue });
         return await ctx.runMutation(api.cms.documents.save, {
@@ -216,6 +227,7 @@ export const saveDraft = tenantMutation({
             collection,
             data,
             status: 'draft',
+            ...(baseVersionId === undefined ? {} : { baseVersionId }),
         });
     },
 });

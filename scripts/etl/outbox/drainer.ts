@@ -251,7 +251,7 @@ export const planDrain = (folded: FreezeSnapshot): DrainPlan => {
     for (const slug of slugs) {
         const documents = transformCmsDocuments(slug, folded.cms[slug] ?? []);
         const history = transformCmsVersions(slug, folded.versions[slug] ?? [], documents.shopIdByDocument);
-        cmsDocuments.push(...applyLatestVersionPointers(documents.cmsDocuments, history.latestVersionIdByDocument));
+        cmsDocuments.push(...applyLatestVersionPointers(documents.cmsDocuments, history));
         cmsI18n.push(...documents.cms_i18n);
         // Chronological order is load-bearing for cmsVersions (the import's insertion order restores
         // the runtime `_creationTime` history ordering), so no payloadId re-sort here.

@@ -37,8 +37,10 @@ export const list = tenantQuery({
  * Restores a prior version by re-materializing its snapshot onto the live document as a NEW draft,
  * the Convex-native replacement for `payload.restoreVersion`. History is never mutated: the prior
  * version rows are left untouched and a fresh `draft` snapshot is appended, so the restore is itself
- * an auditable save. The live row's `data`/`status`/`latestVersionId` advance to the restored draft,
- * so a publish is required to make the restored content live again.
+ * an auditable save. The live row's `data`/`latestVersionId`/`revision` advance to the restored
+ * draft; `status` and `publishedVersionId` are deliberately untouched (G4FIX-01) — a restore is a
+ * draft operation, so a published document keeps serving its last-published snapshot and a publish
+ * is still required to make the restored content live.
  *
  * Built on {@link tenantMutation}, so the resolved tenant is pinned from server-trusted context and a
  * `versionId` outside the tenant reads as missing under RLS and fails closed.
@@ -46,13 +48,15 @@ export const list = tenantQuery({
  * @param ctx - The tenant mutation context (RLS-wrapped `db`, server-resolved `shopId`).
  * @param args - The `versionId` to re-materialize.
  * @returns The live `documentId` and the newly appended draft `versionId`.
- * @throws {ConvexError} `CMS_VERSION_NOT_FOUND` when the version is not visible to the tenant.
+ * @throws {ConvexError} `CMS_VERSION_NOT_FOUND` when the version (or its live document) is not
+ *   visible to the tenant.
  */
 export const restore = tenantMutation({
     args: { versionId: v.id('cmsVersions') },
     handler: async (ctx, { versionId }) => {
         const version = await ctx.db.get(versionId);
-        if (!version) {
+        const doc = version ? await ctx.db.get(version.documentId) : null;
+        if (!version || !doc) {
             throw new ConvexError({
                 code: CmsVersionErrorCode.VERSION_NOT_FOUND,
                 message: 'No such version for this tenant.',
@@ -60,18 +64,20 @@ export const restore = tenantMutation({
         }
 
         const now = Date.now();
+        const revision = (doc.revision ?? 0) + 1;
         const newVersionId = await ctx.db.insert('cmsVersions', {
             shopId: ctx.shopId,
             documentId: version.documentId,
             collection: version.collection,
             snapshot: version.snapshot,
             status: 'draft',
+            revision,
             createdAt: now,
         });
         await ctx.db.patch(version.documentId, {
             data: version.snapshot,
-            status: 'draft',
             latestVersionId: newVersionId,
+            revision,
             updatedAt: now,
         });
 

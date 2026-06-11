@@ -76,7 +76,13 @@ describe('acceptance #3 — _versions migrate with latestVersionId pointers inta
         });
     });
 
-    it('applies the pointer onto the staged parent document row', () => {
+    it('points publishedVersionId at the chronologically last published snapshot', () => {
+        expect(result.publishedVersionIdByDocument).toEqual({
+            [DOC_SURROGATE]: remapObjectId('cmsVersions', V3_ID),
+        });
+    });
+
+    it('applies both pointers onto the staged parent document row', () => {
         const parent = transformCmsDocuments('articles', [
             {
                 _id: { $oid: ARTICLE_ID },
@@ -85,10 +91,38 @@ describe('acceptance #3 — _versions migrate with latestVersionId pointers inta
                 body: { 'en-US': lexicalDoc([paragraph('live body')]) },
             },
         ]);
-        const pointed = applyLatestVersionPointers(parent.cmsDocuments, result.latestVersionIdByDocument);
+        const pointed = applyLatestVersionPointers(parent.cmsDocuments, result);
         expect(pointed[0]?.document.latestVersionId).toBe(remapObjectId('cmsVersions', V3_ID));
+        // The live row carries no `_status` → migrates as `published`, so the published pointer
+        // lands too and Convex live reads keep serving the migrated published snapshot (G4FIX-01).
+        expect(pointed[0]?.document.publishedVersionId).toBe(remapObjectId('cmsVersions', V3_ID));
         // Pure: the input row is untouched.
         expect(parent.cmsDocuments[0]?.document.latestVersionId).toBeUndefined();
+        expect(parent.cmsDocuments[0]?.document.publishedVersionId).toBeUndefined();
+    });
+
+    it('withholds publishedVersionId from a draft live row and from a history with no published snapshot', () => {
+        const draftParent = transformCmsDocuments('articles', [
+            {
+                _id: { $oid: ARTICLE_ID },
+                tenant: { $oid: SHOP_ID },
+                title: { 'en-US': 'live' },
+                body: { 'en-US': lexicalDoc([paragraph('live body')]) },
+                _status: 'draft',
+            },
+        ]);
+        // A draft live row never gets the published pointer, even with published history.
+        const pointed = applyLatestVersionPointers(draftParent.cmsDocuments, result);
+        expect(pointed[0]?.document.latestVersionId).toBe(remapObjectId('cmsVersions', V3_ID));
+        expect(pointed[0]?.document.publishedVersionId).toBeUndefined();
+
+        // An all-draft history yields no published pointer for anyone.
+        const allDrafts = transformCmsVersions(
+            'articles',
+            [versionRow(V1_ID, 'v1', '2024-05-01T00:00:00.000Z', true)],
+            shopIdByDocument,
+        );
+        expect(allDrafts.publishedVersionIdByDocument).toEqual({});
     });
 
     it('converts snapshot rich text through the real codec and maps the draft state', () => {

@@ -15,9 +15,10 @@ import { mintConvexOperatorToken } from './convex-token';
 
 /**
  * The result shape Convex's `cms/actions.ts` save mutations return; the bridge
- * surfaces only the public `documentId` string.
+ * surfaces the public `documentId` string plus the G4FIX-01 merge-forward
+ * `conflict` marker (set when a draft save's optimistic base predated a publish).
  */
-type ConvexSaveResult = { documentId: string; versionId: string };
+type ConvexSaveResult = { documentId: string; versionId: string; conflict?: 'publish-superseded-base' };
 
 /**
  * The wire shape of a Convex `cmsDocuments` row as the read queries return it —
@@ -174,6 +175,7 @@ function saveArgs(args: {
     documentId?: string;
     keyField?: string;
     keyValue?: string;
+    baseVersionId?: string;
 }): Record<string, unknown> {
     return {
         collection: args.collection,
@@ -181,6 +183,7 @@ function saveArgs(args: {
         ...(args.documentId !== undefined ? { documentId: args.documentId } : {}),
         ...(args.keyField !== undefined ? { keyField: args.keyField } : {}),
         ...(args.keyValue !== undefined ? { keyValue: args.keyValue } : {}),
+        ...(args.baseVersionId !== undefined ? { baseVersionId: args.baseVersionId } : {}),
     };
 }
 
@@ -194,8 +197,11 @@ function saveArgs(args: {
  */
 export const editorConvexBridge: EditorConvexBridge = {
     saveDraft: async (args) => {
-        const { documentId } = await operatorMutation<ConvexSaveResult>('cms/actions:saveDraft', saveArgs(args));
-        return { documentId };
+        const { documentId, conflict } = await operatorMutation<ConvexSaveResult>(
+            'cms/actions:saveDraft',
+            saveArgs(args),
+        );
+        return { documentId, ...(conflict === undefined ? {} : { conflict }) };
     },
     publish: async (args) => {
         const { documentId } = await operatorMutation<ConvexSaveResult>('cms/actions:publish', saveArgs(args));

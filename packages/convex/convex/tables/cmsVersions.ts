@@ -18,10 +18,21 @@ export const cmsDocumentStatusValidator = v.union(v.literal('draft'), v.literal(
  * than the forward-referenced `shop: v.string()` the descriptor-generated CMS content tables use.
  *
  * - `cmsDocuments` is the live document: one row per logical document, carrying its current
- *   serialized `data`, its draft `status`, and a `latestVersionId` pointer advanced on every save.
+ *   serialized `data` (the WORKING DRAFT — what the editor reads and the preview seam serves), a
+ *   `latestVersionId` pointer advanced on every save, and a `publishedVersionId` pointer naming the
+ *   last-published snapshot in `cmsVersions`. Live storefront reads resolve content through
+ *   `publishedVersionId`, so a draft save after a publish never changes what the storefront serves
+ *   (G4FIX-01). `status` is DERIVED, kept for the editor/list/contract consumers that read it:
+ *   `published` exactly when the document has a published snapshot, `draft` when it never has —
+ *   only a publish writes it, never a draft save or a restore. Rows migrated by the ETL (or seeded
+ *   by the harness) may be `published` with NO pointer; the read path serves their own `data` and
+ *   the first native draft save adopts that data as a published baseline snapshot before diverging.
  * - `cmsVersions` is the append-only history: exactly one row per logical save, each a frozen
  *   snapshot pointing back at its live document. Ordered by creation (the `by_document` index then
- *   `_creationTime`), so a version-list query returns chronological history.
+ *   `_creationTime`), so a version-list query returns chronological history. `revision` is the
+ *   document's monotonic save counter at snapshot time — the clock-free ordering signal the
+ *   stale-write guard compares an autosave's optimistic base against (absent on migrated rows,
+ *   which compare as 0).
  */
 export const cmsVersionTables = {
     cmsDocuments: defineTable(
@@ -31,6 +42,8 @@ export const cmsVersionTables = {
             data: v.any(),
             status: cmsDocumentStatusValidator,
             latestVersionId: v.optional(v.id('cmsVersions')),
+            publishedVersionId: v.optional(v.id('cmsVersions')),
+            revision: v.optional(v.number()),
             createdAt: v.number(),
             updatedAt: v.number(),
         }),
@@ -44,6 +57,7 @@ export const cmsVersionTables = {
             collection: v.string(),
             snapshot: v.any(),
             status: cmsDocumentStatusValidator,
+            revision: v.optional(v.number()),
             createdAt: v.number(),
         }),
     )

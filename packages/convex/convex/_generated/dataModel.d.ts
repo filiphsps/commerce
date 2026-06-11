@@ -157,6 +157,8 @@ export type DataModel = {
       createdAt: number;
       data: any;
       latestVersionId?: Id<"cmsVersions">;
+      publishedVersionId?: Id<"cmsVersions">;
+      revision?: number;
       shopId: Id<"shops">;
       status: "draft" | "published";
       updatedAt: number;
@@ -170,6 +172,8 @@ export type DataModel = {
       | "createdAt"
       | "data"
       | "latestVersionId"
+      | "publishedVersionId"
+      | "revision"
       | "shopId"
       | "status"
       | "updatedAt";
@@ -324,6 +328,7 @@ export type DataModel = {
       collection: string;
       createdAt: number;
       documentId: Id<"cmsDocuments">;
+      revision?: number;
       shopId: Id<"shops">;
       snapshot: any;
       status: "draft" | "published";
@@ -336,6 +341,7 @@ export type DataModel = {
       | "collection"
       | "createdAt"
       | "documentId"
+      | "revision"
       | "shopId"
       | "snapshot"
       | "status";

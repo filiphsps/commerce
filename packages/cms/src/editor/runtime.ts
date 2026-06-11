@@ -193,9 +193,19 @@ export type EditorCmsVersion = {
  * this value.
  */
 export type EditorConvexBridge = {
+    /**
+     * `baseVersionId` is the optimistic base — the `latestVersionId` the editor branched from
+     * (G4FIX-01). The Convex side merges a superseded-base draft forward (it can never unpublish)
+     * and reports it via `conflict`, so callers may surface or rebase but never lose the payload.
+     */
     saveDraft: (
-        args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
-    ) => Promise<{ documentId: string }>;
+        args: {
+            collection: string;
+            data: Record<string, unknown>;
+            locale: string;
+            baseVersionId?: string;
+        } & EditorDocumentTarget,
+    ) => Promise<{ documentId: string; conflict?: 'publish-superseded-base' }>;
     publish: (
         args: { collection: string; data: Record<string, unknown>; locale: string } & EditorDocumentTarget,
     ) => Promise<{ documentId: string }>;

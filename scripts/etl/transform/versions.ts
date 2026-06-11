@@ -4,13 +4,21 @@ import { type CmsTransformDivergence, convertCmsRichText, epochMsOrZero, stripCm
 
 /**
  * The staged output of migrating one collection's Payload `_versions` companion rows: the
- * `cmsVersions` rows in chronological order, the per-document latest-version pointer map, and the
- * divergence report for snapshots whose rich text could not convert.
+ * `cmsVersions` rows in chronological order, the per-document latest-/published-version pointer
+ * maps, and the divergence report for snapshots whose rich text could not convert.
  */
 export interface CmsVersionsDataset {
     cmsVersions: TransformedDoc[];
     /** `cmsDocuments` surrogate id → the surrogate id of its latest `cmsVersions` row. */
     latestVersionIdByDocument: Record<string, string>;
+    /**
+     * `cmsDocuments` surrogate id → the surrogate id of its chronologically last `published`
+     * `cmsVersions` row — the G4FIX-01 `publishedVersionId` seed. Documents with no published
+     * snapshot in history are absent; their live rows stay pointer-less, and the Convex read path
+     * serves their own `data` (for a migrated row the live data IS the published content) until the
+     * first native draft save adopts a baseline.
+     */
+    publishedVersionIdByDocument: Record<string, string>;
     divergences: CmsTransformDivergence[];
 }
 
@@ -128,6 +136,7 @@ export const transformCmsVersions = (
     const chronological = [...staged.values()].sort(byChronology);
 
     const latestVersionIdByDocument: Record<string, string> = {};
+    const publishedVersionIdByDocument: Record<string, string> = {};
     for (const version of chronological) {
         const current = latestVersionIdByDocument[version.documentId];
         const currentIsFlagged = current !== undefined && staged.get(current)?.latest === true;
@@ -135,6 +144,11 @@ export const transformCmsVersions = (
         // is only ever displaced by another flagged row, so Payload's pin survives stale tails.
         if (current === undefined || version.latest || !currentIsFlagged) {
             latestVersionIdByDocument[version.documentId] = version.payloadId;
+        }
+        // The published pointer is purely chronological — Payload keeps no published-pin flag, and
+        // the collection row's own data is the published content the last published version froze.
+        if (version.status === 'published') {
+            publishedVersionIdByDocument[version.documentId] = version.payloadId;
         }
     }
 
@@ -151,27 +165,42 @@ export const transformCmsVersions = (
             },
         })),
         latestVersionIdByDocument,
+        publishedVersionIdByDocument,
         divergences: [...divergencesById.values()].sort((left, right) => (left.legacyId < right.legacyId ? -1 : 1)),
     };
 };
 
 /**
- * Stamps the derived latest-version pointers onto staged `cmsDocuments` rows, completing the
- * document↔version graph: each row whose surrogate id has a pointer gets `latestVersionId` set to the
- * latest `cmsVersions` surrogate id (the import reconciles both sides to live ids in one pass). Rows
- * without history pass through untouched — `latestVersionId` is optional on the schema. Pure: returns
- * fresh rows, never mutates the inputs.
+ * Stamps the derived version pointers onto staged `cmsDocuments` rows, completing the
+ * document↔version graph: each row whose surrogate id has a pointer gets `latestVersionId` set to
+ * the latest `cmsVersions` surrogate id, and each row whose live state is `published` additionally
+ * gets `publishedVersionId` set to its last published snapshot (the import reconciles all sides to
+ * live ids in one pass). The published pointer is withheld from `draft` rows — a draft live row
+ * means Payload never had (or no longer has) the document published, so pointing live reads at an
+ * old published snapshot would resurrect unpublished content. Rows without history pass through
+ * untouched — both pointers are optional on the schema, and `revision` is deliberately NOT staged:
+ * migrated rows compare as revision 0, which the runtime stale-write guard treats as predating any
+ * native publish. Pure: returns fresh rows, never mutates the inputs.
  *
  * @param documents - Staged `cmsDocuments` rows from `transformCmsDocuments`.
- * @param latestVersionIdByDocument - The pointer map from {@link transformCmsVersions}.
- * @returns New staged rows with `latestVersionId` applied where history exists.
+ * @param history - The staged versions dataset from {@link transformCmsVersions}.
+ * @returns New staged rows with the version pointers applied where history exists.
  */
 export const applyLatestVersionPointers = (
     documents: readonly TransformedDoc[],
-    latestVersionIdByDocument: Readonly<Record<string, string>>,
+    history: Pick<CmsVersionsDataset, 'latestVersionIdByDocument' | 'publishedVersionIdByDocument'>,
 ): TransformedDoc[] =>
     documents.map((row) => {
-        const latestVersionId = latestVersionIdByDocument[row.payloadId];
-        if (latestVersionId === undefined) return row;
-        return { payloadId: row.payloadId, document: { ...row.document, latestVersionId } };
+        const latestVersionId = history.latestVersionIdByDocument[row.payloadId];
+        const publishedVersionId =
+            row.document.status === 'published' ? history.publishedVersionIdByDocument[row.payloadId] : undefined;
+        if (latestVersionId === undefined && publishedVersionId === undefined) return row;
+        return {
+            payloadId: row.payloadId,
+            document: {
+                ...row.document,
+                ...(latestVersionId === undefined ? {} : { latestVersionId }),
+                ...(publishedVersionId === undefined ? {} : { publishedVersionId }),
+            },
+        };
     });
