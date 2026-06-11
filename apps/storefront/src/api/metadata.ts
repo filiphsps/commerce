@@ -13,11 +13,14 @@ export type MetadataApiArgs = { shop: OnlineShop; locale: Locale; handle: string
 
 /**
  * CMS metadata overlay for a Shopify product handle. The returned doc carries
- * descriptionOverride (Lexical rich text), supplemental render blocks, and
+ * descriptionOverride (ProseMirror rich text), supplemental render blocks, and
  * SEO field overrides — applied on top of the Shopify product page. Routed
- * through the SFREAD-12 dual-read loader (`CMS_READ_SHADOW` shadow,
- * `CMS_READ_FLIP=productMetadata`). A draft-mode request forwards the draft
- * flag down BOTH legs and skips the shadow.
+ * through the SFREAD-12 dual-read loader; flipped BY DEFAULT since CUTOVER-05
+ * (the Convex `cms/read:productMetadataByHandle` read is authoritative and
+ * resolves by the same Shopify-handle natural key as the Mongo getter;
+ * `CMS_READ_FLIP=-productMetadata` is the emergency-shadow lever). A
+ * draft-mode request forwards the draft flag down BOTH legs and skips the
+ * shadow.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.
@@ -54,7 +57,9 @@ export async function ProductMetadataApi({ shop, locale, handle }: MetadataApiAr
 
 /**
  * CMS metadata overlay for a Shopify collection handle. Same overlay
- * semantics as `ProductMetadataApi` (`CMS_READ_FLIP=collectionMetadata`),
+ * semantics as `ProductMetadataApi` — default-flipped to the Convex
+ * `cms/read:collectionMetadataByHandle` read since CUTOVER-05, with
+ * `CMS_READ_FLIP=-collectionMetadata` as the emergency-shadow lever —
  * including the draft-mode forwarding.
  *
  * @param options - Fetch options.

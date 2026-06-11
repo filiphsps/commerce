@@ -49,18 +49,20 @@ export interface SeedCmsMutationOptions {
  * `fixtures/richtext.ts`), and the small fixture bodies stay INLINE on their rows — nothing is shredded
  * into `cms_i18n` (the shred path belongs to the `cmsDocuments` editor model, CMSDATA-10).
  *
- * The CUTOVER-04 gate cohort (`header` + `pages`) is ADDITIONALLY seeded as live `cmsDocuments`
- * rows — the editor-model table `cms/read.ts` serves — because those storefront getters are
- * Convex-native by default post-flip: without the rows the canonical tenant would render fallback
- * chrome and an empty pages surface under e2e. The rows use the pointerless ETL/seed shape
+ * The flipped CMS cohorts are ADDITIONALLY seeded as live `cmsDocuments` rows — the editor-model
+ * table `cms/read.ts` serves — because their storefront getters are Convex-native by default
+ * post-flip: without the rows the canonical tenant would render fallback chrome and empty content
+ * surfaces under e2e. CUTOVER-04 covers `header` + `pages`; CUTOVER-05 adds the rich-text cohort
+ * (`articles` keyed by slug, `productMetadata`/`collectionMetadata` keyed by Shopify handle —
+ * the natural keys the flipped getters resolve by). The rows use the pointerless ETL/seed shape
  * (`status: 'published'`, no `publishedVersionId`), for which the live `data` IS the published
- * content; CUTOVER-05/06 extend this block as their cohorts flip. The legacy mirror-table rows for
- * the cohort keep seeding alongside until TEARDOWN-03 retires the seed machinery.
+ * content; CUTOVER-06 extends this block as the final cohort flips. The legacy mirror-table rows
+ * for the cohorts keep seeding alongside until TEARDOWN-03 retires the seed machinery.
  *
  * Idempotent — the singletons are guarded by `by_shop`, each content row by its natural key within the
  * shop's `by_shop` range (`slug` for pages/articles, `shopifyHandle` for the metadata overlays), the
- * cohort's `cmsDocuments` rows by `by_shop_collection` (+ `data.slug` for pages), each global flag by
- * `by_key`, and each join by `by_shop_flag`, so a second run is a no-op. Runs inside one Convex
+ * cohorts' `cmsDocuments` rows by `by_shop_collection` (+ the natural key inside `data`), each global
+ * flag by `by_key`, and each join by `by_shop_flag`, so a second run is a no-op. Runs inside one Convex
  * transaction, so all documents land all-or-nothing.
  *
  * @param ctx - A Convex mutation context (raw `db` writer), e.g. from `convex-test`'s `run` or a
@@ -141,6 +143,53 @@ export async function seedCmsMutation(ctx: MutationCtx, { shopId }: SeedCmsMutat
             createdAt: now,
             updatedAt: now,
         });
+    }
+
+    // The CUTOVER-05 rich-text cohort: articles by slug, the metadata overlays by Shopify handle —
+    // the same natural keys the default-flipped getters resolve by through `cms/read.ts`.
+    const existingCohortArticleSlugs = new Set(
+        (
+            await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'articles'))
+                .collect()
+        ).map((doc) => (doc.data as { slug?: string }).slug),
+    );
+    for (const article of articleFixtures) {
+        if (existingCohortArticleSlugs.has(article.slug)) continue;
+        await ctx.db.insert('cmsDocuments', {
+            shopId,
+            collection: 'articles',
+            data: { ...article },
+            status: 'published',
+            createdAt: now,
+            updatedAt: now,
+        });
+    }
+
+    for (const [collection, fixtures] of [
+        ['productMetadata', productMetadataFixtures],
+        ['collectionMetadata', collectionMetadataFixtures],
+    ] as const) {
+        const existingCohortHandles = new Set(
+            (
+                await ctx.db
+                    .query('cmsDocuments')
+                    .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', collection))
+                    .collect()
+            ).map((doc) => (doc.data as { shopifyHandle?: string }).shopifyHandle),
+        );
+        for (const overlay of fixtures) {
+            if (existingCohortHandles.has(overlay.shopifyHandle)) continue;
+            await ctx.db.insert('cmsDocuments', {
+                shopId,
+                collection,
+                data: { ...overlay },
+                status: 'published',
+                createdAt: now,
+                updatedAt: now,
+            });
+        }
     }
 
     const existingArticleSlugs = new Set(

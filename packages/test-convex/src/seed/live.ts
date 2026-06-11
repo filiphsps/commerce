@@ -245,15 +245,38 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
         'pages',
         pageFixtures.map((page) => ({ shop: shopId, ...page, ...stamp })),
     );
-    // The CUTOVER-04 gate cohort also lands as live `cmsDocuments` rows — the editor-model table
-    // the default-flipped storefront getters read (`cms/read.ts`); the pointerless published shape
-    // serves its own `data` as the published content. Mirrors `seedCmsMutation`'s cohort block.
+    // The flipped CMS cohorts also land as live `cmsDocuments` rows — the editor-model table the
+    // default-flipped storefront getters read (`cms/read.ts`); the pointerless published shape
+    // serves its own `data` as the published content. CUTOVER-04: header + pages; CUTOVER-05:
+    // articles (by slug) + the metadata overlays (by Shopify handle). Mirrors `seedCmsMutation`'s
+    // cohort blocks.
     importSeedRows(url, 'cmsDocuments', [
         { shopId, collection: 'header', data: { ...headerData }, status: 'published', ...stamp },
         ...pageFixtures.map((page) => ({
             shopId,
             collection: 'pages',
             data: { ...page },
+            status: 'published',
+            ...stamp,
+        })),
+        ...articleFixtures.map((article) => ({
+            shopId,
+            collection: 'articles',
+            data: { ...article },
+            status: 'published',
+            ...stamp,
+        })),
+        ...productMetadataFixtures.map((overlay) => ({
+            shopId,
+            collection: 'productMetadata',
+            data: { ...overlay },
+            status: 'published',
+            ...stamp,
+        })),
+        ...collectionMetadataFixtures.map((overlay) => ({
+            shopId,
+            collection: 'collectionMetadata',
+            data: { ...overlay },
             status: 'published',
             ...stamp,
         })),

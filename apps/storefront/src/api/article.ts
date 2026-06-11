@@ -12,15 +12,19 @@ import { normalizePayloadDoc } from './_normalize-payload';
 export type ArticleApiArgs = { shop: OnlineShop; locale: Locale; slug: string };
 
 /**
- * Reads the Payload `Article` doc matching a given slug for this tenant + locale.
+ * Reads the CMS `Article` doc matching a given slug for this tenant + locale.
  *
  * Article integration in the storefront is an **overlay**: the canonical
  * article body comes from Shopify; CMS supplements it with SEO, an alternate
- * excerpt/cover, additional tags, and a Lexical body that renders below the
- * Shopify body. Returns `null` when no CMS Article exists for the slug — the
- * Shopify path then renders unchanged. Routed through the SFREAD-12 dual-read
- * loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=article`). A draft-mode
- * request forwards the draft flag down BOTH legs and skips the shadow.
+ * excerpt/cover, additional tags, and a rich-text body that renders below the
+ * Shopify body via the ProseMirror renderer. Returns `null` when no CMS
+ * Article exists for the slug — the Shopify path then renders unchanged.
+ * Routed through the SFREAD-12 dual-read loader; flipped BY DEFAULT since
+ * CUTOVER-05 (the Convex `cms/read:articleBySlug` read is authoritative and
+ * serves the body as native ProseMirror JSON; `CMS_READ_FLIP=-article` is the
+ * emergency-shadow lever back to the inert Payload-on-Mongo snapshot). A
+ * draft-mode request forwards the draft flag down BOTH legs and skips the
+ * shadow.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.

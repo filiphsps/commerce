@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
+import { convexCutoverLocked, tenantScopedRead } from '../access';
 import { localized, required, textareaField, textField } from '../descriptors';
 import { toFieldConfigs } from '../field-config-bridge';
 import { imageField, seoGroup } from '../fields';
@@ -7,19 +7,24 @@ import { buildRevalidateHooks } from './_hooks/revalidate';
 
 /**
  * Payload collection config for `articles`. Tenant-scoped blog posts with
- * draft/autosave/version support, Lexical rich-text body, tags, and an SEO
+ * draft/autosave/version support, ProseMirror rich-text body, tags, and an SEO
  * group. The `(tenant, slug)` compound index enforces per-tenant slug
  * uniqueness.
+ *
+ * CUTOVER-05: authoring lives in the Convex-native editor; every Payload write
+ * operation is `convexCutoverLocked` so the inert Mongo snapshot can never fork
+ * from the Convex authority. Reads stay tenant-scoped for the storefront's
+ * emergency-shadow leg until TEARDOWN-02 removes the collection entirely.
  */
 export const articles: CollectionConfig = {
     slug: 'articles',
     versions: { drafts: { autosave: { interval: 2000 } } },
-    admin: { useAsTitle: 'title', defaultColumns: ['title', 'slug', 'publishedAt', '_status'] },
+    admin: { useAsTitle: 'title', defaultColumns: ['title', 'slug', 'publishedAt', '_status'], hidden: true },
     access: {
         read: tenantScopedRead,
-        create: tenantScopedWrite,
-        update: tenantScopedWrite,
-        delete: adminOnly,
+        create: convexCutoverLocked,
+        update: convexCutoverLocked,
+        delete: convexCutoverLocked,
     },
     fields: toFieldConfigs(
         localized(required(textField({ name: 'title' }))),

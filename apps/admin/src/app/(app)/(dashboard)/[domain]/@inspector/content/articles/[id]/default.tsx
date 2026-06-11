@@ -1,26 +1,26 @@
 import 'server-only';
 
+import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 type Props = { params: Promise<{ domain: string; id: string }> };
 
+/**
+ * Inspector pane for an article document. Resolves the document from the Convex authority
+ * (CUTOVER-05 — the route's `id` is a Convex document id, which the retired Payload-on-Mongo
+ * snapshot cannot address) after confirming the operator's tenant context, and renders its
+ * status + last-updated metadata. Renders nothing when the tenant or document is missing.
+ *
+ * @param props - The route params carrying the tenant domain and the document id.
+ * @returns The inspector markup, or `null` when there is nothing to inspect.
+ */
 export default async function ArticleInspector({ params }: Props) {
     const { domain, id } = await params;
-    const { payload, user, tenant } = await getAuthedPayloadCtx(domain);
+    const { tenant } = await getAuthedPayloadCtx(domain);
     if (!tenant) return null;
 
-    const article = await payload
-        .findByID({
-            collection: 'articles',
-            id,
-            user: user as never,
-            overrideAccess: false,
-        })
-        .catch(() => null);
+    const article = await editorConvexBridge.getDocument({ collection: 'articles', documentId: id }).catch(() => null);
     if (!article) return null;
-
-    const updated = (article as { updatedAt?: string }).updatedAt;
-    const status = (article as { _status?: string })._status;
 
     return (
         <div className="flex flex-col gap-4">
@@ -28,15 +28,13 @@ export default async function ArticleInspector({ params }: Props) {
 
             <section className="flex flex-col gap-2">
                 <h3 className="font-bold text-muted-foreground text-xs uppercase">Status</h3>
-                <p className="text-foreground text-sm">{status ?? 'unknown'}</p>
+                <p className="text-foreground text-sm">{article.status}</p>
             </section>
 
-            {updated ? (
-                <section className="flex flex-col gap-2">
-                    <h3 className="font-bold text-muted-foreground text-xs uppercase">Last updated</h3>
-                    <p className="text-foreground text-sm">{new Date(updated).toLocaleString()}</p>
-                </section>
-            ) : null}
+            <section className="flex flex-col gap-2">
+                <h3 className="font-bold text-muted-foreground text-xs uppercase">Last updated</h3>
+                <p className="text-foreground text-sm">{new Date(article.updatedAt).toLocaleString()}</p>
+            </section>
 
             <section className="flex flex-col gap-2">
                 <h3 className="font-bold text-muted-foreground text-xs uppercase">SEO</h3>

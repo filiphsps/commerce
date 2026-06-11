@@ -100,3 +100,71 @@ Per cohort: extend `DEFAULT_FLIPPED_GETTERS`, swap the cohort's collection write
 bridge, extend the canonical Convex seed's `cmsDocuments` block, update both `.env.example` flip
 notes, and repeat §4. CUTOVER-06 additionally retires the LAST Payload write path, unblocking
 TEARDOWN-02.
+
+---
+
+# CUTOVER-05 — the rich-text cohort (articles + productMetadata + collectionMetadata)
+
+Same coordinated pattern as §1–§4 above, applied to the rich-text-bearing cohort. The branch
+carrying this section IS the flip for the cohort: deploying it makes the storefront serve
+`article`/`articles`/`productMetadata`/`collectionMetadata` from Convex by default and locks the
+cohort's Payload write surface shut. After this flip only `footer` + `businessData` (and the
+reviews/feature-flags/media cohort) remain on Payload-on-Mongo until CUTOVER-06.
+
+## 5.1 What the repo state already is (post-flip; cite, don't re-derive)
+
+- **Reads.** The four getters are in `DEFAULT_FLIPPED_GETTERS`
+  (`apps/storefront/src/api/_cms-shadow.ts`). Proven by `_cms-shadow.test.ts` (cohort default +
+  precedence + retired shadow), `article.test.ts` / `cms-blog.test.ts` / `metadata.test.ts`
+  (Convex-served defaults, identity passthrough, null-on-missing overlays, windowed-envelope
+  rebuild for the articles listing, emergency-shadow legs), and the Convex side's
+  `packages/convex/convex/cms/read.test.ts` (shredded `cms_i18n` body reassembly per locale,
+  exact-tag filtering, handle-keyed overlay reads with null-on-missing). The metadata getters
+  resolve by SHOPIFY HANDLE on both legs — the natural key the SFREAD-01 goldens pin — via
+  `cms/read:productMetadataByHandle`/`collectionMetadataByHandle` (`liveDocByKey` on
+  `shopifyHandle`), mirroring the editor's `documentTargetFor` keyField addressing.
+- **Rich text.** Post-flip article bodies and metadata `descriptionOverride`s serve as NATIVE
+  ProseMirror JSON (no Lexical leg, no codec). Render parity is pinned by
+  `apps/storefront/src/blocks/rich-text-renderer.test.tsx`: the golden-parity suite (every Lexical
+  fixture through the CMSRICH-04 codec renders the pre-rewrite DOM) plus the cohort-specific case
+  ("NATIVE ProseMirror article body … same DOM as its codec-converted Lexical twin"). The blog
+  article route renders the body through the `rich-text` block (`Blocks` → `RichTextBlock` →
+  `RichText`).
+- **Writes.** `articles`, `productMetadata`, `collectionMetadata` are `convexCutoverLocked` +
+  `admin.hidden`; Payload still boots with them registered for the final cohort. Identity-pinned
+  by the `multi-tenant-isolation.test.ts` "Convex-cutover collection (CUTOVER-04/05)" block.
+- **Admin.** The content-overview cards and the article inspector read the Convex authority
+  (`editorConvexBridge.list`/`getDocument`); metadata rows route by `data.shopifyHandle`.
+- **Publish → bridge.** `packages/convex/convex/cms/on_publish_feed.test.ts` pins the cohort:
+  slug-leaf busting for `articles`, document-leaf busting for the handle-keyed metadata
+  collections, all seven publishable collections in the shared taxonomy; durable single delivery
+  via `revalidate/onPublish.test.ts`.
+- **Seeds.** The canonical Convex seed (`seedCmsMutation` + `seedCanonicalLive`) lands the cohort
+  as live published `cmsDocuments` rows on their natural keys (slug / shopifyHandle) with
+  ProseMirror bodies, alongside the inert legacy mirror rows.
+
+## 5.2 Operator steps BEFORE deploying this branch (in order)
+
+1. **Preconditions green:** the CUTOVER-04 deploy is live and §4's smoke held; G-RICH green on
+   the repo corpus.
+2. **Freeze cohort authoring:** no articles/productMetadata/collectionMetadata writes during the
+   window (steps 3–6).
+3. **Final cohort export:** `mongoexport` the `articles`, `productMetadata`, and
+   `collectionMetadata` collections (plus their `_versions` companions) from prod.
+4. **ETL the cohort to Convex:** run the PIPELINE transform/shred/versions import for the three
+   collections into the production deployment (`cmsDocuments`/`cmsVersions`/`cms_i18n`).
+5. **Rerun G-RICH on the prod dump.** This is THE rich-text cohort — every article body and
+   metadata override crosses the Lexical→ProseMirror codec here. Abort on ANY fidelity mismatch;
+   also run the dual-path checksum reconcile for the three collections.
+6. **Shadow-bake check:** with the PRE-flip build still serving, `CMS_READ_SHADOW=1` over the
+   soak window must show a clean `cmsReadDivergence` ledger for
+   `article`/`articles`/`productMetadata`/`collectionMetadata`. Zero divergence gates the deploy.
+7. **Deploy this branch.** The deploy IS the flip for the cohort.
+8. **Post-deploy smoke:** a blog article page renders its CMS body below the Shopify body
+   (ProseMirror DOM, not fallback); a product page with a known overlay handle renders the
+   description override; a collection page overlay resolves by handle; the ledger shows no
+   `flip-serve failed` errors for the cohort; a REST write against `/api/articles`,
+   `/api/productMetadata`, or `/api/collectionMetadata` (any verb) is refused.
+9. **Unfreeze authoring** (native editor only). Emergency-shadow lever per getter:
+   `CMS_READ_FLIP=-article,-articles,-productMetadata,-collectionMetadata` (degraded read mode,
+   same caveats as §3).

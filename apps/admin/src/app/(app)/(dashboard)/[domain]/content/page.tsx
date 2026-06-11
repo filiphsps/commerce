@@ -27,6 +27,20 @@ function titleOf(data: Record<string, unknown>, fallback: string): string {
     return fallback;
 }
 
+/**
+ * Reads the Shopify handle off a Convex CMS metadata document's serialized field map. The handle
+ * is the collection's natural key — `documentTargetFor` keyField addressing routes the editor by
+ * it — so the document id is only a last-resort label, never a navigable key.
+ *
+ * @param data - The document's serialized field map.
+ * @param fallback - Returned when no handle exists (the document id).
+ * @returns The Shopify handle used for both the row label and the editor route.
+ */
+function handleOf(data: Record<string, unknown>, fallback: string): string {
+    const handle = data.shopifyHandle;
+    return typeof handle === 'string' && handle.length > 0 ? handle : fallback;
+}
+
 export const metadata: Metadata = {
     title: 'Content',
 };
@@ -97,7 +111,7 @@ function CollectionCard<T>({
 
 export default async function ContentOverviewPage({ params }: { params: Params }) {
     const { domain } = await params;
-    const { payload, user, tenant } = await getAuthedPayloadCtx(domain);
+    const { tenant } = await getAuthedPayloadCtx(domain);
 
     if (!tenant) {
         notFound();
@@ -107,9 +121,11 @@ export default async function ContentOverviewPage({ params }: { params: Params }
 
     // Fetch recent activity per collection in parallel.
     // Defensive .catch so a single inaccessible collection doesn't break the overview.
-    // `pages` reads the Convex authority (CUTOVER-04 — the Mongo copy is an inert snapshot whose
-    // ids no longer address the native editor routes); the not-yet-flipped cohorts keep reading
-    // Payload-on-Mongo until CUTOVER-05/06 move them.
+    // Every card reads the Convex authority: `pages` since CUTOVER-04, and the rich-text cohort
+    // (`articles` + the metadata overlays) since CUTOVER-05 — the Mongo copies are inert
+    // snapshots whose ids no longer address the native editor routes. The metadata rows route by
+    // their Shopify handle (`documentTargetFor` keyField addressing), so the handle comes off the
+    // document's own data, never its Convex id.
     const [pages, articles, productMeta, collectionMeta] = await Promise.all([
         editorConvexBridge
             .list({ collection: 'pages', pageSize: 5 })
@@ -117,35 +133,29 @@ export default async function ContentOverviewPage({ params }: { params: Params }
                 docs: page.docs.map((doc) => ({ id: doc.documentId, title: titleOf(doc.data, doc.documentId) })),
             }))
             .catch(() => ({ docs: [] as Array<{ id: string; title: string }> })),
-        payload
-            .find({
-                collection: 'articles',
-                where: { tenant: { equals: tenant.id } },
-                sort: '-updatedAt',
-                limit: 5,
-                user,
-                overrideAccess: false,
-            })
+        editorConvexBridge
+            .list({ collection: 'articles', pageSize: 5 })
+            .then((page) => ({
+                docs: page.docs.map((doc) => ({ id: doc.documentId, title: titleOf(doc.data, doc.documentId) })),
+            }))
             .catch(() => ({ docs: [] as Array<{ id: string; title: string }> })),
-        payload
-            .find({
-                collection: 'productMetadata',
-                where: { tenant: { equals: tenant.id } },
-                sort: '-updatedAt',
-                limit: 5,
-                user,
-                overrideAccess: false,
-            })
+        editorConvexBridge
+            .list({ collection: 'productMetadata', pageSize: 5 })
+            .then((page) => ({
+                docs: page.docs.map((doc) => ({
+                    id: doc.documentId,
+                    shopifyHandle: handleOf(doc.data, doc.documentId),
+                })),
+            }))
             .catch(() => ({ docs: [] as Array<{ id: string; shopifyHandle: string }> })),
-        payload
-            .find({
-                collection: 'collectionMetadata',
-                where: { tenant: { equals: tenant.id } },
-                sort: '-updatedAt',
-                limit: 5,
-                user,
-                overrideAccess: false,
-            })
+        editorConvexBridge
+            .list({ collection: 'collectionMetadata', pageSize: 5 })
+            .then((page) => ({
+                docs: page.docs.map((doc) => ({
+                    id: doc.documentId,
+                    shopifyHandle: handleOf(doc.data, doc.documentId),
+                })),
+            }))
             .catch(() => ({ docs: [] as Array<{ id: string; shopifyHandle: string }> })),
     ]);
 

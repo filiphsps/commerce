@@ -124,11 +124,19 @@ describe('flip + shadow levers', () => {
         expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: '*' }))).toBe(true);
     });
 
-    it('defaults the CUTOVER-04 gate cohort (header/page/pages) to Convex; everything else stays Mongo', () => {
-        for (const getter of ['header', 'page', 'pages'] as const) {
+    it('defaults the CUTOVER-04 + CUTOVER-05 cohorts to Convex; only footer/businessData stay Mongo', () => {
+        for (const getter of [
+            'header',
+            'page',
+            'pages',
+            'article',
+            'articles',
+            'productMetadata',
+            'collectionMetadata',
+        ] as const) {
             expect(isCmsGetterFlipped(getter, OFF_ENV)).toBe(true);
         }
-        for (const getter of ['footer', 'businessData', 'article', 'articles'] as const) {
+        for (const getter of ['footer', 'businessData'] as const) {
             expect(isCmsGetterFlipped(getter, OFF_ENV)).toBe(false);
         }
     });
@@ -145,7 +153,7 @@ describe('flip + shadow levers', () => {
         // Wildcard negation unflips the cohort defaults…
         expect(isCmsGetterFlipped('header', makeEnv({ CMS_READ_FLIP: '-*' }))).toBe(false);
         // …but an explicit name still wins over it.
-        expect(isCmsGetterFlipped('article', makeEnv({ CMS_READ_FLIP: 'article,-*' }))).toBe(true);
+        expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: 'footer,-*' }))).toBe(true);
         // A per-getter negation wins over the flip-everything wildcard.
         expect(isCmsGetterFlipped('header', makeEnv({ CMS_READ_FLIP: '-header,*' }))).toBe(false);
         expect(isCmsGetterFlipped('footer', makeEnv({ CMS_READ_FLIP: '-header,*' }))).toBe(true);
@@ -178,12 +186,12 @@ describe('normalization', () => {
     });
 });
 
-describe('runCmsDualRead — default (both levers off)', () => {
-    it('serves Mongo and never touches the Convex transport: nothing observable changes', async () => {
+describe('runCmsDualRead — emergency-shadow without the shadow lever (CMS_READ_FLIP=-article only)', () => {
+    it('serves Mongo and never touches the Convex transport: the pre-flip nothing-observable posture', async () => {
         const transport = makeTransport(CONVEX_ARTICLE);
         __setCmsShadowTransport(transport);
 
-        const { result, mongo } = await runArticleRead(OFF_ENV);
+        const { result, mongo } = await runArticleRead(makeEnv({ CMS_READ_FLIP: '-article' }));
         await flushCmsShadows();
 
         expect(result).toEqual(MONGO_ARTICLE);
@@ -193,12 +201,16 @@ describe('runCmsDualRead — default (both levers off)', () => {
     });
 });
 
-describe('runCmsDualRead — shadow mode', () => {
+describe('runCmsDualRead — shadow mode (emergency-shadow posture for the flipped article getter)', () => {
+    // Since CUTOVER-05 `article`/`articles` are default-flipped, so the Mongo-authoritative
+    // comparison these tests pin only runs under the `-getter` emergency-shadow lever.
+    const ARTICLE_SHADOW_ENV = makeEnv({ CMS_READ_SHADOW: '1', CMS_READ_FLIP: '-article' });
+
     it('records ZERO divergence for the identical canonical seed after normalization', async () => {
         const transport = makeTransport(CONVEX_ARTICLE);
         __setCmsShadowTransport(transport);
 
-        const { result } = await runArticleRead(SHADOW_ENV);
+        const { result } = await runArticleRead(ARTICLE_SHADOW_ENV);
         await flushCmsShadows();
 
         expect(result).toEqual(MONGO_ARTICLE);
@@ -210,7 +222,7 @@ describe('runCmsDualRead — shadow mode', () => {
         const transport = makeTransport({ ...CONVEX_ARTICLE, excerpt: 'We launched?!' });
         __setCmsShadowTransport(transport);
 
-        const { result } = await runArticleRead(SHADOW_ENV);
+        const { result } = await runArticleRead(ARTICLE_SHADOW_ENV);
         await flushCmsShadows();
 
         expect(result).toEqual(MONGO_ARTICLE);
@@ -233,7 +245,7 @@ describe('runCmsDualRead — shadow mode', () => {
         transport.query.mockRejectedValue(new TypeError('convex unreachable'));
         __setCmsShadowTransport(transport);
 
-        const { result } = await runArticleRead(SHADOW_ENV);
+        const { result } = await runArticleRead(ARTICLE_SHADOW_ENV);
         await flushCmsShadows();
 
         expect(result).toEqual(MONGO_ARTICLE);
@@ -248,7 +260,7 @@ describe('runCmsDualRead — shadow mode', () => {
         transport.mutation.mockRejectedValue(new TypeError('ledger down'));
         __setCmsShadowTransport(transport);
 
-        const { result } = await runArticleRead(SHADOW_ENV);
+        const { result } = await runArticleRead(ARTICLE_SHADOW_ENV);
         await expect(flushCmsShadows()).resolves.toBeUndefined();
         expect(result).toEqual(MONGO_ARTICLE);
     });
@@ -265,7 +277,7 @@ describe('runCmsDualRead — shadow mode', () => {
             mongo,
             convex: (query) => query('cms/read:articles', { shopId: 'shop-x', locale: 'en-US' }),
             project: (result) => ({ docs: result.docs, totalDocs: result.totalDocs }),
-            env: SHADOW_ENV,
+            env: makeEnv({ CMS_READ_SHADOW: '1', CMS_READ_FLIP: '-articles' }),
         });
         await flushCmsShadows();
 
@@ -274,13 +286,11 @@ describe('runCmsDualRead — shadow mode', () => {
 });
 
 describe('runCmsDualRead — per-getter flip', () => {
-    const FLIP_ENV = makeEnv({ CMS_READ_FLIP: 'article' });
-
-    it('serves the Convex result for a flipped getter without invoking Mongo', async () => {
+    it('serves the Convex result for the default-flipped article getter without invoking Mongo (CUTOVER-05)', async () => {
         const transport = makeTransport(CONVEX_ARTICLE);
         __setCmsShadowTransport(transport);
 
-        const { result, mongo } = await runArticleRead(FLIP_ENV);
+        const { result, mongo } = await runArticleRead(OFF_ENV);
         await flushCmsShadows();
 
         expect(result).toEqual(CONVEX_ARTICLE);
@@ -298,7 +308,7 @@ describe('runCmsDualRead — per-getter flip', () => {
             locale: 'en-US',
             mongo,
             convex: (query) => query('cms/read:singleton', {}),
-            env: FLIP_ENV,
+            env: makeEnv({ CMS_READ_FLIP: 'article' }),
         });
         await flushCmsShadows();
 
@@ -354,7 +364,7 @@ describe('runCmsDualRead — per-getter flip', () => {
         transport.query.mockRejectedValue(new TypeError('flip target down'));
         __setCmsShadowTransport(transport);
 
-        const { result, mongo } = await runArticleRead(FLIP_ENV);
+        const { result, mongo } = await runArticleRead(OFF_ENV);
         await flushCmsShadows();
 
         expect(result).toEqual(MONGO_ARTICLE);

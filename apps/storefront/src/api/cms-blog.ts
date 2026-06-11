@@ -22,10 +22,11 @@ export type BlogApiResult = Awaited<ReturnType<typeof getArticles>>;
  * listings (e.g., a `/news` route). Not consumed by the current `/blogs/...`
  * route — those continue to read Shopify articles directly. See spec section
  * on Routes for the article-overlay design. Routed through the SFREAD-12
- * dual-read loader (`CMS_READ_SHADOW` shadow, `CMS_READ_FLIP=articles`); the
- * Convex side returns the full tag-filtered, `publishedAt`-ordered list, and
- * the requested window is sliced here so both backends compare and serve the
- * same page of docs.
+ * dual-read loader; flipped BY DEFAULT since CUTOVER-05 (the Convex
+ * `cms/read:articles` listing is authoritative, `CMS_READ_FLIP=-articles` is
+ * the emergency-shadow lever). The Convex side returns the full tag-filtered,
+ * `publishedAt`-ordered list, and the requested window is sliced here so both
+ * backends compare and serve the same page of docs.
  *
  * @param options - Fetch options.
  * @param options.shop - Tenant record.

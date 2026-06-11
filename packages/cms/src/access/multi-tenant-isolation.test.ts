@@ -30,23 +30,22 @@ import { convexCutoverLocked } from './convex-cutover-locked';
 import { publishedOrAuthRead } from './published-or-auth-read';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from './tenant-scoped-read';
 
-const tenantScopedContent: ReadonlyArray<readonly [string, CollectionConfig]> = [
-    ['articles', articles],
-    ['productMetadata', productMetadata],
-    ['collectionMetadata', collectionMetadata],
-    ['media', media],
-] as const;
+const tenantScopedContent: ReadonlyArray<readonly [string, CollectionConfig]> = [['media', media]] as const;
 
 const globals: ReadonlyArray<readonly [string, CollectionConfig]> = [
     ['footer', footer],
     ['businessData', businessData],
 ] as const;
 
-// The CUTOVER-04 gate cohort: authored exclusively in the Convex-native editor, so the
-// Payload write surface is locked shut while reads keep serving the inert Mongo snapshot.
+// The CUTOVER-04 gate cohort plus the CUTOVER-05 rich-text cohort: authored exclusively in the
+// Convex-native editor, so the Payload write surface is locked shut while reads keep serving the
+// inert Mongo snapshot.
 const cutoverLocked: ReadonlyArray<readonly [string, CollectionConfig, unknown]> = [
     ['pages', pages, tenantScopedRead],
     ['header', header, publishedOrAuthRead],
+    ['articles', articles, tenantScopedRead],
+    ['productMetadata', productMetadata, tenantScopedRead],
+    ['collectionMetadata', collectionMetadata, tenantScopedRead],
 ] as const;
 
 describe('multi-tenant isolation — predicate wiring', () => {
@@ -91,7 +90,9 @@ describe('multi-tenant isolation — predicate wiring', () => {
         });
     });
 
-    describe.each(cutoverLocked)('Convex-cutover collection (CUTOVER-04): %s', (_slug, collection, readPredicate) => {
+    describe.each(
+        cutoverLocked,
+    )('Convex-cutover collection (CUTOVER-04/05): %s', (_slug, collection, readPredicate) => {
         it('keeps its pre-cutover read predicate — the emergency-shadow leg and dashboard listings still read', () => {
             expect(collection.access?.read).toBe(readPredicate);
         });

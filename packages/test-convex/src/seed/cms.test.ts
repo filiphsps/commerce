@@ -157,8 +157,14 @@ describe('seedCmsMutation', () => {
             collectionMetadata: collectionMetadataFixtures.length,
             featureFlags: featureFlagFixtures.length,
             shopFeatureFlags: featureFlagFixtures.length,
-            // The CUTOVER-04 cohort: one header singleton + every page as a live editor-model row.
-            cmsDocuments: 1 + pageFixtures.length,
+            // The flipped cohorts: one header singleton + every page (CUTOVER-04) plus every
+            // article and metadata overlay (CUTOVER-05) as live editor-model rows.
+            cmsDocuments:
+                1 +
+                pageFixtures.length +
+                articleFixtures.length +
+                productMetadataFixtures.length +
+                collectionMetadataFixtures.length,
         });
     });
 
@@ -191,6 +197,51 @@ describe('seedCmsMutation', () => {
         const slugs = pageDocs.map((doc) => (doc.data as { slug?: string }).slug).sort();
         expect(slugs).toEqual(pageFixtures.map((page) => page.slug).sort());
         for (const doc of pageDocs) {
+            expect(doc.status).toBe('published');
+        }
+    });
+
+    it('seeds the CUTOVER-05 cohort (articles + metadata overlays) as published cmsDocuments rows on their natural keys', async () => {
+        const t = convexTest(schema, modules);
+
+        const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
+        await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
+
+        const { articleDocs, productDocs, collectionDocs } = await t.run(async (ctx) => ({
+            articleDocs: await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'articles'))
+                .collect(),
+            productDocs: await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'productMetadata'))
+                .collect(),
+            collectionDocs: await ctx.db
+                .query('cmsDocuments')
+                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'collectionMetadata'))
+                .collect(),
+        }));
+
+        // Every article fixture lands as a live row keyed by its slug — what `cms/read:articleBySlug`
+        // and `cms/read:articles` serve to the default-flipped storefront getters — with the body
+        // already in native ProseMirror shape for the storefront RichText renderer.
+        const slugs = articleDocs.map((doc) => (doc.data as { slug?: string }).slug).sort();
+        expect(slugs).toEqual(articleFixtures.map((article) => article.slug).sort());
+        for (const doc of articleDocs) {
+            expect(doc.status).toBe('published');
+            expect(doc.publishedVersionId).toBeUndefined();
+            expect((doc.data as { body?: { type?: string } }).body?.type).toBe('doc');
+        }
+
+        // The metadata overlays land keyed by their Shopify handle — the keyField the flipped
+        // `cms/read:productMetadataByHandle`/`collectionMetadataByHandle` reads resolve by.
+        const productHandles = productDocs.map((doc) => (doc.data as { shopifyHandle?: string }).shopifyHandle).sort();
+        expect(productHandles).toEqual(productMetadataFixtures.map((overlay) => overlay.shopifyHandle).sort());
+        const collectionHandles = collectionDocs
+            .map((doc) => (doc.data as { shopifyHandle?: string }).shopifyHandle)
+            .sort();
+        expect(collectionHandles).toEqual(collectionMetadataFixtures.map((overlay) => overlay.shopifyHandle).sort());
+        for (const doc of [...productDocs, ...collectionDocs]) {
             expect(doc.status).toBe('published');
         }
     });

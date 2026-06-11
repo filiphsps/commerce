@@ -184,6 +184,45 @@ describe('RichText golden parity (Lexical fixtures → CMSRICH-04 codec → Pros
             expect(container.innerHTML).toBe(html);
         });
     }
+
+    it('renders a NATIVE ProseMirror article body (the CUTOVER-05 flipped serve shape) to the same DOM as its codec-converted Lexical twin', () => {
+        // Post-flip, `ArticleApi` bodies and the metadata `descriptionOverride` arrive as
+        // ProseMirror JSON straight from Convex — no Lexical leg, no codec. The cohort's render
+        // contract is that the native document and the pre-flip codec path are DOM-identical
+        // for the same content.
+        const native = {
+            type: 'doc',
+            content: [
+                { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Why Lofoten' }] },
+                { type: 'paragraph', content: [{ type: 'text', text: 'Light at the edge of darkness.' }] },
+                {
+                    type: 'bulletList',
+                    content: [
+                        {
+                            type: 'listItem',
+                            content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Look 01' }] }],
+                        },
+                    ],
+                },
+            ],
+        } as RichTextDocument;
+        const twin = lexicalToProseMirror(
+            lexical([
+                { type: 'heading', tag: 'h2', children: [{ type: 'text', text: 'Why Lofoten' }] },
+                { type: 'paragraph', children: [{ type: 'text', text: 'Light at the edge of darkness.' }] },
+                {
+                    type: 'list',
+                    listType: 'bullet',
+                    children: [{ type: 'listitem', children: [{ type: 'text', text: 'Look 01' }] }],
+                },
+            ]),
+        );
+
+        const nativeDom = render(<RichText data={native} locale={locale} />).container.innerHTML;
+        const twinDom = render(<RichText data={twin} locale={locale} />).container.innerHTML;
+        expect(nativeDom).toBe('<h2>Why Lofoten</h2><p>Light at the edge of darkness.</p><ul><li>Look 01</li></ul>');
+        expect(nativeDom).toBe(twinDom);
+    });
 });
 
 const doc = (content: unknown[]): RichTextDocument => ({ type: 'doc', content }) as RichTextDocument;
