@@ -108,6 +108,10 @@ export function runConvexCli(live: Pick<LiveConvex, 'url' | 'adminKey'>, args: s
                 CONVEX_SELF_HOSTED_ADMIN_KEY: live.adminKey,
                 CONVEX_DEPLOYMENT: '',
                 CONVEX_DEPLOY_KEY: '',
+                // CI exports CONVEX_AGENT_MODE=anonymous for its own ephemeral deploy; left
+                // ambient it can re-route this CLI away from the self-hosted pair, so env
+                // sets/deploys land on a DIFFERENT deployment than the one the tests call.
+                CONVEX_AGENT_MODE: '',
             },
         });
         if (result.status === 0) {
@@ -161,9 +165,11 @@ export async function startLiveConvex(): Promise<LiveConvex> {
     const seedEnv = (): void => {
         for (const [key, value] of requiredEnv) runConvexCli(backend, ['env', 'set', key, value]);
         for (const [key, value] of requiredEnv) {
-            if (runConvexCli(backend, ['env', 'list']).includes(key)) continue;
+            // `env get` echoes the VALUE — a key-only presence check missed the case where the
+            // write landed on the wrong deployment or persisted a stale value.
+            if (runConvexCli(backend, ['env', 'get', key]).includes(value)) continue;
             runConvexCli(backend, ['env', 'set', key, value]);
-            if (!runConvexCli(backend, ['env', 'list']).includes(key)) {
+            if (!runConvexCli(backend, ['env', 'get', key]).includes(value)) {
                 throw new ConvexError(
                     `[test-convex/limits] ${key} failed to seed onto the ephemeral backend; refusing to run suites against an unconfigured deployment.`,
                 );
