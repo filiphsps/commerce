@@ -4,7 +4,7 @@ description: Tenant-scoped, locale-qualified cache namespaces that ensure shop i
 ---
 
 The cache is organized into two top-level namespaces: `shopify` for storefront reads (Shopify
-Storefront/Admin API responses) and `cms` for Payload reads (content layer responses). Namespaces
+Storefront/Admin API responses) and `cms` for content reads (Convex-backed CMS responses). Namespaces
 are isolated — invalidating a CMS entry never touches Shopify-sourced data and vice versa.
 
 A Shopify webhook can revalidate product data without evicting cached page content. A CMS
@@ -54,7 +54,10 @@ The `@tagtree` family covers three integration points:
 | `@tagtree/core` | Schema definition, builders, adapter interface |
 | `@tagtree/next` | Next.js storage adapter (`revalidateTag` / `cacheTag`) |
 | `@tagtree/shopify` | Shopify webhook → tag mapper (`parseShopifyWebhook`) |
-| `@tagtree/payload` | Payload `afterChange`/`afterDelete` hook factory |
+
+The CMS side declares its tag schema once in `@nordcom/commerce-cms`'s
+`cache-descriptor.ts` — deliberately free of `server-only` so the Next.js read adapter
+and the Convex revalidation pipeline derive identical tags from the same schema.
 
 ## Where the cache helpers live
 
@@ -78,10 +81,12 @@ to map the webhook topic to the affected cache tags, and calls `revalidateTag` f
 It also evicts the per-tenant Apollo client pool entry so the `InMemoryCache` does not diverge
 from Next.js's data cache.
 
-CMS invalidation does not use webhooks. Payload collection `afterChange` and `afterDelete`
-hooks (wired up by `payloadHooks` from `@tagtree/payload`) call `revalidateTag` directly —
-a single content edit flushes exactly the per-tenant, per-collection, per-handle tags the
-storefront read.
+CMS invalidation arrives from Convex. Publishing a document runs the deployment's
+revalidation pipeline (`packages/convex/convex/revalidate/`), which computes the affected
+tags from the shared schema and delivers signed events to the storefront's
+`/api/revalidate/convex` route; the route verifies the `CONVEX_REVALIDATE_SECRET` HMAC,
+then calls `revalidateTag` — a single content publish flushes exactly the per-tenant,
+per-collection, per-handle tags the storefront read.
 
 <Callout type="tip">
     `cacheTag` only operates inside a `'use cache'` boundary. Entity loaders use a

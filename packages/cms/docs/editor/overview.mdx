@@ -4,35 +4,30 @@ sidebar_position: 5
 ---
 
 The editor system (`@nordcom/commerce-cms/editor`) is the unified way to build
-admin pages for Payload collections. Each editor page is driven by a
-**manifest** — a thin metadata wrapper around a Payload `CollectionConfig`
-that adds route shape, route-level access predicates, list columns, live
-preview URL, and revalidation paths.
+admin pages for CMS collections. Each editor page is driven by a
+**manifest** — field descriptors plus route shape, route-level access
+predicates, list columns, live preview URL, and revalidation paths.
 
 ## Why
 
-Before this system the admin app shipped two parallel patterns:
-
-- Per-collection routes with hand-written `parseFormData`, `*-form.tsx`,
-  `*-fields.tsx`, and `cms-actions/<name>.ts` action files.
-- The Mongoose-backed bridge plugin with its own `<BridgeEditPage>` +
-  `createBridgeServerActions`.
-
-Adding a feature (tightening field allowlists, fixing the autosave loop,
-improving error handling) meant touching both. The unified editor system
-collapses them into one primitive set; the CMS Editor Unification work
-migrates the remaining collections and the bridge entities.
+Before this system the admin app shipped two parallel patterns: per-collection
+routes with hand-written form/action files, and a separate bridge plugin for the
+database-backed entities. Adding a feature (tightening field allowlists, fixing
+the autosave loop, improving error handling) meant touching both. The unified
+editor system collapses them into one primitive set, and the Convex migration
+finished the consolidation — every collection edits through the same
+manifest-driven stack against the Convex `cms/documents` functions.
 
 ## The mental model
 
 ```
-Payload CollectionConfig       ←   single source of truth for fields, drafts,
-                                   versions, locales, hooks, collection-level
-                                   access predicates.
+Field descriptors              ←   single source of truth for fields, drafts,
+(src/descriptors, used by         versions, locales — the shapes `pnpm cms:gen`
+each manifest)                     derives every artifact from.
 
 CollectionEditorManifest       ←   route shape, route-level access, list
                                    columns, live-preview URL, revalidation.
-                                   References the collection by slug.
+                                   Declares the collection by slug.
 
 EditorRuntime                  ←   admin-app dependency bundle: auth helper,
                                    form-state builder, shell-props helper,
@@ -40,12 +35,14 @@ EditorRuntime                  ←   admin-app dependency bundle: auth helper,
 
 <EditorEditPage>               ←   server component; consumes manifest +
 <EditorListPage>                   runtime + route params; renders the
-<EditorNewPage>                    appropriate Payload form / list inside
+<EditorNewPage>                    descriptor-driven form / list inside
 <EditorVersionsPage>               the admin's chrome.
 
 pnpm cms:gen                   ←   codegen step that emits `'use server'`
                                    action wrappers per manifest into
-                                   `apps/admin/src/lib/cms-actions/_generated/`.
+                                   `apps/admin/src/lib/cms-actions/_generated/`
+                                   (plus the content types and Convex table
+                                   validators).
 ```
 
 ## Route file shape
@@ -87,20 +84,19 @@ export default async function Page({ params, searchParams }: {
 
 ## When to use it
 
-- A new Payload collection needs an admin edit / list / new / versions page.
+- A new CMS collection needs an admin edit / list / new / versions page.
 - An existing collection's bespoke route is being refactored away.
-- A Mongoose-backed entity is moving to Payload as part of the unification.
 
 ## When NOT to use it
 
-- A route doesn't follow the "edit one Payload collection" shape — e.g.
+- A route doesn't follow the "edit one collection" shape — e.g.
   multi-collection dashboards, custom workflows. Build those by hand and let
   them coexist with editor routes.
-- One-off scripts or admin tools that don't need Payload's form chrome at all.
+- One-off scripts or admin tools that don't need the editor's form chrome at all.
 
 ## Continue reading
 
 - [Manifest reference](/docs/cms/editor/manifests/) — every field on
   `CollectionEditorManifest` explained, with worked examples.
-- [Collections reference](/docs/cms/collections/) — the Payload collection configs
-  the manifests reference.
+- [Collections reference](/docs/cms/collections/) — the collections the manifests
+  declare.

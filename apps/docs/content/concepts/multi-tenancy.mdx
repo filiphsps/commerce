@@ -4,7 +4,7 @@ description: One deploy serves many shops. Tenant resolution happens at the edge
 ---
 
 Nordcom Commerce is multi-tenant by hostname. There is no per-shop deployment — adding a new
-shop is a row in the `shops` MongoDB collection, no redeploy. Middleware reads the request's
+shop is a row in the Convex `shops` table, no redeploy. Middleware reads the request's
 hostname, resolves the shop, and rewrites the URL into `/[domain]/[locale]/…` before the App
 Router takes over.
 
@@ -13,8 +13,9 @@ Router takes over.
 The middleware at `apps/storefront/src/proxy.ts` is the single entry point for every request.
 
 1. Inbound request arrives with a raw `Host:` header (primary domain, alias, or dev shorthand).
-2. Middleware calls `Shop.findByDomain(hostname)` against MongoDB after normalizing the host
-   (strips ports, `.localhost`, Vercel preview suffixes).
+2. Middleware calls `Shop.findByDomain(hostname)` — resolved through the Convex `db/shops`
+   query seam — after normalizing the host (strips ports, `.localhost`, Vercel preview
+   suffixes).
 3. Locale resolves via the fallback chain: path segment → `Accept-Language` matched against
    the shop's available locales → shop's default locale.
 4. URL rewrites to `/[domain]/[locale]/…` — the App Router receives the tenanted path.

@@ -1,0 +1,29 @@
+---
+title: Overview
+sidebar_position: 1
+---
+
+The Convex test harness: a local-backend launcher, a daemon wrapper for
+persistent dev backends, the canonical seed fixtures every e2e suite depends on,
+and the limit-boundary suites that gate `packages/convex` changes in CI.
+
+Internal dev/test utility — it has no production consumer and no stable public
+API.
+
+For the canonical reference, see the [README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/test-convex/README.md).
+
+## What's inside
+
+| Export | Purpose |
+| --- | --- |
+| `startConvex()` | Boots a REAL local Convex backend (ephemeral by default; pass `dataDir`/`port` for a persistent one) and resolves `{ url, adminKey, stop }`. |
+| `runDaemon()` | Long-running wrapper that writes PID/URL/admin-key marker files so dev servers and e2e re-attach. |
+| `seedCanonical()` | Seeds the demo tenant (`nordcom-demo-shop.com`) plus its full CMS corpus. Idempotent end-to-end. |
+| `./unit` | `convex-test` helpers for in-memory unit suites. |
+
+## Limit-boundary suites
+
+`src/limits/` proves behavior `convex-test` cannot: document-size ceilings,
+deep-populate fan-out, scan budgets, autosave write conflicts, and the canonical
+seed under the real validator set — all against a real local backend. CI runs
+them whenever `packages/convex/**` or `packages/test-convex/**` changes.

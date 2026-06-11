@@ -14,8 +14,9 @@ export type ValueKind = 'color' | 'dimension' | 'number' | 'enum' | 'boolean';
 export type ThemeGroup = 'colors' | 'typography' | 'radii' | 'spacing' | 'elevation' | 'productCard' | 'sections';
 
 /**
- * Persistent payload field type for the fallback Payload field builder. Mirrors the four widget
- * kinds the native auto-render offers so a token can fall back to Payload's own control.
+ * Fallback widget kind for a theme token's generic form control — the four kinds the editor's
+ * auto-render offers when no richer `valueKind` control applies. The name is a holdover from the
+ * retired Payload-era field builder; the widgets themselves render on the native form core.
  */
 export type PayloadType = 'text' | 'select' | 'number' | 'checkbox';
 
@@ -38,7 +39,7 @@ export type ThemeTokenMeta = {
     cssVar: string;
     /** The value kind, selecting the admin control. */
     valueKind: ValueKind;
-    /** Fallback Payload widget type. */
+    /** Fallback generic-widget kind (see {@link PayloadType}). */
     payloadType: PayloadType;
     /** Allowed values for an `enum`; a single-element list renders a read-only select. */
     enumValues?: readonly string[];

@@ -5,7 +5,7 @@ sidebar_position: 1
 
 The public, multi-tenant storefront. A single Next.js 16 app that serves an arbitrary
 number of shops, resolves the tenant from the request hostname, and renders catalog,
-cart, account, and CMS pages backed by Shopify and the embedded Payload CMS.
+cart, account, and CMS pages backed by Shopify and the Convex-native CMS.
 
 For the canonical reference, see the [README on GitHub](https://github.com/filiphsps/commerce/blob/master/apps/storefront/README.md).
 
@@ -52,10 +52,10 @@ utilities live in `src/app/globals.css` under `@layer utilities`.
 The storefront previously pulled in several packages it no longer needs.
 Notable removals from this cleanup:
 
-- `@payloadcms/*` and `payload` — the storefront only needs the shared
-  config from `@nordcom/commerce-cms`, which keeps Payload as a
-  server-only transitive. The admin app remains the only direct Payload
-  consumer.
+- `@payloadcms/*` and `payload` — removed entirely with the Convex migration
+  (see `.specs/2026-05-30-convex-migration/`). The storefront reads CMS
+  content from the Convex `cms/read` functions and only imports the pure
+  block/render layer from `@nordcom/commerce-cms`.
 - `nprogress` — superseded by `nextjs-toploader`. The toploader still
   pulls in `nprogress` as a transitive on the client; that's intentional
   and unchanged.

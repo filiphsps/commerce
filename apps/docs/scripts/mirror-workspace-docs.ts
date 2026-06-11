@@ -33,9 +33,11 @@ const WORKSPACE_EXCLUDES: Record<string, readonly string[]> = {
  */
 const PACKAGE_CATEGORY: Readonly<Record<string, string>> = {
     cms: 'core',
+    convex: 'core',
     db: 'core',
     errors: 'core',
     'marketing-common': 'core',
+    'test-convex': 'core',
     'shopify-graphql': 'shopify',
     'shopify-html': 'shopify',
     'react-payment-brand-icons': 'ui',

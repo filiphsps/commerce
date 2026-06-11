@@ -11,7 +11,7 @@ This is the back-office surface. The customer-facing storefront lives in
 
 -   **Framework:** Next.js 16 (App Router, Turbopack), React 19
 -   **Auth:** NextAuth v5 (`@auth/core`) with GitHub provider
--   **Data:** `@nordcom/commerce-db` for shops and users (Mongo / Mongoose)
+-   **Data:** `@nordcom/commerce-db` for shops and users (Convex-backed services)
 -   **Shopify integration:** `@shopify/shopify-api` (Admin API)
 -   **UI:** [Nordstar](https://www.npmjs.com/package/@nordcom/nordstar), Radix UI primitives,
     Tailwind CSS 4, Geist font, `lucide-react` icons
@@ -33,7 +33,9 @@ Required environment variables (defined at the root in [`.env.example`](../../.e
 
 | Variable                | Purpose                                                       |
 | ----------------------- | ------------------------------------------------------------- |
-| `MONGODB_URI`           | Shop / user data. Module-load failure if missing.             |
+| `CONVEX_URL`            | Convex deployment for shop / user data.                       |
+| `CONVEX_SERVER_SECRET`  | Server-trust secret for the identity-less db client (Auth.js adapter reads). |
+| `CONVEX_AUTH_ISSUER` / `CONVEX_AUTH_APPLICATION_ID` / `CONVEX_AUTH_PRIVATE_KEY` | NextAuth-derived RS256 JWT the Convex deployment validates. |
 | `AUTH_SECRET`           | NextAuth signing secret.                                      |
 | `AUTH_TRUST_HOST`       | Set to `true` for local development.                          |
 | `ADMIN_DOMAIN`          | Hostname for the admin (e.g. `admin.example.com`).            |

@@ -3,13 +3,15 @@ title: Services
 sidebar_position: 2
 ---
 
-`Service<DocType, Model>` (`src/services/service.ts`) is the abstract base:
+`Service<DocType>` (`src/services/service.ts`) is the base class. Its call surface is
+frozen by the service-seam contract snapshot — the same signatures the platform used
+pre-Convex — while each service delegates to a `ServiceBackend` that translates the
+filter/update vocabulary into calls against the deployed Convex `db/*` functions:
 
 ```ts
-import type { Model } from 'mongoose';
 import type { BaseDocument } from '../db';
 
-export class Service<DocType extends BaseDocument, M extends typeof Model<DocType>> {
+export class Service<DocType extends BaseDocument> {
     create(input: Omit<DocType, keyof BaseDocument>): Promise<DocType>;
     find(args: { id: string;            count?: 1;   /* … */ }): Promise<DocType>;
     find(args: { filter?: QueryFilter;   count?: 1;   /* … */ }): Promise<DocType>;
@@ -21,11 +23,17 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
 
 The `find` overload picks the return type from the arguments:
 
-- `id` or `count: 1` → returns a single `DocType`.
+- `id` or `count: 1` → returns a single `DocType` (throws `NotFoundError` on a miss).
 - otherwise        → returns `DocType[]`.
 
+`QueryFilter` / `ProjectionType` are local structural aliases (`src/models/query-types.ts`)
+accepting the frozen call-site shapes — plain field filters, `$elemMatch`/`$push`
+operator objects, dotted projection paths. Backends throw on filter shapes no caller
+uses, so an unsupported translation fails loudly instead of returning wrong rows.
+
 Per-service helpers extend this with domain-specific lookups (e.g.
-`ShopService.findByDomain`, `ShopService.findByCollaborator`).
+`ShopService.findByDomain`, `ShopService.findByCollaborator`). Shop writes funnel
+through the atomic `db/shop_write:upsertShop` Convex mutation.
 
 ## Usage
 
@@ -39,8 +47,9 @@ const shops = await Shop.findByCollaborator({ collaboratorId: user.id });
 
 ## Sensitive data
 
-By default, sensitive fields (e.g. `collaborators`, provider tokens) are projected
-**out** of `find` results. Opt in explicitly when you need them:
+By default, sensitive fields (e.g. `collaborators`, provider tokens) are absent from
+`find` results — credentials are stored split-out in the Convex `shopCredentials`
+table. Opt in explicitly when you need them:
 
 ```ts
 const shop = await Shop.findByDomain(domain, { sensitiveData: true });

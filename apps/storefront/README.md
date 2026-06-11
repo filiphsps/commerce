@@ -2,20 +2,20 @@
 
 The public, multi-tenant storefront. A single Next.js 16 app that serves an arbitrary
 number of shops, resolves the tenant from the request hostname, and renders catalog,
-cart, account, and CMS pages backed by Shopify and the embedded Payload CMS.
+cart, account, and CMS pages backed by Shopify and the Convex-native CMS.
 
-This is the customer-facing surface. The operator dashboard (which also embeds
-Payload's admin UI at `/cms`) lives in [`apps/admin`](../admin); the marketing site
-is [`apps/landing`](../landing).
+This is the customer-facing surface. The operator dashboard (which hosts the CMS
+editor at `/cms`) lives in [`apps/admin`](../admin); the marketing site is
+[`apps/landing`](../landing).
 
 ## Stack
 
 -   **Framework:** Next.js 16 (App Router, Turbopack), React 19
 -   **Commerce:** Shopify Storefront API via `@apollo/client` + `@shopify/hydrogen-react`
--   **CMS:** [`@nordcom/commerce-cms`](../../packages/cms) — Payload-backed pages,
-    articles, globals, and a tenant-aware `BlockRenderer`
+-   **CMS:** [`@nordcom/commerce-cms`](../../packages/cms) — descriptor-defined pages,
+    articles, globals, and a tenant-aware `BlockRenderer`; content read from Convex
 -   **Auth:** NextAuth v5 (`@auth/core`)
--   **Data:** `@nordcom/commerce-db` for tenant resolution (Mongo / Mongoose)
+-   **Data:** `@nordcom/commerce-db` for tenant resolution (Convex-backed services)
 -   **Styles:** Tailwind CSS 4, SCSS modules, [Nordstar](https://www.npmjs.com/package/@nordcom/nordstar)
 -   **Observability:** OpenTelemetry, Vercel Analytics / Speed Insights / Toolbar
 
@@ -37,10 +37,12 @@ Required environment variables (see [`.env.example`](../../.env.example) at the 
 
 | Variable                    | Purpose                                                                   |
 | --------------------------- | ------------------------------------------------------------------------- |
-| `MONGODB_URI`               | Tenant resolution. Module-load failure if missing.                        |
+| `CONVEX_URL`                | Convex deployment for tenant resolution + CMS reads.                      |
+| `CONVEX_SERVER_SECRET`      | Server-trust secret for pre-tenant reads (`Shop.findByDomain` in middleware). |
+| `CONVEX_REVALIDATE_SECRET`  | HMAC validation for `/api/revalidate/convex`. Required in prod.           |
 | `AUTH_SECRET`               | NextAuth signing secret. Must match the admin app's value.                |
 | `SERVICE_DOMAIN`            | Fallback hostname for unknown-shop rewrites.                              |
-| `SHOPIFY_WEBHOOK_SECRET`    | HMAC validation for `/api/revalidate`. Required in prod.                  |
+| `SHOPIFY_WEBHOOK_SECRET`    | HMAC validation for `/[domain]/api/revalidate`. Required in prod.         |
 | `STOREFRONT_PREVIEW_SECRET` | Required to enter draft mode via `/[domain]/api/cms-preview`.             |
 
 ## Multi-tenant routing
@@ -50,7 +52,8 @@ Required environment variables (see [`.env.example`](../../.env.example) at the 
 1.  Dispatch — paths starting with `/admin` go to `admin()` (see `src/middleware/admin.ts`),
     everything else goes to `storefront()` (`src/middleware/storefront.ts`).
 2.  `storefront()` reads `req.headers.host`, normalizes it (strips ports, `.localhost`,
-    Vercel preview suffixes), then calls `Shop.findByDomain(hostname)` against MongoDB.
+    Vercel preview suffixes), then calls `Shop.findByDomain(hostname)`, which resolves
+    the tenant through the Convex `db/shops` query seam.
 3.  On a hit, the resolved domain is injected into the URL so the App Router serves the
     page from `src/app/[domain]/[locale]/…`.
 4.  On `NotFoundError`, the middleware rewrites to `SERVICE_DOMAIN/status/unknown-shop/`.
@@ -119,18 +122,21 @@ Per-entity tags use `shopify.<shopId>.product.<handle>` and
 
 ### CMS
 
-CMS access goes through `@nordcom/commerce-cms/api`:
+CMS content is read straight from the Convex `cms/read` functions through the
+storefront's own getters (`src/api/{header,footer,page,article,…}.ts`), which all
+route through the `src/api/_cms-read.ts` transport:
 
 ```ts
-import { getPage as CmsGetPage } from '@nordcom/commerce-cms/api';
+import { PageApi } from '@/api/page';
 
-const page = await CmsGetPage({ shop, locale, handle });
+const page = await PageApi({ shop, locale, handle }); // Page | null
 ```
 
 `src/api/page.ts` is the storefront-level dispatcher that returns either a
 `cms`- or `shopify`-provider page; `<CMSContent>` renders block trees via the
 `BlockRenderer` from `@nordcom/commerce-cms/blocks/render`, with Shopify-aware
-loaders injected from `src/cms-loaders.ts`.
+loaders injected from `src/cms-loaders.ts`. The pure helpers (`resolveLink`,
+block types) still come from `@nordcom/commerce-cms`.
 
 ## Cache invalidation / webhooks
 
@@ -142,8 +148,10 @@ loaders injected from `src/cms-loaders.ts`.
     If `SHOPIFY_WEBHOOK_SECRET` is unset, validation is skipped with a warning
     (dev only — never deploy without it).
 
-CMS invalidation runs from the Payload collection `afterChange` hooks in
-`@nordcom/commerce-cms`, which call `revalidateTag` directly — no webhook required.
+CMS invalidation arrives from Convex: publishing in the editor runs the deployment's
+revalidation pipeline (`packages/convex/convex/revalidate/`), which delivers signed
+events to `/api/revalidate/convex`. The route verifies the `CONVEX_REVALIDATE_SECRET`
+HMAC before any tenant or cache work, then revalidates the matching `cms` tags.
 
 ## Locales
 

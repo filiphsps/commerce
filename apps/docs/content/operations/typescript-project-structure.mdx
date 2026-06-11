@@ -135,7 +135,7 @@ The order matters: host config first (for `paths`/conventions), test base second
 The app base relaxes a few checks that the absolute base enables:
 
 - `noUnusedLocals: false` and `noUnusedParameters: false` — framework callback signatures
-  (NextAuth, Payload, Next route handlers) commonly have unused args. Libraries keep these
+  (NextAuth, Next route handlers) commonly have unused args. Libraries keep these
   checks on.
 - `noUncheckedIndexedAccess: false` — older app code uses indexed access without
   undefined-checks. The flag is on for libraries; apps were never strict here.

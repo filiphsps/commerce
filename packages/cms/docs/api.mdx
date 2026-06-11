@@ -3,68 +3,15 @@ title: API
 sidebar_position: 2
 ---
 
-The package's `./api` subpath exposes a small, typed read API on top of Payload's
-Local API. Every reader is `'server-only'`, takes `{ shop, locale, draft? }`, and
-returns the first matching doc (or `null`).
+The package's `./api` subpath exports the pure link resolver. The old read getters
+(`getPage`, `getArticle`, `getHeader`, …) retired with the Convex migration — the
+storefront now reads content straight from the Convex `cms/read` functions through
+its own getter layer (`apps/storefront/src/api/`), and this package is not in that
+wire path.
 
 ```ts
-import {
-    getPage,
-    getArticle,
-    getArticles,
-    getHeader,
-    getFooter,
-    getBusinessData,
-    getProductMetadata,
-    getCollectionMetadata,
-    resolveLink,
-    getPayloadInstance,
-} from '@nordcom/commerce-cms/api';
+import { resolveLink, type LinkValue, type LocaleRef } from '@nordcom/commerce-cms/api';
 ```
-
-## Shape of a reader
-
-All single-doc readers (`getPage`, `getArticle`, `getHeader`, …) follow the same
-template: tenant-scope on `shop.id`, apply the locale, fall back to the shop's
-default locale, depth 2, limit 1.
-
-```ts
-export type GetPageArgs = {
-    shop: ShopRef;
-    locale: LocaleRef;
-    slug: string;
-    draft?: boolean;
-    /** Test seam — pass a pre-booted Payload instance. */
-    __payload?: Payload;
-};
-
-export const getPage = async ({ shop, locale, slug, draft = false, __payload }: GetPageArgs) => {
-    assertShopId(shop);
-    const payload = __payload ?? (await getPayloadInstance());
-    const { docs } = await payload.find({
-        collection: 'pages',
-        where: { and: [{ tenant: { equals: shop.id } }, { slug: { equals: slug } }] },
-        locale: locale.code,
-        fallbackLocale: shop.i18n.defaultLocale,
-        depth: 2,
-        limit: 1,
-        draft,
-    });
-    return docs[0] ?? null;
-};
-```
-
-## `getPayloadInstance()`
-
-```ts
-import { getPayloadInstance } from '@nordcom/commerce-cms/api';
-
-const payload = await getPayloadInstance();
-```
-
-Returns the singleton `Payload` instance for this process. Booted lazily on first
-call with `includeAdmin: false`, so the storefront pays no admin-UI cost. Every
-subsequent call resolves to the same instance — no second Mongo connection.
 
 ## `resolveLink`
 
@@ -83,14 +30,26 @@ link kinds. The render-time `LinkRef` shape (in `blocks/render/types.ts`) carrie
 loose values for editor-side defaults; the loader pipeline coerces them into the
 strict `LinkValue` shape before calling `resolveLink`.
 
+## Where the reads live now
+
+- **Storefront reads** — `apps/storefront/src/api/{header,footer,page,article,…}.ts`
+  call the Convex `cms/read` functions through the injectable transport in
+  `src/api/_cms-read.ts`. The result types come from this package's generated
+  `./types` (`content-types.ts`).
+- **Editor reads/writes** — the admin's generated action wrappers
+  (`apps/admin/src/lib/cms-actions/_generated/`) call the Convex `cms/documents`
+  functions (drafts, autosave, versions, publish).
+
 ## Cache invalidation
 
-CMS-side `afterChange` hooks call `revalidateTag` with three tags per mutation:
+Publishing a document runs the Convex revalidation pipeline, which computes tags
+from the shared schema in `./cache-descriptor` and delivers signed events to the
+storefront's `/api/revalidate/convex` route:
 
 ```text
-cms.<tenantId>.<collection>.<key>   # e.g. cms.shop-1.pages.home
-cms.<tenantId>.<collection>         # e.g. cms.shop-1.pages
-cms.<tenantId>                      # broad sweep for the whole tenant
+cms.<shopId>.<collection>.<key>   # e.g. cms.shop-1.pages.home
+cms.<shopId>.<collection>         # e.g. cms.shop-1.pages
+cms.<shopId>                      # broad sweep for the whole tenant
 ```
 
 `<key>` is the slug for `pages`/`articles`, the `shopifyHandle` for
@@ -101,4 +60,3 @@ sweeping the whole site.
 For tenant-root reads that aren't entity-specific (e.g. sitemap indexes), use
 `cmsTenantRootTags(shop)` from `@nordcom/commerce-cms/cache` to get the matching
 fanout tags.
-

@@ -3,104 +3,65 @@ title: Collections
 sidebar_position: 4
 ---
 
-All Payload collections live under `src/collections/`. `allCollections` is the
-ordered array passed to `buildPayloadConfig`; `tenantScopedCollections` and
-`globalLikeCollections` describe how the multi-tenant plugin treats each one.
+A collection is the combination of three things, all derived from one source of
+truth:
 
-| Collection           | File                                          | Notes                                                                 |
+1. **Field descriptors** (`src/descriptors/` builders, used by each manifest) —
+   define the content shape.
+2. **An editor manifest** (`src/editor/manifests/<slug>.ts`) — wires the fields,
+   routes, and access predicates into the admin's `/cms` surface.
+3. **A Convex table** (`packages/convex/convex/tables/cms.ts`) — generated from the
+   descriptors by `pnpm cms:gen`; every content table keys on the shop id with a
+   `by_shop` index.
+
+| Collection           | Manifest                                      | Notes                                                                 |
 | -------------------- | --------------------------------------------- | --------------------------------------------------------------------- |
-| `tenants`            | `src/collections/tenants.ts`                  | Internal — synced from `Shop` via `attachShopSync`. **Editor: `tenantsEditor`.**                   |
-| `users`              | `src/collections/users.ts`                    | Editor accounts; auth strategies wired in via `buildUsers`. **Editor: `usersEditor`.**           |
-| `media`              | `src/collections/media.ts`                    | Image uploads; backed by S3 when the `S3_*` env block is set. **Editor: `mediaEditor`.**         |
-| `pages`              | `src/collections/pages.ts`                    | Slug + blocks. Drafts + autosave at 2s. **Editor: `pagesEditor`.**                               |
-| `articles`           | `src/collections/articles.ts`                 | Slug + body. Drafts. **Editor: `articlesEditor`.**                                                  |
-| `productMetadata`    | `src/collections/product-metadata.ts`         | Per-`shopifyHandle` SEO/marketing overrides. **Editor: `productMetadataEditor`.**                          |
-| `collectionMetadata` | `src/collections/collection-metadata.ts`      | Per-`shopifyHandle` overrides for Shopify collections. **Editor: `collectionMetadataEditor`.**                |
-| `header`             | `src/collections/_globals/header.ts`          | `isGlobal` — one row per tenant. **Editor: `headerEditor`.**                                      |
-| `footer`             | `src/collections/_globals/footer.ts`          | `isGlobal` — one row per tenant. **Editor: `footerEditor`.**                                      |
-| `businessData`       | `src/collections/_globals/business-data.ts`   | `isGlobal` — addresses, phone, support email, etc. **Editor: `businessDataEditor`.**                    |
-| `shops`              | `src/collections/shops.ts`                    | Migrated from `@nordcom/commerce-db`. Edit surface (name, domain, design) via `shopsEditor`; commerceProvider secrets blocked by hooks. |
-| `reviews`            | `src/collections/reviews.ts`                  | Migrated from `@nordcom/commerce-db`. Tenant-scoped; relationship to `shops`. **Editor: `reviewsEditor`.** |
-| `feature-flags`      | `src/collections/feature-flags.ts`            | Migrated from `@nordcom/commerce-db`. Admin-only; keyed by `key`. **Editor: `featureFlagsEditor`.**     |
+| `pages`              | `src/editor/manifests/pages.ts`               | Slug + blocks. Drafts + autosave.                                      |
+| `articles`           | `src/editor/manifests/articles.ts`            | Slug + rich-text body. Drafts.                                         |
+| `productMetadata`    | `src/editor/manifests/product-metadata.ts`    | Per-`shopifyHandle` SEO/marketing overrides.                           |
+| `collectionMetadata` | `src/editor/manifests/collection-metadata.ts` | Per-`shopifyHandle` overrides for Shopify collections.                 |
+| `header`             | `src/editor/manifests/header.ts`              | Singleton — one row per tenant.                                        |
+| `footer`             | `src/editor/manifests/footer.ts`              | Singleton — one row per tenant.                                        |
+| `businessData`       | `src/editor/manifests/business-data.ts`       | Singleton — addresses, phone, support email, etc.                      |
+| `media`              | `src/editor/manifests/media.tsx`              | Uploads land in Convex file storage; legacy assets resolve via the `S3_*`/R2 fallback URLs. |
+| `users`              | `src/editor/manifests/users.ts`               | Editor accounts.                                                       |
+| `shops`              | `src/editor/manifests/shop.ts`                | Edit surface over the Convex `shops` table (name, domain, design); provider secrets never reach the editor. |
+| `reviews`            | `src/editor/manifests/review.ts`              | Tenant-scoped product reviews.                                         |
+| `feature-flags`      | `src/editor/manifests/feature-flag.ts`        | Admin-only; keyed by `key`.                                            |
 
-Three collections (`header`, `footer`, `businessData`) are modelled as
-singleton-like rows under `@payloadcms/plugin-multi-tenant`'s `isGlobal: true`
-flag; the plugin treats them as one row per tenant from the UI but they live in
-the normal collection store.
+`allManifests` (`src/editor/manifests/index.ts`) is the registry the admin app
+mounts. The legacy `tenants` slug survives only as an editor-route alias rendering
+an empty surface (`legacy-tenants-slug.ts`) — shop == tenant since the Convex
+migration, so there is no tenants collection.
 
 ## Access predicates
 
-```ts
-import {
-    tenantScopedRead,
-    tenantScopedWrite,
-    adminOnly,
-    publicRead,
-    publishedOrAuthRead,
-    isTenantMember,
-    isAdmin,
-} from '@nordcom/commerce-cms/access';
-```
-
-| Predicate                | Anonymous reader sees       | Editor with `tenants` sees | Admin sees |
-| ------------------------ | --------------------------- | -------------------------- | ---------- |
-| `publicRead`             | everything                  | everything                 | everything |
-| `tenantScopedRead`       | `_status: 'published'` only | own tenants                | everything |
-| `publishedOrAuthRead`    | `_status: 'published'` only | everything                 | everything |
-| `tenantScopedWrite`      | n/a                         | own tenants                | everything |
-| `adminOnly`              | n/a                         | nothing                    | everything |
-| `isTenantMember()`       | nothing                     | own tenants                | everything |
-
-Drop them into a `CollectionConfig['access']` block:
+Editor access is declared per manifest with the predicates from
+`src/editor/access.ts`:
 
 ```ts
-import { adminOnly, tenantScopedRead, tenantScopedWrite } from '@nordcom/commerce-cms/access';
-
-export const pages: CollectionConfig = {
-    slug: 'pages',
-    access: {
-        read: tenantScopedRead,
-        create: tenantScopedWrite,
-        update: tenantScopedWrite,
-        delete: adminOnly,
-    },
-    // …
-};
+import { adminOnly, editorOrAdmin, tenantMember } from '@nordcom/commerce-cms/editor';
 ```
 
-## Revalidation hooks
+| Predicate       | Grants                                                            |
+| --------------- | ----------------------------------------------------------------- |
+| `adminOnly`     | Platform admins only (destructive operations, feature flags).     |
+| `editorOrAdmin` | Any signed-in editor or admin (cross-tenant list surfaces).       |
+| `tenantMember`  | Admins, or editors whose `tenants` include the route's tenant id. |
 
-`buildRevalidateHooks({ collection })` plugs the `@tagtree/payload` adapter into
-a collection's `hooks` block. Every `afterChange` / `afterDelete` fan-outs the
-three CMS cache tags (`cms.<tenant>.<collection>.<key>` /
-`cms.<tenant>.<collection>` / `cms.<tenant>`).
+These gate the editor routes; the Convex functions enforce the same boundary
+server-side via their tenant-aware constructors, so a forged route never reads
+another tenant's rows.
 
-```ts
-import { buildRevalidateHooks } from './_hooks/revalidate';
+## Revalidation
 
-export const pages: CollectionConfig = {
-    // …
-    hooks: buildRevalidateHooks({ collection: 'pages' }),
-};
-```
+There are no collection hooks to wire — publishing a document runs the Convex
+revalidation pipeline (`packages/convex/convex/revalidate/`), which fans out the
+three CMS cache tags (`cms.<shopId>.<collection>.<key>` /
+`cms.<shopId>.<collection>` / `cms.<shopId>`) and delivers them to the
+storefront's `/api/revalidate/convex` route as signed events.
 
-## Shop → tenant sync
+## Adding a collection
 
-`attachShopSync` listens on the Mongoose `Shop` model's `post('save')` and
-upserts the matching `tenants` doc so creating a shop in admin immediately makes
-a tenant available in the CMS:
-
-```ts
-import { Shop } from '@nordcom/commerce-db';
-import { attachShopSync } from '@nordcom/commerce-cms/shop-sync';
-import { getPayloadInstance } from '@nordcom/commerce-cms/api';
-
-attachShopSync(Shop.model, getPayloadInstance);
-```
-
-The hook is idempotent — repeated `attachShopSync` calls (Next.js hot reload,
-retried boot, multiple `getPayload` callers) won't stack duplicate listeners.
-Sync uses `overrideAccess: true` because it runs from a Mongoose post-save hook
-outside any HTTP request, where there is no `req.user` for the
-`adminOnly`-gated `tenants.create` predicate to inspect.
-
+See [Adding a collection](./editor/adding-a-collection/): declare the descriptors,
+register a manifest, run `pnpm cms:gen`, and commit the regenerated artifacts.

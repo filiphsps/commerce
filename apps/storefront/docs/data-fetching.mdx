@@ -22,12 +22,14 @@ they're present.
 
 ## CMS
 
-CMS access goes through `@nordcom/commerce-cms/api`:
+CMS content is read straight from the Convex `cms/read` functions. Every getter
+routes through the injectable transport in `src/api/_cms-read.ts`, which calls
+the `packages/db` server-trust query seam:
 
 ```ts
-import { getPage as CmsGetPage } from '@nordcom/commerce-cms/api';
+import { PageApi } from '@/api/page';
 
-const page = await CmsGetPage({ shop, locale, handle });
+const page = await PageApi({ shop, locale, handle }); // Page | null
 ```
 
 `src/api/page.ts` is the storefront-level dispatcher that returns either a
@@ -35,13 +37,13 @@ const page = await CmsGetPage({ shop, locale, handle });
 `BlockRenderer` from `@nordcom/commerce-cms/blocks/render`, with Shopify-aware
 loaders injected from `src/cms-loaders.ts`.
 
-Payload generates TS types for the CMS schema; run
-`pnpm --filter @nordcom/commerce-cms generate:types` after any collection-field
-change to refresh `packages/cms/src/types/payload-types.ts`.
+The read-contract types are generated from the CMS field descriptors; run
+`pnpm cms:gen` after any descriptor change to refresh
+`packages/cms/src/types/content-types.ts` (CI gate: `pnpm cms:gen:check`).
 
 ### Storefront-side CMS helper layer
 
-Routes never call `@nordcom/commerce-cms/api` directly. Instead they go
+Routes never call the Convex transport directly. Instead they go
 through a thin storefront helper layer under `apps/storefront/src/api/` that
 takes `{ shop, locale, ... }` (matching the `ShopifyApolloApiClient` contract),
 detects `next/headers`' `draftMode()` so editor previews see autosaved drafts,

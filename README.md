@@ -19,7 +19,7 @@
 
 Nordcom Commerce is a production-grade, multi-tenant storefront platform that serves
 many tenants from a single deployment. It pairs **Next.js 16** with **Shopify** as the
-commerce backend and an embedded **Payload CMS** for content, and ships an operator
+commerce backend and a **Convex**-backed data + content layer, and ships an operator
 dashboard, a marketing site, and a small set of reusable packages — all in one
 TypeScript monorepo.
 
@@ -30,9 +30,10 @@ TypeScript monorepo.
     `/[domain]/[locale]/…` segment, so adding a new shop is a database row, not a deploy.
 -   **Headless commerce.** Shopify Storefront API for catalog/cart/checkout, Shopify
     Admin API for back-office operations, all behind a uniform fetch layer.
--   **Composable content.** Payload CMS blocks and structured documents drive
-    marketing pages, navigation, and component-level CMS overrides, embedded in the
-    admin app and shared with the storefront via `@nordcom/commerce-cms`.
+-   **Composable content.** Descriptor-defined CMS blocks and structured documents
+    drive marketing pages, navigation, and component-level CMS overrides — authored in
+    the admin app's editor, stored in Convex, and rendered by the storefront via
+    `@nordcom/commerce-cms`.
 -   **i18n that respects shops.** Locales live on the shop record; fallbacks degrade
     from `request → shop default → platform default` with recursion guards.
 -   **Edge-friendly caching.** Per-tenant, per-entity cache tags with surgical Shopify
@@ -44,8 +45,9 @@ TypeScript monorepo.
 
 ## Quick start
 
-> **Prerequisites:** Node.js (see `.nvmrc`), `pnpm`, and a running
-> MongoDB instance for the data layer.
+> **Prerequisites:** Node.js (see `.nvmrc`) and `pnpm`. The data layer is
+> [Convex](https://convex.dev) — `pnpm convex:dev` provisions an anonymous local
+> backend, no database server to install.
 
 ```bash
 # 1. Install dependencies.
@@ -53,12 +55,16 @@ pnpm install
 
 # 2. Configure environment variables. See .env.example for the full list.
 cp .env.example .env
-# Required at minimum: MONGODB_URI, AUTH_SECRET, SERVICE_DOMAIN.
+# Required at minimum: CONVEX_URL, AUTH_SECRET, SERVICE_DOMAIN.
 
 # 3. Build the workspace packages (apps depend on each package's dist/).
 pnpm build:packages
 
-# 4. Start everything in parallel.
+# 4. In a separate terminal: boot/attach the local Convex backend
+#    (provisions an anonymous deployment and keeps the schema pushed).
+pnpm convex:dev
+
+# 5. Start everything in parallel.
 pnpm dev
 ```
 
@@ -90,7 +96,9 @@ To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev
 
 | Package                              | Path                       | Description                                                              |
 | ------------------------------------ | -------------------------- | ------------------------------------------------------------------------ |
-| `@nordcom/commerce-db`               | `packages/db`              | Mongoose models + service layer for shops, users, sessions, identities.  |
+| `@nordcom/commerce-db`               | `packages/db`              | Typed service layer over Convex for shops, users, sessions, identities.  |
+| `@nordcom/commerce-convex`           | `packages/convex`          | The Convex deployment: schema, tables, and the `db/*` + `cms/*` functions. |
+| `@nordcom/commerce-test-convex`      | `packages/test-convex`     | Local Convex backend launcher + canonical seed fixtures for tests/e2e.   |
 | `@nordcom/commerce-errors`           | `packages/errors`          | Typed error classes with stable codes for API/UI/SDK consumers.          |
 | `@nordcom/commerce-shopify-graphql` | `packages/shopify-graphql` | Apollo transform that injects Shopify `@inContext(country, language)`.   |
 | `@nordcom/commerce-shopify-html`     | `packages/shopify-html`    | Convert Shopify rich text HTML to React trees or plain text.             |
@@ -107,7 +115,7 @@ To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev
 | Lint / format   | [Biome](https://biomejs.dev) 2.x — **no ESLint / Prettier**       |
 | Testing         | [Vitest](https://vitest.dev) 4.x + Playwright for E2E             |
 | Bundling (libs) | [Vite](https://vitejs.dev) (per-package `dist/`)                  |
-| Data            | MongoDB (Mongoose 9.x)                                            |
+| Data            | [Convex](https://convex.dev) (schema + functions in `packages/convex`) |
 | Auth            | NextAuth v5 (`@auth/core`)                                        |                      |
 
 ## Commands
@@ -152,8 +160,9 @@ pnpm dotenv -c -- vitest run --project @nordcom/commerce-storefront   # One proj
 pnpm test:e2e                                                   # Playwright (admin, storefront)
 ```
 
-> Tests need `MONGODB_URI` pointing at a real database — `@nordcom/commerce-db`
-> connects at module load.
+> Unit tests run against `convex-test` in-memory — no backend required. Integration
+> and e2e suites boot an ephemeral local Convex backend via
+> `@nordcom/commerce-test-convex`, or attach to the deployment in `CONVEX_URL`.
 
 ### Housekeeping
 
@@ -169,14 +178,16 @@ Copy `.env.example` to `.env` and fill in the values you need. See [`.env.exampl
 
 1.  A request arrives at the Next.js middleware (`apps/storefront/src/proxy.ts`).
 2.  The middleware normalizes the `host` header (stripping ports, `.localhost`, and
-    Vercel preview suffixes) and calls `Shop.findByDomain(hostname)` against MongoDB.
+    Vercel preview suffixes) and calls `Shop.findByDomain(hostname)`, which resolves
+    the tenant through the Convex `db/shops` query seam.
 3.  On a hit, it rewrites the URL into the `/[domain]/[locale]/…` segment so the App
     Router serves the page in the tenant's context.
 4.  On `NotFoundError`, the middleware rewrites to `SERVICE_DOMAIN/status/unknown-shop/`.
 5.  Every Shopify call is built through `ShopifyApolloApiClient({ shop, locale })`, so
     tenant context is never implicit.
 
-To add a tenant, insert a row into the `shops` collection — no redeploy required.
+To add a tenant, write a `shops` row through the admin (the `db/shop_write:upsertShop`
+mutation) — no redeploy required.
 
 ## Contributing
 

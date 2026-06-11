@@ -1,27 +1,37 @@
 ---
 title: CMS
-description: Payload 3.x content layer powering per-tenant structured content, blocks, and editor access.
+description: Convex-native content layer powering per-tenant structured content, blocks, and editor access.
 ---
 
-The **CMS** is the Payload 3.x content layer packaged as `@nordcom/commerce-cms`. It is
-multi-tenant by construction: every collection is filtered by a **CMS tenant** key — a
-lightweight row in the Payload `tenants` collection that is synced unidirectionally from
-the Mongoose `Shop`. One shop, one CMS tenant. The sync is automatic when a new shop record
-is created — no manual setup.
+The **CMS** is the Convex-native content layer. Content rows live in the Convex
+deployment (`packages/convex`); the field descriptors, editor primitives, block render
+layer, and cache taxonomy that give those rows meaning are packaged as
+`@nordcom/commerce-cms`. It is multi-tenant by construction: every content table keys
+on the shop's id (shop == tenant — there is no separate tenant record to create or
+sync).
 
-Content is read by the **Storefront** and edited via the **Admin** app at `/cms`.
+Content is read by the **Storefront** through the Convex `cms/read` functions and
+edited via the **Admin** app at `/cms`.
 
 <Callout type="info">
-    `@nordcom/commerce-cms/api` and `@nordcom/commerce-cms/cache` are marked `server-only`
-    and call into Payload's Local API directly. Do not import them from client components —
-    the build will fail with a server-only boundary error.
+    The CMS was built on Payload 3.x before the Convex migration. The
+    `.specs/2026-05-30-convex-migration/` archive in the repo is the historical record
+    of that cutover.
 </Callout>
+
+## Descriptors and codegen
+
+Content shapes are declared once, as **field descriptors**
+(`@nordcom/commerce-cms/descriptors`). `pnpm cms:gen` derives every downstream
+artifact from them: the admin's editor-action wrappers, the storefront's
+read-contract types (`content-types.ts`), and the Convex content-table validators
+(`packages/convex/convex/tables/cms.ts`). CI fails on drift via `pnpm cms:gen:check`,
+so the editor, the read contract, and the storage schema can never disagree.
 
 ## Blocks and block loaders
 
 Structured content is modeled as **blocks** — discriminated-union content units defined in
-`@nordcom/commerce-cms/blocks`. A page's `body` field is a Lexical rich-text field plus an
-array of typed block slots. Blocks are generic; the CMS package has no Shopify dependency.
+`@nordcom/commerce-cms/blocks`. Blocks are generic; the CMS package has no Shopify dependency.
 
 Some block types need live Shopify data at render time (a Featured Product block needs
 current pricing; a Collection block needs inventory-aware product listings). To keep
@@ -49,34 +59,37 @@ CMS package never imports from `@shopify/*` directly.
     compile error.
 </Callout>
 
-## Collections and access predicates
+## Tenancy and access
 
-Every Payload collection in the CMS carries a `tenant` relation. The `@payloadcms/plugin-multi-tenant`
-plugin enforces it — a query without a tenant filter never returns documents from another
-tenant. Access predicates layer on top of this:
+Every CMS content table carries the shop id as its leading index (`by_shop`), and the
+Convex functions are built with tenant-aware constructors — a query without a resolved
+tenant never returns documents from another shop. Access layers on top of this:
 
 - **Admins** (platform-level) see all tenants, all drafts.
-- **Editors** (per-tenant role) see only their shop's documents and only published content
-  unless they're previewing.
-- **Public reads** (storefront Local API calls) see only published documents for the
-  resolved tenant.
+- **Editors** (per-tenant role) see only their shop's documents; drafts only while
+  editing or previewing.
+- **Public reads** (the storefront's `cms/read` calls) see only published documents for
+  the resolved tenant.
 
-See `@nordcom/commerce-cms/collections` in Reference for the access helper exports.
+The editor's route-level gates live in the collection manifests
+(`@nordcom/commerce-cms/editor/manifests`).
 
 <RefBanner refPath="cms/api" />
 
 ## Cache integration
 
-Every collection's `afterChange` and `afterDelete` hooks fan out `revalidateTag` calls
-using the `@tagtree/payload` adapter. A single CMS save flushes exactly the per-tenant,
-per-collection, per-handle tags the storefront read — nothing more, nothing less. See
+Publishing a document runs the Convex revalidation pipeline
+(`packages/convex/convex/revalidate/`), which computes tags from the shared `cms` tag
+schema and delivers signed events to the storefront's `/api/revalidate/convex` route.
+A single CMS publish flushes exactly the per-tenant, per-collection, per-handle tags
+the storefront read — nothing more, nothing less. See
 [Caching](/concepts/caching/) for the full tag schema.
 
 <ContinueExploring items={[
     {
         eyebrow: 'Concept · related',
         title: 'Caching',
-        description: 'How CMS afterChange hooks fan out tag-based invalidation.',
+        description: 'How CMS publishes fan out tag-based invalidation.',
         href: '/concepts/caching/',
         tab: 'docs',
     },
@@ -90,7 +103,7 @@ per-collection, per-handle tags the storefront read — nothing more, nothing le
     {
         eyebrow: 'Reference',
         title: '@nordcom/commerce-cms / api',
-        description: 'getPage, getArticle, getHeader, getFooter, and all other CMS readers.',
+        description: 'resolveLink and the surviving pure CMS helpers.',
         href: '/reference/cms/api/',
         tab: 'reference',
     },

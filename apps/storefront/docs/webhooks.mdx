@@ -19,5 +19,7 @@ it, the in-memory Apollo cache would diverge from Next.js's data cache.
 See [Per-tenant Apollo client cache](./data-fetching#per-tenant-apollo-client-cache)
 and [Cache tags](./data-fetching#cache-tags) for the tag scheme.
 
-CMS invalidation runs from the Payload collection `afterChange` hooks in
-`@nordcom/commerce-cms`, which call `revalidateTag` directly — no webhook needed.
+CMS invalidation arrives from Convex: publishing in the editor runs the deployment's
+revalidation pipeline (`packages/convex/convex/revalidate/`), which delivers signed
+events to `/api/revalidate/convex`; the route verifies the `CONVEX_REVALIDATE_SECRET`
+HMAC, then calls `revalidateTag` for the matching `cms` tags.

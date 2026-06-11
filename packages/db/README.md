@@ -1,12 +1,15 @@
 # `@nordcom/commerce-db`
 
-Mongoose models and a typed service layer for the Nordcom Commerce data store.
-This is the only package allowed to touch MongoDB; every other workspace consumer
-imports the high-level services from here.
+The typed data-access seam for the Nordcom Commerce platform. Every app reads and
+writes shops, users, sessions, identities, reviews, and feature flags through the
+service instances exported here; the services translate those calls onto the Convex
+deployment defined in [`packages/convex`](../convex). No other workspace talks to
+Convex's `db/*` functions directly.
 
-> **Server-only.** The package is marked `'server-only'` and connects to MongoDB at
-> module load. Importing it from a client component or without `MONGODB_URI` in the
-> environment will throw.
+> **Server-only.** The package is marked `'server-only'`. The Convex clients are
+> constructed lazily, but calling any service without `CONVEX_URL` (and, for the
+> identity-less paths, `CONVEX_SERVER_SECRET`) in the environment will throw a
+> `MissingEnvironmentVariableError`.
 
 ## Install
 
@@ -39,113 +42,78 @@ const user = await User.find({ id: someId });
 const shops = await Shop.findByCollaborator({ collaboratorId: user.id });
 ```
 
-`Shop`, `User`, etc. are **service instances** — not Mongoose models. They wrap the
-underlying model behind a uniform `find` / `create` / `update` API and add per-domain
-helpers like `Shop.findByDomain` and `Shop.findByCollaborator`.
+`Shop`, `User`, etc. are **service instances**. They keep the uniform
+`find` / `create` / `findOneAndUpdate` API the platform has always used and add
+per-domain helpers like `Shop.findByDomain` and `Shop.findByCollaborator`. Single-doc
+lookups that miss throw `NotFoundError` — callers that want `null` use
+`findById`.
 
 ### Sensitive data
 
-By default, sensitive fields (e.g. `collaborators`, provider tokens) are projected
-**out** of `find` results. Opt in explicitly when you need them:
+By default, sensitive fields (e.g. `collaborators`, provider tokens) are **absent**
+from `find` results — provider credentials are stored split-out in the Convex
+`shopCredentials` table and only re-attached on the server-trusted opt-in read:
 
 ```ts
 const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 ```
 
-Never expose the result of a `sensitiveData: true` call to client components.
+Never expose the result of a `sensitiveData: true` call to client components — the
+re-attached tokens are taint-guarded.
 
-## Models
+## How a call reaches Convex
 
-| Model      | File                  | Description                                                                |
-| ---------- | --------------------- | -------------------------------------------------------------------------- |
-| `Shop`     | `src/models/shop.ts`  | A tenant. Holds domain, alternative domains, i18n config, integrations.    |
-| `User`     | `src/models/user.ts`  | A human operator. Connected to one or more shops as a collaborator.        |
-| `Session`  | `src/models/session.ts` | NextAuth session document (when using the Mongo session adapter).        |
-| `Identity` | `src/models/identity.ts` | OAuth identity / provider account record.                               |
-| `Review`   | `src/models/review.ts`| Product reviews (where shops opt in).                                      |
+`src/db.ts` exposes two client tiers, both lazy:
 
-All models share the `BaseDocument` shape:
+-   **Identity clients** (`convexIdentityQuery` / `convexIdentityMutation`) attach the
+    caller's NextAuth-derived RS256 JWT, so the Convex functions see a real
+    `ctx.auth` identity and enforce per-tenant access.
+-   **Server-trust clients** (`convexServerQuery` / `convexServerMutation`) present
+    `CONVEX_SERVER_SECRET` instead. They exist for the identity-less seams: pre-tenant
+    reads (`Shop.findByDomain` in middleware runs before any session exists) and the
+    Auth.js adapter's platform-global user/session/identity access.
 
-```ts
-type BaseDocument = Omit<mongoose.Document, 'id'> & { id: string };
-```
+Each service delegates to a `ServiceBackend` (`src/services/service.ts`) that
+translates the frozen seam vocabulary — plain field filters, `$elemMatch`/`$push`
+operator objects, dotted projection paths — into calls against the deployed `db/*`
+Convex functions. Unsupported filter shapes throw rather than silently returning
+wrong rows. Shop writes funnel through the atomic `db/shop_write:upsertShop`
+mutation.
 
-## Service layer
+## Document shape
 
-`Service<DocType, Model>` (`src/services/service.ts`) is the abstract base:
-
-```ts
-import type { Model } from 'mongoose';
-import type { BaseDocument } from '../db';
-
-export class Service<DocType extends BaseDocument, M extends typeof Model<DocType>> {
-    create(input: Omit<DocType, keyof BaseDocument>): Promise<DocType>;
-    find(args: { id: string;            count?: 1;   /* … */ }): Promise<DocType>;
-    find(args: { filter?: QueryFilter;   count?: 1;   /* … */ }): Promise<DocType>;
-    find(args: { filter?: QueryFilter;   count?: number; /* … */ }): Promise<DocType[]>;
-    findById(id: string,                projection?, options?): Promise<DocType | null>;
-    findOneAndUpdate(filter, update?,   options?): Promise<DocType | null>;
-}
-```
-
-The `find` overload picks the return type from the arguments:
-
--   `id` or `count: 1` → returns a single `DocType`.
--   otherwise        → returns `DocType[]`.
-
-`filter` and `projection` accept native Mongoose `QueryFilter` / `ProjectionType`.
-
-Per-service helpers extend this with domain-specific lookups (e.g.
-`ShopService.findByDomain`, `ShopService.findByCollaborator`).
-
-## Connection
-
-`src/db.ts` connects at module load:
+Every document exposes a string `id` (the public id — for migrated rows this is the
+preserved legacy id, never the raw Convex `_id`) plus `Date`-typed
+`createdAt` / `updatedAt`:
 
 ```ts
-import 'server-only';
-
-const uri = process.env.MONGODB_URI;
-if (!uri) throw new MissingEnvironmentVariableError('MONGODB_URI');
-
-export const db = await mongoose.connect(uri, {
-    autoCreate: true,
-    autoIndex: true,
-    bufferCommands: false,
-});
+type BaseDocument = { id: string; createdAt: Date; updatedAt: Date };
 ```
 
-This means:
-
--   **Tests need a real database.** There is no in-memory mock. The repo-level `pnpm
-    test` requires `MONGODB_URI` to be set; see the root `README.md`.
--   **The first import does the work.** Subsequent imports reuse the same connection.
--   **Don't import this from a client component.** `'server-only'` will fail the build.
+The entity types (`ShopBase`, `OnlineShop`, `UserBase`, `SessionBase`,
+`IdentityBase`, `ReviewBase`, `FeatureFlagBase`) live under `src/models/` as plain
+TypeScript types; the corresponding Convex table validators live in
+[`packages/convex/convex/tables/`](../convex/convex/tables/) and must stay in sync.
 
 ## Layout
 
 ```text
 packages/db/
 └── src/
-    ├── db.ts                # Mongoose connection (runs at import time)
+    ├── db.ts                # Lazy Convex clients (identity + server-trust tiers)
     ├── index.ts             # Public re-exports + shared utility types
-    ├── @types/              # Module-augmentation declarations
-    ├── models/              # Mongoose schemas + models
-    │   ├── identity.ts
-    │   ├── review.ts
-    │   ├── session.ts
-    │   ├── shop.ts
-    │   ├── user.ts
+    ├── models/              # Entity types (ShopBase, UserBase, …) + query-type aliases
+    ├── services/            # Service classes — the frozen seam surface
+    │   ├── service.ts       # Service base + the ServiceBackend contract
+    │   ├── service-seam-contract.snapshot.ts  # Pinned signatures (do not edit)
+    │   ├── shop.ts user.ts session.ts identity.ts review.ts feature-flag.ts
     │   └── index.ts
-    └── services/            # Service classes wrapping each model
-        ├── service.ts       # Abstract base
-        ├── identity.ts
-        ├── review.ts
-        ├── session.ts
-        ├── shop.ts
-        ├── user.ts
-        └── index.ts
+    └── lib/                 # Pure leaves: theme tokens, feature-flag keys, doc serializers
 ```
+
+`src/lib/doc-to-shape.ts` owns the `OnlineShop` serialization, including the
+credential masking (`commerceProvider.authentication.token`,
+`customers.clientSecret`) every consumer relies on.
 
 ## Scripts
 
@@ -156,8 +124,8 @@ pnpm lint        # biome lint .
 pnpm clean       # rm dist / .turbo / coverage / etc.
 ```
 
-Tests for this package run from the repo root (`pnpm test`). The vitest environment
-is Node and requires `MONGODB_URI`.
+Tests for this package run from the repo root (`pnpm test`). Unit tests stub
+`CONVEX_URL` and mock the backend seam — no live deployment required.
 
 ## Utility types
 

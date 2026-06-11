@@ -4,7 +4,7 @@ sidebar_position: 6
 ---
 
 A `CollectionEditorManifest` declares everything the editor primitives need to
-know about a Payload collection that isn't already in the collection config.
+know about a CMS collection beyond its field descriptors.
 
 ## `defineCollectionEditor`
 
@@ -34,9 +34,11 @@ export const businessDataEditor = defineCollectionEditor({
 
 ### `collection: CollectionSlug` *(required)*
 
-The Payload collection slug. The collection's `fields`, `versions.drafts`,
-`localization`, and `access` are read from the live Payload config at render
-time — the manifest never duplicates them.
+The collection slug — a member of the compile-time `CollectionSlug` union
+(`src/editor/manifest.ts`); an unknown slug fails `defineCollectionEditor` at
+compile time. The collection's fields, drafts, and localization come from the
+editor schema (`editorCollectionSchema`, looked up by slug at render time) — the
+manifest never duplicates them.
 
 ### `routes` *(required)*
 
@@ -53,12 +55,12 @@ time — the manifest never duplicates them.
 | `kind` | Where clause | Use for |
 |---|---|---|
 | `'scoped'` | `and: [tenant = X, keyField = id]` | Most content collections (`pages`, `articles`, `header`, `footer`, `businessData`). |
-| `'shared'` | `keyField = id` | Cross-tenant admin collections (`tenants`, `users`, `media`). |
+| `'shared'` | `keyField = id` | Cross-tenant admin collections (`users`, `media`). |
 | `'singleton-by-domain'` | `or: [domain = id, alternativeDomains contains id]` | Shop, where the route segment IS the domain. |
 
 ### `access` *(required)*
 
-Route-level gates. Run **before** Payload's collection-level access predicates
+Route-level gates. Run **before** the Convex functions' own tenant/role checks
 (defense in depth). Return `false` → `notFound()`.
 
 ```ts

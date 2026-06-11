@@ -10,8 +10,8 @@ Each Next.js app is independently deployable. Apps share workspace packages via
 
 | App | Port | Key env vars |
 | --- | --- | --- |
-| Storefront | 1337 | `MONGODB_URI`, `AUTH_SECRET`, `SERVICE_DOMAIN`, `SHOPIFY_WEBHOOK_SECRET` |
-| Admin | 3000 | `MONGODB_URI`, `AUTH_SECRET`, `ADMIN_DOMAIN`, `LANDING_DOMAIN`, GitHub OAuth |
+| Storefront | 1337 | `CONVEX_URL`, `CONVEX_SERVER_SECRET`, `AUTH_SECRET`, `SERVICE_DOMAIN`, `SHOPIFY_WEBHOOK_SECRET` |
+| Admin | 3000 | `CONVEX_URL`, `CONVEX_SERVER_SECRET`, `AUTH_SECRET`, `ADMIN_DOMAIN`, `LANDING_DOMAIN`, GitHub OAuth |
 | Landing | 3001 | `LANDING_DOMAIN` (optional) |
 | Docs | 3003 | `NEXT_PUBLIC_DOCS_BASE_PATH`, `NEXT_PUBLIC_DOCS_CANONICAL_URL` |
 
@@ -30,7 +30,8 @@ Set the minimum required variables before starting any app:
 ```bash
 cp .env.example .env
 # required for the storefront and admin:
-MONGODB_URI=mongodb://localhost:27017/commerce
+CONVEX_URL=https://<deployment>.convex.cloud
+CONVEX_SERVER_SECRET=<openssl rand -hex 32 — must match the Convex deployment's value>
 AUTH_SECRET=<random 32-byte hex>
 SERVICE_DOMAIN=yourdomain.com
 ```

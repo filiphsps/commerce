@@ -63,7 +63,8 @@ corresponding market and language in the Shopify admin. Middleware picks it up a
 the next request.
 
 The shop's `defaultLocale` field is the only locale stored on the `Shop` document. Update it
-via the Admin app at `/cms` or directly in the `shops` MongoDB collection.
+via the Admin app — shop writes land in the Convex `shops` table through the
+`db/shop_write:upsertShop` mutation.
 
 <ContinueExploring items={[
     {
@@ -76,7 +77,7 @@ via the Admin app at `/cms` or directly in the `shops` MongoDB collection.
     {
         eyebrow: 'Concept',
         title: 'CMS',
-        description: 'How Payload serves locale-qualified content and falls back gracefully.',
+        description: 'How the CMS serves locale-qualified content and falls back gracefully.',
         href: '/concepts/cms/',
         tab: 'docs',
     },

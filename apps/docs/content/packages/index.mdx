@@ -11,8 +11,9 @@ reference for the same workspace lives in the **Reference** tab.
 
 | Package | Description |
 | --- | --- |
-| `@nordcom/commerce-cms` | Payload 3.x CMS, embedded in `apps/admin`. Server-only. Accessed from the storefront via the Local API. |
-| `@nordcom/commerce-db` | MongoDB access layer. The only workspace allowed to touch MongoDB directly. Exposes `ShopService`, `UserService`, `ReviewService`, `FeatureFlagService`. |
+| `@nordcom/commerce-cms` | The CMS toolkit: field descriptors, the editor the admin mounts at `/cms`, the block render layer, and the shared cache taxonomy. Content rows live in Convex. |
+| `@nordcom/commerce-convex` | The Convex deployment: schema, table definitions, and the `db/*` + `cms/*` server functions. |
+| `@nordcom/commerce-db` | The data-access seam over Convex. The only workspace that calls the Convex `db/*` functions. Exposes `ShopService`, `UserService`, `ReviewService`, `FeatureFlagService`. |
 | `@nordcom/commerce-errors` | Typed, code-tagged error hierarchy shared by every package and app. Every `throw` in the platform uses a class from here. |
 | `@nordcom/commerce-marketing-common` | Shared utilities for marketing logic across storefront and landing app. |
 
@@ -32,7 +33,6 @@ cache invalidation. Each package covers one integration point.
 | --- | --- |
 | `@tagtree/core` | Base tag schema, `safeCacheTag`, and the tag-builder primitives. All other `@tagtree/*` packages build on this. |
 | `@tagtree/next` | Next.js-specific tag helpers — `unstable_cache` wrappers and page-level tag utilities. |
-| `@tagtree/payload` | Tag schema for Payload CMS collections. Used in `afterChange` hooks to flush exactly the affected content entries. |
 | `@tagtree/shopify` | Tag schema for Shopify entities (products, collections, orders). Used in Shopify webhook handlers. |
 
 <RefBanner refPath="tagtree/core/api" />
@@ -52,8 +52,9 @@ The `@nordcom/cart-*` family handles shopping cart state and Shopify cart mutati
 | `@nordcom/cart-core` | Framework-agnostic cart state model and mutation helpers. |
 
 <Callout type="info">
-    `@nordcom/commerce-test-mongo` and `@nordcom/commerce-utils` are internal dev/test
-    utilities. They are not documented here — they have no stable public API.
+    `@nordcom/commerce-test-convex` (the local Convex backend launcher + canonical seed
+    fixtures) and `@nordcom/commerce-utils` are internal dev/test utilities with no
+    stable public API.
 </Callout>
 
 <ContinueExploring items={[

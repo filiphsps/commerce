@@ -3,16 +3,22 @@ title: Models
 sidebar_position: 3
 ---
 
-| Model      | File                  | Description                                                                |
+`src/models/` holds the entity **types** (`ShopBase`, `OnlineShop`, `UserBase`,
+`SessionBase`, `IdentityBase`, `ReviewBase`, `FeatureFlagBase`). The storage schema
+itself — table validators and indexes — lives in `packages/convex/convex/tables/`
+and must stay in sync with these types.
+
+| Entity     | Types in              | Description                                                                |
 | ---------- | --------------------- | -------------------------------------------------------------------------- |
 | `Shop`     | `src/models/shop.ts`  | A tenant. Holds domain, alternative domains, i18n config, integrations.    |
 | `User`     | `src/models/user.ts`  | A human operator. Connected to one or more shops as a collaborator.        |
-| `Session`  | `src/models/session.ts` | NextAuth session document (when using the Mongo session adapter).        |
+| `Session`  | `src/models/session.ts` | NextAuth session document (Auth.js database-session adapter).            |
 | `Identity` | `src/models/identity.ts` | OAuth identity / provider account record.                               |
 | `Review`   | `src/models/review.ts`| Product reviews (where shops opt in).                                      |
 
-All models share the `BaseDocument` shape:
+All documents share the `BaseDocument` shape — a public string `id` (never the raw
+Convex `_id`) plus `Date`-typed managed timestamps:
 
 ```ts
-type BaseDocument = Omit<mongoose.Document, 'id'> & { id: string };
+type BaseDocument = { id: string; createdAt: Date; updatedAt: Date };
 ```

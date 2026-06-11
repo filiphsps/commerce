@@ -56,7 +56,7 @@ _Avoid_: Shopify wrapper, GraphQL client, Hydrogen client
 ### Caching
 
 **Cache namespace**:
-A top-level partition distinguishing entire systems whose invalidation lifecycles must not entangle. Today: `shopify` (storefront reads) and CMS (Payload reads).
+A top-level partition distinguishing entire systems whose invalidation lifecycles must not entangle. Today: `shopify` (storefront reads) and `cms` (content reads).
 _Avoid_: cache zone, cache realm, cache root
 
 **Tenant-scoped cache**:
@@ -70,11 +70,11 @@ _Avoid_: locale cache, per-locale cache
 ### CMS
 
 **CMS**:
-The Payload 3.x content layer (`@nordcom/commerce-cms`), multi-tenant by construction. Read by the **Storefront**, edited via the **Admin** app.
-_Avoid_: Payload (the underlying library), content layer
+The Convex-native content layer (`@nordcom/commerce-cms` field descriptors + editor primitives; content rows live in Convex), multi-tenant by construction. Read by the **Storefront** through the Convex `cms/read` functions, edited via the **Admin** app. Built on Payload 3.x before the Convex migration — see `.specs/2026-05-30-convex-migration/` for that history.
+_Avoid_: Payload (the retired predecessor), content layer
 
 **CMS tenant**:
-A row in the CMS's `tenants` collection — the lightweight tenant key consumed by Payload's multi-tenant plugin. One per **Shop**, synced unidirectionally from the Mongoose **Shop**. Distinct from the Payload `shops` collection — see flagged ambiguities.
+The tenant key every CMS content row carries — since the Convex migration this **is** the **Shop**'s id (the `shop` field on each `cms` table). Shop == tenant: the dedicated `tenants` collection is gone, so there is no separate CMS-side record to create or sync.
 _Avoid_: CMS shop, payload tenant, content tenant
 
 **Block**:
@@ -86,7 +86,7 @@ A Shopify-aware data fetcher injected at the **Storefront** boundary so the **CM
 _Avoid_: data loader, content loader
 
 **Shop extension manifest**:
-An optional, declarative per-**Shop** config (`ShopExtensionManifest`, `@nordcom/commerce-cms/extensions`) that UNIFIES — never forks — the five existing per-shop composition surfaces: theme tokens (`resolveTheme`), chrome slot order (`resolveChromeLayout`), section visibility, available **Block** types (`BLOCK_TYPES` / `isBlockType`), and product-card variant selections. CMS-safe — the type and its pure `resolveExtensions` composer import only the db theme leaf, the errors package, and Payload schemas; never React, Shopify, the **Storefront**, or a **Provider token** — so the **Block loader** firewall holds. An absent or empty manifest composes byte-identically to today's render.
+An optional, declarative per-**Shop** config (`ShopExtensionManifest`, `@nordcom/commerce-cms/extensions`) that UNIFIES — never forks — the five existing per-shop composition surfaces: theme tokens (`resolveTheme`), chrome slot order (`resolveChromeLayout`), section visibility, available **Block** types (`BLOCK_TYPES` / `isBlockType`), and product-card variant selections. CMS-safe — the type and its pure `resolveExtensions` composer import only the db theme leaf, the errors package, and CMS-internal schemas; never React, Shopify, the **Storefront**, or a **Provider token** — so the **Block loader** firewall holds. An absent or empty manifest composes byte-identically to today's render.
 _Avoid_: theme config, shop settings, plugin manifest
 
 **Extension code sandbox** (deferred):
@@ -223,7 +223,7 @@ _Avoid_: mutation id, request token
 - Every Shopify call goes through a **Shopify API client**, constructed per `{ shop, locale }` and never reused across tenants.
 - Every cached entity lives in a **Cache namespace** and is **Tenant-scoped** and **Locale-qualified**.
 - The `shopify` and CMS **Cache namespaces** are isolated — invalidating one does not touch the other.
-- A **Shop** has one **CMS tenant**; **CMS** reads and writes are always filtered by it.
+- A **Shop** has one **CMS tenant** key — its own id; **CMS** reads and writes are always filtered by it.
 - A **Shop** has zero or more **Collaborators**; the **CMS** mirrors them so admin-app and CMS access predicates resolve the same list.
 - A Shopify-projecting **Block** requires its **Block loader** at the **Storefront** boundary.
 - A **Shop**'s index route renders the **Homepage slug** CMS page; the bare path is rewritten by middleware before the route tree is consulted.
@@ -260,7 +260,7 @@ _Avoid_: mutation id, request token
 > **Domain expert:** "Architectural firewall. Shopify-projecting **Blocks** declare their data needs as a contract; the **Storefront** supplies the **Block loader** at the rendering boundary. The **CMS** never knows what a Shopify product is."
 
 > **Dev:** "I created a new shop. Do I need to manually create the CMS side?"
-> **Domain expert:** "No — the **CMS tenant** is synced from the **Shop** automatically."
+> **Domain expert:** "No — shop == tenant. CMS rows key directly on the **Shop**'s id; there is no separate CMS-side record to create."
 
 ## Flagged ambiguities
 
@@ -270,12 +270,12 @@ _Avoid_: mutation id, request token
   3. The Shopify myshopify hostname at `shop.commerceProvider.domain` — the *Shopify* side of the integration, never customer-facing.
   Prefer the prefixed terms in prose; reserve bare "domain" for unambiguous contexts (e.g. a JSDoc for `Shop.domain`).
 - **"tenant" vs "shop"** — same concept. **Shop** is canonical for the persisted entity and code-level identifiers. "Tenant" is acceptable in prose for the abstract role ("multi-tenant by hostname"); avoid it in type names, variable names, and column names.
-- **`OnlineShop` vs `Shop`** — same domain concept, two shapes. **Shop** is the Mongoose model and the authoritative write path. `OnlineShop` is the serialized shape consumers hold at runtime (Document methods stripped, `collaborators` optional and lazy-loaded). The distinction is a serialization concern, not a separate entity.
+- **`OnlineShop` vs `Shop`** — same domain concept, two shapes. **Shop** is the `@nordcom/commerce-db` service over the Convex `shops` table and the authoritative write path (every write goes through the `db/shop_write:upsertShop` mutation). `OnlineShop` is the serialized shape consumers hold at runtime (**Provider tokens** masked, `collaborators` optional and lazy-loaded). The distinction is a serialization concern, not a separate entity.
 - **`ShopifyApiClient` vs `ShopifyApolloApiClient`** — two concrete implementations of **Shopify API client**, not synonyms. `ShopifyApolloApiClient` is Apollo + Hydrogen and is the default. `ShopifyApiClient` is a fetch-based stub for cache-controlled paths that need explicit Next.js `fetchOptions.revalidate` / `tags`. Same `ShopifyApiOptions` shape, different runtime clients.
 - **"supported locales"** is not persisted. Searching for `supportedLocales` on the **Shop** record will come up empty — the list is derived from the **Commerce provider** at request time. If you find yourself wanting to cache it on the shop, that's an architectural decision, not a missing field — escalate.
 - **"platform default locale"** is not a real concept. CLAUDE.md's `request locale → shop default → platform default` may suggest a system-wide policy exists; it doesn't. The chain terminates at the tenant's **Default locale**. The literal `'en-US'` in `middleware/storefront.ts` (`shop.i18n?.defaultLocale ?? 'en-US'`) is a code-level last-resort safety net for malformed shop records, not policy.
 - **`Locale` (class) vs Locale (tag)** — the glossary term **Locale** is the `xx-XX` tag string, the unit that flows through URLs and APIs. In storefront code, `Locale` is also a TypeScript class wrapping the tag with helpers (`Locale.default`, `Locale.current`, `Locale.from(...)`). Treat the tag as the noun and the class as a utility. Prose that says "the locale" usually means the tag; code that reads "the Locale" usually means the class instance.
-- **Payload `shops` collection vs Mongoose `Shop` vs Payload `tenants`** — three Shop-related entities, not three sources of truth. The Mongoose **Shop** (`@nordcom/commerce-db`) is the authoritative write path; `Shop.findByDomain` reads it directly without going through Payload. The Payload `tenants` collection is the synced, lightweight **CMS tenant**. The Payload `shops` collection is an editor-facing view of the same Mongo collection, with Payload-layer hooks for secret stripping and role-gated writes. The Payload `shops` collection has **no `afterChange` sync** back to Mongoose, and the `shopBridge` referenced in its source-comment doesn't exist in the codebase — treat it as a partial scaffold for an unrealized bridge.
+- **"the shop record" pre- vs post-Convex-migration** — historically THREE Shop-related stores coexisted (the Mongoose `Shop`, a Payload `tenants` mirror, and a Payload `shops` editor view; see `.specs/2026-05-30-convex-migration/`). Post-migration there is exactly ONE: the Convex `shops` table, fronted by the `@nordcom/commerce-db` `Shop` service. The editor's shop surface and the **CMS tenant** key both resolve to that same row — if you find prose or comments describing a tenants sync or a Payload shops collection, it is historical.
 - **"the cart" pre- vs post-package-migration** — pre-migration, the cart lives in `apps/storefront/src/{api,components,utils,app/[domain]/[locale]/_actions}/cart*` and references to "cart code" mean those paths. Post-migration the canonical surface is `@nordcom/cart-{core,react,next,shopify}` and those storefront paths are deleted except for UI primitives (`cart-line.tsx`, `cart-summary.tsx`, etc.) that consume the package hooks. The new packages are the source of truth.
 - **"predictor"** — bare word is ambiguous; the cart packages ship two flavors with different semantics. **Line Predictor** synthesizes a cart line, first-non-null wins. **Cart Predictor** transforms the projected cart, all run in order. Always qualify in prose and identifiers.
 - **"cart action"** — overloaded between a **Cart Mutation** (the intent object) and a Next.js server action (the `'use server'` function exported from the host). The package's typed factories return server actions; the React side dispatches **Cart Mutations** to them. Prefer "**Cart Mutation**" for the intent and reserve "action" / "server action" for the Next.js primitive.

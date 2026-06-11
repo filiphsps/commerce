@@ -7,7 +7,8 @@ description: Prerequisites, quality gates, changeset workflow, and house style f
 
 - Node.js (version pinned in `.nvmrc`)
 - pnpm
-- A running MongoDB instance (or let `pnpm dev` boot one under `.mongo-dev/`)
+- A Convex deployment in `CONVEX_URL` (`pnpm convex:dev` provisions an anonymous local
+  backend)
 
 After cloning:
 
@@ -26,15 +27,15 @@ Before opening a PR, the following must pass locally:
 ```bash
 pnpm lint        # Biome lint (includes unsafe fixes like Tailwind class sorting)
 pnpm typecheck   # turbo run typecheck across all packages and apps
-pnpm test        # Vitest, requires MONGODB_URI (or pnpm dev running)
+pnpm test        # Vitest — unit suites run convex-test in-memory, no backend needed
 ```
 
 CI runs the same set in parallel on every PR. A PR with failing checks will not be merged.
 
 <Callout type="note">
-    `pnpm test` runs Vitest with `--coverage`. Some tests spin up an in-process MongoDB
-    via `@nordcom/commerce-test-mongo`. Set `MONGODB_URI` in your environment to point at
-    an external instance instead — useful if you want faster test startup.
+    `pnpm test` runs Vitest with `--coverage`. The limit-boundary suites in
+    `packages/test-convex/src/limits` boot a REAL local Convex backend — CI runs them
+    whenever `packages/convex/**` or `packages/test-convex/**` changes.
 </Callout>
 
 ## Changesets

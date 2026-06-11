@@ -10,9 +10,10 @@ LLM defaults that would otherwise be wrong here:
 -   **`pnpm build:packages` before lint/typecheck/test in a fresh checkout** — apps import workspace packages from built `dist/`, not source.
 -   Top-level scripts run through `dotenv -c -- turbo …`; `.env` / `.env.local` load automatically. Don't prefix env vars manually.
 -   **Use `pnpm <script>` whenever a `package.json` script exists** — `pnpm test`, `pnpm build`, `pnpm lint`, `pnpm typecheck`, `pnpm test:e2e`, etc. Extra args forward through: `pnpm test --project @nordcom/commerce-storefront` runs `dotenv -c -- vitest run --coverage --project @nordcom/commerce-storefront`. Don't hand-roll `pnpm dotenv -c -- vitest run …` or `pnpm turbo run build …`. If a script doesn't forward extra args, fix the script in `package.json`, don't bypass it.
--   **`pnpm cms:gen`** regenerates CMS action types after touching CMS manifests. CI gate: `pnpm cms:gen:check`.
+-   **`pnpm cms:gen`** reruns the descriptor-driven CMS codegen — the admin editor-action wrappers, the storefront content types (`packages/cms/src/types/content-types.ts`), and the Convex content-table validators (`packages/convex/convex/tables/cms.ts`) — after touching CMS field descriptors or editor manifests. CI gate: `pnpm cms:gen:check`.
 -   **Storefront GraphQL is `gql.tada`** — `graphql()` from `@nordcom/commerce-shopify-graphql/graphql`, not Apollo's `gql`.
 -   **Call `mcp__next-devtools__init` (`next-devtools` mcp) first** when starting Next.js work.
+-   **Dev + e2e read the Convex deployment in `CONVEX_URL`** (browser: `NEXT_PUBLIC_CONVEX_URL`). `pnpm convex:dev` boots/attaches the local backend (`packages/convex` owns the deployment config; leave `CONVEX_DEPLOY_KEY` empty locally). Integration suites launch ephemeral local backends through `@nordcom/commerce-test-convex` (`startConvex()` + the `seedCanonical` fixtures); unit tests run `convex-test` in-memory, no backend. Touching `packages/convex/**` or `packages/test-convex/**` triggers the limit-boundary CI gate (`pnpm --filter @nordcom/commerce-test-convex run test src/limits`).
 
 ## Code intelligence
 
@@ -34,7 +35,7 @@ Group artifacts per topic under `.specs/<YYYY-MM-DD-kebab-slug>/{spec,plan,tasks
 
 ## Architecture (non-obvious only)
 
--   **Multi-tenant by hostname.** Middleware resolves hostname → shop and rewrites to `/[domain]/[locale]/…`. The App Router never sees an un-tenanted request. New tenant = row in `shops` MongoDB collection; no redeploy.
+-   **Multi-tenant by hostname.** Middleware resolves hostname → shop and rewrites to `/[domain]/[locale]/…`. The App Router never sees an un-tenanted request. New tenant = a `shops` row in Convex, written through the `db/shop_write:upsertShop` mutation from the admin; no redeploy.
 -   **Tenant context is never implicit.** Every Shopify call goes through `ShopifyApolloApiClient({ shop, locale })`. New data-fetching helpers must take `{ shop, locale }` explicitly.
 -   **Locale fallback:** `request locale → shop default → platform default`. Locales live on the shop record, not a global list.
 

@@ -8,7 +8,8 @@ sidebar_position: 2
 1. Dispatch — paths starting with `/admin` go to `admin()` (see `src/middleware/admin.ts`),
    everything else goes to `storefront()` (`src/middleware/storefront.ts`).
 2. `storefront()` reads `req.headers.host`, normalizes it (strips ports, `.localhost`,
-   Vercel preview suffixes), then calls `Shop.findByDomain(hostname)` against MongoDB.
+   Vercel preview suffixes), then calls `Shop.findByDomain(hostname)`, which resolves
+   the tenant through the Convex `db/shops` query seam.
 3. On a hit, the resolved domain is injected into the URL so the App Router serves the
    page from `src/app/[domain]/[locale]/…`.
 4. On `NotFoundError`, the middleware rewrites to `SERVICE_DOMAIN/status/unknown-shop/`.

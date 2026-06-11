@@ -7,8 +7,8 @@ description: Multi-tenant Next.js storefront platform fronting Shopify — one d
 
 Nordcom Commerce is a multi-tenant headless e-commerce platform. A single Next.js deployment
 resolves each inbound request to a tenant by hostname, rewrites the URL to the tenanted App
-Router tree, and serves catalog, cart, account, and CMS pages backed by Shopify and an
-embedded Payload CMS. Adding a new shop is a row in MongoDB — no redeploy.
+Router tree, and serves catalog, cart, account, and CMS pages backed by Shopify and a
+Convex-native CMS. Adding a new shop is a row in the Convex `shops` table — no redeploy.
 
 <Callout type="info">
     The platform is organized into four sections: **Docs** (concepts and operations),

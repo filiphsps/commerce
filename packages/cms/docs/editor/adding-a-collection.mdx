@@ -3,16 +3,16 @@ title: Adding a collection editor
 sidebar_position: 7
 ---
 
-This guide is the step-by-step for hooking up a new Payload collection to the
+This guide is the step-by-step for hooking up a new CMS collection to the
 admin editor system. Every editable collection follows this shape — there is
 no bespoke-route alternative.
 
 ## Prerequisites
 
-- The collection's `CollectionConfig` exists in `packages/cms/src/collections/`
-  and is registered in `allCollections`.
-- The `payload-types.ts` file knows about the new slug (run
-  `pnpm generate:types` after adding the collection).
+- The slug is a member of the `CollectionSlug` union
+  (`packages/cms/src/editor/manifest.ts`).
+- The collection's field descriptors and drafts/autosave behavior are declared
+  in `editorCollectionSchema` (`packages/cms/src/editor/collection-fields.ts`).
 
 ## Step 1: Write the manifest
 

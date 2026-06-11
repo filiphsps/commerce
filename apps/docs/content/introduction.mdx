@@ -10,7 +10,7 @@ no per-tenant builds. One deploy, many storefronts.
 ## Platform pillars
 
 **Multi-tenancy by hostname.** Middleware intercepts every request, resolves the `Host:`
-header to a `Shop` record in MongoDB, and rewrites the URL to the tenanted App Router
+header to a `Shop` row in Convex, and rewrites the URL to the tenanted App Router
 tree before any page code runs. New tenants are added as database rows, never as code.
 
 **Shopify as the commerce layer.** Product catalog, inventory, cart, checkout, and customer
@@ -18,16 +18,16 @@ accounts run through the Shopify Storefront and Admin APIs. The `@nordcom/commer
 package wraps `gql.tada` and injects the `@inContext` directive automatically — route handlers
 never touch Apollo directly.
 
-**Payload CMS as the content layer.** Structured page content, navigation, articles, and
-per-product metadata live in Payload 3.x (`@nordcom/commerce-cms`). The CMS is embedded into
-the Admin app at `/cms` and consumed by the Storefront through Payload's Local API. Block-level
-Shopify data is injected at the storefront render boundary — the CMS package has no Shopify
-dependency.
+**A Convex-native content layer.** Structured page content, navigation, articles, and
+per-product metadata live in Convex, with the content shapes defined as field descriptors in
+`@nordcom/commerce-cms`. The editor is mounted in the Admin app at `/cms`; the Storefront reads
+content through the Convex `cms/read` functions. Block-level Shopify data is injected at the
+storefront render boundary — the CMS package has no Shopify dependency.
 
 **Tag-based cache invalidation.** The `@tagtree` family of packages declares cache tag schemas
-as typed TypeScript objects. Shopify webhooks, Payload `afterChange` hooks, and manual calls all
-target the same tag vocabulary — no hand-rolled string concatenation, no stale entries after a
-mutation.
+as typed TypeScript objects. Shopify webhooks, the Convex revalidation pipeline, and manual
+calls all target the same tag vocabulary — no hand-rolled string concatenation, no stale
+entries after a mutation.
 
 ## How the docs are organized
 

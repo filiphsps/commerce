@@ -10,7 +10,9 @@ deployment serves an arbitrary number of shops resolved by hostname.
 
 - Node.js (version pinned in `.nvmrc`)
 - pnpm
-- A running MongoDB instance
+
+The data layer is [Convex](https://convex.dev) — `pnpm convex:dev` provisions an
+anonymous local backend, so there is no database server to install.
 
 <Callout type="tip">
     Run `pnpm dev:storefront` if you only need the storefront — it boots a single app
@@ -21,8 +23,9 @@ deployment serves an arbitrary number of shops resolved by hostname.
 
 ```bash
 pnpm install
-cp .env.example .env       # set MONGODB_URI, AUTH_SECRET, SERVICE_DOMAIN at minimum
+cp .env.example .env       # set CONVEX_URL, AUTH_SECRET, SERVICE_DOMAIN at minimum
 pnpm build:packages        # apps import from each package's dist/, not source
+pnpm convex:dev            # separate terminal: boot/attach the local Convex backend
 pnpm dev                   # all apps in parallel
 ```
 
@@ -34,28 +37,22 @@ pnpm dev                   # all apps in parallel
 | Docs | https://docs.localhost |
 
 <Callout type="note">
-    `pnpm dev` boots a persistent local MongoDB under `.mongo-dev/` via
-    `@nordcom/commerce-test-mongo`. Set `MONGODB_URI` in your shell to use an
-    external instance instead. Run `pnpm dev:reset` to tear down the local instance.
+    `pnpm convex:dev` provisions an anonymous local Convex deployment and keeps the
+    schema pushed while it runs. Point `CONVEX_URL` at a hosted deployment instead if
+    you don't want a local backend.
 </Callout>
 
 ## Seed a tenant
 
-The storefront resolves every request by hostname. Without a matching `Shop` record in
-MongoDB, every request redirects to `/status/unknown-shop/`. In development, unknown
-hosts fall back to `nordcom-demo-shop.com` automatically so you can boot without seeding.
+The storefront resolves every request by hostname. Without a matching `Shop` row in
+the Convex `shops` table, every request redirects to `/status/unknown-shop/`. In
+development, unknown hosts fall back to `nordcom-demo-shop.com` automatically so you
+can boot without seeding.
 
-To add a real tenant, insert a row into the `shops` collection:
-
-```ts
-await db.collection('shops').insertOne({
-    domain: 'myshop.com',
-    name: 'My Shop',
-    commerceProvider: { type: 'shopify', domain: 'myshop.myshopify.com', token: '...' },
-    contentProvider: { type: 'shopify' },
-    defaultLocale: 'en-US',
-});
-```
+To seed the canonical demo tenant (the same fixtures the e2e suites use), run the
+`seedCanonical` helper from `@nordcom/commerce-test-convex` against your deployment.
+Real tenants are created through the admin app, which writes the `shops` row via the
+`db/shop_write:upsertShop` mutation.
 
 No redeploy required. Middleware picks up the new row on the next request.
 
@@ -66,7 +63,7 @@ Before pushing, run:
 ```bash
 pnpm lint        # Biome lint
 pnpm typecheck   # TypeScript across all packages and apps
-pnpm test        # Vitest unit tests (requires MONGODB_URI)
+pnpm test        # Vitest unit tests (convex-test in-memory — no backend needed)
 ```
 
 CI runs the same gates on every PR.
