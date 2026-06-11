@@ -217,3 +217,20 @@ Operator obligations (checklist item 5):
   pre-promotion tightening gate run before every prod deploy.
 - `.env.example`, `apps/storefront/.env.example`, `apps/admin/.env.example` — authoritative var
   descriptions mirrored in §5.
+
+## 10. Vercel preview deployments vs the shared dev Convex deployment
+
+Preview builds point `CONVEX_URL` at the shared dev deployment (`colorful-aardvark-6`). The
+storefront build prerenders through the Convex read functions (`generateStaticParams` →
+`cms/read:*`), so a branch that ADDS Convex functions fails its Vercel preview build with
+`FunctionPathNotFound` until those functions are pushed to the dev deployment:
+
+```sh
+cd packages/convex && pnpm dlx convex dev --once   # pushes the branch's functions to dev
+```
+
+Observed live on 2026-06-12 (storefront preview red on `cms/read:pages`; green after the push +
+`vercel redeploy`). The release workflow only deploys Convex on master pushes by design — for
+feature branches the push above is a manual step whenever `packages/convex/convex/**` gains new
+public functions. Watch for cross-branch drift: the dev deployment holds whichever branch pushed
+last.
