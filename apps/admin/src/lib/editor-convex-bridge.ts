@@ -11,8 +11,25 @@ import type { Media } from '@nordcom/commerce-cms/types';
 import { convexIdentityMutation, convexIdentityQuery, createConvexIdentityClient } from '@nordcom/commerce-db';
 import { ConvexOperatorTokenMintError } from '@nordcom/commerce-errors';
 
-import { authenticateConvexClient } from './convex-auth';
+import { getActiveShopSelection } from './active-shop';
+import { authenticateConvexClient, type ConvexTokenMinter } from './convex-auth';
 import { mintConvexOperatorToken } from './convex-token';
+
+/**
+ * Mints the operator token for THIS request, layering the route-resolved active-shop selection
+ * (recorded by `getAuthedCmsCtx` from the `[domain]` route context, read off the request-scoped
+ * `active-shop` seam) onto the session identity. The selection becomes the token's signed
+ * active-shop claim — how a multi-shop operator's call disambiguates server-side, where Convex
+ * re-verifies the membership before honoring it. With no selection the operator identity is passed
+ * through untouched, keeping the claim-less single-membership fallback.
+ *
+ * @param operator - The session-derived identity `authenticateConvexClient` resolved.
+ * @returns The signed compact JWT, or `null` when minting is unconfigured or fails.
+ */
+const mintRequestOperatorToken: ConvexTokenMinter = (operator) => {
+    const activeShop = getActiveShopSelection();
+    return mintConvexOperatorToken(activeShop === undefined ? operator : { ...operator, activeShop });
+};
 
 /**
  * The result shape Convex's `cms/actions.ts` save mutations return; the bridge
@@ -146,8 +163,8 @@ function toEditorDocument(row: ConvexCmsDocumentRow): EditorCmsDocument {
  * minted from the live NextAuth session, applied via `setAuth`, and the client
  * discarded — nothing caches a token across requests and nothing ships it to
  * the browser. Tenant scope is derived entirely inside Convex from the
- * validated identity (`tenantMutation` → `resolveAdminShopId`), so no tenant
- * selector travels as an argument.
+ * validated identity (`tenantMutation` → `resolveActiveAdminShopId`, honoring
+ * the signed active-shop claim), so no tenant selector travels as an argument.
  *
  * @param name - The Convex function path in `module/path:function` form.
  * @param args - The mutation's args.
@@ -157,7 +174,7 @@ function toEditorDocument(row: ConvexCmsDocumentRow): EditorCmsDocument {
  */
 async function operatorMutation<Result>(name: string, args: Record<string, unknown>): Promise<Result> {
     const client = createConvexIdentityClient();
-    const token = await authenticateConvexClient(client, mintConvexOperatorToken);
+    const token = await authenticateConvexClient(client, mintRequestOperatorToken);
     if (!token) {
         throw new ConvexOperatorTokenMintError(name);
     }
@@ -176,7 +193,7 @@ async function operatorMutation<Result>(name: string, args: Record<string, unkno
  */
 async function operatorQuery<Result>(name: string, args: Record<string, unknown>): Promise<Result> {
     const client = createConvexIdentityClient();
-    const token = await authenticateConvexClient(client, mintConvexOperatorToken);
+    const token = await authenticateConvexClient(client, mintRequestOperatorToken);
     if (!token) {
         throw new ConvexOperatorTokenMintError(name);
     }

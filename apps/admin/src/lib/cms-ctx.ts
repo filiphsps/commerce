@@ -6,6 +6,7 @@ import { Error as CommerceError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/auth';
+import { setActiveShopSelection } from './active-shop';
 
 /**
  * The NextAuth session shape the authed context narrows to. `auth()` is
@@ -133,6 +134,12 @@ export async function getAuthedCmsCtx(domain?: string): Promise<AuthedCmsCtx> {
             notFound();
         }
     }
+
+    // Record the route's tenant as the request's active-shop selection so the per-call Convex
+    // token mint can stamp it as the active-shop claim — what disambiguates a multi-shop operator
+    // server-side. Cross-tenant routes (no domain) record no selection, keeping the claim-less
+    // single-membership fallback.
+    setActiveShopSelection(tenant?.id);
 
     return {
         session: session as AuthedSession,

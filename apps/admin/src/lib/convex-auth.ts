@@ -25,6 +25,14 @@ export interface ConvexServerAuthClient {
 export interface ConvexOperatorIdentity {
     email: string;
     name?: string | null;
+    /**
+     * The operator's ACTIVE tenant selection — the route-resolved shop's external id
+     * (`shops.legacyId`). When present the minter stamps it as the token's active-shop claim, which
+     * is how a multi-shop operator's request disambiguates server-side (Convex re-verifies the
+     * membership before honoring it). Absent on cross-tenant routes and for callers predating the
+     * selection seam: the claim-less token keeps the single-membership fallback.
+     */
+    activeShop?: string;
 }
 
 /**

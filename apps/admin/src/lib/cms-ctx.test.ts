@@ -4,12 +4,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Hoisted mock fns
 // ------------------------------------------------------------------
 
-const { mockAuth, mockFindByDomain, mockFindByCollaborator, mockUserFind } = vi.hoisted(() => ({
-    mockAuth: vi.fn(),
-    mockFindByDomain: vi.fn(),
-    mockFindByCollaborator: vi.fn(),
-    mockUserFind: vi.fn(),
-}));
+const { mockAuth, mockFindByDomain, mockFindByCollaborator, mockUserFind, mockSetActiveShopSelection } = vi.hoisted(
+    () => ({
+        mockAuth: vi.fn(),
+        mockFindByDomain: vi.fn(),
+        mockFindByCollaborator: vi.fn(),
+        mockUserFind: vi.fn(),
+        mockSetActiveShopSelection: vi.fn(),
+    }),
+);
 
 // ------------------------------------------------------------------
 // Mocks
@@ -34,6 +37,8 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/auth', () => ({ auth: mockAuth }));
+
+vi.mock('./active-shop', () => ({ setActiveShopSelection: mockSetActiveShopSelection }));
 
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: { findByDomain: mockFindByDomain, findByCollaborator: mockFindByCollaborator },
@@ -89,6 +94,7 @@ describe('getAuthedCmsCtx', () => {
         mockFindByDomain.mockReset();
         mockFindByCollaborator.mockReset();
         mockUserFind.mockReset();
+        mockSetActiveShopSelection.mockReset();
 
         mockAuth.mockResolvedValue(SESSION);
         mockUserFind.mockResolvedValue(USER_DOC);
@@ -170,6 +176,16 @@ describe('getAuthedCmsCtx', () => {
         // The tenants list still reflects the user's real collaborations.
         expect(ctx.user.tenants).toEqual([{ tenant: SHOP_DOC.id }]);
         expect(mockFindByDomain).not.toHaveBeenCalled();
+        // Cross-tenant routes mint claim-less tokens: no selection may linger for the request.
+        expect(mockSetActiveShopSelection).toHaveBeenCalledWith(undefined);
+    });
+
+    it('records the resolved tenant as the request active-shop selection (POLISH-03 mint seam)', async () => {
+        await getAuthedCmsCtx(SHOP_DOMAIN);
+
+        // `tenant.id` is the shop's external id (`shops.legacyId`) — exactly the selector the
+        // Convex resolver matches the token's active-shop claim against.
+        expect(mockSetActiveShopSelection).toHaveBeenCalledWith(SHOP_DOC.id);
     });
 
     // Cross-tenant write bypass prevention. See the comment block above

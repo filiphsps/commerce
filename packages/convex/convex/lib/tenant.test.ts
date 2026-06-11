@@ -1,9 +1,11 @@
 import { makeFunctionReference } from 'convex/server';
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { ACTIVE_SHOP_CLAIM, AdminShopResolverErrorCode } from '../auth/admin_shop_resolver';
 import schema from '../schema';
+import { AuthErrorCode } from './auth';
 import { systemMutation } from './system';
 import { tenantMutation, tenantQuery } from './tenant';
 
@@ -72,6 +74,29 @@ const seedTenants = systemMutation({
 });
 
 /**
+ * Adds a `shopCollaborators` row linking an existing operator (by email) to an existing shop (by
+ * `legacyId`), turning a single-shop fixture into the multi-shop-operator shape the active-shop
+ * selection path exists for.
+ */
+const linkCollaborator = systemMutation({
+    args: { email: v.string(), shopLegacyId: v.string() },
+    handler: async (ctx, { email, shopLegacyId }) => {
+        const user = await ctx.db
+            .query('users')
+            .withIndex('by_email', (q) => q.eq('email', email))
+            .first();
+        const shop = await ctx.db
+            .query('shops')
+            .withIndex('by_legacy_id', (q) => q.eq('legacyId', shopLegacyId))
+            .first();
+        if (!user || !shop) {
+            throw new ConvexError({ code: 'FIXTURE_SEED_MISSING', message: 'Seed the operator and shop first.' });
+        }
+        await ctx.db.insert('shopCollaborators', { shop: shop._id, user: user._id, permissions: ['admin'] });
+    },
+});
+
+/**
  * A {@link tenantQuery} fixture listing reviews through the tenant-scoped, RLS-wrapped `ctx.db`. It
  * declares a client `shopId` arg purely to PROVE the constructor ignores it: the arg is echoed back as
  * `requestedShopId` so a test can confirm the server-resolved `ctx.shopId` wins regardless of what the
@@ -107,10 +132,12 @@ const addReviewFixture = tenantMutation({
  */
 const modules = {
     '/convex/_generated/server.js': () => Promise.resolve({}),
-    '/convex/lib/tenant.test.ts': () => Promise.resolve({ seedTenants, listReviewsFixture, addReviewFixture }),
+    '/convex/lib/tenant.test.ts': () =>
+        Promise.resolve({ seedTenants, linkCollaborator, listReviewsFixture, addReviewFixture }),
 };
 
 const seedTenantsRef = makeFunctionReference<'mutation'>('lib/tenant.test:seedTenants');
+const linkCollaboratorRef = makeFunctionReference<'mutation'>('lib/tenant.test:linkCollaborator');
 const listReviewsRef = makeFunctionReference<'query'>('lib/tenant.test:listReviewsFixture');
 const addReviewRef = makeFunctionReference<'mutation'>('lib/tenant.test:addReviewFixture');
 
@@ -159,5 +186,47 @@ describe('tenantQuery / tenantMutation (server-trusted shopId provenance)', () =
         // A, by contrast, now sees two of its own reviews (the seed plus the write), proving the write landed.
         const seenByA = await asOperatorA.query(listReviewsRef, {});
         expect(seenByA.reviewShopIds).toEqual([shopAId, shopAId]);
+    });
+
+    it('scopes a multi-shop operator per the signed active-shop selection, refusing none and foreign', async () => {
+        const t = convexTest(schema, modules);
+        const { shopAId, shopBId } = await t.mutation(seedTenantsRef, {
+            emailA: 'op-a@example.com',
+            emailB: 'op-b@example.com',
+        });
+        // Operator A now collaborates on BOTH shops — the AMBIGUOUS_SHOP_MEMBERSHIP shape pre-selection.
+        await t.mutation(linkCollaboratorRef, { email: 'op-a@example.com', shopLegacyId: 'shop_b' });
+        const base = { issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op-a@example.com' };
+
+        await expect(t.withIdentity(base).query(listReviewsRef, {})).rejects.toMatchObject({
+            data: { code: AuthErrorCode.AMBIGUOUS_SHOP_MEMBERSHIP },
+        });
+
+        const asShopA = t.withIdentity({ ...base, [ACTIVE_SHOP_CLAIM]: 'shop_a' });
+        const asShopB = t.withIdentity({ ...base, [ACTIVE_SHOP_CLAIM]: 'shop_b' });
+
+        // The SAME operator authors against shop A then shop B; each write pins to the selected
+        // tenant and stays invisible to the other scope.
+        await asShopA.mutation(addReviewRef, {});
+        const seenAsA = await asShopA.query(listReviewsRef, {});
+        expect(seenAsA.resolvedShopId).toBe(shopAId);
+        expect(seenAsA.reviewShopIds).toEqual([shopAId, shopAId]);
+
+        await asShopB.mutation(addReviewRef, {});
+        const seenAsB = await asShopB.query(listReviewsRef, {});
+        expect(seenAsB.resolvedShopId).toBe(shopBId);
+        expect(seenAsB.reviewShopIds).toEqual([shopBId, shopBId]);
+
+        // Operator B forges a claim for shop A — a real shop B does not collaborate on. The
+        // selection picks among the operator's own tenants; it can never escalate to a foreign one.
+        const asForeign = t.withIdentity({
+            issuer: TRUSTED_ISSUER,
+            subject: 'github|b',
+            email: 'op-b@example.com',
+            [ACTIVE_SHOP_CLAIM]: 'shop_a',
+        });
+        await expect(asForeign.query(listReviewsRef, {})).rejects.toMatchObject({
+            data: { code: AdminShopResolverErrorCode.ACTIVE_SHOP_FORBIDDEN },
+        });
     });
 });

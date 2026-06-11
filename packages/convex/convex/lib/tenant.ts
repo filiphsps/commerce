@@ -1,7 +1,7 @@
 import { customCtx, customMutation, customQuery } from 'convex-helpers/server/customFunctions';
 
 import { mutation, query } from '../_generated/server';
-import { resolveAdminShopId } from './auth';
+import { resolveActiveAdminShopId } from '../auth/admin_shop_resolver';
 import { wrapTenantDatabaseReader, wrapTenantDatabaseWriter } from './rls';
 import { tenantSubscriptionRegistry } from './subscription_registry';
 
@@ -11,8 +11,10 @@ import { tenantSubscriptionRegistry } from './subscription_registry';
  * tenant read path must use.
  *
  * The customization resolves the active tenant ENTIRELY from server-trusted context — the validated
- * Convex auth identity, via {@link resolveAdminShopId} (identity → `users.by_email` → `shopCollaborators`)
- * — and then:
+ * Convex auth identity, via {@link resolveActiveAdminShopId} (identity → `users.by_email` →
+ * `shopCollaborators`, honoring the signed active-shop selection claim a multi-shop operator's token
+ * carries; membership is re-verified before the selection pins, so the claim can select among the
+ * operator's own tenants but never grant a foreign one) — and then:
  * - pins it onto `ctx.shopId`, so handlers read the trusted tenant id rather than re-deriving it; and
  * - replaces `ctx.db` with {@link wrapTenantDatabaseReader}, which range-bounds + deny-default filters
  *   every read to that one shop's rows.
@@ -34,14 +36,14 @@ import { tenantSubscriptionRegistry } from './subscription_registry';
  * RLS scope, so the tenant-isolation contract is unchanged. `ctx.releaseSubscription` returns the live slot
  * (a no-op when degraded), letting a one-shot handler reset the breaker as it completes.
  *
- * @throws {ConvexError} Any auth-resolution failure from {@link resolveAdminShopId} (`UNAUTHENTICATED`,
- *   `FORGED_IDENTITY`, `IDENTITY_WITHOUT_EMAIL`, `UNKNOWN_USER`, `NO_SHOP_MEMBERSHIP`,
- *   `AMBIGUOUS_SHOP_MEMBERSHIP`).
+ * @throws {ConvexError} Any auth-resolution failure from {@link resolveActiveAdminShopId}
+ *   (`UNAUTHENTICATED`, `FORGED_IDENTITY`, `IDENTITY_WITHOUT_EMAIL`, `UNKNOWN_USER`,
+ *   `NO_SHOP_MEMBERSHIP`, `AMBIGUOUS_SHOP_MEMBERSHIP`, `ACTIVE_SHOP_UNKNOWN`, `ACTIVE_SHOP_FORBIDDEN`).
  */
 export const tenantQuery = customQuery(
     query,
     customCtx(async (ctx) => {
-        const shopId = await resolveAdminShopId(ctx);
+        const shopId = await resolveActiveAdminShopId(ctx);
         const subscription = tenantSubscriptionRegistry.open(shopId);
         return {
             shopId,
@@ -56,7 +58,8 @@ export const tenantQuery = customQuery(
  * Public, tenant-scoped mutation constructor — the write-side companion to {@link tenantQuery}, and the
  * tenant-tier counterpart to {@link systemMutation}'s raw-db escape hatch.
  *
- * Resolves the active tenant from the SAME server-trusted identity provenance ({@link resolveAdminShopId}),
+ * Resolves the active tenant from the SAME server-trusted identity provenance
+ * ({@link resolveActiveAdminShopId}, active-shop selection included),
  * pins it onto `ctx.shopId`, and replaces `ctx.db` with {@link wrapTenantDatabaseWriter} so every read,
  * insert, patch, replace, and delete is confined to the resolved shop's own rows under a deny-default
  * policy (a cross-tenant write is rejected because the wrapped writer re-checks the read predicate before
@@ -67,14 +70,14 @@ export const tenantQuery = customQuery(
  * `ctx.subscriptionMode` and `ctx.releaseSubscription` for symmetry and the per-tenant cost/usage metric;
  * the admission is additive context only and never widens the RLS write scope.
  *
- * @throws {ConvexError} Any auth-resolution failure from {@link resolveAdminShopId} (`UNAUTHENTICATED`,
- *   `FORGED_IDENTITY`, `IDENTITY_WITHOUT_EMAIL`, `UNKNOWN_USER`, `NO_SHOP_MEMBERSHIP`,
- *   `AMBIGUOUS_SHOP_MEMBERSHIP`).
+ * @throws {ConvexError} Any auth-resolution failure from {@link resolveActiveAdminShopId}
+ *   (`UNAUTHENTICATED`, `FORGED_IDENTITY`, `IDENTITY_WITHOUT_EMAIL`, `UNKNOWN_USER`,
+ *   `NO_SHOP_MEMBERSHIP`, `AMBIGUOUS_SHOP_MEMBERSHIP`, `ACTIVE_SHOP_UNKNOWN`, `ACTIVE_SHOP_FORBIDDEN`).
  */
 export const tenantMutation = customMutation(
     mutation,
     customCtx(async (ctx) => {
-        const shopId = await resolveAdminShopId(ctx);
+        const shopId = await resolveActiveAdminShopId(ctx);
         const subscription = tenantSubscriptionRegistry.open(shopId);
         return {
             shopId,

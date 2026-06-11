@@ -12,6 +12,14 @@ import type { ConvexOperatorIdentity } from './convex-auth';
 export const CONVEX_OPERATOR_TOKEN_TTL_SECONDS = 60 * 60;
 
 /**
+ * The custom JWT claim carrying the operator's ACTIVE tenant selection. Must mirror
+ * `ACTIVE_SHOP_CLAIM` in `packages/convex/convex/auth/admin_shop_resolver.ts` — the resolver reads
+ * exactly this key off the validated identity (`convex-token.test.ts` pins the equality). Defined
+ * locally because the admin app does not depend on the convex package's runtime.
+ */
+export const CONVEX_ACTIVE_SHOP_CLAIM = 'activeShop';
+
+/**
  * The signing material every mint needs: the imported PKCS8 private key and
  * the RFC 7638 thumbprint used as the `kid` binding tokens to that key.
  */
@@ -64,10 +72,12 @@ async function loadSigningKey(env: NodeJS.ProcessEnv): Promise<ConvexSigningKey 
  * signing contract exactly (key, `iss` = `CONVEX_AUTH_ISSUER`, `aud` =
  * `CONVEX_AUTH_APPLICATION_ID`, `kid` binding): `email` is the load-bearing
  * claim `resolveUserFromIdentity` keys on, with `sub` = the operator's email
- * and `name` as an additive display claim. The `activeShop` tenant-selection
- * claim (`auth/admin_shop_resolver.ts`) is NOT stamped yet — the bridge seam
- * carries no tenant selection and the resolver stays dormant until the
- * multi-tenant operator flow wires it.
+ * and `name` as an additive display claim. When the operator carries an
+ * `activeShop` selection (the bridge resolves it from the request's `[domain]`
+ * route context), it is stamped as the {@link CONVEX_ACTIVE_SHOP_CLAIM} the
+ * resolver (`auth/admin_shop_resolver.ts`) verifies membership for — the
+ * selection rides INSIDE the signed identity, never as a spoofable argument.
+ * Without one, no claim is stamped and the single-membership fallback holds.
  *
  * Fail-closed contract: missing configuration or a signing failure yields
  * `null` (the caller fails loud at the write seam), never a token signed with
@@ -89,9 +99,11 @@ export async function mintConvexOperatorToken(
         const signingKey = await loadSigningKey(env);
         if (!signingKey) return null;
 
+        const activeShop = operator.activeShop?.trim();
         const jwt = new SignJWT({
             email: operator.email,
             ...(operator.name ? { name: operator.name } : {}),
+            ...(activeShop ? { [CONVEX_ACTIVE_SHOP_CLAIM]: activeShop } : {}),
         })
             .setProtectedHeader({ alg: 'RS256', kid: signingKey.kid, typ: 'JWT' })
             .setIssuer(issuer)
