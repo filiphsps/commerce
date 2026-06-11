@@ -141,23 +141,48 @@ export function runConvexCli(live: Pick<LiveConvex, 'url' | 'adminKey'>, args: s
 export async function startLiveConvex(): Promise<LiveConvex> {
     const backend: StartedConvex = await startConvex();
     const serverSecret = crypto.randomUUID();
-    try {
-        runConvexCli(backend, ['env', 'set', 'CONVEX_AUTH_ISSUER', LIMITS_ISSUER]);
-        runConvexCli(backend, ['env', 'set', 'CONVEX_AUTH_APPLICATION_ID', 'convex']);
-        runConvexCli(backend, ['env', 'set', 'CONVEX_AUTH_JWKS_URL', `${LIMITS_ISSUER}/.well-known/jwks.json`]);
-        runConvexCli(backend, ['env', 'set', 'CONVEX_SERVER_SECRET', serverSecret]);
-        // Read the issuer back before deploying: a transiently failing `env set` that slipped
-        // through otherwise surfaces minutes later as an opaque FORGED_IDENTITY inside a test
-        // (observed on cold CI runners). One corrective re-set, then fail loud.
-        if (!runConvexCli(backend, ['env', 'get', 'CONVEX_AUTH_ISSUER']).includes(LIMITS_ISSUER)) {
-            runConvexCli(backend, ['env', 'set', 'CONVEX_AUTH_ISSUER', LIMITS_ISSUER]);
-            if (!runConvexCli(backend, ['env', 'get', 'CONVEX_AUTH_ISSUER']).includes(LIMITS_ISSUER)) {
+
+    /** The deployment env the suites require; deploy fails closed on any one missing. */
+    const requiredEnv: readonly (readonly [key: string, value: string])[] = [
+        ['CONVEX_AUTH_ISSUER', LIMITS_ISSUER],
+        ['CONVEX_AUTH_APPLICATION_ID', 'convex'],
+        ['CONVEX_AUTH_JWKS_URL', `${LIMITS_ISSUER}/.well-known/jwks.json`],
+        ['CONVEX_SERVER_SECRET', serverSecret],
+    ];
+
+    /**
+     * Seeds the required env then reads `env list` back and re-sets anything missing. A freshly
+     * booted backend on a cold CI runner intermittently drops early `env set` writes (exit 0,
+     * value not persisted), which otherwise surfaces minutes later as the deploy's "used in auth
+     * config file but its value was not set" or an opaque FORGED_IDENTITY inside a test.
+     *
+     * @throws {ConvexError} When a variable still fails to read back after a corrective re-set.
+     */
+    const seedEnv = (): void => {
+        for (const [key, value] of requiredEnv) runConvexCli(backend, ['env', 'set', key, value]);
+        for (const [key, value] of requiredEnv) {
+            if (runConvexCli(backend, ['env', 'list']).includes(key)) continue;
+            runConvexCli(backend, ['env', 'set', key, value]);
+            if (!runConvexCli(backend, ['env', 'list']).includes(key)) {
                 throw new ConvexError(
-                    '[test-convex/limits] CONVEX_AUTH_ISSUER failed to seed onto the ephemeral backend; refusing to run suites against an unconfigured deployment.',
+                    `[test-convex/limits] ${key} failed to seed onto the ephemeral backend; refusing to run suites against an unconfigured deployment.`,
                 );
             }
         }
-        runConvexCli(backend, ['deploy', '--yes', '--typecheck', 'disable', '--codegen', 'disable']);
+    };
+
+    try {
+        seedEnv();
+        try {
+            runConvexCli(backend, ['deploy', '--yes', '--typecheck', 'disable', '--codegen', 'disable']);
+        } catch (deployError) {
+            // A deploy rejected for MISSING env is persistent — the inner CLI retry cannot heal
+            // it. One full re-seed + re-deploy covers the dropped-write boot race; anything else
+            // re-throws.
+            if (!String(deployError).includes('value was not set')) throw deployError;
+            seedEnv();
+            runConvexCli(backend, ['deploy', '--yes', '--typecheck', 'disable', '--codegen', 'disable']);
+        }
     } catch (err) {
         await backend.stop();
         throw err;
