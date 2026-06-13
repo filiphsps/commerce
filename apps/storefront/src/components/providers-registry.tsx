@@ -1,7 +1,7 @@
 'use client';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
+import { ShopMisconfigurationError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { ShopifyProvider } from '@shopify/hydrogen-react';
 import { Fragment, type ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -31,17 +31,19 @@ const RequiredHooks = ({ locale, children = null }: { shop: OnlineShop; locale: 
  * @param props.shop - Shop record supplying the commerce provider configuration.
  * @param props.locale - Locale used to configure country and language on the provider.
  * @param props.children - Subtree that consumes commerce context.
- * @returns The Shopify provider wrapping `children`, or a passthrough fragment when the domain is missing.
+ * @returns The Shopify provider wrapping `children`.
  * @throws {UnknownCommerceProviderError} When the shop's commerce provider type is not supported.
+ * @throws {ShopMisconfigurationError} When a Shopify tenant has no `commerceProvider.domain`.
  */
 const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale: Locale; children: ReactNode }) => {
     switch (shop.commerceProvider.type) {
         case 'shopify': {
             if (!shop.commerceProvider.domain) {
-                // TODO: Surface this as a tenant-config validation error during shop lookup.
-                //       For now, render without the Shopify cart provider — content pages still work,
-                //       cart/checkout features will be unavailable.
-                return <>{children}</>;
+                // A domain-less Shopify tenant is a config error, not a render mode. The server
+                // resolve path already fails it (`ShopifyApolloApiClient` throws the same error
+                // before this tree mounts); throwing here is the matching client-side guard so a
+                // misconfigured tenant can never silently fall through to a checkout-less storefront.
+                throw new ShopMisconfigurationError(shop.domain, ['commerceProvider.domain']);
             }
 
             return (

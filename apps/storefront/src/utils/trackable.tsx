@@ -404,9 +404,8 @@ export type TrackableContextValue = {
 
 export const TrackableContext = createContext<TrackableContextValue>({} as TrackableContextValue);
 
-// Inert tracking context. Mounted when the tenant lacks a Shopify commerce
-// provider (or when ShopifyProvider degraded to passthrough because
-// `commerceProvider.domain` is missing). Lets descendants call `useTrackable`
+// Inert tracking context for the prerender Suspense fallback (and any tenant
+// without a Shopify commerce provider). Lets descendants call `useTrackable`
 // without crashing while still being a no-op at runtime.
 export const NOOP_TRACKABLE_VALUE: TrackableContextValue = {
     queueEvent: () => {},
