@@ -1,5 +1,14 @@
 # @tagtree/next
 
+## 0.0.3
+
+### Patch Changes
+
+- [#1956](https://github.com/filiphsps/commerce/pull/1956) [`a815f10`](https://github.com/filiphsps/commerce/commit/a815f102d161bda3134b1dd8435ea2d322c0c6d5) Thanks [@filiphsps](https://github.com/filiphsps)! - Backfill JSDoc on public/internal symbols.
+
+- Updated dependencies [[`cab9aa7`](https://github.com/filiphsps/commerce/commit/cab9aa753d0323a54cb183d783fba54c5c77a4e4)]:
+  - @tagtree/core@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

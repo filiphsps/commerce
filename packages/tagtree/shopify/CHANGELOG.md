@@ -1,5 +1,16 @@
 # @tagtree/shopify
 
+## 0.0.3
+
+### Patch Changes
+
+- [#1959](https://github.com/filiphsps/commerce/pull/1959) [`ba1011b`](https://github.com/filiphsps/commerce/commit/ba1011b7998b0664b85f58a272d5726b859833bf) Thanks [@filiphsps](https://github.com/filiphsps)! - Address jsdoc review followups on parseShopifyWebhook.
+
+- [#1955](https://github.com/filiphsps/commerce/pull/1955) [`5f183c9`](https://github.com/filiphsps/commerce/commit/5f183c9d91030c8590849d9efcf85154bda426c6) Thanks [@filiphsps](https://github.com/filiphsps)! - Backfill JSDoc on public/internal symbols.
+
+- Updated dependencies [[`cab9aa7`](https://github.com/filiphsps/commerce/commit/cab9aa753d0323a54cb183d783fba54c5c77a4e4)]:
+  - @tagtree/core@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
