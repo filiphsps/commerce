@@ -84,4 +84,20 @@ describe('components/header/header-account-section', () => {
         expect(screen.getByTestId('avatar')).toBeTruthy();
         expect(screen.getByTestId('avatar').textContent).toBe('Test User');
     });
+
+    describe('skeleton', () => {
+        it('renders nothing when accounts are disabled (so it never flashes on accounts-off shops)', () => {
+            vi.mocked(accountsEnabled.evaluate).mockReturnValueOnce(false as never);
+
+            expect(HeaderAccountSection.skeleton({ shop: mockShop })).toBeNull();
+        });
+
+        it('reserves the avatar footprint when accounts are enabled', () => {
+            vi.mocked(accountsEnabled.evaluate).mockReturnValueOnce(true as never);
+
+            const { container } = render(HeaderAccountSection.skeleton({ shop: mockShop }) as any);
+
+            expect(container.querySelector('.animate-pulse')).toBeTruthy();
+        });
+    });
 });

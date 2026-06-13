@@ -1,7 +1,7 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Fragment, type HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 
 import { getAuthSession } from '@/auth';
 import { LoginButton } from '@/components/actionable/login-button';
@@ -48,9 +48,28 @@ export async function HeaderAccountSection({ shop, i18n, className, ...props }: 
 }
 HeaderAccountSection.displayName = 'Nordcom.Header.HeaderAccountSection';
 
-function skeleton() {
+/**
+ * Suspense fallback for {@link HeaderAccountSection} while the auth session resolves.
+ *
+ * Gates on the SAME per-shop `accounts-functionality` flag as the live section: that section
+ * returns `null` for accounts-disabled shops, so an unconditional placeholder would flash an
+ * avatar on every storefront with accounts off. `.evaluate(shop)` is the cache-safe sync read
+ * (no `headers()`), so the fallback and its resolved content always agree on visibility. When
+ * enabled it reserves the avatar/login footprint (`size-8` circle) to keep the header shift-free.
+ *
+ * @param props.shop - Shop record used to evaluate the accounts feature flag.
+ * @param props.className - Additional CSS class names forwarded to the section wrapper.
+ * @returns An avatar-shaped placeholder when accounts are enabled, otherwise `null`.
+ */
+function skeleton({ shop, className }: { shop: OnlineShop; className?: string }) {
+    if (!accountsEnabled.evaluate(shop)) {
+        return null;
+    }
+
     return (
-        <Fragment /> // TODO: This should be a skeleton, but since it's behind a flag we can't do that yet.
+        <section aria-hidden className={cn('flex h-full items-center justify-end gap-1', className)}>
+            <div className="size-8 animate-pulse rounded-full bg-(--surface-1) shadow" />
+        </section>
     );
 }
 HeaderAccountSection.skeleton = skeleton as typeof skeleton & { displayName: string };

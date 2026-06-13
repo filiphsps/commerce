@@ -77,7 +77,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                     <div className="flex h-full grow items-center justify-end gap-6" data-nosnippet={true}>
                         <HeaderSearch locale={locale} i18n={i18n} />
 
-                        <Suspense fallback={<HeaderAccountSection.skeleton />}>
+                        <Suspense fallback={<HeaderAccountSection.skeleton shop={shop} />}>
                             <HeaderAccountSection shop={shop} locale={locale} i18n={i18n} />
                         </Suspense>
 
