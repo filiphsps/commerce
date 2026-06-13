@@ -1,4 +1,4 @@
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
 
 import { parse, stringify } from 'svgson';
@@ -80,6 +80,11 @@ export async function runCodegen(opts: RunCodegenOptions): Promise<RunCodegenRes
     const entries: IconManifestEntry[] = slugs.map((slug) => resolveEntry(slug, opts.overrides));
     validateManifest(entries);
 
+    // Wipe the per-icon output before re-emitting so a removed/renamed SVG — or a
+    // stale module from an older generator that emitted a different extension — can
+    // never linger and get picked up by extensionless imports (vite resolves `.js`
+    // ahead of `.tsx`, so an orphan JSX-bearing `.js` breaks the build).
+    await rm(join(outDir, 'icons'), { recursive: true, force: true });
     await mkdir(join(outDir, 'icons'), { recursive: true });
 
     const chromeExceptions: string[] = [];
