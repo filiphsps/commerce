@@ -34,21 +34,21 @@ export { ConditionalField } from './conditional';
 export { FieldShell, type FieldShellProps, fieldControlClassName, useEditorField } from './field-shell';
 export { GroupField } from './group';
 export {
-    registerDataBoundFieldWidgets,
     RelationshipField,
     type RelationshipOption,
     type RelationshipQuery,
     RelationshipQueryProvider,
+    registerDataBoundFieldWidgets,
     useRelationshipOptions,
 } from './relationship';
 export {
     EMPTY_PROSE_MIRROR_DOC,
     type ProseMirrorDoc,
-    registerRichTextFieldWidget,
     type RichTextEditorComponent,
-    RichTextEditorProvider,
     type RichTextEditorProps,
+    RichTextEditorProvider,
     RichTextField,
+    registerRichTextFieldWidget,
     useRichTextEditor,
 } from './rich-text';
 export {

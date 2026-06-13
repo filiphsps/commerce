@@ -1,13 +1,12 @@
 import { makeFunctionReference, type WithoutSystemFields } from 'convex/server';
 import { convexTest, type TestConvex } from 'convex-test';
 import { describe, expect, it } from 'vitest';
-
+import { heading, lexicalDoc, paragraph } from '../../../scripts/etl/fixtures/lexical';
 import { expectedChecksums } from '../../../scripts/etl/reconcile/checksum';
-import { type Doc as SourceDoc, type SourceDataset, transform } from '../../../scripts/etl/transform/index';
+import { type SourceDataset, type Doc as SourceDoc, transform } from '../../../scripts/etl/transform/index';
 import { transformCmsDocuments } from '../../../scripts/etl/transform/shred-richtext';
 import type { Doc, Id } from '../../convex/convex/_generated/dataModel';
 import schema from '../../convex/convex/schema';
-import { heading, lexicalDoc, paragraph } from '../../../scripts/etl/fixtures/lexical';
 
 /**
  * PIPELINE-04 end-to-end parity proof: seed → export-shape fixtures → PIPELINE-01/02 transform →

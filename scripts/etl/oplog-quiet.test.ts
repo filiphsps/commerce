@@ -6,8 +6,8 @@ import {
     normalizeOplogDoc,
     type OplogEntry,
     parseOplogJsonl,
-    renderOplogReport,
     RETIRED_SERVICE_COLLECTIONS,
+    renderOplogReport,
 } from './oplog-quiet';
 
 const entry = (ns: string, op = 'i', wallMs: number | null = 1_700_000_000_000): OplogEntry => ({ ns, op, wallMs });

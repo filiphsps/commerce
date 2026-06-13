@@ -21,9 +21,10 @@
  * drags Nordstar CSS modules (toolbar buttons, table) is stubbed FUNCTIONALLY
  * (the buttons still invoke the real bound actions).
  */
+
+import { createCollectionEditorActions } from '@nordcom/commerce-cms/editor';
 import { headerEditor } from '@nordcom/commerce-cms/editor/manifests';
 import { EditorEditPage } from '@nordcom/commerce-cms/editor/ui';
-import { createCollectionEditorActions } from '@nordcom/commerce-cms/editor';
 import { createUnitConvex } from '@nordcom/commerce-test-convex/unit';
 import { ConvexError } from 'convex/values';
 import type { ReactElement } from 'react';
@@ -116,9 +117,9 @@ vi.mock('@nordcom/commerce-db', async () => {
 });
 
 import { revalidatePath } from 'next/cache';
+import { getAuthedCmsCtx } from './cms-ctx';
 import { editorConvexBridge } from './editor-convex-bridge';
 import { editorRuntime } from './editor-runtime';
-import { getAuthedCmsCtx } from './cms-ctx';
 
 const TRUSTED_ISSUER = 'https://admin.gate.nordcom.io';
 const OPERATOR_EMAIL = 'gate-operator@example.com';

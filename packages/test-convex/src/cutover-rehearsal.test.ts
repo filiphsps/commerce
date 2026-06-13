@@ -1,7 +1,7 @@
 import { makeFunctionReference, type WithoutSystemFields } from 'convex/server';
 import { convexTest, type TestConvex } from 'convex-test';
 import { describe, expect, it } from 'vitest';
-
+import { heading, lexicalDoc, list, paragraph } from '../../../scripts/etl/fixtures/lexical';
 import type { CollectionChecksum } from '../../../scripts/etl/reconcile/checksum';
 import {
     formatRehearsalReport,
@@ -14,7 +14,6 @@ import {
 import type { Doc as SourceDoc } from '../../../scripts/etl/transform/index';
 import type { Doc, Id } from '../../convex/convex/_generated/dataModel';
 import schema from '../../convex/convex/schema';
-import { heading, lexicalDoc, list, paragraph } from '../../../scripts/etl/fixtures/lexical';
 
 /**
  * CUTOVER-01 dress rehearsal: the full export-shaped-input → transform → import → PIPELINE-04

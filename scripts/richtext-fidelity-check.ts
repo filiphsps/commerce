@@ -37,19 +37,19 @@ import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
-    heading as builderHeading,
-    list as builderList,
-    paragraph as builderParagraph,
-    type LexicalNode,
-    lexicalDoc,
-} from '../packages/test-convex/src/seed/fixtures/richtext';
-import {
     type LexicalDocument,
     lexicalToProseMirror,
     type ProseMirrorDocument,
     type ProseMirrorNode,
 } from '../packages/cms/src/editor/richtext/lexical-to-prosemirror';
 import { TypeError } from '../packages/errors/src/index';
+import {
+    heading as builderHeading,
+    list as builderList,
+    paragraph as builderParagraph,
+    type LexicalNode,
+    lexicalDoc,
+} from '../packages/test-convex/src/seed/fixtures/richtext';
 import { normalizeExtendedJson } from './etl/transform/index';
 
 const SCRIPTS_DIR = dirname(fileURLToPath(import.meta.url));

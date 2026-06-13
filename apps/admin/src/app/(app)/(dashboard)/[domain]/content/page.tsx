@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
 import { PageHeader } from '@/components/shell/page-header';
-import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 import { getAuthedCmsCtx } from '@/lib/cms-ctx';
+import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 
 /**
  * Derives a human-readable title from a Convex CMS document's serialized field map. Localized

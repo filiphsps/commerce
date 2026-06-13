@@ -1,11 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { seedCanonical } from '../seed/canonical';
-import { DEFAULT_SHOP_DOMAIN, DEFAULT_SHOP_LEGACY_ID } from '../seed/fixtures/shop';
 import { featureFlagFixtures } from '../seed/fixtures/feature-flags';
 import { pageFixtures } from '../seed/fixtures/pages';
-import { createServerClient, type LiveConvex, runConvexCli, startLiveConvex } from './live';
+import { DEFAULT_SHOP_DOMAIN, DEFAULT_SHOP_LEGACY_ID } from '../seed/fixtures/shop';
 import { featureFlagByKeyRef, shopByDomainRef } from '../seed/live';
+import { createServerClient, type LiveConvex, runConvexCli, startLiveConvex } from './live';
 
 /**
  * HARNESS-07 live-seed suite — REAL local backend only. Proves the over-the-wire canonical seed the

@@ -30,7 +30,7 @@
  * PIPELINE-02/03 gates. Both exclusions are mirrored by `convex/reconcile.ts`'s `RECONCILE_TABLES`.
  */
 import { checksumDocument, rollupChecksum } from '../../../packages/convex/convex/lib/checksum';
-import { transform, type Doc, type SourceDataset, type TransformedDoc } from '../transform/index';
+import { type Doc, type SourceDataset, type TransformedDoc, transform } from '../transform/index';
 import { transformCmsDocuments } from '../transform/shred-richtext';
 import { groupSideRowsByParent, independentReassembly, type ShreddedSideRowRecord } from './independent-reassembly';
 

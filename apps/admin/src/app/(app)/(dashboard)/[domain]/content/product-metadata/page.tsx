@@ -4,8 +4,8 @@ import type { EditorCmsDocument } from '@nordcom/commerce-cms/editor';
 import type { Metadata, Route } from 'next';
 import { CollectionTable } from '@/components/cms/collection-table';
 import { CreateMetadataForHandleForm } from '@/components/cms/create-metadata-for-handle-form';
-import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 import { getAuthedCmsCtx } from '@/lib/cms-ctx';
+import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 
 export const metadata: Metadata = { title: 'Product Metadata' };
 

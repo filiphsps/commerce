@@ -44,7 +44,7 @@ import { buildMongoexportArgs, resolveStagingDir, SOURCE_COLLECTIONS, type Sourc
 import { buildConvexImportArgs, parseJsonl } from '../import';
 import { expectedChecksums } from '../reconcile/checksum';
 import { coerceObjectId, type Doc } from '../transform/id-remap';
-import { normalizeExtendedJson, type SourceDataset, transform, type TransformedDoc } from '../transform/index';
+import { normalizeExtendedJson, type SourceDataset, type TransformedDoc, transform } from '../transform/index';
 import { type CmsTransformDivergence, sortStagedRows, transformCmsDocuments } from '../transform/shred-richtext';
 import { applyLatestVersionPointers, transformCmsVersions } from '../transform/versions';
 import { OUTBOX_COLLECTION, type OutboxEntry } from './append';

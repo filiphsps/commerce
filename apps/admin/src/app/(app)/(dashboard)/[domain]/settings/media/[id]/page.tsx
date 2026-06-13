@@ -6,8 +6,8 @@ import { notFound } from 'next/navigation';
 import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
 import { PageHeader } from '@/components/shell/page-header';
 import { updateMediaMetadataAction } from '@/lib/cms-actions/media-metadata';
-import { getMediaById } from '@/lib/editor-convex-bridge';
 import { getAuthedCmsCtx } from '@/lib/cms-ctx';
+import { getMediaById } from '@/lib/editor-convex-bridge';
 import { MediaMetadataForm } from './metadata-form';
 
 export const metadata: Metadata = { title: 'Media' };
