@@ -4,8 +4,8 @@ import { type ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import type { FieldDescriptorAdmin } from '../../../descriptors/types';
 import { useField, useForm, useFormFields } from '../hooks';
-import { readLocaleSlot, writeLocaleSlot } from '../locale-bucket';
 import { useFormLocale } from '../locale';
+import { readLocaleSlot, writeLocaleSlot } from '../locale-bucket';
 import { reduceFieldsToValues } from '../state';
 
 /**

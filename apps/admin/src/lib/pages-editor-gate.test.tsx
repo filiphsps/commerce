@@ -130,9 +130,9 @@ vi.mock('@nordcom/commerce-db', async () => {
 
 import { makeFunctionReference } from 'convex/server';
 import { revalidatePath } from 'next/cache';
+import { getAuthedCmsCtx } from './cms-ctx';
 import { editorConvexBridge } from './editor-convex-bridge';
 import { editorRuntime } from './editor-runtime';
-import { getAuthedCmsCtx } from './cms-ctx';
 
 const TRUSTED_ISSUER = 'https://admin.gate.nordcom.io';
 const OPERATOR_EMAIL = 'gate-operator@example.com';

@@ -1,5 +1,5 @@
-import { Form, useFormFields, useFormModified } from '@nordcom/commerce-cms/editor/form';
 import type { FormState } from '@nordcom/commerce-cms/editor/form';
+import { Form, useFormFields, useFormModified } from '@nordcom/commerce-cms/editor/form';
 import type { ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
 import { fireEvent } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';

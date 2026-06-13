@@ -1,8 +1,8 @@
 import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
 import {
-    cmsCacheSchema as schemaFromDescriptor,
     cmsTenantRootTags as rootTagsFromDescriptor,
+    cmsCacheSchema as schemaFromDescriptor,
 } from '../cache-descriptor';
 import { defineCollectionEditor } from './manifest';
 import { cmsCacheSchema, cmsTenantRootTags, refreshEditorPaths } from './revalidate';

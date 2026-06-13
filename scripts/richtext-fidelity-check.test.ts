@@ -4,10 +4,10 @@ import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { ProseMirrorDocument, ProseMirrorNode } from '../packages/cms/src/editor/richtext/lexical-to-prosemirror';
 import {
+    type CorpusItem,
     collectDumpCorpus,
     collectGoldenCorpus,
     collectInRepoCorpus,
-    type CorpusItem,
     formatRunReport,
     isRed,
     loadProseMirrorRenderer,

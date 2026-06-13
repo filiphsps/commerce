@@ -5,9 +5,9 @@ import { act, fireEvent, render } from '@testing-library/react';
 // exactly the point of the assertion.
 import { revalidatePath } from 'next/cache';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { FieldDescriptor } from '../../descriptors';
 import { useAutosave } from './autosave';
 import { Form } from './form';
-import type { FieldDescriptor } from '../../descriptors';
 import { useField } from './hooks';
 import type { FormState } from './types';
 

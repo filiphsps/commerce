@@ -1,7 +1,7 @@
 import { ConvexError } from 'convex/values';
 import { describe, expect, it } from 'vitest';
 
-import { canonicalJson, ChecksumErrorCode, checksumDocument, rollupChecksum, sha256Hex } from './checksum';
+import { ChecksumErrorCode, canonicalJson, checksumDocument, rollupChecksum, sha256Hex } from './checksum';
 
 describe('canonicalJson', () => {
     it('sorts object keys at every depth and preserves array order', () => {

@@ -86,8 +86,8 @@ vi.mock('@nordcom/commerce-db', async () => {
 });
 
 import { generateKeyPairSync } from 'node:crypto';
-import { AuthErrorCode } from '../../../../packages/convex/convex/lib/auth';
 import { AdminShopResolverErrorCode } from '../../../../packages/convex/convex/auth/admin_shop_resolver';
+import { AuthErrorCode } from '../../../../packages/convex/convex/lib/auth';
 import { setActiveShopSelection } from './active-shop';
 import { editorConvexBridge } from './editor-convex-bridge';
 

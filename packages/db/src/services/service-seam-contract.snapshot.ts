@@ -2,10 +2,10 @@
 // now resolves from the local structural aliases in `../models/query-types`. ONLY this import
 // source changed; every pinned signature line below is byte-identical to the frozen SFREAD-02
 // artifact.
-import type { ProjectionType, QueryFilter, QueryOptions, UpdateQuery } from '../models/query-types';
 
 import type { BaseDocument } from '../db';
 import type { FeatureFlagBase, IdentityBase, OnlineShop, ReviewBase, SessionBase, ShopBase, UserBase } from '../models';
+import type { ProjectionType, QueryFilter, QueryOptions, UpdateQuery } from '../models/query-types';
 import type { FeatureFlag } from './feature-flag';
 import type { Identity } from './identity';
 import type { Review } from './review';

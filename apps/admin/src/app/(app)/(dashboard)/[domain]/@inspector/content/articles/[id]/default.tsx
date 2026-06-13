@@ -1,7 +1,7 @@
 import 'server-only';
 
-import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 import { getAuthedCmsCtx } from '@/lib/cms-ctx';
+import { editorConvexBridge } from '@/lib/editor-convex-bridge';
 
 type Props = { params: Promise<{ domain: string; id: string }> };
 

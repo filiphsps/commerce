@@ -15,8 +15,8 @@ import type { SourceDataset } from '../transform/index';
 import {
     computeDrainLag,
     type DrainPlan,
-    foldOutbox,
     type FreezeSnapshot,
+    foldOutbox,
     outboxToken,
     parseDrainCursor,
     parseOutboxEntries,
