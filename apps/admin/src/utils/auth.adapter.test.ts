@@ -1,7 +1,7 @@
 import type { Adapter } from '@auth/core/adapters';
 
 import { User } from '@nordcom/commerce-db';
-import { NotFoundError } from '@nordcom/commerce-errors';
+import { NotFoundError, TodoError } from '@nordcom/commerce-errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
@@ -99,6 +99,39 @@ describe('utils', () => {
                     adapter.getUserByAccount?.({ provider: 'google', providerAccountId: '456' }),
                 ).rejects.toThrow('backend down');
                 errSpy.mockRestore();
+            });
+        });
+
+        // The Convex-backed seam implements none of these under the JWT session strategy.
+        // They must fail loud (TodoError) rather than no-op, so a future caller never loses a
+        // write to a silent stub. Spy on User.create to prove no persistence is attempted.
+        describe('unsupported write/delete methods fail loud', () => {
+            it('updateUser throws TodoError without touching the seam', async () => {
+                const createSpy = vi.spyOn(User, 'create');
+                await expect(
+                    adapter.updateUser?.({ id: '123', email: 'a@b.c', emailVerified: null } as any),
+                ).rejects.toBeInstanceOf(TodoError);
+                expect(createSpy).not.toHaveBeenCalled();
+            });
+
+            it('deleteUser throws TodoError', async () => {
+                await expect(adapter.deleteUser?.('123')).rejects.toBeInstanceOf(TodoError);
+            });
+
+            it('updateSession throws TodoError', async () => {
+                await expect(
+                    adapter.updateSession?.({ sessionToken: 'tok', userId: '123', expires: new Date(0) }),
+                ).rejects.toBeInstanceOf(TodoError);
+            });
+
+            it('deleteSession throws TodoError', async () => {
+                await expect(adapter.deleteSession?.('tok')).rejects.toBeInstanceOf(TodoError);
+            });
+
+            it('unlinkAccount throws TodoError', async () => {
+                await expect(
+                    adapter.unlinkAccount?.({ provider: 'google', providerAccountId: '456' }),
+                ).rejects.toBeInstanceOf(TodoError);
             });
         });
     });

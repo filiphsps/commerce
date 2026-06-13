@@ -1,6 +1,6 @@
 import type { Adapter, AdapterAccount, AdapterUser } from '@auth/core/adapters';
 import { Identity, Session, User, type UserBase } from '@nordcom/commerce-db';
-import { Error as CommerceError } from '@nordcom/commerce-errors';
+import { Error as CommerceError, TodoError } from '@nordcom/commerce-errors';
 
 // `null` is the adapter contract for "no such user/account" — Auth.js then
 // triggers user creation. The previous implementation also returned `null` on
@@ -43,9 +43,13 @@ function toAdapterUser(user: UserBase): AdapterUser {
  * reads only plain rows (no Mongoose document methods) and projects them with {@link toAdapterUser}.
  * Returns null (not throws) for "not found" results to signal Auth.js to create a new resource;
  * re-throws all other errors so infrastructure failures surface at the error page rather than silently
- * triggering a duplicate-resource path.
+ * triggering a duplicate-resource path. The update/delete/unlink methods the JWT session strategy never
+ * exercises throw {@link TodoError} rather than no-op, so a future caller fails loudly instead of losing
+ * the write silently.
  *
  * @returns An Adapter object conforming to the Auth.js adapter interface.
+ * @throws {TodoError} From `updateUser`/`deleteUser`/`updateSession`/`deleteSession`/`unlinkAccount` —
+ *   operations the Convex-backed seam does not implement under the JWT session strategy.
  */
 export function AuthAdapter(): Adapter {
     return {
@@ -104,13 +108,24 @@ export function AuthAdapter(): Adapter {
                 }),
             );
         },
+        // The Convex-backed auth seam is frozen to the vocabulary the JWT session
+        // strategy (auth.ts: `session.strategy: 'jwt'`) actually exercises — create,
+        // the id/email/provider lookups, and the `$push: { identities }` link. It
+        // exposes no user/session update-or-delete mutation. These adapter methods
+        // were silent no-ops that returned success while persisting nothing — a
+        // data-loss trap if a future flow (account management, the database session
+        // strategy) ever called them. Fail loud with the same typed error the db
+        // seam throws for an unsupported operation, so the gap surfaces at the first
+        // call instead of as quietly-dropped writes.
         async updateUser(user) {
-            console.debug('[TODO] AuthAdapter - updateUser', user);
-            return user as unknown as AdapterUser;
+            throw new TodoError(
+                `AuthAdapter.updateUser is unsupported on the Convex-backed auth seam (JWT strategy; no users:update mutation): ${user.id}`,
+            );
         },
         async deleteUser(userId) {
-            console.debug('[TODO] AuthAdapter - deleteUser', userId);
-            return null;
+            throw new TodoError(
+                `AuthAdapter.deleteUser is unsupported on the Convex-backed auth seam (JWT strategy; no users:delete mutation): ${userId}`,
+            );
         },
 
         async createSession({ userId, sessionToken, expires }) {
@@ -127,12 +142,14 @@ export function AuthAdapter(): Adapter {
             };
         },
         async updateSession(session) {
-            console.debug('[TODO] AuthAdapter - updateSession', session);
-            return null;
+            throw new TodoError(
+                `AuthAdapter.updateSession is unsupported on the Convex-backed auth seam (JWT strategy keeps no server-side sessions): ${session.sessionToken}`,
+            );
         },
         async deleteSession(sessionToken) {
-            console.debug('[TODO] AuthAdapter - deleteSession', sessionToken);
-            return null;
+            throw new TodoError(
+                `AuthAdapter.deleteSession is unsupported on the Convex-backed auth seam (JWT strategy keeps no server-side sessions): ${sessionToken}`,
+            );
         },
 
         async linkAccount({ userId, ...account }) {
@@ -193,8 +210,9 @@ export function AuthAdapter(): Adapter {
             }
         },
         async unlinkAccount(providerAccountId) {
-            console.debug('[TODO] AuthAdapter - unlinkAccount', providerAccountId);
-            return;
+            throw new TodoError(
+                `AuthAdapter.unlinkAccount is unsupported on the Convex-backed auth seam (no users:unlinkIdentity mutation): ${JSON.stringify(providerAccountId)}`,
+            );
         },
     };
 }
