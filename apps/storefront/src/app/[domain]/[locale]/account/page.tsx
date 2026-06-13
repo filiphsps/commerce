@@ -5,6 +5,7 @@ import { connection } from 'next/server';
 import { type ReactNode, Suspense } from 'react';
 import { Shop } from '@/api/_loaders';
 import { getAuthSession } from '@/auth';
+import { LoginButton } from '@/components/actionable/login-button';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { getDictionary } from '@/utils/dictionary';
@@ -77,7 +78,7 @@ async function AccountSession({ params }: { params: AccountDashboardParams }) {
     // I/O that must never run in a prerenderable scope.
     await connection();
 
-    const { domain } = await params;
+    const { domain, locale: localeData } = await params;
     if (!domain || domain === NOT_FOUND_HANDLE) {
         notFound();
     }
@@ -86,7 +87,16 @@ async function AccountSession({ params }: { params: AccountDashboardParams }) {
     const session = await getAuthSession(shop);
 
     if (!session) {
-        return <div>TODO: Not logged in.</div>;
+        const locale = Locale.from(localeData);
+        const i18n = await getDictionary({ shop, locale });
+        const { t } = getTranslations('common', i18n);
+
+        return (
+            <div className="flex flex-col items-center gap-4 py-16 text-center">
+                <p className="font-semibold text-lg">{capitalize(t('account-dashboard'))}</p>
+                <LoginButton i18n={i18n} />
+            </div>
+        );
     }
 
     // The SFREAD-08 Lane-2 island: `preloadQuery` runs inside this dynamic

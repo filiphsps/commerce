@@ -478,7 +478,10 @@ function TrackableInner({ children, dummy = false }: TrackableProps) {
     );
     const internalTraffic = dummy || detectedInternalTraffic;
 
-    const checkoutDomain = (shop.commerceProvider as ShopifyCommerceProvider).domain || 'TODO'; // TODO
+    // Shopify's checkout/attribution domain: the commerce provider's configured domain, falling
+    // back to the storefront's own host (never a placeholder) so cookie attribution still scopes
+    // to a real domain when a tenant hasn't set a distinct checkout domain.
+    const checkoutDomain = (shop.commerceProvider as ShopifyCommerceProvider).domain || shop.domain || undefined;
     // Only use the domain, not the subdomain.
     let cookieDomain: string | undefined = shop.domain?.split('.').slice(-2).join('.') || shop.domain || undefined;
     if (cookieDomain && !cookieDomain.startsWith('.')) {
