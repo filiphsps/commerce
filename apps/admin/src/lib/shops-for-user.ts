@@ -5,15 +5,14 @@ import { Shop } from '@nordcom/commerce-db';
 export type ShopSwitcherEntry = { name: string; domain: string };
 
 /**
- * Returns the shops the given user has access to. For operators (role=admin), returns all shops.
+ * Returns the shops the given operator may switch between — exactly the shops they collaborate on,
+ * resolved through the same `shopCollaborators` membership that the Convex `resolveActiveAdminShopId`
+ * token mint re-verifies before pinning a tenant. An operator with no memberships gets no shops.
  *
- * @param _userId - Currently unused; scoping by user.tenants is planned but not yet implemented.
- * @returns Array of shop name and domain entries for the shop switcher.
+ * @param userId - The authenticated operator's platform user id.
+ * @returns Name and domain for each shop the operator collaborates on, for the shop switcher.
  */
-export async function getShopsForUser(_userId: string): Promise<ShopSwitcherEntry[]> {
-    // TODO(shell-rework): scope by user.tenants in a follow-up. For now expose all shops.
-    // TypeScript's overload picker resolves the empty-args form to the single-result
-    // overload; cast through unknown to get the array shape we actually receive.
-    const shops = (await Shop.find({ filter: {} })) as unknown as import('@nordcom/commerce-db').ShopBase[];
-    return shops.map((s) => ({ name: s.name, domain: s.domain }));
+export async function getShopsForUser(userId: string): Promise<ShopSwitcherEntry[]> {
+    const shops = await Shop.findByCollaborator({ collaboratorId: userId });
+    return shops.map((shop) => ({ name: shop.name, domain: shop.domain }));
 }
