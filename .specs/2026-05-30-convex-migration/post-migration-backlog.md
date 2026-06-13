@@ -6,13 +6,14 @@ commit. Small drift (stale comments, dead exports, doc gaps) was fixed in the
 sweep commit itself.
 
 **Status (polish-completion pass, 2026-06-13).** Findings 3–7 — the
-behavior/contract bugs — are RESOLVED (each item notes its fix below). Findings
-1–2 remain OPEN by design: they are deliberate public-API (semver) decisions, not
-drift, so they stay for a dedicated minor/major bump rather than a cleanup pass.
-Separately, the pre-existing `react-payment-brand-icons` build red recorded in the
-G5 gate §4 was root-caused (stale gitignored `.js` artifacts from an earlier
-generator; the generator now wipes its `icons/` output before re-emitting) and is
-green.
+behavior/contract bugs — are RESOLVED (each item notes its fix below). Finding 1
+is PARTIALLY resolved: the provably-dead value re-exports were dropped now that
+the package's `private: true` status retires the "semver" framing, with the
+type-only companions deliberately kept (see item 1). Finding 2 is DECIDED — kept
+as the sanctioned seam (the harmless option). Separately, the pre-existing
+`react-payment-brand-icons` build red recorded in the G5 gate §4 was root-caused
+(stale gitignored `.js` artifacts from an earlier generator; the generator now
+wipes its `icons/` output before re-emitting) and is green.
 
 Sweep method: repo-wide `rg` for deleted-module names (`payload-ctx`,
 `_cms-shadow`, `_normalize-payload`, `build-cms-form-state`,
@@ -45,6 +46,20 @@ cleanup. Suggested shape: decide the supported `@nordcom/commerce-cms/editor`
 surface, trim the rest in one minor/major bump, and add a docs example or test
 importing each name that stays.
 
+**Partially resolved (2026-06-13).** The package is `private: true` (never
+published), so the deferral's "semver / minor-major bump" premise doesn't hold —
+the supported surface is just what this monorepo consumes. The five **value**
+re-exports verified to have zero barrel-importers AND zero `docs/*.mdx`
+references were dropped (each name keeps its in-package relative-import callers,
+so only the dead re-export line went): `bridgeErrorCode`/`EditorBridgeErrorCode`
+(`./bridge-errors`), `pickByFieldNames` (`./form-payload`, `parseFormPayload`
+kept), `loadRelationshipOptions`/`relationshipTargetsOf` (`./relationship-targets`),
+`refreshEditorPaths`/`RefreshEditorPathsArgs` (`./revalidate`), and `docUrlSegment`
+(`./url`). The standalone **type-only** companions (the `./runtime`/`./manifest`
+blocks) were deliberately left — removing a type that annotates a kept value's
+signature is the genuine judgment call the original deferral flagged, and the
+churn isn't worth it. Whole-workspace suite + typecheck stayed green.
+
 ## 2. `@nordcom/commerce-convex` `./constructors` subpath has no workspace importer
 
 `packages/convex/package.json` exports `./constructors`
@@ -54,6 +69,11 @@ relative `./_constructors` imports; no app or package imports the subpath.
 Suggested shape: either keep it as the sanctioned future seam (and say so in
 the README table) or drop the subpath export. Keeping is harmless; dropping is
 an API change — hence logged, not fixed.
+
+**Decision (2026-06-13) — keep.** Confirmed still zero workspace importers.
+Taking the backlog's harmless-to-keep option: `./constructors` stays as the
+sanctioned seam the README already documents, so no change. (Dropping the
+export + its package.json subpath is the only alternative and buys nothing.)
 
 ## 3. Admin shell: shop switcher exposes all shops to every operator
 
