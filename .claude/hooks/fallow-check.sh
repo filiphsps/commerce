@@ -8,8 +8,11 @@ set -u
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 FALLOW="$PROJECT_DIR/node_modules/.bin/fallow"
 
-# Drain hook JSON from stdin so we don't leave a dangling pipe.
-cat >/dev/null 2>&1
+# Drain hook JSON from stdin so we don't leave a dangling pipe. Bounded by a short
+# timeout: at SessionEnd the harness tears down without sending EOF, so an unbounded
+# read blocks until the hook is cancelled ("Hook cancelled"). On Stop, stdin EOFs
+# immediately and cat returns before the timeout fires — no added latency there.
+timeout 1 cat >/dev/null 2>&1 || true
 
 # Skip silently if fallow isn't installed yet (fresh checkout pre-pnpm-install).
 [ -x "$FALLOW" ] || exit 0
