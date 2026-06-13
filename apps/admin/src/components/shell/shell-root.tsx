@@ -35,6 +35,30 @@ const SEPARATOR_CLASSNAME =
 
 export const SHELL_ROOT_ID = 'shell-root';
 
+// The placeholder segment Next.js pushes into `useSelectedLayoutSegments(slot)` when a
+// parallel slot renders its `default.tsx`. Next's `getSelectedLayoutSegmentPath` strips
+// only the trailing `__PAGE__` leaf, NOT this one, so it always rides along (see
+// `next/dist/shared/lib/segment`). Mirrored locally rather than imported from Next internals.
+const DEFAULT_SLOT_SEGMENT = '__DEFAULT__';
+
+/**
+ * Decides whether a parallel-route slot is genuinely showing a section, given the segments
+ * `useSelectedLayoutSegments(slot)` returned.
+ *
+ * Our `@subnav`/`@inspector` slots are default-only: the root `default.tsx` (which renders
+ * nothing) yields `['__DEFAULT__']`, while a matched section yields e.g.
+ * `['settings', '__DEFAULT__']`. The slot is therefore active only when some segment is a real
+ * section — i.e. not the `__DEFAULT__` placeholder. A bare `!!segments` test is wrong because
+ * the array is always truthy (even `['__DEFAULT__']`), which would mount an empty panel on every
+ * route.
+ *
+ * @param segments - The slot segments from `useSelectedLayoutSegments`, or `null` outside app router.
+ * @returns `true` when the slot matched a real section, `false` for the default-only/empty case.
+ */
+export function isSlotActive(segments: string[] | null): boolean {
+    return Array.isArray(segments) && segments.some((segment) => segment !== DEFAULT_SLOT_SEGMENT);
+}
+
 /**
  * Resizable panel layout for the admin shell, adapting between mobile (single-column) and desktop (multi-panel) views.
  *
@@ -56,8 +80,8 @@ export function ShellRoot({ children, subnav, inspector, header, iconRailItems }
     const subnavSegments = useSelectedLayoutSegments('subnav');
     const inspectorSegments = useSelectedLayoutSegments('inspector');
 
-    const hasSubnav = !!subnavSegments; // TODO
-    const hasInspector = !!inspectorSegments; // TODO
+    const hasSubnav = isSlotActive(subnavSegments);
+    const hasInspector = isSlotActive(inspectorSegments);
     const showInspector = hasInspector && (breakpoint === 'wide' || breakpoint === 'comfortable');
 
     // `panelIds` must reflect the panels that will actually mount; a mismatch
