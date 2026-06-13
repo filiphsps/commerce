@@ -1,5 +1,11 @@
 # react-payment-brand-icons
 
+## 0.2.1
+
+### Patch Changes
+
+- [#2028](https://github.com/filiphsps/commerce/pull/2028) [`d6b2cf0`](https://github.com/filiphsps/commerce/commit/d6b2cf07dfeb41344b70c44ce2bcefc000fcaa0f) Thanks [@filiphsps](https://github.com/filiphsps)! - Wipe the generated `icons/` output directory before re-emitting. A removed or renamed SVG — or a stale module from an earlier generator that emitted a different file extension — could otherwise linger and be picked up by the extensionless icon imports (vite resolves `.js` ahead of `.tsx`, so an orphan JSX-bearing `.js` broke the build locally).
+
 ## 0.2.0
 
 ### Minor Changes
