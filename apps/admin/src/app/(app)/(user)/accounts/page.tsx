@@ -4,12 +4,21 @@ import { Heading } from '@nordcom/nordstar';
 
 import type { Metadata } from 'next';
 
-export type SetupNewPageProps = {};
-
 export const metadata: Metadata = {
     title: 'Account',
 };
 
-export default async function AccountPage({}: SetupNewPageProps) {
-    return <Heading level="h1">TODO</Heading>;
+/**
+ * Operator account page. The account-management surface is not built yet, so this renders an honest
+ * placeholder instead of the bare "TODO" heading that was shipping to operators.
+ *
+ * @returns The account placeholder view.
+ */
+export default async function AccountPage() {
+    return (
+        <>
+            <Heading level="h1">Account</Heading>
+            <p className="text-muted-foreground">Operator account settings aren&rsquo;t available yet.</p>
+        </>
+    );
 }
