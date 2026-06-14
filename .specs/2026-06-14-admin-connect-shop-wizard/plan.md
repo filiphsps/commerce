@@ -766,6 +766,18 @@ describe('createShop', () => {
         expect(result).toEqual({ ok: false, error: 'A private Storefront access token is required.' });
         expect(mockCreate).not.toHaveBeenCalled();
     });
+
+    it('refuses an empty shop name (defense in depth)', async () => {
+        const result = await createShop({ ...baseInput, name: '   ' });
+        expect(result).toEqual({ ok: false, error: 'A shop name is required.' });
+        expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    it('refuses an invalid domain (defense in depth)', async () => {
+        const result = await createShop({ ...baseInput, domain: 'localhost' });
+        expect(result).toEqual({ ok: false, error: 'Enter a valid customer-facing domain.' });
+        expect(mockCreate).not.toHaveBeenCalled();
+    });
 });
 ```
 
@@ -852,6 +864,15 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
 
     const name = input.name.trim();
     const domain = normalizeHostname(input.domain);
+    // Symmetric defense in depth (matches the token guard): the Convex insert accepts empty `name`/`domain`
+    // strings, so a bypassed/edited client could otherwise persist an unroutable, nameless shop. The UI
+    // already gates on these, but the server must not trust the client.
+    if (!name) {
+        return { ok: false, error: 'A shop name is required.' };
+    }
+    if (!isValidHostname(domain)) {
+        return { ok: false, error: 'Enter a valid customer-facing domain.' };
+    }
     const accents = input.branding
         ? [
               {
@@ -1423,8 +1444,11 @@ export function NewShopWizard({ serviceDomain }: NewShopWizardProps): React.JSX.
     const [locale, setLocale] = useState(DEFAULT_SHOP_LOCALE);
     const [domainStatus, setDomainStatus] = useState<DomainStatus>('idle');
 
-    // Connect
-    const [providerType] = useState<(typeof PROVIDER_ORDER)[number]>('shopify');
+    // Connect — the registry order is the single source of truth for the default provider. The connect
+    // STEP is registry-driven (renders the selected provider's ConnectForm); a multi-provider PICKER is a
+    // follow-up for when a second provider lands. `?? 'shopify'` keeps the lookup total under
+    // noUncheckedIndexedAccess.
+    const [providerType] = useState<(typeof PROVIDER_ORDER)[number]>(PROVIDER_ORDER[0] ?? 'shopify');
     const [connectValues, setConnectValues] = useState<Record<string, string>>({});
     const [connectionOk, setConnectionOk] = useState(false);
 
@@ -1831,3 +1855,14 @@ Every code step contains complete code; every command step contains the exact co
 | 7 | minor | Collaborator-id invariant (`SHOP_WRITE_INVALID_COLLABORATOR`) coverage gap noted; Task 9 manual e2e covers it; optional follow-up integration test flagged (Task 4). |
 | 8 | minor | `registry.test.tsx` asserts the real Shopify entry (label, id, `ConnectForm`) and order (Task 6). |
 | 9 | minor | JSDoc added to the internal hook callbacks `update`/`runTest` (Task 5) and `onDomainBlur`/`submit` (Task 7). |
+
+**5. Execution outcomes & final-review hardening**
+
+Executed task-by-task via subagent-driven development. Three plan defects surfaced during execution and were folded back in: the dynamic `redirect(...)` needed `as Route` (Task 4); component tests must render via `@/utils/test/react`, not `@testing-library/react` (Tasks 5–8); and a `getByText(/connect/i)` assertion matched 3 elements → narrowed to `/connect shopify/i` (Task 7). A final whole-branch code review found **no Critical issues** and two cheap Important items, both landed:
+
+| # | Item | Fix |
+|---|---|---|
+| A | `createShop` trusted `domain`/`name` while re-validating the token — asymmetric defense in depth | Added symmetric `!name` and `!isValidHostname(domain)` guards + two tests (Task 4). |
+| B | `PROVIDER_ORDER`'s runtime value was dead (wizard hardcoded `'shopify'`); the "no wizard edits" extensibility claim overstated | `providerType` now initializes from `PROVIDER_ORDER[0]`; registry docstrings corrected to scope the claim to the registry-driven connect step (a multi-provider picker is a follow-up) (Tasks 6, 7). |
+
+**Final gate (whole branch):** `pnpm test --project @nordcom/commerce-admin` → 66 files / 290 tests pass, 0 fail. `pnpm typecheck` clean. `pnpm lint` clean on feature files. `pnpm build --filter @nordcom/commerce-admin` compiles with `/new` in the route table.
