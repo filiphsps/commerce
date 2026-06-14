@@ -96,5 +96,20 @@ describe('components', () => {
             expect(link?.getAttribute('href')).toBe(href);
             //expect(link).toMatchSnapshot();
         });
+
+        it('normalizes an external `URL` object `href` to its string form', () => {
+            const href = new URL('https://example.com/some/path');
+            const { container } = render(<Link href={href as any} />);
+            const link = container.querySelector('a');
+            expect(link).not.toBeNull();
+            expect(link?.getAttribute('href')).toBe('https://example.com/some/path');
+        });
+
+        it('normalizes an internal `URL` object `href` and injects the locale', () => {
+            const href = new URL('https://staging.storefront.localhost/some/path');
+            const { container } = render(<Link href={href as any} />);
+            const link = container.querySelector('a');
+            expect(link?.getAttribute('href')).toBe('/en-US/some/path');
+        });
     });
 });

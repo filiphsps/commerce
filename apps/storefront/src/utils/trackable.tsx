@@ -152,7 +152,6 @@ const shopifyEventHandler = async (
     // Shopify only supports a subset of events.
     if (event !== 'page_view' && event !== 'add_to_cart') {
         throw new TodoError();
-        // TODO:.type shouldn't be considered a literal.
     } else if (shop.commerceProvider.type !== 'shopify') {
         throw new TodoError('shopifyEventHandler() called for non-Shopify shop.');
     }
@@ -347,7 +346,15 @@ const handleEvent = async (
         case 'shopify': {
             try {
                 await shopifyEventHandler(event, data, { shop, currency, locale, shopify, cart });
-            } catch {} // TODO: Handle errors properly.
+            } catch (error: unknown) {
+                // shopifyEventHandler throws TodoError for events Shopify's sink doesn't model
+                // (anything but page_view/add_to_cart) — that's expected; only surface real failures.
+                if (!(error instanceof TodoError)) {
+                    console.error(
+                        `Error in shopifyEventHandler for "${event}": ${error instanceof Error ? error.message : String(error)}`,
+                    );
+                }
+            }
             break;
         }
     }

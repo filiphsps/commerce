@@ -1,7 +1,12 @@
 import 'server-only';
 
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
-import { InvalidHandleError, ProviderFetchError, TodoError, UnreachableError } from '@nordcom/commerce-errors';
+import {
+    ConflictingFilterError,
+    InvalidHandleError,
+    ProviderFetchError,
+    UnreachableError,
+} from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
 import type {
     CollectionEdge,
@@ -35,7 +40,7 @@ type CollectionsFilters = {
  * @param filters - Pagination filter; may carry `limit`, `first`, or `last`.
  * @param defaultLimit - Fallback item count when no limit is specified; defaults to `30`.
  * @returns An object with `first`, `last`, or both, matching Shopify's cursor-pagination args.
- * @throws {TodoError} When both `limit` and `first`/`last` are provided simultaneously.
+ * @throws {ConflictingFilterError} When `limit` is combined with `first`/`last`, or `first` and `last` are provided together.
  * @throws {UnreachableError} When the switch exhausts all cases without returning — indicates a caller passed a `LimitFilters` shape not covered by the current branches.
  */
 // TODO: This should be generic.
@@ -65,7 +70,7 @@ export const extractLimitLikeFilters = (
 
         case 'limit' in filters:
             if ('first' in filters || 'last' in filters) {
-                throw new TodoError(); // TODO: Add ErrorCode and Error for this.
+                throw new ConflictingFilterError('`limit` cannot be combined with `first`/`last`');
             }
             return {
                 first: filters.limit || defaultLimit,
@@ -73,7 +78,7 @@ export const extractLimitLikeFilters = (
 
         case 'first' in filters || 'last' in filters:
             if (typeof filters.first === 'number' && typeof filters.last === 'number') {
-                throw new TodoError(); // TODO: Add ErrorCode and Error for this.
+                throw new ConflictingFilterError('`first` and `last` cannot be combined');
             }
             return {
                 first: filters.first || null,
