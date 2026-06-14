@@ -20,6 +20,7 @@
  * drift in CI.
  */
 import { FONT_FAMILIES } from '@nordcom/commerce-db/lib/theme';
+import { CURRENCY_CODES } from '../../src/constants/currencies';
 import {
     arrayField,
     checkboxField,
@@ -578,11 +579,12 @@ const shopsShape: ContentCollectionShape = {
                 { name: 'processingTimeInDays', type: 'number', defaultValue: 5 },
                 { name: 'productsPerPage', type: 'number' },
                 { name: 'geoRedirectDismissalHours', type: 'number' },
+                { name: 'currency', type: 'select', options: [...CURRENCY_CODES] },
                 {
                     name: 'freeShippingThresholds',
                     type: 'array',
                     fields: [
-                        { name: 'currencyCode', type: 'text', required: true },
+                        { name: 'currencyCode', type: 'select', options: [...CURRENCY_CODES], required: true },
                         { name: 'amount', type: 'number', required: true },
                     ],
                 },

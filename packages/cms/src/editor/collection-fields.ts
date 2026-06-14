@@ -1,4 +1,5 @@
 import { allBlockDescriptors } from '../blocks';
+import { CURRENCY_CODES } from '../constants/currencies';
 import {
     arrayField,
     blocksField,
@@ -103,9 +104,18 @@ const shopsFields: FieldDescriptor[] = [
             numberField({ name: 'processingTimeInDays', defaultValue: 5 }),
             numberField({ name: 'productsPerPage' }),
             numberField({ name: 'geoRedirectDismissalHours' }),
+            selectField({ name: 'currency', options: CURRENCY_CODES.map((code) => ({ label: code, value: code })) }),
             arrayField({
                 name: 'freeShippingThresholds',
-                fields: [required(textField({ name: 'currencyCode' })), required(numberField({ name: 'amount' }))],
+                fields: [
+                    required(
+                        selectField({
+                            name: 'currencyCode',
+                            options: CURRENCY_CODES.map((code) => ({ label: code, value: code })),
+                        }),
+                    ),
+                    required(numberField({ name: 'amount' })),
+                ],
             }),
         ],
     }),

@@ -60,15 +60,16 @@ const shopI18nValidator = v.object({
 /**
  * Storefront commerce tuning, mirroring `ShopBase['commerce']`: the optional cart `maxQuantity` cap,
  * `processingTimeInDays` estimate, catalog `productsPerPage`, `geoRedirectDismissalHours` banner TTL,
- * and the per-currency `freeShippingThresholds` messaging list. The threshold rows store no `id`
- * (mirroring {@link accentTokenValidator}): the codegen content-type's `id?` is a read-only artifact
- * the upsert strips before write.
+ * the default presentment `currency`, and the per-currency `freeShippingThresholds` messaging list.
+ * The threshold rows store no `id` (mirroring {@link accentTokenValidator}): the codegen
+ * content-type's `id?` is a read-only artifact the upsert strips before write.
  */
 const shopCommerceValidator = v.object({
     maxQuantity: v.optional(v.number()),
     processingTimeInDays: v.optional(v.number()),
     productsPerPage: v.optional(v.number()),
     geoRedirectDismissalHours: v.optional(v.number()),
+    currency: v.optional(v.string()),
     freeShippingThresholds: v.optional(v.array(v.object({ currencyCode: v.string(), amount: v.number() }))),
 });
 

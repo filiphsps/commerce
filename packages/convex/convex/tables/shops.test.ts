@@ -28,6 +28,7 @@ const fullShop = {
         processingTimeInDays: 5,
         productsPerPage: 24,
         geoRedirectDismissalHours: 48,
+        currency: 'USD',
         freeShippingThresholds: [
             { currencyCode: 'USD', amount: 75 },
             { currencyCode: 'EUR', amount: 70 },
@@ -61,6 +62,10 @@ const fullShop = {
 
 describe('shopValidator', () => {
     it('validates a unified ShopBase fixture', () => {
+        expect(validate(shopValidator, fullShop)).toBe(true);
+    });
+
+    it('accepts a per-shop default currency', () => {
         expect(validate(shopValidator, fullShop)).toBe(true);
     });
 

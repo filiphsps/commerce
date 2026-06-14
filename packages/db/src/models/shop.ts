@@ -152,6 +152,7 @@ export interface ShopBase extends BaseDocument {
         processingTimeInDays?: number;
         productsPerPage?: number;
         geoRedirectDismissalHours?: number;
+        currency?: string;
         freeShippingThresholds?: { currencyCode: string; amount: number }[];
     };
 
