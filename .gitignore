@@ -32,6 +32,7 @@ apps/docs/content/*/meta.json
 # when no deployment is configured. The generated `_generated/` types ARE
 # committed, but local backend state and per-package .env.local must not be.
 .convex/
+.convex-local/
 packages/convex/.env.local
 .bak
 docs/superpowers/
