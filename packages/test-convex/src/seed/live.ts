@@ -362,5 +362,27 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
         mediaFixtures.map((m) => ({ shop: shopId, ...m, createdAt: now, updatedAt: now })),
     );
 
+    // Minimal second tenant — a distinct legacyId + single domain so multi-tenant routing is exercised.
+    const minimal = buildCanonicalShopFixture({
+        domain: 'minimal-demo.com',
+        name: 'Minimal Demo',
+        legacyId: 'b1b2c3d4e5f6b1b2c3d4e5f6',
+        alternativeDomains: [],
+    });
+    const minimalExisting = (await client.query(shopByDomainRef, {
+        serverSecret,
+        domain: 'minimal-demo.com',
+    })) as LiveShopView;
+    if (!minimalExisting) {
+        const { legacyId: minimalLegacyId, ...minimalShop } = minimal.shop;
+        await client.mutation(shopUpsertRef, {
+            serverSecret,
+            legacyId: minimalLegacyId,
+            upsert: true,
+            shop: minimalShop,
+            credentials: minimal.credentials,
+        });
+    }
+
     return shopId;
 }

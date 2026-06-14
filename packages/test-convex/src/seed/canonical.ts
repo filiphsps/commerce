@@ -42,6 +42,33 @@ export async function seedCanonicalMutation(ctx: MutationCtx, opts: SeedCanonica
     await seedCollaboratorsMutation(ctx, shopId);
     await seedReviewsMediaMutation(ctx, shopId);
     await seedVersionsMutation(ctx, shopId);
+
+    // Minimal second tenant — proves hostname→shop isolation. Shop + credentials + one domain, plus a
+    // single admin link (the owner user). No CMS/reviews/media/version corpus of its own.
+    const minimalShopId = await seedShopMutation(ctx, {
+        domain: 'minimal-demo.com',
+        name: 'Minimal Demo',
+        legacyId: 'b1b2c3d4e5f6b1b2c3d4e5f6',
+        alternativeDomains: [],
+    });
+    const minimalOwner = await ctx.db
+        .query('users')
+        .withIndex('by_email', (q) => q.eq('email', 'owner@nordcom-demo-shop.com'))
+        .unique();
+    if (minimalOwner) {
+        const link = await ctx.db
+            .query('shopCollaborators')
+            .withIndex('by_shop_user', (q) => q.eq('shop', minimalShopId).eq('user', minimalOwner._id))
+            .unique();
+        if (!link) {
+            await ctx.db.insert('shopCollaborators', {
+                shop: minimalShopId,
+                user: minimalOwner._id,
+                permissions: ['admin'],
+            });
+        }
+    }
+
     return shopId;
 }
 

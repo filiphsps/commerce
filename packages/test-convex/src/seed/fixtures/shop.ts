@@ -71,6 +71,10 @@ export interface CanonicalShopFixtureOptions {
     domain?: string;
     /** Override the display name (also used as the logo/favicon `alt` text). */
     name?: string;
+    /** Override the preserved `legacyId` so a second seeded tenant does not collide with the canonical one. */
+    legacyId?: string;
+    /** Override the alternative-domain list (pass `[]` for a single-domain minimal tenant). */
+    alternativeDomains?: string[];
 }
 
 /**
@@ -91,15 +95,16 @@ export interface CanonicalShopFixtureOptions {
 export function buildCanonicalShopFixture(opts: CanonicalShopFixtureOptions = {}): CanonicalShopFixture {
     const domain = opts.domain ?? DEFAULT_SHOP_DOMAIN;
     const name = opts.name ?? DEFAULT_SHOP_NAME;
+    const alternativeDomains = opts.alternativeDomains ?? [...ALTERNATIVE_DOMAINS];
 
     return {
         shop: {
-            legacyId: DEFAULT_SHOP_LEGACY_ID,
+            legacyId: opts.legacyId ?? DEFAULT_SHOP_LEGACY_ID,
             name,
             description:
                 'A small Stockholm studio building clothing meant to be kept. Free returns within 30 days; lifetime repair guarantee on every garment.',
             domain,
-            alternativeDomains: [...ALTERNATIVE_DOMAINS],
+            alternativeDomains,
             i18n: { defaultLocale: 'en-US' },
             commerce: { maxQuantity: 25, processingTimeInDays: 3 },
             showProductVendor: true,
@@ -124,6 +129,6 @@ export function buildCanonicalShopFixture(opts: CanonicalShopFixtureOptions = {}
             thirdParty: { googleTagManager: 'GTM-DEMO123', intercom: 'demo-intercom-app-id' },
         },
         credentials: { token: 'test-token' },
-        domains: [domain, ...ALTERNATIVE_DOMAINS],
+        domains: [domain, ...alternativeDomains],
     };
 }
