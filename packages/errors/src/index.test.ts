@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
     ApiErrorKind,
+    DomainVerificationError,
     DuplicatePredicateRegistrationError,
     DuplicateWorkspaceSlugError,
     EmptyTenantScopeError,
@@ -369,5 +370,20 @@ describe('UnknownShopDomainError', () => {
     });
     it('is reachable through getErrorFromCode', () => {
         expect(getErrorFromCode(ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN)).toBe(UnknownShopDomainError);
+    });
+});
+
+describe('DomainVerificationError', () => {
+    it('carries the domain-verification code and a 422 status', () => {
+        const error = new DomainVerificationError('shop.acme.com is not pointed at the platform yet.');
+        expect(error.code).toBe(ApiErrorKind.API_DOMAIN_VERIFICATION_FAILED);
+        expect(error.statusCode).toBe(422);
+        expect(error.name).toBe('DomainVerificationError');
+        expect(error instanceof DomainVerificationError).toBe(true);
+    });
+
+    it('is resolvable from its code', () => {
+        const resolved = getErrorFromCode(ApiErrorKind.API_DOMAIN_VERIFICATION_FAILED);
+        expect(resolved).toBe(DomainVerificationError);
     });
 });

@@ -173,6 +173,7 @@ export enum ApiErrorKind {
     API_MISSING_REQUIRED_FIELD = 'API_MISSING_REQUIRED_FIELD',
     API_UNSUPPORTED_UPLOAD_MIME_TYPE = 'API_UNSUPPORTED_UPLOAD_MIME_TYPE',
     API_MEDIA_STORAGE_UPLOAD_FAILED = 'API_MEDIA_STORAGE_UPLOAD_FAILED',
+    API_DOMAIN_VERIFICATION_FAILED = 'API_DOMAIN_VERIFICATION_FAILED',
 }
 
 /**
@@ -498,6 +499,24 @@ export class TooManyRequestsError extends ApiError {
     details = 'Too many requests';
     description = 'You are being rate limited';
     code = ApiErrorKind.API_TOO_MANY_REQUESTS;
+}
+
+/**
+ * A customer-facing domain is not yet pointed at the platform: neither the storefront's Vercel
+ * project nor `SERVICE_DOMAIN` resolves from its DNS records (or the Vercel verification has not
+ * completed). Recoverable — the operator fixes DNS and re-runs the check.
+ *
+ * @example
+ * ```ts
+ * throw new DomainVerificationError('No A or CNAME record points shop.acme.com at the platform.');
+ * ```
+ */
+export class DomainVerificationError extends ApiError {
+    statusCode = 422;
+    name = 'DomainVerificationError';
+    details = 'Domain verification failed';
+    description = 'The domain does not yet point at the platform.';
+    code = ApiErrorKind.API_DOMAIN_VERIFICATION_FAILED;
 }
 
 /**
@@ -1518,6 +1537,8 @@ export const getErrorFromCode = (
         // Api Errors.
         case ApiErrorKind.API_UNKNOWN_ERROR:
             return UnknownError;
+        case ApiErrorKind.API_DOMAIN_VERIFICATION_FAILED:
+            return DomainVerificationError;
         case ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN:
             return UnknownShopDomainError as unknown as typeof ApiError;
         case ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER:
