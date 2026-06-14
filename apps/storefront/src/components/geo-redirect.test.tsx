@@ -26,6 +26,7 @@ vi.mock('@/utils/build-config', () => ({
         shopify: { storefront_id: 'mock-id' },
     },
     FLAG_IMAGES_BASE_URL: 'https://flags.test',
+    COMMERCE_DEFAULTS: { maxQuantity: 199_999, processingTimeInDays: 5, geoRedirectDismissalHours: 24 },
 }));
 
 vi.mock('react-ipgeolocation', () => ({
@@ -215,5 +216,34 @@ describe('<GeoRedirect>', () => {
 
         expect(setCookie).toHaveBeenCalledWith('localization', 'sv-SE');
         expect(setCookie).toHaveBeenCalledWith('NEXT_LOCALE', 'sv-SE');
+    });
+
+    it('keeps the banner hidden within the shop-configured dismissal TTL', async () => {
+        const now = 1_700_000_000_000;
+        const dateSpy = vi.spyOn(Date, 'now').mockReturnValue(now);
+        localStorage.setItem('geo-redirect-banner-dismissed', String(now - 30 * 60 * 60 * 1000));
+        const ttlShop = { ...shop, commerce: { ...shop.commerce, geoRedirectDismissalHours: 48 } };
+
+        const { container } = render(
+            <GeoRedirect countries={countries} locale={usLocale} shop={ttlShop} i18n={i18n} />,
+        );
+        await flushEffects();
+
+        // 30h-old dismissal is still within the 48h TTL, so the banner stays hidden.
+        expect(container.firstChild).toBeNull();
+        dateSpy.mockRestore();
+    });
+
+    it('re-shows the banner once the dismissal is older than the default TTL', async () => {
+        const now = 1_700_000_000_000;
+        const dateSpy = vi.spyOn(Date, 'now').mockReturnValue(now);
+        localStorage.setItem('geo-redirect-banner-dismissed', String(now - 30 * 60 * 60 * 1000));
+
+        const { container } = render(<GeoRedirect countries={countries} locale={usLocale} shop={shop} i18n={i18n} />);
+        await flushEffects();
+
+        // No shop override → default 24h TTL → a 30h-old dismissal has expired, banner renders.
+        expect(container.textContent).toContain('Sweden');
+        dateSpy.mockRestore();
     });
 });

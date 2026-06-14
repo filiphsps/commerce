@@ -10,6 +10,7 @@ import useGeoLocation from 'react-ipgeolocation';
 import { Button } from '@/components/actionable/button';
 import { LocaleCountryName, LocaleFlag } from '@/components/informational/locale-flag';
 import Link from '@/components/link';
+import { COMMERCE_DEFAULTS } from '@/utils/build-config';
 import { getDictionary } from '@/utils/dictionary';
 import { isCrawler } from '@/utils/is-crawler';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -25,9 +26,11 @@ const getNavigatorLanguage = () => (navigator.language.split('-').at(0) || 'en')
 /** Snapshot selector that exposes `navigator.userAgent` to `useSyncExternalStore` for crawler detection. */
 const getUserAgent = () => navigator.userAgent;
 /**
- * Reads and validates the geo-redirect banner dismissal timestamp from localStorage.
+ * Reads the raw geo-redirect banner dismissal timestamp (epoch ms) from localStorage. Expiry is
+ * decided by the caller against the shop's configured TTL, so this stays a stable
+ * `useSyncExternalStore` snapshot with no side effects.
  *
- * @returns The stored dismissal timestamp, or `null` when absent, invalid, or older than 24 hours.
+ * @returns The stored dismissal timestamp, or `null` when absent or unparseable.
  */
 const readStoredDismissed = (): number | null => {
     if (typeof localStorage === 'undefined') {
@@ -40,18 +43,7 @@ const readStoredDismissed = (): number | null => {
     }
 
     const value = Number.parseInt(stored, 10);
-    if (!value) {
-        return null;
-    }
-
-    // FIXME: Make this configurable.
-    // Check if dismissed is more than 1 days ago.
-    if (value < Date.now() - 1000 * 60 * 60 * 24 * 1) {
-        localStorage.removeItem(DISMISSED_KEY);
-        return null;
-    }
-
-    return value;
+    return value || null;
 };
 
 export type GeoRedirectProps = {
@@ -80,6 +72,18 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
     );
     const userAgent = useSyncExternalStore<string | undefined>(subscribeToNothing, getUserAgent, () => undefined);
     const dismissed = useSyncExternalStore<number | null>(subscribeToNothing, readStoredDismissed, () => null);
+
+    // Expiry is computed here (not in the snapshot) because the configurable TTL lives on the shop
+    // record, which the module-level snapshot can't see.
+    const dismissalTtlMs =
+        (shop.commerce?.geoRedirectDismissalHours ?? COMMERCE_DEFAULTS.geoRedirectDismissalHours) * 60 * 60 * 1000;
+    const dismissalActive = dismissed != null && dismissed >= Date.now() - dismissalTtlMs;
+
+    useEffect(() => {
+        if (dismissed != null && !dismissalActive && typeof localStorage !== 'undefined') {
+            localStorage.removeItem(DISMISSED_KEY);
+        }
+    }, [dismissed, dismissalActive]);
 
     const pathname = `/${usePathname().split('/').slice(2).join('/')}`;
     const searchParams = useSearchParams();
@@ -137,7 +141,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
     }, [location, i18n, targetLocale, navigatorLanguage, shop]);
 
     if (
-        dismissed ||
+        dismissalActive ||
         closed ||
         !location.country ||
         location.country === locale.country ||
