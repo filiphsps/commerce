@@ -99,6 +99,18 @@ describe('createShop', () => {
         });
     });
 
+    it('refuses an empty/whitespace name (defense in depth)', async () => {
+        const result = await createShop({ ...baseInput, name: '   ' });
+        expect(result).toEqual({ ok: false, error: 'A shop name is required.' });
+        expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    it('refuses an invalid customer-facing domain (defense in depth)', async () => {
+        const result = await createShop({ ...baseInput, domain: 'localhost' });
+        expect(result).toEqual({ ok: false, error: 'Enter a valid customer-facing domain.' });
+        expect(mockCreate).not.toHaveBeenCalled();
+    });
+
     it('refuses a Shopify connection with an empty private token (defense in depth)', async () => {
         const result = await createShop({
             ...baseInput,

@@ -3,7 +3,7 @@
 import { Button, Card, Heading, Input, Label } from '@nordcom/nordstar';
 import { useCallback, useState } from 'react';
 
-import { COMMERCE_PROVIDERS, type PROVIDER_ORDER } from '@/lib/commerce-providers/registry';
+import { COMMERCE_PROVIDERS, PROVIDER_ORDER } from '@/lib/commerce-providers/registry';
 import { DEFAULT_SHOP_LOCALE } from '@/lib/new-shop/defaults';
 import type { CreateShopInput } from '@/lib/new-shop/types';
 import { isValidHostname, isValidLocale } from '@/lib/new-shop/validation';
@@ -45,7 +45,7 @@ export function NewShopWizard({ serviceDomain }: NewShopWizardProps): React.JSX.
     const [domainStatus, setDomainStatus] = useState<DomainStatus>('idle');
 
     // Connect
-    const [providerType] = useState<(typeof PROVIDER_ORDER)[number]>('shopify');
+    const [providerType] = useState<(typeof PROVIDER_ORDER)[number]>(PROVIDER_ORDER[0] ?? 'shopify');
     const [connectValues, setConnectValues] = useState<Record<string, string>>({});
     const [connectionOk, setConnectionOk] = useState(false);
 
