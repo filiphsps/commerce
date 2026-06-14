@@ -26,8 +26,9 @@ import { ShopifyContent } from '@/components/typography/shopify-content';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
+import { collectionPageSize } from '@/utils/page-size';
 import { checkAndHandleRedirect } from '@/utils/redirect';
-import { CollectionContent, collectionPageSize } from './collection-content';
+import { CollectionContent } from './collection-content';
 import type { CollectionPageParams } from './static-params';
 
 export { type CollectionPageParams, generateStaticParams } from './static-params';

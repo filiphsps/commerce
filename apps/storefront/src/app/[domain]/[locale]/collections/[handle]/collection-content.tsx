@@ -5,28 +5,7 @@ import { Suspense } from 'react';
 import CollectionBlock from '@/components/products/collection-block';
 
 import type { Locale } from '@/utils/locale';
-import { clampPageSize } from '@/utils/page-size';
-
-/**
- * Default collection page size when the shop sets no `commerce.productsPerPage`
- * override. Per-request `?limit=` is intentionally unsupported — it would
- * invalidate the parent's precomputed cursor array and page count.
- */
-export const PRODUCTS_PER_PAGE = 21 as const;
-
-/**
- * Resolves the effective collection page size for a shop: the per-shop
- * `commerce.productsPerPage` override clamped to Shopify's bounds, or
- * {@link PRODUCTS_PER_PAGE} when unset. The parent count precompute and the
- * content fetch MUST call this with the same shop so their `first` agree —
- * a mismatch breaks the cursor math.
- *
- * @param shop - The tenant shop carrying the optional `commerce.productsPerPage`.
- * @returns The page size to pass as the Shopify connection `first` argument.
- */
-export function collectionPageSize(shop: OnlineShop): number {
-    return clampPageSize(shop.commerce?.productsPerPage ?? PRODUCTS_PER_PAGE);
-}
+import { collectionPageSize } from '@/utils/page-size';
 
 type SearchParams = {
     page?: string;
