@@ -34,6 +34,8 @@ These are locked. Do not re-litigate them while implementing.
 - **Auth in server actions:** `import { auth } from '@/auth'`; `const session = await auth(); session?.user?.id`. The id is set in the JWT callback (`apps/admin/src/utils/auth.ts:45`).
 - **nordstar exports available:** `Accented, Button, Card, Details, Header, Heading, Input, Label, NordstarProvider, View`. **No `Select`/`Form`** — use a native `<select>`/`<input type="color">` where needed.
 - **The bare-`Error` constructor is hook-blocked.** A `block-new-error` hook (`.claude/hookify.block-new-error.local.md`, pattern `new\s+Error\s*\(`) blocks any file write that constructs a bare `Error` — TEST files included. Production code throws `@nordcom/commerce-errors` classes (already the convention). Test mocks needing a throwable sentinel use a built-in `Error` subclass instead — this plan uses `new RangeError(...)` (still `instanceof Error`, so `error.message` and `expect(...).toThrow('msg')` hold). Never construct a bare `Error` anywhere, tests included.
+- **Component tests render via `@/utils/test/react`, NOT `@testing-library/react`** (verified during execution). The admin uses happy-dom with a global-registrator setup (`vitest.setup.ts`); `@/utils/test/react` re-exports Testing Library and overrides `render`/`screen` to bind to the registered `document.body`. Importing those straight from `@testing-library/react` mounts nothing (empty `<body />`) and every query fails. Canonical example: `apps/admin/src/utils/test/react.test.tsx`.
+- **Dynamic `redirect(...)` needs `as Route`** (verified). Admin has Next typed routes on, so `redirect(`/${x}/`)` isn't assignable to the typed-route union — cast `as Route` (`import type { Route } from 'next'`), the repo's existing convention for dynamic-domain redirects.
 - **Changeset:** `apps/admin` is `@nordcom/commerce-admin`, matched by the `@nordcom/*` ignore entry in `.changeset/config.json`. **No changeset required.**
 - **Commands:** `pnpm test --project @nordcom/commerce-admin` (Vitest), `pnpm typecheck` (tsc), `pnpm lint` (Biome). Call `mcp__next-devtools__init` before Next.js work. In a fresh checkout run `pnpm build:packages` first.
 
@@ -783,6 +785,7 @@ import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error as CommerceError } from '@nordcom/commerce-errors';
+import type { Route } from 'next';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -883,7 +886,10 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
     }
 
     revalidatePath('/');
-    redirect(`/${createdDomain}/`);
+    // `as Route`: admin has Next typed routes enabled, so a dynamic `/${string}/` template isn't
+    // assignable to the typed-route union — the same cast the repo already uses for dynamic-domain
+    // redirects (e.g. `[domain]/settings/media/new/page.tsx`). Type-only; no runtime effect.
+    redirect(`/${createdDomain}/` as Route);
 }
 ```
 
@@ -914,7 +920,7 @@ git commit -m "feat(admin): add new-shop server actions for domain check and sho
 Create `apps/admin/src/lib/commerce-providers/shopify/connect-form.test.tsx`:
 
 ```tsx
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@/utils/test/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const { mockTest } = vi.hoisted(() => ({ mockTest: vi.fn() }));
@@ -1264,7 +1270,7 @@ git commit -m "feat(admin): add commerce-provider UI registry for the connect st
 Create `apps/admin/src/app/(app)/(setup)/new/wizard.test.tsx`:
 
 ```tsx
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@/utils/test/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const { mockCheck, mockCreate } = vi.hoisted(() => ({ mockCheck: vi.fn(), mockCreate: vi.fn() }));
@@ -1323,7 +1329,9 @@ describe('NewShopWizard', () => {
         // Next is disabled before a domain is checked.
         expect((screen.getByRole('button', { name: /^next$/i }) as HTMLButtonElement).disabled).toBe(true);
         await fillBasicsAndAdvance();
-        expect(screen.getByText(/connect/i)).toBeTruthy();
+        // The always-rendered heading ("Connect a new Shop") and step label also contain "connect", so
+        // target the Connect step's unique provider label to confirm we advanced.
+        expect(screen.getByText(/connect shopify/i)).toBeTruthy();
     });
 
     it('walks the full happy path and calls createShop (skipping branding)', async () => {
@@ -1643,7 +1651,7 @@ git commit -m "feat(admin): add the multi-step connect-a-new-shop wizard compone
 Create `apps/admin/src/app/(app)/(setup)/new/page.test.tsx`:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/utils/test/react';
 import { describe, expect, it, vi } from 'vitest';
 
 const { mockAuth, mockRedirect } = vi.hoisted(() => ({
