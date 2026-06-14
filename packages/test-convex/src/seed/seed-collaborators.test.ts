@@ -41,7 +41,8 @@ describe('seeded collaborators', () => {
         await t.run((ctx) => seedCanonicalMutation(asSeedCtx(ctx)));
         const users = await t.run((ctx) => ctx.db.query('users').collect());
         expect(users.length).toBe(3);
+        // 3 tiers on the advanced shop + the owner's admin link on the minimal shop.
         const links = await t.run((ctx) => ctx.db.query('shopCollaborators').collect());
-        expect(links.length).toBe(3);
+        expect(links.length).toBe(4);
     });
 });

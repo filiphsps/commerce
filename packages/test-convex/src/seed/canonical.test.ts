@@ -76,9 +76,10 @@ describe('seedCanonicalMutation', () => {
         const shopId = await t.run((ctx) => seedCanonicalMutation(asSeedCtx(ctx)));
 
         expect(await tableCounts(t)).toEqual({
-            shops: 1,
-            shopCredentials: 1,
-            shopDomains: 3,
+            // The advanced tenant PLUS the minimal second tenant (one domain, its own credentials).
+            shops: 2,
+            shopCredentials: 2,
+            shopDomains: 4,
             header: 1,
             footer: 1,
             businessData: 1,
@@ -144,7 +145,8 @@ describe('seedCanonicalMutation', () => {
 
         expect(shopId).toBe(preSeeded);
         const counts = await tableCounts(t);
-        expect(counts.shops).toBe(1);
+        // The advanced tenant (pre-seeded) gains its CMS corpus; the minimal tenant is also seeded.
+        expect(counts.shops).toBe(2);
         expect(counts.pages).toBe(pageFixtures.length);
         expect(counts.articles).toBe(articleFixtures.length);
         expect(counts.featureFlags).toBe(featureFlagFixtures.length);
