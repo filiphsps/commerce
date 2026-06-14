@@ -46,6 +46,12 @@ describe('checkDomainAvailability', () => {
 });
 
 describe('createShop', () => {
+    beforeEach(() => {
+        // Default: the target domain is free (findByDomain not-found), so the availability re-check passes.
+        mockFindByDomain.mockRejectedValue(new RangeError('not found'));
+        mockIsNotFound.mockReturnValue(true);
+    });
+
     const baseInput = {
         name: '  Acme  ',
         domain: 'https://shop.acme.com/',
@@ -108,6 +114,22 @@ describe('createShop', () => {
     it('refuses an invalid customer-facing domain (defense in depth)', async () => {
         const result = await createShop({ ...baseInput, domain: 'localhost' });
         expect(result).toEqual({ ok: false, error: 'Enter a valid customer-facing domain.' });
+        expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    it('refuses a domain already in use (defense in depth)', async () => {
+        mockFindByDomain.mockResolvedValue({ domain: 'shop.acme.com' });
+        mockIsNotFound.mockReturnValue(false);
+        const result = await createShop(baseInput);
+        expect(result).toEqual({ ok: false, error: 'That domain is already in use.' });
+        expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    it('returns a friendly error when availability cannot be verified', async () => {
+        mockFindByDomain.mockRejectedValue(new RangeError('transport down'));
+        mockIsNotFound.mockReturnValue(false);
+        const result = await createShop(baseInput);
+        expect(result).toEqual({ ok: false, error: 'Could not verify the domain — please try again.' });
         expect(mockCreate).not.toHaveBeenCalled();
     });
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Card, Heading, Input, Label } from '@nordcom/nordstar';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { COMMERCE_PROVIDERS, PROVIDER_ORDER } from '@/lib/commerce-providers/registry';
 import { DEFAULT_SHOP_LOCALE } from '@/lib/new-shop/defaults';
@@ -43,6 +43,12 @@ export function NewShopWizard({ serviceDomain }: NewShopWizardProps): React.JSX.
     const [domain, setDomain] = useState('');
     const [locale, setLocale] = useState(DEFAULT_SHOP_LOCALE);
     const [domainStatus, setDomainStatus] = useState<DomainStatus>('idle');
+    /**
+     * Monotonic id for the in-flight domain availability check. Bumped when a check starts and on every
+     * domain edit, so a slow response for a since-changed domain is discarded instead of marking the
+     * current (unchecked) value available — the only client guard against submitting a taken domain.
+     */
+    const domainCheckSeq = useRef(0);
 
     // Connect
     const [providerType] = useState<(typeof PROVIDER_ORDER)[number]>(PROVIDER_ORDER[0] ?? 'shopify');
@@ -69,8 +75,13 @@ export function NewShopWizard({ serviceDomain }: NewShopWizardProps): React.JSX.
             setDomainStatus('invalid');
             return;
         }
+        const seq = ++domainCheckSeq.current;
         setDomainStatus('checking');
         const { available } = await checkDomainAvailability(domain);
+        // Discard a result the user has already superseded by editing the domain (or re-blurring).
+        if (seq !== domainCheckSeq.current) {
+            return;
+        }
         setDomainStatus(available ? 'available' : 'taken');
     }, [domain]);
 
@@ -121,6 +132,8 @@ export function NewShopWizard({ serviceDomain }: NewShopWizardProps): React.JSX.
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setDomain(e.target.value);
                             setDomainStatus('idle');
+                            // Invalidate any in-flight check so its late result can't mark this edit available.
+                            domainCheckSeq.current++;
                         }}
                         onBlur={onDomainBlur}
                     />

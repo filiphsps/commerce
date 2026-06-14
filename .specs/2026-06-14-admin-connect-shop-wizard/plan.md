@@ -1866,3 +1866,15 @@ Executed task-by-task via subagent-driven development. Three plan defects surfac
 | B | `PROVIDER_ORDER`'s runtime value was dead (wizard hardcoded `'shopify'`); the "no wizard edits" extensibility claim overstated | `providerType` now initializes from `PROVIDER_ORDER[0]`; registry docstrings corrected to scope the claim to the registry-driven connect step (a multi-provider picker is a follow-up) (Tasks 6, 7). |
 
 **Final gate (whole branch):** `pnpm test --project @nordcom/commerce-admin` → 66 files / 290 tests pass, 0 fail. `pnpm typecheck` clean. `pnpm lint` clean on feature files. `pnpm build --filter @nordcom/commerce-admin` compiles with `/new` in the route table.
+
+**6. Post-merge polish pass**
+
+A follow-up review of the merged flow surfaced three issues, all fixed with tests:
+
+| # | Severity | Item | Fix |
+|---|---|---|---|
+| P1 | major | `createShop` re-validated name/domain-format/token but **not domain availability**. `upsertShop` on the create path does not reject a claimed domain — it inserts a fresh `shops` row, then `reconcileDomains` skips the contested hostname (first-match-wins), silently leaving an unroutable orphan shop. A bypassed or raced client could trigger this. | Added a server-side availability re-check (reusing `checkDomainAvailability`) before `Shop.create`, returning `'That domain is already in use.'` (taken) or `'Could not verify the domain — please try again.'` (transport failure). Two tests (`actions.test.ts`). |
+| P2 | major | `onDomainBlur` had a **stale-response race**: editing the domain while a check was in flight, then having the old check resolve `available`, marked the since-changed (unchecked) domain available — defeating the only client-side guard against P1. | Added a monotonic `domainCheckSeq` ref, bumped on check start and on every domain edit; a resolved check whose seq is stale is discarded. One test (`wizard.test.tsx`). |
+| P3 | minor | Next 16 TS plugin warning `[71007]` on `ShopifyConnectForm`: its non-serializable `onChange`/`onTestResult` props were flagged because `registry.tsx` (a server module) imported the client form, making it a server→client boundary entry. | Marked `registry.tsx` `'use client'` (it is client-only UI; `mappers.ts` is the server-safe counterpart). The boundary moves to `wizard.tsx`, whose only prop (`serviceDomain?: string`) is serializable. |
+
+**Polish gate:** `pnpm test --project @nordcom/commerce-admin` → 66 files / 293 tests pass, 0 fail. `pnpm typecheck --filter @nordcom/commerce-admin` clean. `pnpm biome check` clean on changed files. No changeset (admin matches the `@nordcom/*` ignore).

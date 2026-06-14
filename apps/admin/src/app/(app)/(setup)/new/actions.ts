@@ -82,6 +82,20 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
         return { ok: false, error: 'Enter a valid customer-facing domain.' };
     }
 
+    // Defense in depth: re-check availability server-side. The client gates on this, but a bypassed or
+    // raced client could submit a claimed domain — and `upsertShop` does NOT reject one. On the
+    // `Shop.create` path it inserts a fresh shop row, then `reconcileDomains` skips the contested
+    // hostname (first-match-wins), silently leaving an unroutable orphan shop. Fail fast instead.
+    let domainAvailable: boolean;
+    try {
+        ({ available: domainAvailable } = await checkDomainAvailability(domain));
+    } catch {
+        return { ok: false, error: 'Could not verify the domain — please try again.' };
+    }
+    if (!domainAvailable) {
+        return { ok: false, error: 'That domain is already in use.' };
+    }
+
     const accents = input.branding
         ? [
               {

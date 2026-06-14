@@ -81,6 +81,22 @@ describe('NewShopWizard', () => {
         expect(arg.branding).toBeNull();
     });
 
+    it('discards a stale availability result for a since-edited domain', async () => {
+        render(<NewShopWizard />);
+        const domain = screen.getByLabelText('Customer-facing domain');
+        let resolveStale: (value: { available: boolean }) => void = () => {};
+        mockCheck.mockReturnValueOnce(new Promise<{ available: boolean }>((resolve) => (resolveStale = resolve)));
+
+        fireEvent.change(domain, { target: { value: 'first.acme.com' } });
+        fireEvent.blur(domain); // starts the check; result is still pending
+        fireEvent.change(domain, { target: { value: 'second.acme.com' } }); // supersedes it before it resolves
+        resolveStale({ available: true }); // late "available" verdict for the abandoned first domain
+
+        await waitFor(() => expect(screen.queryByText(/is available/i)).toBeNull());
+        // Next stays disabled — the current domain was never confirmed available.
+        expect((screen.getByRole('button', { name: /^next$/i }) as HTMLButtonElement).disabled).toBe(true);
+    });
+
     it('surfaces a createShop failure on the review step', async () => {
         render(<NewShopWizard />);
         await fillBasicsAndAdvance();

@@ -1,3 +1,5 @@
+'use client';
+
 import type { CommerceProviders } from '@nordcom/commerce-db';
 
 import { ShopifyConnectForm } from './shopify/connect-form';
