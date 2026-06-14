@@ -28,6 +28,8 @@ export const shopByDomainRef = makeFunctionReference<'query'>('db/shops:byDomain
 export const shopUpsertRef = makeFunctionReference<'mutation'>('db/shop_write:upsertShop');
 /** Key → flag server query (`db/feature_flags.ts`'s `byKey`) — resolves deployment-issued flag ids. */
 export const featureFlagByKeyRef = makeFunctionReference<'query'>('db/feature_flags:byKey');
+/** Domain verification writer (`db/shop_domain_write.ts`) — stamps seeded domain statuses. */
+export const setDomainVerificationRef = makeFunctionReference<'mutation'>('db/shop_domain_write:setDomainVerification');
 
 /** The narrow `byDomain` result surface the live seed consumes (the wire erases the branded ids). */
 type LiveShopView = { shop: { _id: string; legacyId: string } } | null;
@@ -234,6 +236,18 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
         );
     }
     const shopId = view.shop._id;
+
+    // Stamp the seeded domain verification states. upsertShop's reconcile inserts each domain row as
+    // `pending`; this flips the canonical set to its intended statuses through the shipped mutation.
+    const { CANONICAL_DOMAIN_STATUSES } = await import('./fixtures/shop');
+    for (const entry of CANONICAL_DOMAIN_STATUSES) {
+        await client.mutation(setDomainVerificationRef, {
+            serverSecret,
+            domain: entry.domain,
+            status: entry.status,
+            ...(entry.via ? { via: entry.via } : {}),
+        });
+    }
 
     const now = Date.now();
     const stamp = { createdAt: now, updatedAt: now };

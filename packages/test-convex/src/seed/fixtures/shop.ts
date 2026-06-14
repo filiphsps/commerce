@@ -21,6 +21,23 @@ export const DEFAULT_SHOP_NAME = 'Nordcom Demo Shop';
  */
 const ALTERNATIVE_DOMAINS = ['nordcom.shop', 'demo.nordcom.commerce'] as const;
 
+/** Connection state to stamp on each seeded routing row, exercising the `shopDomain.status` lifecycle. */
+export type SeedDomainStatus = {
+    domain: string;
+    status: 'pending' | 'verified' | 'failed';
+    via?: 'vercel' | 'service_domain' | 'localhost';
+};
+
+/**
+ * The status each seeded domain should carry, so the connect/verify UI and any status-gated logic
+ * have realistic material: the primary + one alternative are `verified`, one is `pending`.
+ */
+export const CANONICAL_DOMAIN_STATUSES: SeedDomainStatus[] = [
+    { domain: DEFAULT_SHOP_DOMAIN, status: 'verified', via: 'service_domain' },
+    { domain: 'nordcom.shop', status: 'verified', via: 'service_domain' },
+    { domain: 'demo.nordcom.commerce', status: 'pending' },
+];
+
 /**
  * The `shops` row payload MINUS the system fields and the managed timestamps the seed mutation stamps at
  * insert time. Typed off the generated `Doc<'shops'>` so the fixture cannot drift from `shopValidator`:

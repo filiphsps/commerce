@@ -2,7 +2,11 @@ import { ConvexError } from 'convex/values';
 
 import type { Id } from '../../../convex/convex/_generated/dataModel';
 import type { MutationCtx } from '../../../convex/convex/_generated/server';
-import { buildCanonicalShopFixture, type CanonicalShopFixtureOptions } from './fixtures/shop';
+import {
+    buildCanonicalShopFixture,
+    CANONICAL_DOMAIN_STATUSES,
+    type CanonicalShopFixtureOptions,
+} from './fixtures/shop';
 
 /**
  * Customization knobs for the shop seed. All fields are optional — defaults produce the canonical
@@ -43,8 +47,14 @@ export async function seedShopMutation(ctx: MutationCtx, opts: SeedShopOptions =
     if (credentials.clientSecret !== undefined) credentialsRow.clientSecret = credentials.clientSecret;
     await ctx.db.insert('shopCredentials', credentialsRow);
 
+    const statusByDomain = new Map(CANONICAL_DOMAIN_STATUSES.map((entry) => [entry.domain, entry]));
     for (const domain of domains) {
-        await ctx.db.insert('shopDomains', { shop: shopId, domain });
+        const status = statusByDomain.get(domain);
+        await ctx.db.insert('shopDomains', {
+            shop: shopId,
+            domain,
+            ...(status ? { status: status.status, ...(status.via ? { via: status.via } : {}) } : {}),
+        });
     }
 
     return shopId;
