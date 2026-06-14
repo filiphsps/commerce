@@ -56,8 +56,14 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     const shop = useShop();
 
     if (typeof href !== 'string') {
-        // TODO: Deal with `URL` as `href`.
-        return null;
+        // Normalize WHATWG `URL` and Node's legacy `Url` objects to their string form; anything
+        // without a usable `href` string is not a navigable target and renders nothing.
+        const normalized = href instanceof URL ? href.href : typeof href.href === 'string' ? href.href : null;
+        if (!normalized) {
+            return null;
+        }
+
+        href = normalized;
     }
 
     // Get the locale if it's not provided to us.
@@ -93,11 +99,11 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
         }
 
         // Check if it's a special url (e.g. `tel:`, `mailto:`, etc)
-        if (!href.startsWith('https://') && !href.startsWith('https://')) {
+        if (!href.startsWith('https://') && !href.startsWith('http://')) {
             return href;
         }
 
-        // TODO: Should we validate that a protocol is provided?
+        // Reached only for absolute `http(s)://` URLs, so a protocol is guaranteed.
         return new URL(href);
     })(href, shop.shop);
 
