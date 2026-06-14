@@ -3,11 +3,11 @@ import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
 import { cacheLife, cacheTag } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
-import { Fragment, Suspense } from 'react';
+import { Suspense } from 'react';
 import { LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { tenantRootTags } from '@/cache';
-import { DeferredAcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
+import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import Heading from '@/components/typography/heading';
@@ -94,7 +94,6 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
     }
 
     const locale = Locale.from(localeData);
-    const shop = await getCartShop(domain);
 
     // Fetched outside any `'use cache'` boundary so updated cart copy is picked
     // up on the next request instead of being frozen for the lifetime of a
@@ -115,13 +114,34 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
                     locale={locale}
                     header={<Heading title={capitalize(t('cart'))} />}
                     i18n={i18n}
-                    paymentMethods={
-                        <Suspense fallback={<Fragment />}>
-                            <DeferredAcceptedPaymentMethods shop={shop} locale={locale} />
-                        </Suspense>
-                    }
+                    paymentMethods={<CartPaymentMethods domain={domain} locale={locale} />}
                 />
             </Suspense>
         </>
     );
+}
+
+/**
+ * Cached accepted-payment-methods row for the cart summary footer.
+ *
+ * The badges flow into the client {@link CartContent} → `CartSidebar` → `CartSummary` tree as a
+ * serialized `paymentMethods` prop. Rendering the privileged payment-settings read inside this
+ * `'use cache'` boundary — instead of a request-time `connection()` defer — is what keeps the
+ * Shopify private token off that boundary: the cache serializes only this component's resolved
+ * icon output, never the tainted token the underlying `ShopifyApiClient` carries. The same
+ * cache-safe contract the footer relies on (see {@link AcceptedPaymentMethods}); a `connection()`
+ * defer here instead leaks the token into the dynamic cart prerender's resume payload.
+ *
+ * @param props.domain - Tenant hostname, resolved to the shop inside the cache boundary.
+ * @param props.locale - Active locale forwarded to the payment-settings client.
+ * @returns The accepted-payment-methods badge row, or `null` when none are configured.
+ */
+async function CartPaymentMethods({ domain, locale }: { domain: string; locale: Locale }): Promise<React.JSX.Element> {
+    'use cache';
+    cacheLife('days');
+
+    const shop = await getCartShop(domain);
+    cacheTag(...tenantRootTags(shop));
+
+    return <AcceptedPaymentMethods shop={shop} locale={locale} />;
 }

@@ -1,7 +1,6 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { connection } from 'next/server';
 import type { HTMLProps } from 'react';
 import { PaymentIcon } from 'react-payment-brand-icons';
 import { ShopifyApiClient } from '@/api/shopify';
@@ -69,22 +68,4 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
             ))}
         </div>
     );
-};
-
-/**
- * Request-time wrapper around {@link AcceptedPaymentMethods} for dynamic routes (e.g. the cart page)
- * whose PPR prerender would otherwise abort with `next-prerender-current-time`: the payment-settings
- * fetch bottoms out in a live Convex-backed shop read that reaches the current time deep in the
- * client, which is illegal during the prerender pass before any request data is read. `connection()`
- * defers it past the prerender so it streams in at request time.
- *
- * Do NOT use this inside a `'use cache'` scope (e.g. the cached footer chrome) — `connection()` is
- * forbidden there. Render {@link AcceptedPaymentMethods} directly in cached scopes; it is cache-safe.
- *
- * @param props - Forwarded verbatim to {@link AcceptedPaymentMethods}.
- * @returns The deferred payment-methods row, resolved at request time.
- */
-export const DeferredAcceptedPaymentMethods = async (props: AcceptedPaymentMethodsProps) => {
-    await connection();
-    return <AcceptedPaymentMethods {...props} />;
 };
