@@ -1,9 +1,10 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
+import { ShopMisconfigurationError } from '@nordcom/commerce-errors';
 import { headers } from 'next/headers';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as apolloPool from '@/api/_apollo-pool';
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: {
@@ -146,6 +147,41 @@ describe('api/shopify', () => {
             // — just that `private()` runs without throwing and produces a config.
             expect(privateConfig.uri).toBeTruthy();
             expect(privateConfig.headers).toBeTruthy();
+        });
+    });
+
+    describe('ShopifyApiClient (fetch transport)', () => {
+        const fetchShop = { id: 'shop_fetch', domain: 'fetch.example.com' } as OnlineShop;
+        const fetchConfig = { uri: 'https://fetch.example.com/api', headers: { authorization: 't' } };
+
+        it('uses private headers when they resolve', async () => {
+            const privateFn = vi.fn(() => fetchConfig);
+            const publicFn = vi.fn(() => fetchConfig);
+
+            const api = await ShopifyApiClient({
+                shop: fetchShop,
+                apiConfig: { private: privateFn, public: publicFn },
+            });
+
+            expect(privateFn).toHaveBeenCalledTimes(1);
+            expect(publicFn).not.toHaveBeenCalled();
+            expect(typeof api.query).toBe('function');
+        });
+
+        it('falls back to public headers when private() throws', async () => {
+            const privateFn = vi.fn(() => {
+                throw new ShopMisconfigurationError(fetchShop.domain, ['authentication.token']);
+            });
+            const publicFn = vi.fn(() => fetchConfig);
+
+            const api = await ShopifyApiClient({
+                shop: fetchShop,
+                apiConfig: { private: privateFn, public: publicFn },
+            });
+
+            expect(privateFn).toHaveBeenCalledTimes(1);
+            expect(publicFn).toHaveBeenCalledTimes(1);
+            expect(typeof api.query).toBe('function');
         });
     });
 });

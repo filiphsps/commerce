@@ -178,5 +178,22 @@ describe('components', () => {
             const button = screen.getByRole('button') as HTMLButtonElement;
             expect(button.disabled).toBe(false);
         });
+
+        it('shows free shipping in the shipping row once the cart clears the per-currency threshold', () => {
+            setState({
+                cartReady: true,
+                status: 'idle',
+                totalQuantity: 1,
+                lines: [lineWithCompareAt],
+                subtotal: { amount: '60.00', currencyCode: 'USD' },
+                total: { amount: '60.00', currencyCode: 'USD' },
+            });
+            const shop = { ...mockShop(), commerce: { freeShippingThresholds: [{ currencyCode: 'USD', amount: 50 }] } };
+            render(<CartSummary shop={shop as any} onCheckout={mockOnCheckout} i18n={{} as any} />);
+
+            // Unlocked banner renders and the shipping row no longer shows the 'TBD*' placeholder.
+            expect(screen.getByTestId('free-shipping-unlocked')).toBeTruthy();
+            expect(screen.queryByText('TBD*')).toBeNull();
+        });
     });
 });
