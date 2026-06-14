@@ -134,6 +134,20 @@ const cmdSeed = async (args: string[]): Promise<number> => {
 };
 
 /**
+ * Idempotently boots + configures + seeds the local-first dev backend (the entry `predev` calls).
+ * Delegates to {@link ensureLocalConvex}; lazy-imported so `start`/`stop`/`reset` never pull in the
+ * seed chain.
+ *
+ * @returns `0` once the backend is healthy and seeded.
+ */
+const cmdUp = async (): Promise<number> => {
+    const { ensureLocalConvex } = await import('./dev-local');
+    const url = await ensureLocalConvex();
+    console.info(`[test-convex] local backend ready and seeded at ${url}`);
+    return 0;
+};
+
+/**
  * Dispatches a `test-convex` subcommand and returns its process exit code.
  * Returning a code (rather than calling `process.exit`) keeps the dispatcher
  * importable and unit-testable without tearing down the test runner.
@@ -145,6 +159,8 @@ export async function runCli(argv: string[]): Promise<number> {
     const sub = argv[0];
     const rest = argv.slice(1);
     switch (sub) {
+        case 'up':
+            return cmdUp();
         case 'start':
             await cmdStart(rest);
             return 0;
@@ -158,7 +174,7 @@ export async function runCli(argv: string[]): Promise<number> {
             return cmdSeed(rest);
         default:
             console.error(
-                'usage: test-convex {start|stop|reset|seed} [--dataDir path] [--port n] [--url ...] [--adminKey ...]',
+                'usage: test-convex {up|start|stop|reset|seed} [--dataDir path] [--port n] [--url ...] [--adminKey ...]',
             );
             return 1;
     }

@@ -72,4 +72,19 @@ describe('test-convex CLI dispatch', () => {
         expect(code).toBe(1);
         expect(error.mock.calls.flat().join(' ')).toMatch(/usage: test-convex/);
     });
+
+    it('`up` dispatches to ensureLocalConvex and returns 0', async () => {
+        const ensure = vi.fn().mockResolvedValue('http://127.0.0.1:3210');
+        // cmdUp lazy-imports ./dev-local, so doMock (set before the call) intercepts it.
+        vi.doMock('./dev-local', () => ({
+            ensureLocalConvex: ensure,
+            DEV_LOCAL: { dataDir: '.convex-local', port: 3210 },
+        }));
+        const info = vi.spyOn(console, 'info').mockImplementation(() => {});
+        const code = await runCli(['up']);
+        expect(code).toBe(0);
+        expect(ensure).toHaveBeenCalled();
+        expect(info.mock.calls.flat().join(' ')).toContain('ready and seeded');
+        vi.doUnmock('./dev-local');
+    });
 });
