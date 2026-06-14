@@ -1,28 +1,28 @@
 import 'server-only';
 
-import { Heading } from '@nordcom/nordstar';
 import type { Metadata, Route } from 'next';
 import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
 
-export type SetupNewPageProps = {};
+import { auth } from '@/auth';
+import { NewShopWizard } from './wizard';
 
 export const metadata: Metadata = {
-    title: 'New',
+    title: 'Connect a new Shop',
 };
 
-export default async function SetupNewPage({}: SetupNewPageProps) {
+/**
+ * The setup entrypoint for connecting a new shop. Gates on an authenticated session (redirecting to
+ * login otherwise) and renders the client wizard that collects the shop, its commerce-provider
+ * connection, and optional branding before creating it. Reads the server-only `SERVICE_DOMAIN` and
+ * passes it down — the wizard is a Client Component and cannot read the unprefixed env var itself.
+ *
+ * @returns The new-shop wizard for an authenticated operator.
+ */
+export default async function SetupNewPage(): Promise<React.JSX.Element> {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/' as Route);
     }
 
-    return (
-        <>
-            <Heading level="h1">Connect a new Shop</Heading>
-            <Heading level="h4" as="h2">
-                Let&apos;s elevate your e-commerce store to the next level!
-            </Heading>
-        </>
-    );
+    return <NewShopWizard serviceDomain={process.env.SERVICE_DOMAIN} />;
 }
