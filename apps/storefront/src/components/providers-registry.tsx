@@ -7,7 +7,7 @@ import { Fragment, type ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster as ToasterProvider } from 'sonner';
 import { LiveChatProvider } from '@/components/live-chat-provider';
-import { ShopProvider } from '@/components/shop/provider';
+import { resolveShopCurrency, ShopProvider } from '@/components/shop/provider';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { BuildConfig } from '@/utils/build-config';
 import type { CurrencyCode, Locale } from '@/utils/locale';
@@ -77,7 +77,7 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
  */
 const ProvidersRegistry = ({
     shop,
-    currency = 'USD',
+    currency,
     locale,
     children,
     toolbars = true,
@@ -89,9 +89,11 @@ const ProvidersRegistry = ({
     children: ReactNode;
     toolbars?: boolean;
 }) => {
+    const resolvedCurrency = resolveShopCurrency(shop, currency);
+
     return (
         <ErrorBoundary fallbackRender={() => null}>
-            <ShopProvider shop={shop} currency={currency} locale={locale}>
+            <ShopProvider shop={shop} currency={resolvedCurrency} locale={locale}>
                 <CommerceProvider shop={shop} locale={locale}>
                     <ErrorBoundary fallbackRender={() => null}>
                         <Suspense fallback={<Fragment />}>

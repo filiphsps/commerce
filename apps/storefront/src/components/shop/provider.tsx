@@ -7,17 +7,31 @@ import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo } from 'react';
 import { Locale } from '@/utils/locale';
 
+/**
+ * Resolves the active presentment currency: an explicit override wins, then the shop's configured
+ * default (`commerce.currency`), then `'USD'`.
+ *
+ * @param shop - The tenant shop record.
+ * @param explicit - An optional request-level currency override.
+ * @returns The ISO currency code to display before the cart resolves its own currency.
+ */
+export function resolveShopCurrency(shop: OnlineShop, explicit?: CurrencyCode): CurrencyCode {
+    return (explicit ?? (shop.commerce?.currency as CurrencyCode | undefined) ?? 'USD') as CurrencyCode;
+}
+
 type ShopContextReturns = {};
 
 export interface ShopProviderBase {
     shop: OnlineShop;
     /**
-     * @todo TODO: This should be a part of the `shop` object.
+     * The shop's default presentment currency, sourced from `shop.commerce.currency` upstream and
+     * used for price display before the cart resolves its own currency.
      */
     currency: CurrencyCode;
 
     /**
-     * @todo TODO: This should be a part of the `shop` object.
+     * Active request locale, resolved by the `request → shop default → platform default` chain before
+     * this provider. Intentionally a prop, not a shop field: one shop serves many locales.
      */
     locale: Locale;
 }
