@@ -219,3 +219,33 @@ export const findAll = serverQuery({
     args: {},
     handler: async (ctx): Promise<Doc<'shops'>[]> => ctx.db.query('shops').collect(),
 });
+
+/**
+ * Reads the raw connection state of a single routable domain (status/via/timestamps) through the
+ * `shopDomains.by_domain` hot index. Returns `null` when the domain has no routing row. Coalescing
+ * of legacy rows (absent `status`) happens in the `packages/db` seam, not here, so this stays thin.
+ *
+ * @returns The row's `{ domain, status?, via?, verifiedAt?, lastCheckedAt? }`, or `null`.
+ */
+export const domainVerification = serverQuery({
+    args: { domain: v.string() },
+    handler: async (
+        ctx,
+        { domain },
+    ): Promise<Pick<Doc<'shopDomains'>, 'domain' | 'status' | 'via' | 'verifiedAt' | 'lastCheckedAt'> | null> => {
+        const row = await ctx.db
+            .query('shopDomains')
+            .withIndex('by_domain', (q) => q.eq('domain', domain))
+            .first();
+        if (!row) {
+            return null;
+        }
+        return {
+            domain: row.domain,
+            status: row.status,
+            via: row.via,
+            verifiedAt: row.verifiedAt,
+            lastCheckedAt: row.lastCheckedAt,
+        };
+    },
+});

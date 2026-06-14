@@ -408,6 +408,20 @@ export declare const api: {
         any
       >;
     };
+    shop_domain_write: {
+      setDomainVerification: FunctionReference<
+        "mutation",
+        "public",
+        {
+          domain: string;
+          serverSecret: string;
+          status: "pending" | "verified" | "failed";
+          verifiedAt?: number;
+          via?: "vercel" | "service_domain" | "localhost";
+        },
+        any
+      >;
+    };
     shop_write: {
       upsertShop: FunctionReference<
         "mutation",
@@ -638,6 +652,12 @@ export declare const api: {
         "query",
         "public",
         { id: string; serverSecret: string },
+        any
+      >;
+      domainVerification: FunctionReference<
+        "query",
+        "public",
+        { domain: string; serverSecret: string },
         any
       >;
       findAll: FunctionReference<

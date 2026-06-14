@@ -32,6 +32,10 @@ const byDomainRef = makeFunctionReference<'query', DomainArgs, ShopView>('db/sho
 const byDomainWithCredentialsRef = makeFunctionReference<'query', DomainArgs, SensitiveView>(
     'db/shops:byDomainWithCredentials',
 );
+type VerificationView = { domain: string; status?: string; via?: string } | null;
+const domainVerificationRef = makeFunctionReference<'query', DomainArgs, VerificationView>(
+    'db/shops:domainVerification',
+);
 
 /**
  * Seeds one shop with a primary + alternative domain (one `shopDomains` row each, mirroring the
@@ -88,6 +92,26 @@ describe('db/shops domain resolution', () => {
 
         const result = await t.query(byDomainRef, { serverSecret: SERVER_SECRET, domain: 'unknown.example.com' });
         expect(result).toBeNull();
+    });
+
+    it('domainVerification returns the routing row state (raw), or null when unknown', async () => {
+        process.env.CONVEX_SERVER_SECRET = SERVER_SECRET;
+        const t = convexTest(schema, modules);
+        await seedShop(t);
+
+        const legacy = await t.query(domainVerificationRef, {
+            serverSecret: SERVER_SECRET,
+            domain: 'acme.example.com',
+        });
+        expect(legacy).toMatchObject({ domain: 'acme.example.com' });
+        // seedShop inserts a legacy row (no status); coalescing to verified is the seam's job, not here.
+        expect(legacy?.status).toBeUndefined();
+
+        const missing = await t.query(domainVerificationRef, {
+            serverSecret: SERVER_SECRET,
+            domain: 'ghost.example.com',
+        });
+        expect(missing).toBeNull();
     });
 
     it('keeps the public byDomain payload structurally free of token/clientSecret', async () => {
