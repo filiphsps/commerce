@@ -314,5 +314,40 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
     );
     await seedFeatureFlagsLive(client, url, serverSecret, shopId, now);
 
+    // Collaborators: import the users + standalone identities, then link them (with a session each)
+    // to the shop. The link rides through `upsertShop`'s `(shop, user)`-idempotent collaborator sync.
+    const { collaboratorFixtures } = await import('./fixtures/collaborators');
+    importSeedRows(
+        url,
+        'users',
+        collaboratorFixtures.map((c) => ({ ...c.user, createdAt: now, updatedAt: now })),
+    );
+    importSeedRows(
+        url,
+        'identities',
+        collaboratorFixtures.map((c) => ({ ...c.identity, createdAt: now, updatedAt: now })),
+    );
+    const usersByEmailRef = makeFunctionReference<'query'>('db/users:byEmail');
+    const collaboratorLinks: { user: string; permissions: string[] }[] = [];
+    for (const c of collaboratorFixtures) {
+        const u = (await client.query(usersByEmailRef, { serverSecret, email: c.user.email })) as {
+            _id: string;
+        } | null;
+        if (!u) {
+            throw new ConvexError(`@nordcom/commerce-test-convex: seeded user ${c.user.email} not found after import.`);
+        }
+        importSeedRows(url, 'sessions', [
+            { user: u._id, token: c.session.token, expiresAt: c.session.expiresAt, createdAt: now, updatedAt: now },
+        ]);
+        collaboratorLinks.push({ user: u._id, permissions: c.permissions });
+    }
+    await client.mutation(shopUpsertRef, {
+        serverSecret,
+        legacyId,
+        upsert: true,
+        shop,
+        collaborators: collaboratorLinks,
+    });
+
     return shopId;
 }

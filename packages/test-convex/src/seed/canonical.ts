@@ -1,6 +1,7 @@
 import type { Id } from '../../../convex/convex/_generated/dataModel';
 import type { MutationCtx } from '../../../convex/convex/_generated/server';
 import { seedCmsMutation } from './cms';
+import { seedCollaboratorsMutation } from './collaborators';
 import { seedCanonicalLive } from './live';
 import { type SeedShopOptions, seedShopMutation } from './shop';
 
@@ -36,6 +37,7 @@ export type SeedCanonicalOptions = SeedShopOptions;
 export async function seedCanonicalMutation(ctx: MutationCtx, opts: SeedCanonicalOptions = {}): Promise<Id<'shops'>> {
     const shopId = await seedShopMutation(ctx, opts);
     await seedCmsMutation(ctx, { shopId });
+    await seedCollaboratorsMutation(ctx, shopId);
     return shopId;
 }
 
