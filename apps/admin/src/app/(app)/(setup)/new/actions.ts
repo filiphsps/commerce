@@ -71,6 +71,17 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
 
     const name = input.name.trim();
     const domain = normalizeHostname(input.domain);
+
+    // Defense in depth, mirroring the token guard above: the Convex insert accepts empty strings, so an
+    // empty name or a non-routable domain from a bypassed/edited client would persist a broken, unroutable
+    // shop. Re-validate both here so only a well-formed identity is created.
+    if (!name) {
+        return { ok: false, error: 'A shop name is required.' };
+    }
+    if (!isValidHostname(domain)) {
+        return { ok: false, error: 'Enter a valid customer-facing domain.' };
+    }
+
     const accents = input.branding
         ? [
               {
