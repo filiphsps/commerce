@@ -1,0 +1,14 @@
+name: Local Convex backend
+description: >-
+    Boot the persistent anonymous local Convex backend on :3210, push functions, set the dev env, and
+    apply the canonical seed — the same `pnpm convex:local` orchestration developers run. Leaves the
+    detached daemon running for the job's subsequent steps (e.g. Playwright against a seeded backend).
+runs:
+    using: composite
+    steps:
+        - name: 🌐 Boot + seed local Convex backend
+          shell: bash
+          env:
+              CONVEX_AGENT_MODE: anonymous
+              CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
+          run: pnpm convex:local

@@ -275,6 +275,40 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   convex-backend-cache-hit: ${{ steps.bootstrap.outputs.convex-backend-cache-hit }}
+                  # The every-PR `integration` job owns the convex-backend cache; this path-gated job
+                  # only downloads the binary when convex changes, so it must not race on the save.
+                  save-convex-backend: 'false'
+
+    integration:
+        name: 🔌 Integration (local Convex)
+        timeout-minutes: 20
+        runs-on: ubuntu-latest
+        env:
+            CONVEX_AGENT_MODE: anonymous
+            CONVEX_LIMITS_TESTS: "1"
+            CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
+
+            - name: 🚀 Bootstrap
+              id: bootstrap
+              uses: ./.github/common/bootstrap
+              with:
+                  turbo-cache: "false"
+
+            # The limit-boundary suites each boot their OWN ephemeral backend (and the canonical-seed
+            # suite seeds it through the live runner), so this job needs no pre-booted backend — just
+            # the pinned binary the bootstrap cache restores. Runs on every PR (not path-gated).
+            - name: 🧪 Integration / limit-boundary suites (real backends)
+              run: pnpm --filter @nordcom/commerce-test-convex run test src/limits
+
+            - name: 💾 Save bootstrap caches
+              if: always()
+              uses: ./.github/common/bootstrap-save
+              with:
+                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+                  convex-backend-cache-hit: ${{ steps.bootstrap.outputs.convex-backend-cache-hit }}
                   save-convex-backend: 'true'
 
     e2e:
