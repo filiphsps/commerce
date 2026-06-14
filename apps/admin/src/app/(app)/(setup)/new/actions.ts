@@ -44,7 +44,8 @@ export async function checkDomainAvailability(domain: string): Promise<{ availab
  * Creates a new shop from the wizard payload in one atomic `Shop.create` (→ `db/shop_write:upsertShop`)
  * transaction: the shop row, the shredded secret credentials, the `shopDomains` routing row, and the
  * creator's `['admin']` collaborator membership. On success it revalidates the shop overview and
- * redirects to the new dashboard; on a seam failure it returns the error for the review step to show.
+ * redirects to the new shop's Domain settings screen so the operator can connect DNS; on a seam
+ * failure it returns the error for the review step to show.
  *
  * @param input - The collected name, domain, locale, provider connection, and optional branding.
  * @returns `{ ok: false, error }` on failure; never resolves on success (it redirects).
@@ -134,5 +135,5 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
     }
 
     revalidatePath('/');
-    redirect(`/${createdDomain}/` as Route);
+    redirect(`/${createdDomain}/settings/domain/` as Route);
 }

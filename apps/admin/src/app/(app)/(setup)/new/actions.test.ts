@@ -65,7 +65,7 @@ describe('createShop', () => {
 
     it('creates a shop with the creator as an admin collaborator and redirects', async () => {
         mockCreate.mockResolvedValue({ domain: 'shop.acme.com' });
-        await expect(createShop(baseInput)).rejects.toThrow('NEXT_REDIRECT:/shop.acme.com/');
+        await expect(createShop(baseInput)).rejects.toThrow('NEXT_REDIRECT:/shop.acme.com/settings/domain/');
 
         const arg = mockCreate.mock.calls[0]![0];
         expect(arg.name).toBe('Acme');
