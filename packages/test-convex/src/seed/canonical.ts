@@ -3,6 +3,7 @@ import type { MutationCtx } from '../../../convex/convex/_generated/server';
 import { seedCmsMutation } from './cms';
 import { seedCollaboratorsMutation } from './collaborators';
 import { seedCanonicalLive } from './live';
+import { seedReviewsMediaMutation } from './reviews-media';
 import { type SeedShopOptions, seedShopMutation } from './shop';
 
 /**
@@ -38,6 +39,7 @@ export async function seedCanonicalMutation(ctx: MutationCtx, opts: SeedCanonica
     const shopId = await seedShopMutation(ctx, opts);
     await seedCmsMutation(ctx, { shopId });
     await seedCollaboratorsMutation(ctx, shopId);
+    await seedReviewsMediaMutation(ctx, shopId);
     return shopId;
 }
 

@@ -349,5 +349,18 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
         collaborators: collaboratorLinks,
     });
 
+    // Reviews + media for the advanced shop.
+    const { mediaFixtures, REVIEW_COUNT } = await import('./fixtures/reviews-media');
+    importSeedRows(
+        url,
+        'reviews',
+        Array.from({ length: REVIEW_COUNT }, () => ({ shopId, createdAt: now, updatedAt: now })),
+    );
+    importSeedRows(
+        url,
+        'media',
+        mediaFixtures.map((m) => ({ shop: shopId, ...m, createdAt: now, updatedAt: now })),
+    );
+
     return shopId;
 }
