@@ -12,7 +12,7 @@ import { auth } from '@/auth';
 import { PROVIDER_MAPPERS } from '@/lib/commerce-providers/mappers';
 import { DEFAULT_SHOP_ACCENTS, DEFAULT_SHOP_LOCALE, DEFAULT_SHOP_LOGO } from '@/lib/new-shop/defaults';
 import type { CreateShopInput, CreateShopResult } from '@/lib/new-shop/types';
-import { isValidHostname, normalizeHostname, readableForeground } from '@/lib/new-shop/validation';
+import { isValidHostname, isValidLocale, normalizeHostname, readableForeground } from '@/lib/new-shop/validation';
 
 /**
  * Live availability check for a prospective customer-facing domain. A free domain makes
@@ -71,6 +71,10 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
 
     const name = input.name.trim();
     const domain = normalizeHostname(input.domain);
+    // Defense in depth: the client picks from a fixed valid-locale select, but a bypassed client could
+    // submit a malformed tag. An invalid `defaultLocale` would corrupt the `request → shop default →
+    // platform default` resolution, so fall back to the platform default rather than persist garbage.
+    const locale = isValidLocale(input.locale) ? input.locale.trim() : DEFAULT_SHOP_LOCALE;
 
     // Defense in depth, mirroring the token guard above: the Convex insert accepts empty strings, so an
     // empty name or a non-routable domain from a bypassed/edited client would persist a broken, unroutable
@@ -116,7 +120,7 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
         const shop = await Shop.create({
             name,
             domain,
-            i18n: { defaultLocale: input.locale.trim() || DEFAULT_SHOP_LOCALE },
+            i18n: { defaultLocale: locale },
             design: {
                 header: { logo: { ...DEFAULT_SHOP_LOGO, alt: `${name} logo` } },
                 accents,

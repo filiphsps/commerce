@@ -91,6 +91,12 @@ describe('createShop', () => {
         ]);
     });
 
+    it('falls back to the default locale for a malformed locale (defense in depth)', async () => {
+        mockCreate.mockResolvedValue({ domain: 'shop.acme.com' });
+        await expect(createShop({ ...baseInput, locale: 'garbage' })).rejects.toThrow('NEXT_REDIRECT');
+        expect(mockCreate.mock.calls[0]![0].i18n).toEqual({ defaultLocale: 'en-US' });
+    });
+
     it('returns an error result when the seam throws', async () => {
         mockCreate.mockRejectedValue(new RangeError('domain already claimed'));
         await expect(createShop(baseInput)).resolves.toEqual({ ok: false, error: 'domain already claimed' });
