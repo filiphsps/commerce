@@ -234,6 +234,13 @@ export interface Shop {
     commerce?: {
         maxQuantity?: number | null;
         processingTimeInDays?: number | null;
+        productsPerPage?: number | null;
+        geoRedirectDismissalHours?: number | null;
+        freeShippingThresholds?: Array<{
+            currencyCode: string;
+            amount: number;
+            id?: string | null;
+        }> | null;
     };
     icons?: {
         favicon?: {

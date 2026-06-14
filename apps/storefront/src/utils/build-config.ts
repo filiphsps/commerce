@@ -9,6 +9,7 @@ export const BuildConfig = {
 export const COMMERCE_DEFAULTS = {
     maxQuantity: 199_999,
     processingTimeInDays: 5,
+    geoRedirectDismissalHours: 24,
 } as const;
 
 export const FLAG_IMAGES_BASE_URL =

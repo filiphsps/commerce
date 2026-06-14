@@ -96,6 +96,19 @@ const shopsFields: FieldDescriptor[] = [
             }),
         ],
     }),
+    groupField({
+        name: 'commerce',
+        fields: [
+            numberField({ name: 'maxQuantity', defaultValue: 199_999 }),
+            numberField({ name: 'processingTimeInDays', defaultValue: 5 }),
+            numberField({ name: 'productsPerPage' }),
+            numberField({ name: 'geoRedirectDismissalHours' }),
+            arrayField({
+                name: 'freeShippingThresholds',
+                fields: [required(textField({ name: 'currencyCode' })), required(numberField({ name: 'amount' }))],
+            }),
+        ],
+    }),
 ];
 
 /**

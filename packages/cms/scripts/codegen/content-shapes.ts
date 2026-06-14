@@ -576,6 +576,16 @@ const shopsShape: ContentCollectionShape = {
             fields: [
                 { name: 'maxQuantity', type: 'number', defaultValue: 199999 },
                 { name: 'processingTimeInDays', type: 'number', defaultValue: 5 },
+                { name: 'productsPerPage', type: 'number' },
+                { name: 'geoRedirectDismissalHours', type: 'number' },
+                {
+                    name: 'freeShippingThresholds',
+                    type: 'array',
+                    fields: [
+                        { name: 'currencyCode', type: 'text', required: true },
+                        { name: 'amount', type: 'number', required: true },
+                    ],
+                },
             ],
         },
         {

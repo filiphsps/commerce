@@ -150,6 +150,9 @@ export interface ShopBase extends BaseDocument {
     commerce?: {
         maxQuantity?: number;
         processingTimeInDays?: number;
+        productsPerPage?: number;
+        geoRedirectDismissalHours?: number;
+        freeShippingThresholds?: { currencyCode: string; amount: number }[];
     };
 
     showProductVendor?: boolean;

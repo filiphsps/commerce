@@ -23,7 +23,16 @@ const fullShop = {
     domain: 'acme.com',
     alternativeDomains: ['www.acme.com', 'acme.myshopify.com'],
     i18n: { defaultLocale: 'en-US' },
-    commerce: { maxQuantity: 199_999, processingTimeInDays: 5 },
+    commerce: {
+        maxQuantity: 199_999,
+        processingTimeInDays: 5,
+        productsPerPage: 24,
+        geoRedirectDismissalHours: 48,
+        freeShippingThresholds: [
+            { currencyCode: 'USD', amount: 75 },
+            { currencyCode: 'EUR', amount: 70 },
+        ],
+    },
     showProductVendor: false,
     design: {
         header: { logo: { width: 512, height: 512, src: 'https://cdn/logo.png', alt: 'Acme' } },
@@ -53,6 +62,17 @@ const fullShop = {
 describe('shopValidator', () => {
     it('validates a unified ShopBase fixture', () => {
         expect(validate(shopValidator, fullShop)).toBe(true);
+    });
+
+    it('rejects an id on a free-shipping threshold row (stored rows carry no id, like accents)', () => {
+        const withRowId = {
+            ...fullShop,
+            commerce: {
+                ...fullShop.commerce,
+                freeShippingThresholds: [{ currencyCode: 'USD', amount: 75, id: 'row-1' }],
+            },
+        };
+        expect(validate(shopValidator, withRowId)).toBe(false);
     });
 
     it('validates a minimal shop with every optional group absent', () => {
