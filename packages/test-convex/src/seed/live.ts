@@ -375,12 +375,15 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
     })) as LiveShopView;
     if (!minimalExisting) {
         const { legacyId: minimalLegacyId, ...minimalShop } = minimal.shop;
+        // Link the owner as the minimal tenant's sole admin, matching the in-process seed path.
+        const ownerLink = collaboratorLinks.find((link) => link.permissions.includes('admin'));
         await client.mutation(shopUpsertRef, {
             serverSecret,
             legacyId: minimalLegacyId,
             upsert: true,
             shop: minimalShop,
             credentials: minimal.credentials,
+            collaborators: ownerLink ? [{ user: ownerLink.user, permissions: ['admin'] }] : [],
         });
     }
 

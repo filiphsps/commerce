@@ -66,6 +66,14 @@ limitsSuite('canonical seed: live runner seeds a fresh deployment and re-runs as
         expect(view?.shop._id).toBe(shopId);
         expect(view?.shop.legacyId).toBe(DEFAULT_SHOP_LEGACY_ID);
 
+        // The minimal second tenant resolves through the SAME routing seam as a distinct shop.
+        const minimalView = (await createServerClient(live).query(shopByDomainRef, {
+            serverSecret: live.serverSecret,
+            domain: 'minimal-demo.com',
+        })) as { shop: { _id: string } } | null;
+        expect(minimalView).not.toBeNull();
+        expect(minimalView?.shop._id).not.toBe(shopId);
+
         const firstFlag = featureFlagFixtures[0];
         expect(firstFlag).toBeDefined();
         const flagRow = (await createServerClient(live).query(featureFlagByKeyRef, {
@@ -79,11 +87,21 @@ limitsSuite('canonical seed: live runner seeds a fresh deployment and re-runs as
             pages: countRows(live, 'pages'),
             featureFlags: countRows(live, 'featureFlags'),
             shopFeatureFlags: countRows(live, 'shopFeatureFlags'),
+            users: countRows(live, 'users'),
+            reviews: countRows(live, 'reviews'),
+            media: countRows(live, 'media'),
+            shopCollaborators: countRows(live, 'shopCollaborators'),
         };
         expect(countsAfterFirst.header).toBe(1);
         expect(countsAfterFirst.pages).toBe(pageFixtures.length);
         expect(countsAfterFirst.featureFlags).toBe(featureFlagFixtures.length);
         expect(countsAfterFirst.shopFeatureFlags).toBe(featureFlagFixtures.length);
+        // Enriched superset: 3 collaborator users, 3 reviews, 3 media, and 4 collaborator links
+        // (3 advanced tiers + the owner's admin link on the minimal tenant).
+        expect(countsAfterFirst.users).toBe(3);
+        expect(countsAfterFirst.reviews).toBe(3);
+        expect(countsAfterFirst.media).toBe(3);
+        expect(countsAfterFirst.shopCollaborators).toBe(4);
 
         const secondRunId = await seedCanonical(live.url);
         expect(secondRunId).toBe(shopId);
@@ -92,6 +110,10 @@ limitsSuite('canonical seed: live runner seeds a fresh deployment and re-runs as
             pages: countRows(live, 'pages'),
             featureFlags: countRows(live, 'featureFlags'),
             shopFeatureFlags: countRows(live, 'shopFeatureFlags'),
+            users: countRows(live, 'users'),
+            reviews: countRows(live, 'reviews'),
+            media: countRows(live, 'media'),
+            shopCollaborators: countRows(live, 'shopCollaborators'),
         }).toEqual(countsAfterFirst);
     }, 300_000);
 });
