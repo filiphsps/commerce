@@ -1917,3 +1917,16 @@ jsx(Tag, { ...props, /* … */ onChange: (e) => setContents(e.target.value), val
 Fix: a controlled `components/ui/text-field.tsx` (`TextField`) following the admin's established native-input convention (`color-field.tsx`) — native `<input>`, `onChange(value)`, `border-2`/focus-ring, labeled via `useId`. Replaced every nordstar `Input` in `wizard.tsx` and `connect-form.tsx` with it. The wizard/connect-form suites now render the **real** `TextField` (no Input mock), so their value-lifting assertions (`arg.name`, `arg.domain`, credential ping args) are genuine regression coverage; added `text-field.test.tsx` to lock the `onChange(rawValue)` contract directly.
 
 **Bugfix gate:** 67 files / 297 tests pass, 0 fail. `pnpm typecheck` clean. `pnpm biome check` clean. `pnpm build --filter @nordcom/commerce-admin` compiles.
+
+**9. Stale session vs. missing `users` doc — the login trap**
+
+Reported in use: shop admin pages bounce straight back to the shop picker, and (downstream) a new shop can't be created.
+
+Reproduced against the deployment: `db/users:byEmail(<operator email>)` → `null`. The operator has a valid JWT but **no platform `users` document** (the dev backend was reseeded to the canonical fixtures — `findAll` shows only the two seed shops — wiping real users while the browser kept its JWT). That single gap cascades:
+
+- **Open a shop** → `getAuthedCmsCtx` → `User.find({ email })` throws not-found → `redirect('/auth/login/')` → the login page saw the JWT session and `redirect('/')` → picker. The bounce was inescapable because the login page treated *any* session as logged-in.
+- **Create a shop** → `createShop` writes the collaborator with `session.user.id`, which `db/shop_write`'s `normalizeId('users', …)` can't resolve → `SHOP_WRITE_INVALID_COLLABORATOR`.
+
+The `users` doc can only be (re)created through the OAuth flow (the adapter's `createUser`), but the login bounce blocked the operator from ever reaching the sign-in button. Fix: the login page now redirects to the picker **only when the session resolves to a real `users` doc**; an authenticated-but-unprovisioned session falls through to the sign-in button, so re-authenticating re-provisions the account (adapter `createUser`) and unblocks both opening and creating shops. Three tests (`login/page.test.tsx`). Operator recovery: sign out and sign back in.
+
+**Gate:** 68 files / 300 tests pass, 0 fail. `pnpm typecheck` clean. `pnpm biome check` clean. `pnpm build --filter @nordcom/commerce-admin` compiles.
