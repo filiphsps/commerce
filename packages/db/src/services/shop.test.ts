@@ -396,3 +396,46 @@ describe('Shop.findOneAndUpdate (Convex-backed)', () => {
         expect(mutationMock).not.toHaveBeenCalled();
     });
 });
+
+describe('Shop.getDomainVerification (Convex-backed)', () => {
+    it('resolves through db/shops:domainVerification with the server secret attached', async () => {
+        queryMock.mockResolvedValueOnce({ domain: 'shop.acme.com', status: 'pending' });
+        const result = await Shop.getDomainVerification('shop.acme.com');
+
+        expect(calledFunction()).toBe('db/shops:domainVerification');
+        expect(queryMock.mock.calls[0]?.[1]).toEqual({ domain: 'shop.acme.com', serverSecret: 'test-server-secret' });
+        expect(result).toEqual({
+            domain: 'shop.acme.com',
+            status: 'pending',
+            via: null,
+            verifiedAt: null,
+            lastCheckedAt: null,
+        });
+    });
+
+    it('coalesces a legacy row (no status) to verified/service_domain', async () => {
+        queryMock.mockResolvedValueOnce({ domain: 'legacy.acme.com' });
+        const result = await Shop.getDomainVerification('legacy.acme.com');
+        expect(result).toMatchObject({ status: 'verified', via: 'service_domain' });
+    });
+
+    it('returns null for an unknown domain', async () => {
+        queryMock.mockResolvedValueOnce(null);
+        expect(await Shop.getDomainVerification('ghost.acme.com')).toBeNull();
+    });
+});
+
+describe('Shop.setDomainVerification (Convex-backed)', () => {
+    it('forwards the write to db/shop_domain_write:setDomainVerification', async () => {
+        mutationMock.mockResolvedValueOnce({ ok: true });
+        await Shop.setDomainVerification('shop.acme.com', { status: 'verified', via: 'vercel', verifiedAt: 1 });
+
+        expect(calledMutation()).toBe('db/shop_domain_write:setDomainVerification');
+        expect(mutationMock.mock.calls[0]?.[1]).toMatchObject({
+            domain: 'shop.acme.com',
+            status: 'verified',
+            via: 'vercel',
+            verifiedAt: 1,
+        });
+    });
+});

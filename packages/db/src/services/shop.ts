@@ -8,7 +8,7 @@ import {
 import { convexServerMutation, convexServerQuery } from '../db';
 import { docToFeatureFlag, docToOnlineShop, stripInternals } from '../lib/doc-to-shape';
 import { taintSecret } from '../lib/taint';
-import type { CommerceProvider, OnlineShop, ShopBase } from '../models';
+import type { CommerceProvider, DomainVerification, DomainVerificationInput, OnlineShop, ShopBase } from '../models';
 import { Service, type ServiceBackend } from './service';
 
 type ConvexDoc = Record<string, unknown>;
@@ -399,6 +399,53 @@ export class ShopService extends Service<ShopBase> {
             console.warn(error);
             return [];
         }
+    }
+
+    /**
+     * Reads a routable domain's connection state for the admin connect screen, coalescing legacy
+     * rows (no stored `status`) to `verified`/`service_domain` — those domains predate verification
+     * and are already live. Returns `null` when the domain is unclaimed.
+     *
+     * @param domain - The normalized customer-facing hostname.
+     * @returns The {@link DomainVerification}, or `null` when no routing row exists.
+     * @example
+     * ```ts
+     * const state = await Shop.getDomainVerification('shop.acme.com');
+     * ```
+     */
+    public async getDomainVerification(domain: string): Promise<DomainVerification | null> {
+        const row = await convexServerQuery<{
+            domain: string;
+            status?: 'pending' | 'verified' | 'failed';
+            via?: 'vercel' | 'service_domain' | 'localhost';
+            verifiedAt?: number;
+            lastCheckedAt?: number;
+        } | null>('db/shops:domainVerification', { domain });
+        if (!row) {
+            return null;
+        }
+        return {
+            domain: row.domain,
+            status: row.status ?? 'verified',
+            via: row.via ?? (row.status ? null : 'service_domain'),
+            verifiedAt: row.verifiedAt ?? null,
+            lastCheckedAt: row.lastCheckedAt ?? null,
+        };
+    }
+
+    /**
+     * Persists the outcome of a verify attempt onto the routing row. Informational only — never
+     * affects routing. No-ops silently at the seam when the domain has no row.
+     *
+     * @param domain - The normalized customer-facing hostname.
+     * @param input - The new status plus optional `via`/`verifiedAt`.
+     * @example
+     * ```ts
+     * await Shop.setDomainVerification('shop.acme.com', { status: 'verified', via: 'vercel' });
+     * ```
+     */
+    public async setDomainVerification(domain: string, input: DomainVerificationInput): Promise<void> {
+        await convexServerMutation<{ ok: boolean }>('db/shop_domain_write:setDomainVerification', { domain, ...input });
     }
 }
 

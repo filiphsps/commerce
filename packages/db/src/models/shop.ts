@@ -220,3 +220,29 @@ export interface ShopBase extends BaseDocument {
 export type OnlineShop = Omit<ShopBase, 'collaborators'> & {
     collaborators?: ShopBase['collaborators'];
 };
+
+/**
+ * Public connection state of one routable domain, as surfaced by the admin connect screen. Legacy
+ * rows (no stored `status`) are coalesced by the seam to `verified`/`service_domain` — they predate
+ * verification and are already live. Informational only: routing never reads it.
+ *
+ * @example
+ * ```ts
+ * import type { DomainVerification } from '@nordcom/commerce-db';
+ * const isLive = (state: DomainVerification): boolean => state.status === 'verified';
+ * ```
+ */
+export type DomainVerification = {
+    domain: string;
+    status: 'pending' | 'verified' | 'failed';
+    via: 'vercel' | 'service_domain' | 'localhost' | null;
+    verifiedAt: number | null;
+    lastCheckedAt: number | null;
+};
+
+/** Write payload for `ShopService.setDomainVerification`. */
+export type DomainVerificationInput = {
+    status: 'pending' | 'verified' | 'failed';
+    via?: 'vercel' | 'service_domain' | 'localhost';
+    verifiedAt?: number;
+};
