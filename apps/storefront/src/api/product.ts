@@ -178,7 +178,9 @@ export function transformQuantityBreaks(quantityBreaks: ProductVariant['quantity
             value: Number.parseFloat(value.value),
         }));
     } catch {
-        // TODO: Handle errors properly.
+        // `quantityBreaks` is a tenant-authored, optional metafield reference; a malformed or
+        // partially-populated shape just means there are no price breaks to show, so degrade to
+        // `null` rather than failing the surrounding (client) product render.
         return null;
     }
 }

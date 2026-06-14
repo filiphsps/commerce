@@ -90,7 +90,6 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
         return [];
     }
 
-    // FIXME: Handle errors or missing data.
     return (
         ((localData?.localization.availableCountries ?? [DEFAULT_LOCALE]) as Country[])
             // https://nordcom.sentry.io/share/issue/b0b9721ad1e54a88b779605737472230/
@@ -183,7 +182,8 @@ export const ShopPaymentSettingsApi = async ({
 
     const { data, errors } = await api.query(PAYMENT_SETTINGS_QUERY);
 
-    // TODO: Handle errors properly.
+    // Payment settings are non-critical chrome; a Shopify error degrades to `null` (no wallet/card
+    // badges) with a trace breadcrumb rather than failing the page render.
     if ((errors || []).length > 0) {
         trace.getActiveSpan()?.addEvent('store.payment_settings_query_errors', {
             'error.message': String(errors),
