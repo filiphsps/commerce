@@ -66,11 +66,45 @@ const PAYMENT_SETTINGS_QUERY = graphql(`
     }
 `);
 
-// FIXME: Handle tenant-specific default.
-const DEFAULT_LOCALE = {
+const US_DEFAULT_COUNTRY = {
     availableLanguages: [{ isoCode: 'EN', name: 'English' }],
     isoCode: 'US',
     name: 'United States',
+} as unknown as Country;
+
+/**
+ * Builds the no-data `CountriesApi` fallback from the shop's configured default locale, so a shop
+ * with no Shopify-reported countries degrades to its own country/language rather than always US.
+ *
+ * @param shop - The tenant shop record (reads `i18n.defaultLocale`).
+ * @returns A single `Country` derived from the shop default locale, or the US default when the shop
+ *   has no default locale or it cannot be parsed.
+ */
+export const tenantDefaultCountry = (shop: OnlineShop): Country => {
+    const defaultLocale = shop.i18n?.defaultLocale;
+    if (!defaultLocale) {
+        return US_DEFAULT_COUNTRY;
+    }
+
+    try {
+        const locale = Locale.from(defaultLocale);
+        if (!locale.country) {
+            return US_DEFAULT_COUNTRY;
+        }
+
+        const country = locale.country.toUpperCase();
+        const language = locale.language.toUpperCase();
+        const regionNames = new Intl.DisplayNames('en', { type: 'region' });
+        const languageNames = new Intl.DisplayNames('en', { type: 'language' });
+
+        return {
+            isoCode: country,
+            name: regionNames.of(country) ?? country,
+            availableLanguages: [{ isoCode: language, name: languageNames.of(language.toLowerCase()) ?? language }],
+        } as unknown as Country;
+    } catch {
+        return US_DEFAULT_COUNTRY;
+    }
 };
 
 /**
@@ -78,7 +112,7 @@ const DEFAULT_LOCALE = {
  *
  * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
- * @returns Array of available countries; falls back to a US default when the API returns nothing.
+ * @returns Array of available countries; falls back to the shop's tenant default when the API returns nothing.
  */
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
     const { data: localData, errors } = await api.query(COUNTRIES_QUERY);
@@ -91,7 +125,7 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
     }
 
     return (
-        ((localData?.localization.availableCountries ?? [DEFAULT_LOCALE]) as Country[])
+        ((localData?.localization.availableCountries ?? [tenantDefaultCountry(api.shop())]) as Country[])
             // https://nordcom.sentry.io/share/issue/b0b9721ad1e54a88b779605737472230/
             // `availableLanguages` shouldn't be nullable, but it sometimes is.
             .map((data) => ({ ...data, availableLanguages: data.availableLanguages || [] }))

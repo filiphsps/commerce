@@ -1,8 +1,9 @@
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Locale } from '@/utils/locale';
 import { mockBusinessData, mockShop } from '@/utils/test/fixtures';
 import { __setCmsReadQuery } from './_cms-read';
-import { BusinessDataApi } from './store';
+import { BusinessDataApi, tenantDefaultCountry } from './store';
 
 /**
  * Installs a capturing read transport whose query resolves with the supplied value.
@@ -45,5 +46,27 @@ describe('BusinessDataApi — Convex-native (TEARDOWN-02 straight-line)', () => 
         installQuery(null);
         const result = await BusinessDataApi({ shop: mockShop(), locale: Locale.from('en-US') });
         expect(result).toBeNull();
+    });
+});
+
+const shopWith = (defaultLocale?: string) => ({ i18n: defaultLocale ? { defaultLocale } : undefined }) as OnlineShop;
+
+describe('tenantDefaultCountry', () => {
+    it('derives the country + language from the shop default locale', () => {
+        const country = tenantDefaultCountry(shopWith('sv-SE'));
+        expect(country.isoCode).toBe('SE');
+        expect(country.availableLanguages[0]?.isoCode).toBe('SV');
+        expect(country.name).toBe('Sweden');
+    });
+
+    it('falls back to the US default when the shop has no default locale', () => {
+        const country = tenantDefaultCountry(shopWith(undefined));
+        expect(country.isoCode).toBe('US');
+        expect(country.availableLanguages[0]?.isoCode).toBe('EN');
+    });
+
+    it('falls back to the US default for a malformed default locale', () => {
+        const country = tenantDefaultCountry(shopWith('not-a-locale-!!'));
+        expect(country.isoCode).toBe('US');
     });
 });
