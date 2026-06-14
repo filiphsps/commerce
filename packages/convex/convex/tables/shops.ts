@@ -195,6 +195,18 @@ export type ShopCredentials = Infer<typeof shopCredentialsValidator>;
 export const shopDomainValidator = v.object({
     shop: v.id('shops'),
     domain: v.string(),
+    /**
+     * Connection lifecycle for the domain. Absent on legacy rows (read as `verified` by the
+     * `packages/db` seam). New rows are inserted `pending` by `reconcileDomains`; the admin's
+     * verify action flips it to `verified`/`failed`. Informational only — routing never reads it.
+     */
+    status: v.optional(v.union(v.literal('pending'), v.literal('verified'), v.literal('failed'))),
+    /** Which target satisfied verification, for the admin badge. Absent → `service_domain` legacy. */
+    via: v.optional(v.union(v.literal('vercel'), v.literal('service_domain'), v.literal('localhost'))),
+    /** Epoch ms the domain last verified. */
+    verifiedAt: v.optional(v.number()),
+    /** Epoch ms of the last verify attempt, regardless of outcome. */
+    lastCheckedAt: v.optional(v.number()),
 });
 
 /**

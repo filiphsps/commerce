@@ -132,7 +132,7 @@ async function reconcileDomains(ctx: MutationCtx, shopId: Id<'shops'>, shop: Doc
             continue;
         }
         if (!owner) {
-            await ctx.db.insert('shopDomains', { shop: shopId, domain });
+            await ctx.db.insert('shopDomains', { shop: shopId, domain, status: 'pending' });
         }
     }
 }

@@ -118,6 +118,19 @@ describe('db/shop_write:upsertShop', () => {
         });
     });
 
+    it('marks a freshly inserted domain row as pending', async () => {
+        const t = harness();
+        await t.mutation(upsertShopRef, {
+            serverSecret: SERVER_SECRET,
+            shop: { ...baseShop, domain: 'pending.example.com', alternativeDomains: [] },
+        });
+        await t.run(async (ctx) => {
+            const rows = await ctx.db.query('shopDomains').collect();
+            const row = rows.find((entry) => entry.domain === 'pending.example.com');
+            expect(row?.status).toBe('pending');
+        });
+    });
+
     it('reconciles a domain-set shrink (3 -> 1) by deleting the stale rows in the same write', async () => {
         const t = harness();
         const created = await t.mutation(upsertShopRef, { serverSecret: SERVER_SECRET, shop: baseShop });
