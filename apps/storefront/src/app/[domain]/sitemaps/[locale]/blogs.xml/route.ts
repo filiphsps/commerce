@@ -31,7 +31,8 @@ export type BlogsSitemapRouteParams = {
  *
  * @param params - Route params resolving the tenant `domain` and `locale`.
  * @returns A `next-sitemap` XML response listing blog and article URLs.
- * @throws Triggers `notFound()` when the locale is missing or blogs can't be fetched.
+ * @throws Triggers `notFound()` when the locale is missing or the tenant has no blogs; rethrows the
+ *   underlying error on a genuine blog-fetch failure so it is not cached as a 404.
  */
 export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) {
     'use cache';
@@ -50,14 +51,19 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
 
     const [blogs, blogsError] = await BlogsApi({ api });
     if (blogsError) {
-        if (!Error.isNotFound(blogsError)) {
-            trace.getActiveSpan()?.addEvent('sitemap.blogs_fetch_failed', {
-                'error.message': (blogsError as Error)?.message ?? String(blogsError),
-                'shop.domain': domain,
-            });
+        // A blog-less tenant surfaces as NotFound — 404 the blog sitemap (contract covered by the
+        // route test) rather than serving an empty document.
+        if (Error.isNotFound(blogsError)) {
+            notFound();
         }
 
-        notFound(); // TODO
+        // A genuine fetch failure must not be masked as a 404: a crawler reads 404 as "gone" and
+        // cacheLife('max') would pin it. Surface it so the next crawl retries instead.
+        trace.getActiveSpan()?.addEvent('sitemap.blogs_fetch_failed', {
+            'error.message': (blogsError as Error)?.message ?? String(blogsError),
+            'shop.domain': domain,
+        });
+        throw blogsError;
     }
 
     const articles = await Promise.all(

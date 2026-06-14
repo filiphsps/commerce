@@ -1,4 +1,4 @@
-import { NotFoundError } from '@nordcom/commerce-errors';
+import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { describe, expect, it, vi } from 'vitest';
 
 const { BlogsApiMock, BlogApiMock } = vi.hoisted(() => ({
@@ -117,6 +117,18 @@ describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
                     params: Promise.resolve({ domain: 'staging.storefront.localhost', locale: 'en-US' }),
                 }),
             ).rejects.toThrow('NEXT_NOT_FOUND');
+        });
+
+        it('rethrows when BlogsApi returns a non-NotFound error', async () => {
+            notFoundMock.mockClear();
+            BlogsApiMock.mockResolvedValueOnce([undefined, new ProviderFetchError('Shopify exploded')]);
+
+            await expect(
+                GET(makeRequest() as any, {
+                    params: Promise.resolve({ domain: 'staging.storefront.localhost', locale: 'en-US' }),
+                }),
+            ).rejects.toBeInstanceOf(ProviderFetchError);
+            expect(notFoundMock).not.toHaveBeenCalled();
         });
 
         it('returns valid XML with empty urlset when BlogApi returns no articles for a blog', async () => {
