@@ -5,6 +5,7 @@ import { seedCollaboratorsMutation } from './collaborators';
 import { seedCanonicalLive } from './live';
 import { seedReviewsMediaMutation } from './reviews-media';
 import { type SeedShopOptions, seedShopMutation } from './shop';
+import { seedVersionsMutation } from './versions';
 
 /**
  * Customization knobs for the canonical seed. Identical to the shop seed's options — the CMS phase has
@@ -40,6 +41,7 @@ export async function seedCanonicalMutation(ctx: MutationCtx, opts: SeedCanonica
     await seedCmsMutation(ctx, { shopId });
     await seedCollaboratorsMutation(ctx, shopId);
     await seedReviewsMediaMutation(ctx, shopId);
+    await seedVersionsMutation(ctx, shopId);
     return shopId;
 }
 
