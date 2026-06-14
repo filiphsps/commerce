@@ -142,6 +142,10 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
     convexEnvSet(url, adminKey, 'CONVEX_AUTH_APPLICATION_ID', auth.applicationId);
     convexEnvSet(url, adminKey, 'CONVEX_AUTH_JWKS_URL', auth.jwksUrl);
 
+    // Deploy the functions now that the auth env exists — the daemon's continuous push failed before
+    // the env was set and does not retry on an env change, so without this the seed's queries 404.
+    convexDevOnce(url, adminKey);
+
     // Seed via the live runner; it reads CONVEX_SERVER_SECRET (server-tier) and the self-hosted
     // admin key for the CMS imports. Set both on this process before dispatching.
     process.env.CONVEX_SERVER_SECRET = serverSecret;
@@ -151,4 +155,28 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
     await seedCanonical(url);
 
     return url;
+}
+
+/**
+ * Pushes the project's functions to the already-running local backend via a one-shot
+ * `convex dev --once`. Run AFTER the deployment env is set: a fresh anonymous backend has no env,
+ * so the daemon's initial continuous push fails auth.config.ts validation and does not retry on a
+ * later `convex env set`. This synchronous push deploys the functions once the auth env exists, so
+ * the seed's db/shops:byDomain probe resolves.
+ *
+ * @param url - Local deployment URL.
+ * @param adminKey - The daemon's admin key.
+ * @throws {Error} When the push exits non-zero.
+ */
+export function convexDevOnce(url: string, adminKey: string): void {
+    const result = spawnSync(process.execPath, [resolveConvexBin(), 'dev', '--once'], {
+        cwd: resolveConvexProjectDir(),
+        encoding: 'utf8',
+        env: convexLocalCliEnv(url, adminKey),
+    });
+    if (result.status !== 0) {
+        throw new Error(
+            `[test-convex] convex dev --once (function push) failed: ${(result.stderr ?? '').slice(-1500)}`,
+        );
+    }
 }
