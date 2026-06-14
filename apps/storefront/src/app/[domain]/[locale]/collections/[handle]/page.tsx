@@ -27,7 +27,7 @@ import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
-import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
+import { CollectionContent, collectionPageSize } from './collection-content';
 import type { CollectionPageParams } from './static-params';
 
 export { type CollectionPageParams, generateStaticParams } from './static-params';
@@ -173,7 +173,7 @@ async function CollectionShell({ params, children }: { params: CollectionPagePar
     try {
         [collection, pagesInfo] = await Promise.all([
             CollectionApi({ api, handle, limit: 8 }),
-            CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } }),
+            CollectionPaginationCountApi({ api, handle, filters: { first: collectionPageSize(shop) } }),
         ]);
     } catch (error: unknown) {
         unstable_rethrow(error);
@@ -254,7 +254,7 @@ async function CollectionShell({ params, children }: { params: CollectionPagePar
 
                     <Suspense
                         key={`collections.${handle}.content`}
-                        fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
+                        fallback={<CollectionBlock.skeleton length={collectionPageSize(shop)} />}
                     >
                         {children}
                     </Suspense>
@@ -317,7 +317,7 @@ async function CollectionDynamic({
     const pagesInfo = await CollectionPaginationCountApi({
         api,
         handle,
-        filters: { first: PRODUCTS_PER_PAGE },
+        filters: { first: collectionPageSize(shop) },
     });
 
     return (

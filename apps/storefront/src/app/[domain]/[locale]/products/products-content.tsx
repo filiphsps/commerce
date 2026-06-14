@@ -9,6 +9,7 @@ import { Pagination } from '@/components/actionable/pagination';
 import CollectionProductCard from '@/components/products/collection-product-card';
 import { getDictionary } from '@/utils/dictionary';
 import type { Locale } from '@/utils/locale';
+import { clampPageSize } from '@/utils/page-size';
 import { cn } from '@/utils/tailwind';
 
 type SearchParams = {
@@ -38,7 +39,7 @@ export default async function ProductsContent({ domain, locale, searchParams = {
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
-    const limit = 35; // TODO.
+    const limit = clampPageSize(shop.commerce?.productsPerPage ?? 35);
     const vendor = searchParams.vendor || undefined;
     const sorting = (searchParams.sorting?.toUpperCase() || 'BEST_SELLING') as ProductSorting;
 
