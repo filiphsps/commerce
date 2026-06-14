@@ -39,6 +39,22 @@ SERVICE_DOMAIN=yourdomain.com
 The `SERVICE_DOMAIN` variable is the root domain used for the error help URL pattern
 (`https://${SERVICE_DOMAIN}/docs/errors/<code>/`) and the unknown-shop redirect target.
 
+## Connecting a shop's domain
+
+After creating a shop, operators connect its customer-facing domain on **Settings → Domain**
+in the admin. The screen shows the DNS records to add and verifies the connection:
+
+- With `VERCEL_TOKEN` and `VERCEL_STOREFRONT_PROJECT_ID` set (admin only; `VERCEL_TEAM_ID`
+  optional), the admin adds the domain to the storefront's Vercel project and reads Vercel's
+  verification/config status.
+- Without those, it falls back to a DNS-over-HTTPS check confirming the domain points at
+  `SERVICE_DOMAIN` (CNAME) or Vercel (`cname.vercel-dns.com` / `76.76.21.21`). Apex domains use
+  the A record; subdomains use the CNAME — either is accepted.
+- `*.localhost` domains auto-verify in development.
+
+Verification is informational: storefront routing is never gated on it, so a shop serves as soon
+as its domain resolves to the platform.
+
 ## Documentation site
 
 The docs site is a static Next.js export (`output: 'export'` in `next.config.mjs`). It
