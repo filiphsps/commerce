@@ -46,27 +46,34 @@ TypeScript monorepo.
 ## Quick start
 
 > **Prerequisites:** Node.js (see `.nvmrc`) and `pnpm`. The data layer is
-> [Convex](https://convex.dev) — `pnpm convex:dev` provisions an anonymous local
-> backend, no database server to install.
+> [Convex](https://convex.dev) — local development runs against a **local** backend
+> (no database server, no cloud account), booted and seeded automatically.
 
 ```bash
 # 1. Install dependencies.
 pnpm install
 
-# 2. Configure environment variables. See .env.example for the full list.
+# 2. Configure environment variables. See .env.example for the full list. The Convex
+#    vars default to the local backend on :3210, so the defaults work out of the box.
 cp .env.example .env
-# Required at minimum: CONVEX_URL, AUTH_SECRET, SERVICE_DOMAIN.
+# Required at minimum: AUTH_SECRET, SERVICE_DOMAIN.
 
 # 3. Build the workspace packages (apps depend on each package's dist/).
 pnpm build:packages
 
-# 4. In a separate terminal: boot/attach the local Convex backend
-#    (provisions an anonymous deployment and keeps the schema pushed).
-pnpm convex:dev
-
-# 5. Start everything in parallel.
+# 4. Start everything. `pnpm dev` first runs `pnpm convex:local`, which boots a
+#    persistent local Convex backend on :3210, pushes the functions, and applies the
+#    advanced canonical seed — then launches the apps against it.
 pnpm dev
 ```
+
+> **Local Convex backend.** `pnpm dev` is local-first: it depends on `pnpm convex:local`
+> (a persistent anonymous backend in `.convex-local/`, seeded with an advanced demo shop
+> `nordcom-demo-shop.com` plus a minimal `minimal-demo.com`). Manage it with
+> `pnpm convex:local` (boot + seed, idempotent), `pnpm convex:local:reset` (wipe + reseed),
+> and `pnpm convex:local:stop`. To use a cloud deployment instead, point `CONVEX_URL` /
+> `NEXT_PUBLIC_CONVEX_URL` / `CONVEX_SERVER_SECRET` at it. CI runs its integration and e2e
+> suites against the same seeded local backend — no production Convex in CI.
 
 You should now have:
 

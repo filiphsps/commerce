@@ -23,10 +23,9 @@ anonymous local backend, so there is no database server to install.
 
 ```bash
 pnpm install
-cp .env.example .env       # set CONVEX_URL, AUTH_SECRET, SERVICE_DOMAIN at minimum
+cp .env.example .env       # Convex vars default to the local backend on :3210
 pnpm build:packages        # apps import from each package's dist/, not source
-pnpm convex:dev            # separate terminal: boot/attach the local Convex backend
-pnpm dev                   # all apps in parallel
+pnpm dev                   # boots + seeds the local Convex backend, then all apps
 ```
 
 | App | URL |
@@ -37,9 +36,12 @@ pnpm dev                   # all apps in parallel
 | Docs | https://docs.localhost |
 
 <Callout type="note">
-    `pnpm convex:dev` provisions an anonymous local Convex deployment and keeps the
-    schema pushed while it runs. Point `CONVEX_URL` at a hosted deployment instead if
-    you don't want a local backend.
+    `pnpm dev` is local-first: it runs `pnpm convex:local`, which boots a persistent
+    anonymous Convex backend on `:3210` (in `.convex-local/`), pushes the schema, and
+    applies the advanced canonical seed. Manage it with `pnpm convex:local`,
+    `pnpm convex:local:reset`, and `pnpm convex:local:stop`. Point `CONVEX_URL` /
+    `NEXT_PUBLIC_CONVEX_URL` / `CONVEX_SERVER_SECRET` at a hosted deployment to use the
+    cloud instead.
 </Callout>
 
 ## Seed a tenant
