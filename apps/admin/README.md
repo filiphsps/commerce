@@ -44,6 +44,36 @@ Required environment variables (defined at the root in [`.env.example`](../../.e
 | `SHOPIFY_API_KEY`       | Required for the Shopify Admin API integration flow.          |
 | `SHOPIFY_API_SECRET_KEY`| Pairs with `SHOPIFY_API_KEY`.                                 |
 
+## Troubleshooting
+
+Two setup gotchas account for most "it builds but the dashboard is broken" reports. Both are
+**environment/data**, not code:
+
+### Certain dashboard pages 500 ("This page couldn't load")
+
+CMS-editor pages (`content/*`, `settings/{shop,theme,users,tenants,media}`, the `…/[id]` editors)
+read through `editorConvexBridge`, which mints a Convex **operator token** signed with
+`CONVEX_AUTH_PRIVATE_KEY`. Home and Products keep working because they read via the server-secret
+`Shop.findByDomain` seam and never mint an operator token — so the symptom is "only certain pages".
+
+- **Cause:** `CONVEX_AUTH_PRIVATE_KEY` is unset (or doesn't match the deployment's JWKS). The mint
+    returns `null` and the bridge throws `ConvexOperatorTokenMintError`.
+- **Fix:** set `CONVEX_AUTH_PRIVATE_KEY` to the RS256 PKCS8 key whose public half is served at
+    `CONVEX_AUTH_JWKS_URL` — the **same** key the deployed admin/storefront use (copy from your secret
+    store; don't generate a fresh one, or the deployment won't trust the tokens). Restart `pnpm dev`.
+- The `[domain]/error.tsx` boundary now names this cause in the dev overlay and server logs instead
+    of showing a blank server error.
+
+### Opening any shop bounces back to the shop picker
+
+- **Cause:** a valid NextAuth JWT that outlived its platform `users` document — typically the Convex
+    deployment was reseeded (e.g. to the canonical test fixtures), wiping real users while the browser
+    kept its session. `getAuthedCmsCtx` can't resolve the user, redirects to `/auth/login/`, and the
+    login page (for a provisioned session) would send you back to `/`.
+- **Fix:** **sign out and sign back in.** The auth adapter re-provisions the `users` doc on the next
+    OAuth round-trip. The login page now falls through to the sign-in button for an unprovisioned
+    session instead of looping to the picker, so re-auth is reachable.
+
 ## Layout
 
 ```text
