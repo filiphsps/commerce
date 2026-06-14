@@ -1901,3 +1901,19 @@ Flow-hardening folded into the restyle (the "continue" items):
 - **a11y**: `aria-live` status regions (domain + connection), `aria-current`/`aria-label` on the stepper, `aria-hidden` on decorative icons.
 
 **Design gate:** `pnpm test --project @nordcom/commerce-admin` → 66 files / 295 tests pass, 0 fail. `pnpm typecheck` clean. `pnpm biome check` clean (0 warnings; classes sorted via the project's `--unsafe` convention). `pnpm build --filter @nordcom/commerce-admin` compiles with `/new` in the route table. Not yet visually verified in a running browser (the `/new` page requires an authenticated admin session); structure mirrors the on-brand home/login cards.
+
+**8. Critical runtime bug — nordstar `Input` swallows controlled `onChange`**
+
+Reported in use: a valid domain (`beta.pouched.de`) stuck at "Enter a full hostname, e.g. shop.acme.com." and could not be connected.
+
+Reproduced bottom-up: the deployment query (`db/shops:byDomain`) returns `null` for `beta.pouched.de` → genuinely available, and the seam → `isNotFound` path returns `{ available: true }` correctly. So the block was client-side. Reading the built `@nordcom/nordstar-input` source revealed the cause: `Input` spreads `{...props}` and then sets **its own** `onChange` afterward —
+
+```js
+jsx(Tag, { ...props, /* … */ onChange: (e) => setContents(e.target.value), value: contents })
+```
+
+— overriding any consumer `onChange`. nordstar `Input` is **uncontrolled by design** (the rest of the admin reads it via FormData/refs). The wizard and Shopify connect form drove it as a controlled input (`onChange={e => setDomain(e.target.value)}`), so keystrokes updated the input's *internal* `contents` (visible text) but never the React state. `domain` stayed `''` → `isValidHostname('')` is false → "invalid" / "Enter a full hostname", and Next never enabled. Every text field (name, domain, all four Shopify credentials) was affected. **The unit tests passed only because they `vi.mock` nordstar's `Input` to forward `onChange`** — masking the real behavior.
+
+Fix: a controlled `components/ui/text-field.tsx` (`TextField`) following the admin's established native-input convention (`color-field.tsx`) — native `<input>`, `onChange(value)`, `border-2`/focus-ring, labeled via `useId`. Replaced every nordstar `Input` in `wizard.tsx` and `connect-form.tsx` with it. The wizard/connect-form suites now render the **real** `TextField` (no Input mock), so their value-lifting assertions (`arg.name`, `arg.domain`, credential ping args) are genuine regression coverage; added `text-field.test.tsx` to lock the `onChange(rawValue)` contract directly.
+
+**Bugfix gate:** 67 files / 297 tests pass, 0 fail. `pnpm typecheck` clean. `pnpm biome check` clean. `pnpm build --filter @nordcom/commerce-admin` compiles.

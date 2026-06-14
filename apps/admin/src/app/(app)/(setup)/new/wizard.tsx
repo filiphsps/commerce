@@ -1,6 +1,6 @@
 'use client';
 
-import { Accented, Button, Heading, Input, Label } from '@nordcom/nordstar';
+import { Accented, Button, Heading, Label } from '@nordcom/nordstar';
 import {
     Check,
     ChevronLeft,
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { type ComponentType, useCallback, useRef, useState } from 'react';
 
+import { TextField } from '@/components/ui/text-field';
 import { COMMERCE_PROVIDERS, PROVIDER_ORDER } from '@/lib/commerce-providers/registry';
 import { DEFAULT_SHOP_LOCALE } from '@/lib/new-shop/defaults';
 import type { CreateShopInput } from '@/lib/new-shop/types';
@@ -169,18 +170,14 @@ export function NewShopWizard({ serviceDomain }: NewShopWizardProps): React.JSX.
                     >
                         {step === 0 ? (
                             <>
-                                <Input
-                                    label="Shop name"
-                                    value={name}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                                />
+                                <TextField label="Shop name" value={name} onChange={setName} />
                                 <div className="flex flex-col gap-2">
-                                    <Input
+                                    <TextField
                                         label="Customer-facing domain"
                                         placeholder="shop.acme.com"
                                         value={domain}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                            setDomain(e.target.value);
+                                        onChange={(next) => {
+                                            setDomain(next);
                                             setDomainStatus('idle');
                                             // Invalidate any in-flight check so its late result can't mark this edit available.
                                             domainCheckSeq.current++;

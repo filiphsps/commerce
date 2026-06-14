@@ -1,8 +1,9 @@
 'use client';
 
-import { Button, Details, Input } from '@nordcom/nordstar';
+import { Button, Details } from '@nordcom/nordstar';
 import { Check, Loader2, X } from 'lucide-react';
 import { useCallback, useState } from 'react';
+import { TextField } from '@/components/ui/text-field';
 import type { ConnectFormProps } from '@/lib/commerce-providers/types';
 import { cn } from '@/utils/tailwind';
 // Relative import: the admin tsconfig has no `@/app/*` alias, and the action is co-located with this
@@ -88,35 +89,33 @@ export function ShopifyConnectForm({ value, onChange, onTestResult, verified }: 
                 </Button>
             </div>
 
-            <Input
+            <TextField
                 label="Store domain"
                 placeholder="acme.myshopify.com"
                 value={value.storeDomain ?? ''}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => update('storeDomain', event.target.value)}
+                onChange={(next) => update('storeDomain', next)}
             />
-            <Input
+            <TextField
                 label="Public access token"
                 placeholder="Storefront API public token"
                 value={value.publicToken ?? ''}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => update('publicToken', event.target.value)}
+                onChange={(next) => update('publicToken', next)}
             />
-            <Input
+            <TextField
                 label="Private access token"
                 type="password"
                 placeholder="Storefront API private token"
                 value={value.privateToken ?? ''}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => update('privateToken', event.target.value)}
+                onChange={(next) => update('privateToken', next)}
             />
 
             <Details>
                 <summary>Advanced</summary>
-                <Input
+                <TextField
                     label="Storefront ID (optional)"
                     placeholder="gid://shopify/Shop/…"
                     value={value.storefrontId ?? ''}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        update('storefrontId', event.target.value)
-                    }
+                    onChange={(next) => update('storefrontId', next)}
                 />
             </Details>
 
