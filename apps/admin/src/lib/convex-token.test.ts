@@ -3,7 +3,7 @@ import { jwtVerify } from 'jose';
 import { describe, expect, it } from 'vitest';
 
 import { ACTIVE_SHOP_CLAIM } from '../../../../packages/convex/convex/auth/admin_shop_resolver';
-import { CONVEX_ACTIVE_SHOP_CLAIM, mintConvexOperatorToken } from './convex-token';
+import { CONVEX_ACTIVE_SHOP_CLAIM, isOperatorTokenMintingConfigured, mintConvexOperatorToken } from './convex-token';
 
 const ISSUER = 'https://admin.test.nordcom.io';
 const AUDIENCE = 'convex-admin';
@@ -75,5 +75,20 @@ describe('mintConvexOperatorToken (active-shop selection claim)', () => {
         const payload = await mintAndVerify({ email: 'operator@example.com', activeShop: '   ' });
 
         expect(payload).not.toHaveProperty(CONVEX_ACTIVE_SHOP_CLAIM);
+    });
+});
+
+describe('isOperatorTokenMintingConfigured', () => {
+    it('is true when the key, issuer, and audience are all present', () => {
+        expect(isOperatorTokenMintingConfigured(signingEnv())).toBe(true);
+    });
+
+    it('is false when the RS256 private key is missing (the reseeded-dev gap)', () => {
+        expect(isOperatorTokenMintingConfigured(signingEnv({ CONVEX_AUTH_PRIVATE_KEY: undefined }))).toBe(false);
+    });
+
+    it('is false when the issuer or audience is missing', () => {
+        expect(isOperatorTokenMintingConfigured(signingEnv({ CONVEX_AUTH_ISSUER: undefined }))).toBe(false);
+        expect(isOperatorTokenMintingConfigured(signingEnv({ CONVEX_AUTH_APPLICATION_ID: '   ' }))).toBe(false);
     });
 });

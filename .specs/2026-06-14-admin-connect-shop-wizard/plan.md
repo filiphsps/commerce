@@ -1930,3 +1930,19 @@ Reproduced against the deployment: `db/users:byEmail(<operator email>)` → `nul
 The `users` doc can only be (re)created through the OAuth flow (the adapter's `createUser`), but the login bounce blocked the operator from ever reaching the sign-in button. Fix: the login page now redirects to the picker **only when the session resolves to a real `users` doc**; an authenticated-but-unprovisioned session falls through to the sign-in button, so re-authenticating re-provisions the account (adapter `createUser`) and unblocks both opening and creating shops. Three tests (`login/page.test.tsx`). Operator recovery: sign out and sign back in.
 
 **Gate:** 68 files / 300 tests pass, 0 fail. `pnpm typecheck` clean. `pnpm biome check` clean. `pnpm build --filter @nordcom/commerce-admin` compiles.
+
+**10. Opaque "server error" on CMS pages — unconfigured operator-token minter**
+
+Reported in use: certain dashboard pages show "This page couldn't load. A server error occurred."
+
+Diagnosed (env + code, no live repro available): CMS-editor pages (`content/*`, `settings/{shop,theme,users,tenants,media}`, the `…/[id]` editors, versions) read through `editorConvexBridge`, which mints a Convex **operator token**. `.env.local` has the public `CONVEX_AUTH_ISSUER`/`APPLICATION_ID`/`JWKS_URL` but **not** the RS256 `CONVEX_AUTH_PRIVATE_KEY` the minter signs with (`convex-token.ts`). So every `operatorQuery`/`operatorMutation` got a `null` token and threw `ConvexOperatorTokenMintError`, surfacing as a bare 500. Home/Products work because they read via the server-secret `Shop.findByDomain` seam and never mint an operator token — that's the "certain pages" split. Ruled out: products/home (no bridge), missing CMS docs (`getDocument` returns `null` gracefully), and the new shop's data (intact).
+
+The real fix is operations — set `CONVEX_AUTH_PRIVATE_KEY` to the key the deployment's JWKS trusts (it's a secret; the operator supplies it). The code change makes the failure **loud and actionable** instead of opaque:
+
+- `isOperatorTokenMintingConfigured()` (`convex-token.ts`) — distinguishes an unconfigured minter from a transient failure.
+- The bridge upgrades the `ConvexOperatorTokenMintError` message to name the remedy (`set CONVEX_AUTH_PRIVATE_KEY …, see apps/admin/.env.example`) when the minter is unconfigured.
+- A new on-brand `[domain]/error.tsx` boundary replaces Next's bare fallback — keeps the shell mounted, shows the actual cause (the actionable message in dev; `digest` for log correlation in prod), and offers a retry.
+
+Five tests (`convex-token.test.ts` predicate ×3, `[domain]/error.test.tsx` ×2).
+
+**Gate:** 69 files / 305 tests pass, 0 fail. `pnpm typecheck` clean. `pnpm biome check` clean. `pnpm build --filter @nordcom/commerce-admin` compiles.

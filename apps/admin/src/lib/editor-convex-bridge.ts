@@ -13,7 +13,25 @@ import { ConvexOperatorTokenMintError } from '@nordcom/commerce-errors';
 
 import { getActiveShopSelection } from './active-shop';
 import { authenticateConvexClient, type ConvexTokenMinter } from './convex-auth';
-import { mintConvexOperatorToken } from './convex-token';
+import { isOperatorTokenMintingConfigured, mintConvexOperatorToken } from './convex-token';
+
+/**
+ * Builds the {@link ConvexOperatorTokenMintError} for a failed mint, upgrading the message to an
+ * actionable operations fix when the cause is an UNCONFIGURED minter (no `CONVEX_AUTH_PRIVATE_KEY`)
+ * rather than an unauthenticated session — so a misconfigured deployment surfaces the remedy in the
+ * server log and the dev error overlay instead of an opaque "server error".
+ *
+ * @param context - The Convex function path that needed the token.
+ * @returns The error to throw.
+ */
+function operatorTokenMintError(context: string): ConvexOperatorTokenMintError {
+    if (!isOperatorTokenMintingConfigured()) {
+        return new ConvexOperatorTokenMintError(
+            `${context} — operator token minting is not configured; set CONVEX_AUTH_PRIVATE_KEY (plus CONVEX_AUTH_ISSUER / CONVEX_AUTH_APPLICATION_ID), see apps/admin/.env.example`,
+        );
+    }
+    return new ConvexOperatorTokenMintError(context);
+}
 
 /**
  * Mints the operator token for THIS request, layering the route-resolved active-shop selection
@@ -178,7 +196,7 @@ async function operatorMutation<Result>(name: string, args: Record<string, unkno
     const client = createConvexIdentityClient();
     const token = await authenticateConvexClient(client, mintRequestOperatorToken);
     if (!token) {
-        throw new ConvexOperatorTokenMintError(name);
+        throw operatorTokenMintError(name);
     }
     return convexIdentityMutation<Result>(client, name, args);
 }
@@ -197,7 +215,7 @@ async function operatorQuery<Result>(name: string, args: Record<string, unknown>
     const client = createConvexIdentityClient();
     const token = await authenticateConvexClient(client, mintRequestOperatorToken);
     if (!token) {
-        throw new ConvexOperatorTokenMintError(name);
+        throw operatorTokenMintError(name);
     }
     return convexIdentityQuery<Result>(client, name, args);
 }

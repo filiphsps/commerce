@@ -66,6 +66,19 @@ async function loadSigningKey(env: NodeJS.ProcessEnv): Promise<ConvexSigningKey 
 }
 
 /**
+ * Whether the admin is configured to mint Convex operator tokens — the RS256 private key AND the
+ * issuer/audience are all present. Lets callers distinguish an UNCONFIGURED deployment (an actionable
+ * "set `CONVEX_AUTH_PRIVATE_KEY`" operations fix) from a transient signing failure, without attempting
+ * a signature. Mirrors the exact configuration {@link mintConvexOperatorToken} requires.
+ *
+ * @param env - Environment to read; defaults to `process.env`.
+ * @returns `true` when every piece of minting configuration is present.
+ */
+export function isOperatorTokenMintingConfigured(env: NodeJS.ProcessEnv = process.env): boolean {
+    return Boolean(env.CONVEX_AUTH_ISSUER?.trim() && env.CONVEX_AUTH_APPLICATION_ID?.trim() && readPrivateKeyPem(env));
+}
+
+/**
  * Mints the RS256 JWT the Convex deployment validates for an admin OPERATOR
  * session — the concrete {@link import('./convex-auth').ConvexTokenMinter}
  * behind `authenticateConvexClient`. Shares the storefront customer minter's
