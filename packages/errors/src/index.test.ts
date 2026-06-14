@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
     ApiErrorKind,
+    ConflictingFilterError,
     DuplicatePredicateRegistrationError,
     DuplicateWorkspaceSlugError,
     EmptyTenantScopeError,
@@ -369,5 +370,27 @@ describe('UnknownShopDomainError', () => {
     });
     it('is reachable through getErrorFromCode', () => {
         expect(getErrorFromCode(ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN)).toBe(UnknownShopDomainError);
+    });
+});
+
+describe('ConflictingFilterError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new ConflictingFilterError();
+        expect(err.name).toBe('ConflictingFilterError');
+        expect(err.statusCode).toBe(400);
+        expect(err.code).toBe(ApiErrorKind.API_CONFLICTING_FILTERS);
+        expect(err.description.length).toBeGreaterThan(0);
+    });
+    it('templates the conflict into description', () => {
+        const err = new ConflictingFilterError('`limit` cannot be combined with `first`/`last`');
+        expect(err.description).toContain('`limit` cannot be combined with `first`/`last`');
+    });
+    it('accepts cause and statusCode positionally', () => {
+        const err = new ConflictingFilterError(undefined, 'bad request', 422);
+        expect(err.cause).toBe('bad request');
+        expect(err.statusCode).toBe(422);
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(ApiErrorKind.API_CONFLICTING_FILTERS)).toBe(ConflictingFilterError);
     });
 });

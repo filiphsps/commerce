@@ -173,6 +173,7 @@ export enum ApiErrorKind {
     API_MISSING_REQUIRED_FIELD = 'API_MISSING_REQUIRED_FIELD',
     API_UNSUPPORTED_UPLOAD_MIME_TYPE = 'API_UNSUPPORTED_UPLOAD_MIME_TYPE',
     API_MEDIA_STORAGE_UPLOAD_FAILED = 'API_MEDIA_STORAGE_UPLOAD_FAILED',
+    API_CONFLICTING_FILTERS = 'API_CONFLICTING_FILTERS',
 }
 
 /**
@@ -1036,6 +1037,40 @@ export class MediaStorageUploadError extends ApiError {
 }
 
 /**
+ * Signals that a caller supplied mutually exclusive pagination/filter arguments — e.g. `limit`
+ * alongside `first`/`last`, or `first` together with `last` — returning HTTP 400 since the
+ * conflict originates from the request, not the upstream provider.
+ *
+ * @param conflict - Optional description of which arguments collided; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 400 HTTP status code.
+ * @example
+ * ```ts
+ * throw new ConflictingFilterError('`limit` cannot be combined with `first`/`last`');
+ * ```
+ */
+export class ConflictingFilterError extends ApiError {
+    statusCode = 400;
+    name = 'ConflictingFilterError';
+    details = 'Conflicting filters';
+    description = 'Mutually exclusive filters were provided';
+    code = ApiErrorKind.API_CONFLICTING_FILTERS;
+
+    constructor(conflict?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (conflict) {
+            this.description = `${this.description}: ${conflict}`;
+        }
+
+        // The `statusCode = 400` class field runs after super() returns, clobbering any override
+        // passed to the base ctor — re-apply it here so callers can still bump the status.
+        if (statusCode !== undefined) {
+            this.statusCode = statusCode;
+        }
+    }
+}
+
+/**
  * Error codes for non-API, application-layer errors covering unclassified failures, type violations, context misuse, and CMS configuration issues.
  *
  * @example
@@ -1580,5 +1615,7 @@ export const getErrorFromCode = (
             return UnsupportedUploadMimeTypeError as unknown as typeof ApiError;
         case ApiErrorKind.API_MEDIA_STORAGE_UPLOAD_FAILED:
             return MediaStorageUploadError as unknown as typeof ApiError;
+        case ApiErrorKind.API_CONFLICTING_FILTERS:
+            return ConflictingFilterError as unknown as typeof ApiError;
     }
 };
