@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { fileURLToPath } from 'node:url';
 
 import { resolveConvexProjectDir } from './start';
 
@@ -110,10 +111,13 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
 
     if (!(await isBackendHealthy(url))) {
         // Detached so the daemon outlives this orchestration process and `pnpm dev` continues.
-        const cliEntry = requireFromHere.resolve('./cli');
+        // Re-use the parent interpreter's loader flags (e.g. tsx in dev) and the sibling cli's
+        // extension so the detached daemon runs exactly the way this orchestration does.
+        const here = fileURLToPath(import.meta.url);
+        const cliEntry = resolve(dirname(here), here.endsWith('.ts') ? 'cli.ts' : 'cli.js');
         const child = spawn(
             process.execPath,
-            [cliEntry, 'start', '--dataDir', dataDir, '--port', String(DEV_LOCAL.port)],
+            [...process.execArgv, cliEntry, 'start', '--dataDir', dataDir, '--port', String(DEV_LOCAL.port)],
             { detached: true, stdio: 'ignore' },
         );
         child.unref();
