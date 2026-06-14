@@ -151,6 +151,10 @@ jobs:
         name: 🔨 Build
         timeout-minutes: 25
         runs-on: ubuntu-latest
+        # Bake the local Convex URL into the storefront/admin bundles (NEXT_PUBLIC_* is inlined at
+        # build time) so the e2e job's prebuilt artifacts connect to the seeded :3210 backend.
+        env:
+            NEXT_PUBLIC_CONVEX_URL: http://127.0.0.1:3210
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
@@ -316,14 +320,21 @@ jobs:
         needs: build
         timeout-minutes: 60
         runs-on: ubuntu-latest
+        # Kept non-blocking for the first green run; remove `continue-on-error` in a follow-up once
+        # e2e is stable so it gates merges.
         continue-on-error: true
-        if: false
         strategy:
             fail-fast: false
             matrix:
                 app: [storefront, admin]
         env:
             NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
+            # Point the app + global-setup seed at the seeded local backend the composite boots.
+            CONVEX_URL: http://127.0.0.1:3210
+            NEXT_PUBLIC_CONVEX_URL: http://127.0.0.1:3210
+            CONVEX_SERVER_SECRET: dev-local-secret
+            CONVEX_AGENT_MODE: anonymous
+            CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
@@ -333,6 +344,9 @@ jobs:
               uses: ./.github/common/bootstrap
               with:
                   turbo-cache: "false"
+
+            - name: 🌐 Local Convex backend (boot + seed)
+              uses: ./.github/common/convex-local
 
             - name: 📥 Download app builds
               uses: actions/download-artifact@v8
@@ -435,7 +449,7 @@ jobs:
 
     dispatch:
         name: 🗣️ Dispatch
-        needs: [lint, typecheck, test, build, convex, e2e]
+        needs: [lint, typecheck, test, build, convex, integration, e2e]
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         timeout-minutes: 5
         runs-on: ubuntu-latest
