@@ -156,8 +156,22 @@ export const ShopifyApolloApiClient = async ({
  * @throws {ShopMisconfigurationError} When Shopify authentication credentials are incomplete.
  */
 export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig, buyerIp }: ShopifyApiOptions) => {
-    // TODO: Support public headers too.
-    const config = (apiConfig || (await ShopifyApiConfig({ shop, buyerIp }))).private();
+    const configBuilder = apiConfig || (await ShopifyApiConfig({ shop, buyerIp }));
+
+    // Mirror ShopifyApolloApiClient's private→public fallback: a bad/expired admin token or
+    // incomplete private credentials shouldn't 500 the public read paths that use this client
+    // (sitemaps, static params, css-variables) — degrade to public headers with a trace breadcrumb.
+    let config: ApiConfig | null = null;
+    try {
+        config = configBuilder.private();
+    } catch (privateConfigError) {
+        trace.getActiveSpan()?.addEvent('shopify.private_headers_unavailable', {
+            'error.message':
+                privateConfigError instanceof Error ? privateConfigError.message : String(privateConfigError),
+            'shop.domain': shop.domain,
+        });
+    }
+    if (!config) config = configBuilder.public();
 
     // This fetch-based stub implements only the `query` method consumed by
     // ApiBuilder; the rest of the ApolloClient surface is never called on
@@ -186,8 +200,6 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                               tags: tenantRootTags(shop),
                           },
                       }),
-
-                // TODO: context, e.g. locale
             });
 
             try {
