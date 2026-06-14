@@ -1,15 +1,18 @@
 'use client';
 
-import { Button, Details, Input, Label } from '@nordcom/nordstar';
+import { Button, Details, Input } from '@nordcom/nordstar';
+import { Check, Loader2, X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import type { ConnectFormProps } from '@/lib/commerce-providers/types';
+import { cn } from '@/utils/tailwind';
 // Relative import: the admin tsconfig has no `@/app/*` alias, and the action is co-located with this
 // connector (Task 2), so it resolves as a sibling.
 import { testShopifyConnection } from './actions';
 
-/** Local outcome of the "Test connection" action. */
+/** Local outcome of the "Test connection" action. `restored` is a remount of a previously-passing test. */
 type TestState =
     | { status: 'idle' }
+    | { status: 'restored' }
     | { status: 'testing' }
     | { status: 'ok'; shopName: string }
     | { status: 'error'; error: string };
@@ -19,13 +22,16 @@ type TestState =
  * "coming soon" / OAuth-ready seam) and an active manual-credentials form. The "Test connection" button
  * fires the live Storefront-API ping; a successful test calls `onTestResult(true)` so the wizard can
  * advance. Any field edit invalidates the prior test (`onTestResult(false)`), forcing a re-test before
- * the operator can continue — connection validity always reflects the current credentials.
+ * the operator can continue — connection validity always reflects the current credentials. When the
+ * wizard already holds a passing verdict (`verified`), the form mounts showing that confirmation rather
+ * than reverting to an untested state on back-navigation.
  *
- * @param props - {@link ConnectFormProps}: current values, change lifter, and the test-result callback.
+ * @param props - {@link ConnectFormProps}: current values, change lifter, the test-result callback, and
+ *   the wizard's persisted `verified` verdict.
  * @returns The Shopify connect form.
  */
-export function ShopifyConnectForm({ value, onChange, onTestResult }: ConnectFormProps): React.JSX.Element {
-    const [test, setTest] = useState<TestState>({ status: 'idle' });
+export function ShopifyConnectForm({ value, onChange, onTestResult, verified }: ConnectFormProps): React.JSX.Element {
+    const [test, setTest] = useState<TestState>(() => (verified ? { status: 'restored' } : { status: 'idle' }));
 
     /**
      * Lifts a single field edit into wizard state and invalidates any prior passing test, so the
@@ -68,10 +74,16 @@ export function ShopifyConnectForm({ value, onChange, onTestResult }: ConnectFor
     return (
         <div className="flex flex-col gap-4">
             <div className="flex gap-2" role="group" aria-label="Connection method">
-                <Button variant="outline" color="foreground" disabled title="OAuth install — coming soon">
+                <Button
+                    variant="outline"
+                    color="foreground"
+                    disabled
+                    title="OAuth install — coming soon"
+                    className="flex-1"
+                >
                     Install via OAuth (soon)
                 </Button>
-                <Button variant="solid" color="primary" disabled>
+                <Button variant="solid" color="primary" disabled className="flex-1">
                     Paste credentials
                 </Button>
             </div>
@@ -108,19 +120,48 @@ export function ShopifyConnectForm({ value, onChange, onTestResult }: ConnectFor
                 />
             </Details>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-2">
                 <Button
-                    variant="outline"
-                    color="foreground"
+                    variant="solid"
+                    color="primary"
                     onClick={runTest}
+                    className="w-full"
                     disabled={
                         test.status === 'testing' || !value.storeDomain || !value.publicToken || !value.privateToken
                     }
                 >
-                    {test.status === 'testing' ? 'Testing…' : 'Test connection'}
+                    {test.status === 'testing' ? (
+                        <span className="flex items-center justify-center gap-2">
+                            <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Testing…
+                        </span>
+                    ) : (
+                        'Test connection'
+                    )}
                 </Button>
-                {test.status === 'ok' ? <Label as="span">Connected to {test.shopName} ✓</Label> : null}
-                {test.status === 'error' ? <Label as="span">{test.error}</Label> : null}
+                <div
+                    aria-live="polite"
+                    className={cn(
+                        'flex items-center gap-2 font-medium text-sm',
+                        (test.status === 'ok' || test.status === 'restored') && 'text-primary',
+                        test.status === 'error' && 'text-destructive-foreground',
+                    )}
+                >
+                    {test.status === 'restored' ? (
+                        <>
+                            <Check className="size-4" aria-hidden="true" /> Connection verified
+                        </>
+                    ) : null}
+                    {test.status === 'ok' ? (
+                        <>
+                            <Check className="size-4" aria-hidden="true" /> Connected to {test.shopName}
+                        </>
+                    ) : null}
+                    {test.status === 'error' ? (
+                        <>
+                            <X className="size-4" aria-hidden="true" /> {test.error}
+                        </>
+                    ) : null}
+                </div>
             </div>
         </div>
     );

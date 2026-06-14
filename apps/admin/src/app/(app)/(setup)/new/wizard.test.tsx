@@ -8,6 +8,7 @@ vi.mock('./actions', () => ({
     createShop: mockCreate,
 }));
 vi.mock('@nordcom/nordstar', () => ({
+    Accented: ({ children }: any) => <span>{children}</span>,
     Button: ({ children, onClick, disabled, ...p }: any) => (
         <button onClick={onClick} disabled={disabled} {...p}>
             {children}

@@ -86,6 +86,18 @@ describe('ShopifyConnectForm', () => {
         expect(onTestResult).toHaveBeenLastCalledWith(false);
     });
 
+    it('re-shows the confirmation when mounted with a persisted verified verdict', () => {
+        render(
+            <ShopifyConnectForm
+                value={{ storeDomain: 'acme.myshopify.com', publicToken: 'pub', privateToken: 'sec' }}
+                onChange={() => {}}
+                onTestResult={() => {}}
+                verified
+            />,
+        );
+        expect(screen.getByText(/connection verified/i)).toBeTruthy();
+    });
+
     it('exposes a disabled OAuth method option', () => {
         setup();
         const oauth = screen.getByRole('button', { name: /oauth/i });

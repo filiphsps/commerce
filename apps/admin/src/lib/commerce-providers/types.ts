@@ -13,6 +13,12 @@ export type ConnectFormProps = {
     onChange: (value: Record<string, string>) => void;
     /** Reports whether the connection has been validated (`true`) or invalidated (`false`). */
     onTestResult: (ok: boolean) => void;
+    /**
+     * Whether the wizard already holds a passing verdict for this connection. Lets a form remounting on
+     * back-navigation re-show its confirmation instead of reverting to an untested state while the
+     * wizard still considers the connection valid.
+     */
+    verified?: boolean;
 };
 
 /** UI-side registry entry: how a provider presents itself and collects its connection. */
