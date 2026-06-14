@@ -14,6 +14,8 @@ import type { ReactNode } from 'react';
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
+import { resolveFreeShipping } from '@/components/cart/free-shipping';
+import { FreeShippingProgress } from '@/components/cart/free-shipping-progress';
 import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { useShop } from '@/components/shop/provider';
@@ -33,8 +35,6 @@ const SECTION_STYLES =
     'flex flex-col p-[var(--block-padding-large)] rounded-[var(--block-border-radius)] bg-[var(--color-block)] text-[color:var(--color-dark)] transition-all duration-150 ease-in-out';
 const HEADER_STYLES = 'grid grid-cols-[1fr_auto] gap-[var(--block-spacer)]';
 
-// TODO: Configurable free shipping.
-
 type CartSummaryProps = {
     shop: OnlineShop;
     onCheckout: () => void | Promise<void>;
@@ -47,14 +47,14 @@ type CartSummaryProps = {
  * Sticky order-summary sidebar with subtotal, discount rows, a checkout button,
  * payment-method logos, and the cart note field.
  *
- * @param props.shop - Shop record (currently unused; reserved for free-shipping config).
+ * @param props.shop - Shop record; supplies the per-currency free-shipping thresholds.
  * @param props.onCheckout - Callback invoked when the checkout button is clicked.
  * @param props.i18n - Locale dictionary for translated labels.
  * @param props.children - Optional slot rendered above the order summary section.
  * @param props.paymentMethods - Optional payment method icons rendered in the trust footer.
  * @returns The cart summary panel.
  */
-const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
+const CartSummary = ({ shop, onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
     const { t } = getTranslations('cart', i18n);
     const { status, cartReady } = useCartStatus();
     const totalQuantity = useCartCount();
@@ -107,6 +107,12 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
     const currencyCode = (cost.total?.currencyCode ?? cost.subtotal?.currencyCode ?? currency) as CurrencyCode;
 
+    const freeShipping = resolveFreeShipping({
+        thresholds: shop.commerce?.freeShippingThresholds,
+        currencyCode,
+        subtotal: safeParseFloat(0, cost.subtotal?.amount),
+    });
+
     return (
         <div
             data-display="cost"
@@ -125,8 +131,12 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
                         <Label className={SUMMARY_LABEL_STYLES}>{t('shipping')}</Label>
-                        <div className={PRICE_STYLES}>{'TBD*'}</div>
+                        <div className={PRICE_STYLES}>
+                            {freeShipping.state === 'unlocked' ? t('free-shipping') : 'TBD*'}
+                        </div>
                     </div>
+
+                    <FreeShippingProgress state={freeShipping} currencyCode={currencyCode} i18n={i18n} />
 
                     <div className="flex items-center justify-between">
                         <Label className={SUMMARY_LABEL_STYLES}>{t('subtotal')}</Label>
