@@ -29,7 +29,7 @@ function FontPreviewControl({ value, onChange, placeholder, id }: ControlProps) 
     const current = typeof value === 'string' ? value : undefined;
 
     return (
-        <Select value={current} onValueChange={(next: string) => onChange(next)}>
+        <Select value={current} onValueChange={(next) => onChange(next)}>
             <Select.Trigger id={id}>
                 <Select.Value placeholder={placeholder ?? 'Select font…'} />
             </Select.Trigger>

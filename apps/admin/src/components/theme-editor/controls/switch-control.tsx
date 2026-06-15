@@ -14,7 +14,7 @@ import type { ControlProps } from './field-row';
 export function SwitchControl({ value, onChange, id }: ControlProps) {
     return (
         <div className="flex h-9 items-center">
-            <Switch id={id} checked={value === true} onCheckedChange={(next: boolean) => onChange(next)} />
+            <Switch id={id} checked={value === true} onCheckedChange={(next) => onChange(next)} />
         </div>
     );
 }

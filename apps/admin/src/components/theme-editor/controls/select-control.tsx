@@ -22,7 +22,7 @@ export function SelectControl({ token, value, onChange, placeholder, id }: Contr
     const current = typeof value === 'string' ? value : undefined;
 
     return (
-        <Select value={current} onValueChange={(next: string) => onChange(next)} disabled={readOnly}>
+        <Select value={current} onValueChange={(next) => onChange(next)} disabled={readOnly}>
             <Select.Trigger id={id}>
                 <Select.Value placeholder={placeholder ?? 'Select…'} />
             </Select.Trigger>
