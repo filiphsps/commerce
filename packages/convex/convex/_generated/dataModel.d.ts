@@ -1532,6 +1532,7 @@ export type DataModel = {
         updatedAt: number;
       }>;
       name: string;
+      preferences?: { theme?: "dark" | "system" };
       updatedAt: number;
       _id: Id<"users">;
       _creationTime: number;
@@ -1546,6 +1547,8 @@ export type DataModel = {
       | "groups"
       | "identities"
       | "name"
+      | "preferences"
+      | "preferences.theme"
       | "updatedAt";
     indexes: {
       by_id: ["_id"];

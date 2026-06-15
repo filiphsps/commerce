@@ -64,11 +64,28 @@ export const identityValidator = v.object({
 export type IdentityBase = Infer<typeof identityValidator>;
 
 /**
+ * Per-user UI preferences embedded on the platform user. Optional end-to-end so existing rows (which
+ * predate this field) validate unchanged. `theme` is the operator's admin theme choice: `'system'`
+ * follows the OS, `'dark'` pins dark. There is no `'light'` value yet because the admin has no light
+ * token set; the choice is persisted and applied (light-ready) but visually inert until a
+ * `[data-theme="light"]` block lands.
+ */
+export const userPreferencesValidator = v.object({
+    theme: v.optional(v.union(v.literal('dark'), v.literal('system'))),
+});
+
+/**
+ * Inferred per-user preferences shape. See {@link userPreferencesValidator}.
+ */
+export type UserPreferences = Infer<typeof userPreferencesValidator>;
+
+/**
  * Stored row shape for a platform user, mirroring `UserBase` from `@nordcom/commerce-db`'s
  * `user.ts` and the Auth.js adapter contract: a unique `email`, a `name`, optional `avatar`, the
  * nullable `emailVerified` timestamp (Mongo `Date` → numeric epoch-ms here), an optional `groups`
- * allowlist, and the embedded {@link embeddedIdentityValidator} list that links the user to its
- * OAuth identities. `email` uniqueness is enforced in the mutation layer, not by the index.
+ * allowlist, the embedded {@link embeddedIdentityValidator} list that links the user to its OAuth
+ * identities, and optional per-user {@link userPreferencesValidator}. `email` uniqueness is enforced
+ * in the mutation layer, not by the index.
  */
 export const userValidator = v.object({
     email: v.string(),
@@ -77,6 +94,7 @@ export const userValidator = v.object({
     emailVerified: v.union(v.number(), v.null()),
     groups: v.optional(v.array(v.string())),
     identities: v.array(embeddedIdentityValidator),
+    preferences: v.optional(userPreferencesValidator),
     ...timestampFields,
 });
 
