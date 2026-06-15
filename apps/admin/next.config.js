@@ -43,6 +43,11 @@ const config = {
     trailingSlash: true,
     // cacheComponents: true, // TODO: Enable as soon as possible.
     typedRoutes: true,
+    // `sharp` (the media-upload pipeline's image resizer) is a native module: keep it OUT of the
+    // server bundle so it loads from node_modules at runtime, where pnpm resolves its own deps. The
+    // Turbopack build otherwise copies a partial `sharp` into `.next/node_modules/` without its
+    // runtime `detect-libc`, and the media action throws ERR_MODULE_NOT_FOUND at upload time.
+    serverExternalPackages: ['sharp'],
     turbopack: {
         root: path.resolve(path.join(__dirname, '../..')),
     },
