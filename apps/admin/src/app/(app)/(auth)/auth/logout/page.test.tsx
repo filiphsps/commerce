@@ -4,9 +4,27 @@ import { describe, expect, it, vi } from 'vitest';
 // Mocks
 // ------------------------------------------------------------------
 
-vi.mock('@nordcom/nordstar', () => ({
-    Card: { Header: ({ children }: { children: React.ReactNode }) => <div>{children}</div> },
-    Heading: ({ children }: { children: React.ReactNode }) => <h1>{children}</h1>,
+// Render the shell as a thin passthrough — its chrome is covered by auth-shell.test.tsx.
+vi.mock('@/components/auth-shell', () => ({
+    AuthShell: ({
+        eyebrow,
+        title,
+        children,
+    }: {
+        eyebrow?: React.ReactNode;
+        title: React.ReactNode;
+        children: React.ReactNode;
+    }) => (
+        <main>
+            <div>{eyebrow}</div>
+            <h1>{title}</h1>
+            {children}
+        </main>
+    ),
+}));
+
+vi.mock('lucide-react', () => ({
+    Loader2: () => <svg data-testid="spinner" />,
 }));
 
 vi.mock('./logout-action', () => ({
@@ -27,12 +45,20 @@ describe('(auth)/auth/logout/page', () => {
         expect(typeof IndexAdminPage).toBe('function');
     });
 
-    it('renders the "Logging out..." heading and the logout action', async () => {
-        const { container } = await renderRSC(() => IndexAdminPage({}));
+    it('renders the "Signing out…" heading and the logout action', async () => {
+        const { container } = await renderRSC(() => IndexAdminPage());
         const q = within(container as HTMLElement);
 
-        expect(q.getByText('Logging out...')).toBeInTheDocument();
+        expect(q.getByRole('heading', { level: 1 })).toHaveTextContent('Signing out…');
         expect(q.getByTestId('logout-action')).toBeInTheDocument();
+    });
+
+    it('shows an in-progress spinner and status copy', async () => {
+        const { container } = await renderRSC(() => IndexAdminPage());
+        const q = within(container as HTMLElement);
+
+        expect(q.getByTestId('spinner')).toBeInTheDocument();
+        expect(q.getByText(/signing you out/i)).toBeInTheDocument();
     });
 
     it('exports metadata with title "Logout"', async () => {
