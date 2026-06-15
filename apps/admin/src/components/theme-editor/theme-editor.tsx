@@ -4,7 +4,7 @@ import { deriveCatalog, type ThemeGroup, type ThemeTokenMeta } from '@nordcom/co
 import { Accordion } from '@nordcom/nordstar';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { type KeyboardEvent, useMemo, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/utils/tailwind';
 import { AccentRepeater } from './accent-repeater';
@@ -23,18 +23,32 @@ const GROUP_LABELS: Record<ThemeGroup, string> = {
     sections: 'Sections',
 };
 
-/** One navigable cluster: a stable id plus its ordered tokens. */
+/** One cluster of tokens within a section. */
 type ClusterEntry = { id: string; group: ThemeGroup; cluster: string; tokens: ThemeTokenMeta[] };
 
-/** A left-rail section grouping clusters under a display heading. */
-type NavSection = { label: string; clusters: ClusterEntry[] };
+/** A top-level theme section, surfaced as one tab. */
+type NavSection = { label: string; slug: string; clusters: ClusterEntry[] };
 
 /**
- * Buckets {@link deriveCatalog} output into ordered left-rail sections by display
- * heading, preserving declaration order. No token name is named here — the shape
- * comes entirely from the catalog.
+ * URL/id-safe slug for a section label (`Product Card` → `product-card`), used
+ * for the tab/panel ids and the `?group=` deep link.
  *
- * @returns The ordered nav sections.
+ * @param label - The section display label.
+ * @returns The slug.
+ */
+function slugify(label: string): string {
+    return label
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+}
+
+/**
+ * Buckets {@link deriveCatalog} output into ordered sections by display heading,
+ * preserving declaration order. No token name is named here — the shape comes
+ * entirely from the catalog.
+ *
+ * @returns The ordered sections.
  */
 function buildNavSections(): NavSection[] {
     const sections: NavSection[] = [];
@@ -44,7 +58,7 @@ function buildNavSections(): NavSection[] {
         const label = GROUP_LABELS[group];
         let section = byLabel.get(label);
         if (!section) {
-            section = { label, clusters: [] };
+            section = { label, slug: slugify(label), clusters: [] };
             byLabel.set(label, section);
             sections.push(section);
         }
@@ -58,17 +72,18 @@ function buildNavSections(): NavSection[] {
 
 /**
  * Catalog-driven Theme Editor field surface. Mounted inside the editor `<Form>` as
- * the `fieldSurface` slot, it renders a left-rail group/cluster nav (generated
- * 100% from `deriveCatalog()`) and the active cluster's controls. The active
- * cluster is deep-linked via the `?cluster=` search param so nav state survives
- * reload. Deprecated (LEGACY) knobs collapse behind an Advanced disclosure;
- * cluster headers carry a knob count and deprecated/forthcoming pills.
+ * the `fieldSurface` slot, it renders a horizontal section tablist (generated 100%
+ * from `deriveCatalog()`) over a panel listing every cluster in the active section.
+ * The active section is deep-linked via the `?group=` search param so nav state
+ * survives reload.
  *
- * The live-preview iframe and its desktop/mobile viewport toggle live in the
- * sibling `livePreview` slot ({@link LivePreviewIframe}), colocated with the
- * iframe they control rather than mirrored here.
+ * The tablist follows the WAI-ARIA tabs pattern: roving `tabIndex`, `aria-selected`,
+ * `aria-controls`, and arrow/Home/End keyboard navigation with selection following
+ * focus. The live-preview iframe and its viewport toggle live in the sibling
+ * `livePreview` slot ({@link LivePreviewIframe}), colocated with the iframe they
+ * control rather than mirrored here.
  *
- * @returns The two-pane theme editor surface.
+ * @returns The tabbed theme editor surface.
  */
 export function ThemeEditor() {
     const router = useRouter();
@@ -76,108 +91,113 @@ export function ThemeEditor() {
     const searchParams = useSearchParams();
 
     const sections = useMemo(() => buildNavSections(), []);
-    const firstClusterId = sections[0]?.clusters[0]?.id;
-    const requested = searchParams.get('cluster');
-    const allClusters = useMemo(() => sections.flatMap((section) => section.clusters), [sections]);
-    const activeId = allClusters.some((entry) => entry.id === requested) ? requested : firstClusterId;
-    const active = allClusters.find((entry) => entry.id === activeId);
+    const requested = searchParams.get('group');
+    const requestedIndex = sections.findIndex((section) => section.slug === requested);
+    const activeIndex = requestedIndex === -1 ? 0 : requestedIndex;
+    const active = sections[activeIndex];
+    const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-    const selectCluster = (id: string) => {
+    const selectGroup = (slug: string) => {
         const next = new URLSearchParams(searchParams);
-        next.set('cluster', id);
+        next.set('group', slug);
         router.replace(`${pathname}?${next.toString()}` as Route, { scroll: false });
     };
 
-    return (
-        <div className="flex min-h-[60vh] gap-4">
-            <nav className="w-56 shrink-0 border-border border-r pr-2">
-                <Accordion
-                    type="multiple"
-                    defaultValue={sections.map((section) => section.label)}
-                    className="flex flex-col"
-                >
-                    {sections.map((section) => (
-                        <Accordion.Item key={section.label} value={section.label}>
-                            <Accordion.Trigger>{section.label}</Accordion.Trigger>
-                            <Accordion.Content className="flex flex-col gap-0.5">
-                                {section.clusters.map((entry) => (
-                                    <ClusterNavButton
-                                        key={entry.id}
-                                        entry={entry}
-                                        active={entry.id === activeId}
-                                        onSelect={() => selectCluster(entry.id)}
-                                    />
-                                ))}
-                            </Accordion.Content>
-                        </Accordion.Item>
-                    ))}
-                </Accordion>
-            </nav>
+    const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+        const last = sections.length - 1;
+        let nextIndex: number | null = null;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = index === last ? 0 : index + 1;
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = index === 0 ? last : index - 1;
+        else if (event.key === 'Home') nextIndex = 0;
+        else if (event.key === 'End') nextIndex = last;
+        if (nextIndex === null) return;
 
-            <div className="min-w-0 flex-1">
-                {active ? (
-                    <ClusterPanel entry={active} />
-                ) : (
-                    <p className="text-muted-foreground text-sm">No cluster selected.</p>
-                )}
+        const target = sections[nextIndex];
+        if (!target) return;
+        event.preventDefault();
+        tabRefs.current[nextIndex]?.focus();
+        selectGroup(target.slug);
+    };
+
+    return (
+        <div className="flex min-h-[60vh] flex-col gap-4">
+            <div
+                role="tablist"
+                aria-label="Theme sections"
+                aria-orientation="horizontal"
+                className="flex flex-wrap gap-1 border-border border-b"
+            >
+                {sections.map((section, index) => {
+                    const selected = index === activeIndex;
+                    return (
+                        <button
+                            key={section.slug}
+                            ref={(node) => {
+                                tabRefs.current[index] = node;
+                            }}
+                            type="button"
+                            role="tab"
+                            id={`theme-tab-${section.slug}`}
+                            aria-selected={selected}
+                            aria-controls={`theme-panel-${section.slug}`}
+                            tabIndex={selected ? 0 : -1}
+                            onClick={() => selectGroup(section.slug)}
+                            onKeyDown={(event) => onTabKeyDown(event, index)}
+                            className={cn(
+                                '-mb-px cursor-pointer border-b-2 px-3 py-2 font-bold text-sm uppercase tracking-wide transition-colors',
+                                selected
+                                    ? 'border-primary text-foreground'
+                                    : 'border-transparent text-muted-foreground hover:text-foreground',
+                            )}
+                        >
+                            {section.label}
+                        </button>
+                    );
+                })}
             </div>
+
+            {active ? (
+                <div
+                    role="tabpanel"
+                    id={`theme-panel-${active.slug}`}
+                    aria-labelledby={`theme-tab-${active.slug}`}
+                    tabIndex={0}
+                    className="flex min-w-0 flex-col gap-6 outline-none"
+                >
+                    {active.clusters.map((entry) => (
+                        <ClusterSection key={entry.id} entry={entry} />
+                    ))}
+                </div>
+            ) : (
+                <p className="text-muted-foreground text-sm">No theme sections available.</p>
+            )}
         </div>
     );
 }
 
 /**
- * Left-rail button selecting a cluster, showing its knob count and any
- * deprecated/forthcoming pills.
+ * One cluster rendered as a labelled sub-section inside the active tab panel: a
+ * heading with deprecated/forthcoming badges, the accent repeater for `accents[]`
+ * array rows (when present), the active leaf controls, and the LEGACY (deprecated)
+ * controls behind an Advanced disclosure.
  *
- * @param props.entry - The cluster this button selects.
- * @param props.active - Whether this cluster is currently shown.
- * @param props.onSelect - Selection handler.
- * @returns The nav button.
+ * @param props.entry - The cluster to render.
+ * @returns The cluster section.
  */
-function ClusterNavButton({ entry, active, onSelect }: { entry: ClusterEntry; active: boolean; onSelect: () => void }) {
-    const hasDeprecated = entry.tokens.some((token) => token.deprecated);
-    const hasForthcoming = entry.tokens.some((token) => token.forthcoming);
-
-    return (
-        <button
-            type="button"
-            onClick={onSelect}
-            className={cn(
-                'flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors',
-                active ? 'bg-muted font-medium text-foreground' : 'text-muted-foreground hover:bg-muted/60',
-            )}
-        >
-            <span className="capitalize">{humanizeKey(entry.cluster)}</span>
-            <span className="flex items-center gap-1">
-                {hasDeprecated ? <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground" /> : null}
-                {hasForthcoming ? <span className="h-1.5 w-1.5 rounded-full bg-primary/60" /> : null}
-                <span className="text-muted-foreground text-xs">{entry.tokens.length}</span>
-            </span>
-        </button>
-    );
-}
-
-/**
- * Right-pane panel for the active cluster: a header with the knob count and
- * status pills, the accent repeater for `accents[]` array rows (when present),
- * the active leaf controls, and the LEGACY (deprecated) controls behind an
- * Advanced disclosure.
- *
- * @param props.entry - The active cluster.
- * @returns The cluster panel.
- */
-function ClusterPanel({ entry }: { entry: ClusterEntry }) {
+function ClusterSection({ entry }: { entry: ClusterEntry }) {
     const accentTokens = entry.tokens.filter(isAccentRepeaterToken);
     const leafTokens = entry.tokens.filter((token) => !isAccentRepeaterToken(token));
     const active = leafTokens.filter((token) => !token.deprecated);
     const legacy = leafTokens.filter((token) => token.deprecated);
     const forthcomingCount = entry.tokens.filter((token) => token.forthcoming).length;
+    const headingId = `theme-cluster-${slugify(entry.id)}`;
 
     return (
-        <section className="flex flex-col">
+        <section aria-labelledby={headingId} className="flex flex-col">
             <header className="mb-2 flex items-center gap-2 border-border border-b pb-2">
-                <h2 className="font-bold text-foreground text-lg capitalize">{humanizeKey(entry.cluster)}</h2>
-                <span className="text-muted-foreground text-sm">{entry.tokens.length} knobs</span>
+                <h3 id={headingId} className="font-bold text-base text-foreground capitalize">
+                    {humanizeKey(entry.cluster)}
+                </h3>
                 {legacy.length > 0 ? <Badge>{legacy.length} legacy</Badge> : null}
                 {forthcomingCount > 0 ? <Badge>{forthcomingCount} forthcoming</Badge> : null}
             </header>
