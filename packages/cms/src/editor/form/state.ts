@@ -118,11 +118,19 @@ function flattenIntoState(state: FormState, path: string, value: unknown): void 
         }
         return;
     }
-    if (Array.isArray(value) && value.length > 0 && value.every(isPlainObject)) {
-        value.forEach((row, index) => {
-            flattenIntoState(state, `${path}.${index}`, row);
-        });
-        return;
+    if (Array.isArray(value) && value.length > 0) {
+        // Recurse into indexed row paths when every NON-NULL element is a plain object — tolerating a
+        // `null` hole a sparse-array round-trip (JSON.stringify of an index gap) may have persisted.
+        // Densify the survivors rather than collapsing the whole array to one opaque leaf, which would
+        // render zero array rows and silently drop every nested node below the gap. A genuinely mixed
+        // or primitive list (no object rows) still falls through to a single leaf, byte-identical.
+        const rows = value.filter((element) => element !== null && element !== undefined);
+        if (rows.length > 0 && rows.every(isPlainObject)) {
+            rows.forEach((row, index) => {
+                flattenIntoState(state, `${path}.${index}`, row);
+            });
+            return;
+        }
     }
     state[path] = { value, initialValue: value };
 }
@@ -157,10 +165,37 @@ export function buildInitialFormState(data: Record<string, unknown>): FormState 
 }
 
 /**
+ * Recursively densify every array so the serialized blob never carries a sparse hole.
+ *
+ * {@link setDeep} produces a sparse array whenever the state holds an `items.<n>` leaf with no lower
+ * index present — a transient gap an autosave can snapshot mid-edit. Left sparse, `JSON.stringify`
+ * writes the hole as an explicit `null`, and the read's {@link flattenIntoState} then collapses the
+ * whole array to one opaque leaf, silently dropping every nested row below the gap (the intermittent
+ * depth-6 nav loss). `filter` skips holes (mirroring the array widget's contiguous re-indexing on row
+ * removal) while keeping any explicit `null`/`undefined` values a leaf array legitimately holds.
+ *
+ * @param value - The value to densify; arrays are compacted and recursed, objects recursed.
+ * @returns The hole-free value.
+ */
+function compactArrayHoles(value: unknown): unknown {
+    if (Array.isArray(value)) {
+        return value.filter(() => true).map(compactArrayHoles);
+    }
+    if (isPlainObject(value)) {
+        for (const key of Object.keys(value)) {
+            value[key] = compactArrayHoles(value[key]);
+        }
+        return value;
+    }
+    return value;
+}
+
+/**
  * Reduce a {@link FormState} to its values and unflatten the dotted paths into
  * the nested object Payload's `<Form>` posts as the JSON `_payload` blob.
  * Fields flagged `disableFormData` are skipped — they hold no value of their
- * own (array/blocks containers).
+ * own (array/blocks containers). Arrays are densified ({@link compactArrayHoles})
+ * so a transient index gap never serializes a `null` hole.
  *
  * @param state - The form state to serialize.
  * @returns A nested plain object of field values.
@@ -171,5 +206,5 @@ export function reduceFieldsToValues(state: FormState): Record<string, unknown> 
         if (field.disableFormData) continue;
         setDeep(out, path, field.value);
     }
-    return out;
+    return compactArrayHoles(out) as Record<string, unknown>;
 }

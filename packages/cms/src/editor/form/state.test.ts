@@ -73,3 +73,37 @@ describe('buildInitialFormState', () => {
         expect(reduceFieldsToValues(buildInitialFormState(doc))).toEqual(doc);
     });
 });
+
+describe('sparse-array null-hole round-trip (depth-6 nav regression)', () => {
+    it('serializes an index-gapped array densely, with no null hole', () => {
+        // A transient build gap — a row at index 1 with no index-0 leaf — makes `setDeep` produce a
+        // SPARSE array. Left sparse, `JSON.stringify` writes the hole as an explicit `null`.
+        const gapped = { 'items.1.label': { value: 'B', initialValue: 'B' } };
+        expect(JSON.parse(JSON.stringify(reduceFieldsToValues(gapped)))).toEqual({ items: [{ label: 'B' }] });
+    });
+
+    it('round-trips an index-gapped array without collapsing the surviving row', () => {
+        const gapped = { 'items.1.label': { value: 'B', initialValue: 'B' } };
+        const rebuilt = buildInitialFormState(JSON.parse(JSON.stringify(reduceFieldsToValues(gapped))));
+        // The surviving row rebuilds as an INDEXED leaf, not an opaque `items` leaf that would render
+        // zero array rows and drop every nested node below it.
+        expect(rebuilt['items.0.label']?.value).toBe('B');
+        expect(rebuilt.items).toBeUndefined();
+    });
+
+    it('tolerates an already-persisted null array hole instead of collapsing the array', () => {
+        // Defense-in-depth: a blob written before the serialize fix can still hold an explicit `null`
+        // hole. The read must rebuild the survivors rather than collapse the whole array to one leaf.
+        const rebuilt = buildInitialFormState({ items: [null, { label: 'B' }] });
+        expect(rebuilt['items.0.label']?.value).toBe('B');
+        expect(rebuilt.items).toBeUndefined();
+    });
+
+    it('preserves a deep nested array through a sparse JSON round-trip (the depth-6 spine)', () => {
+        // Mirrors the header editor: a deep spine where an intermediate level briefly carries only a
+        // high index. The whole subtree must survive serialize -> JSON -> rebuild.
+        const state = { 'items.0.items.1.items.0.description': { value: 'deep', initialValue: 'deep' } };
+        const rebuilt = buildInitialFormState(JSON.parse(JSON.stringify(reduceFieldsToValues(state))));
+        expect(rebuilt['items.0.items.0.items.0.description']?.value).toBe('deep');
+    });
+});
