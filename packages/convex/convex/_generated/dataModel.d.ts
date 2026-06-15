@@ -1154,6 +1154,10 @@ export type DataModel = {
       };
       domain: string;
       extensions?: {
+        blockDefaults?: Record<
+          string,
+          Record<string, string | number | boolean>
+        >;
         blocks?: { available?: Array<string> };
         chrome?: { order?: Array<string> };
         productCard?: Record<
@@ -1167,6 +1171,13 @@ export type DataModel = {
         >;
         sections?: Record<string, boolean>;
         theme?: {
+          cartLine?: {
+            dividerColor?: string;
+            gap?: string;
+            imageRadius?: string;
+            imageSize?: string;
+            paddingY?: string;
+          };
           colors?: {
             accentPrimaryDark?: string;
             accentPrimaryLight?: string;
@@ -1322,6 +1333,13 @@ export type DataModel = {
       name: string;
       showProductVendor?: boolean;
       theme?: {
+        cartLine?: {
+          dividerColor?: string;
+          gap?: string;
+          imageRadius?: string;
+          imageSize?: string;
+          paddingY?: string;
+        };
         colors?: {
           accentPrimaryDark?: string;
           accentPrimaryLight?: string;
@@ -1502,6 +1520,8 @@ export type DataModel = {
       | "design.header.logo.width"
       | "domain"
       | "extensions"
+      | "extensions.blockDefaults"
+      | `extensions.blockDefaults.${string}`
       | "extensions.blocks"
       | "extensions.blocks.available"
       | "extensions.chrome"
@@ -1511,6 +1531,12 @@ export type DataModel = {
       | "extensions.sections"
       | `extensions.sections.${string}`
       | "extensions.theme"
+      | "extensions.theme.cartLine"
+      | "extensions.theme.cartLine.dividerColor"
+      | "extensions.theme.cartLine.gap"
+      | "extensions.theme.cartLine.imageRadius"
+      | "extensions.theme.cartLine.imageSize"
+      | "extensions.theme.cartLine.paddingY"
       | "extensions.theme.colors"
       | "extensions.theme.colors.accentPrimaryDark"
       | "extensions.theme.colors.accentPrimaryLight"
@@ -1671,6 +1697,12 @@ export type DataModel = {
       | "name"
       | "showProductVendor"
       | "theme"
+      | "theme.cartLine"
+      | "theme.cartLine.dividerColor"
+      | "theme.cartLine.gap"
+      | "theme.cartLine.imageRadius"
+      | "theme.cartLine.imageSize"
+      | "theme.cartLine.paddingY"
       | "theme.colors"
       | "theme.colors.accentPrimaryDark"
       | "theme.colors.accentPrimaryLight"

@@ -474,6 +474,10 @@ export declare const api: {
             };
             domain?: string;
             extensions?: {
+              blockDefaults?: Record<
+                string,
+                Record<string, string | number | boolean>
+              >;
               blocks?: { available?: Array<string> };
               chrome?: { order?: Array<string> };
               productCard?: Record<
@@ -487,6 +491,13 @@ export declare const api: {
               >;
               sections?: Record<string, boolean>;
               theme?: {
+                cartLine?: {
+                  dividerColor?: string;
+                  gap?: string;
+                  imageRadius?: string;
+                  imageSize?: string;
+                  paddingY?: string;
+                };
                 colors?: {
                   accentPrimaryDark?: string;
                   accentPrimaryLight?: string;
@@ -650,6 +661,13 @@ export declare const api: {
             name?: string;
             showProductVendor?: boolean;
             theme?: {
+              cartLine?: {
+                dividerColor?: string;
+                gap?: string;
+                imageRadius?: string;
+                imageSize?: string;
+                paddingY?: string;
+              };
               colors?: {
                 accentPrimaryDark?: string;
                 accentPrimaryLight?: string;
