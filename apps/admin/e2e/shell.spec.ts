@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-const DOMAIN = process.env.ADMIN_E2E_SHOP_DOMAIN ?? 'beta.pouched.de';
+// The seeded canonical tenant (e2e/global-setup.ts), shared with the other admin specs and defaulted
+// by playwright.config.ts. CI/staging may override via E2E_SHOP_DOMAIN.
+const DOMAIN = process.env.E2E_SHOP_DOMAIN ?? 'nordcom-demo-shop.com';
 
 test.describe('Admin shell', () => {
     test('renders header and sub-nav on /content', async ({ page }) => {
