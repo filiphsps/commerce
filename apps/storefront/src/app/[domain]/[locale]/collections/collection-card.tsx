@@ -37,6 +37,7 @@ export function CollectionCard({
         <Link
             href={`/collections/${handle}/`}
             prefetch={false}
+            data-testid="collection-card"
             className="group on-dark focus-ring relative isolate flex aspect-3/2 items-end overflow-hidden rounded-lg border border-(--border-default) border-solid bg-(--surface-2)"
         >
             {image?.url ? (
