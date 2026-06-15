@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { type ReactNode, Suspense } from 'react';
 import { LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { buildProductsQueryString } from '@/api/shopify/product';
 import { cachedSearch } from '@/api/shopify/search';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
@@ -16,7 +17,14 @@ import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import SearchContentGate from './search-content-gate';
 
 export type SearchPageParams = Promise<{ domain: string; locale: string }>;
-type SearchParams = Promise<{ q?: string }>;
+type SearchParams = Promise<{
+    q?: string;
+    vendor?: string;
+    type?: string;
+    available?: string;
+    minPrice?: string;
+    maxPrice?: string;
+}>;
 
 export async function generateMetadata({ params }: { params: SearchPageParams }): Promise<Metadata> {
     'use cache';
@@ -98,7 +106,7 @@ async function SearchShell({ params, children }: { params: SearchPageParams; chi
 }
 
 async function SearchResults({ params, searchParams }: { params: SearchPageParams; searchParams: SearchParams }) {
-    const [{ domain, locale: localeData }, { q }] = await Promise.all([params, searchParams]);
+    const [{ domain, locale: localeData }, sp] = await Promise.all([params, searchParams]);
     if (!domain || domain === NOT_FOUND_HANDLE) {
         notFound();
     }
@@ -107,14 +115,26 @@ async function SearchResults({ params, searchParams }: { params: SearchPageParam
     const shop = await Shop.findByDomain(domain);
     const i18n = await getDictionary(locale);
 
-    const query = q?.toString() ?? '';
+    const query = sp.q?.toString() ?? '';
     const showFilters = await searchFilter();
+
+    // Fold the selected facets into the search query (Shopify search accepts the same syntax as the
+    // products connection), reusing the products query-builder so /products and search filter
+    // identically. Facets only apply to an actual text query; with no `q` the page shows the landing.
+    const facetQuery = buildProductsQueryString({
+        vendor: sp.vendor || undefined,
+        productType: sp.type || undefined,
+        available_for_sale: sp.available === 'true' ? true : undefined,
+        minPrice: sp.minPrice ? Number(sp.minPrice) : undefined,
+        maxPrice: sp.maxPrice ? Number(sp.maxPrice) : undefined,
+    });
+    const combinedQuery = query ? [query, facetQuery].filter(Boolean).join(' ') : '';
 
     const data = await cachedSearch({
         shopId: shop.id,
         shopDomain: shop.domain,
         localeCode: locale.code,
-        query,
+        query: combinedQuery,
         showFilters,
     });
 

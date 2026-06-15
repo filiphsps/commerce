@@ -6,9 +6,9 @@ import type { HTMLProps, ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import type { ProductFilters } from '@/api/product';
 import { Button } from '@/components/actionable/button';
-import { Filters } from '@/components/actionable/filters';
 import { EmptyState } from '@/components/empty-state';
 import Link from '@/components/link';
+import { ProductFilters as ProductFilterBar } from '@/components/products/product-filters';
 import { Label } from '@/components/typography/label';
 import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -182,9 +182,9 @@ export default function SearchContent({
                 }}
             />
 
-            {showFilters ? <Filters disabled={isPending} filters={productFilters} /> : null}
-
-            {typeof totalCount === 'number' && totalCount > 0 ? (
+            {showFilters ? (
+                <ProductFilterBar filters={productFilters} i18n={i18n} total={totalCount} />
+            ) : typeof totalCount === 'number' && totalCount > 0 ? (
                 <Label className="font-medium text-(--text-muted) text-sm">
                     {totalCount === 1 ? `1 ${t('product')}` : `${totalCount} ${t('products')}`}
                 </Label>
