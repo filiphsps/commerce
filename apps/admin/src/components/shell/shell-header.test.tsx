@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ShellHeader } from '@/components/shell/shell-header';
+import { ThemeProvider } from '@/components/theme/theme-provider';
 import { render, screen } from '@/utils/test/react';
 
 vi.mock('next/image', () => ({
@@ -18,13 +19,16 @@ vi.mock('next/navigation', () => ({ usePathname: () => '/abc/', useRouter: () =>
 describe('ShellHeader', () => {
     it('renders logo, shop switcher, command-palette trigger, and account menu', () => {
         render(
-            <ShellHeader
-                shop={{ name: 'Acme', domain: 'acme.test' }}
-                user={{ name: 'A B', email: 'a@b.com', role: 'admin' }}
-                shopsForSwitcher={[{ name: 'Acme', domain: 'acme.test' }]}
-                commandPaletteItems={[]}
-                mobileNavContent={<div data-testid="mn">mobile</div>}
-            />,
+            <ThemeProvider initialPreference="dark">
+                <ShellHeader
+                    shop={{ name: 'Acme', domain: 'acme.test' }}
+                    user={{ name: 'A B', email: 'a@b.com', role: 'admin' }}
+                    shopsForSwitcher={[{ name: 'Acme', domain: 'acme.test' }]}
+                    commandPaletteItems={[]}
+                    navSections={[{ label: 'Home', href: '/acme.test/' }]}
+                    mobileNavContent={<div data-testid="mn">mobile</div>}
+                />
+            </ThemeProvider>,
         );
         expect(screen.getByAltText(/Nordcom Commerce Logo/i)).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Acme/ })).toBeInTheDocument();

@@ -21,11 +21,26 @@ describe('NavItem', () => {
         expect(screen.getByRole('link', { name: 'Content' })).toHaveAttribute('href', '/abc/content/');
     });
 
-    it('applies active styling when pathname starts with href', () => {
+    it('applies active styling and aria-current when the pathname is under the href', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<NavItem href={'/abc/content/' as any}>Content</NavItem>);
         const link = screen.getByRole('link', { name: 'Content' });
-        expect(link.className).toMatch(/uppercase/);
+        expect(link.className).toMatch(/bg-muted/);
+        expect(link).toHaveAttribute('aria-current', 'page');
+        expect(link).toHaveAttribute('data-active', 'true');
+    });
+
+    it('honors the controlled active prop over the pathname heuristic', () => {
+        render(
+            // The pathname is under this href, but active={false} forces it inactive — this is how the
+            // rail enforces a single active sibling.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <NavItem href={'/abc/content/' as any} active={false}>
+                Content
+            </NavItem>,
+        );
+        const link = screen.getByRole('link', { name: 'Content' });
+        expect(link).not.toHaveAttribute('aria-current');
     });
 
     it('renders as a span and applies disabled styling when disabled', () => {

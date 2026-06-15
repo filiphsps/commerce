@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { IconRail } from '@/components/shell/icon-rail';
+import { IconRail, type IconRailGroup } from '@/components/shell/icon-rail';
 import { render, screen } from '@/utils/test/react';
 
 vi.mock('next/link', () => ({
@@ -10,32 +10,48 @@ vi.mock('next/link', () => ({
     ),
 }));
 
-vi.mock('next/navigation', () => ({ usePathname: () => '/abc/' }));
+vi.mock('next/navigation', () => ({ usePathname: () => '/abc/settings/users/' }));
+
+const GROUPS: IconRailGroup[] = [
+    {
+        id: 'workspace',
+        label: 'Workspace',
+        items: [
+            { href: '/abc/' as never, label: 'Home', icon: <span data-testid="i-home" /> },
+            { href: '/abc/settings' as never, label: 'Settings', icon: <span data-testid="i-set" /> },
+        ],
+    },
+    {
+        id: 'administration',
+        label: 'Administration',
+        items: [{ href: '/abc/settings/users/' as never, label: 'Users', icon: <span data-testid="i-usr" /> }],
+    },
+];
 
 describe('IconRail', () => {
-    const ITEMS = [
-        { href: '/abc/' as never, label: 'Home', icon: <span data-testid="i-home" /> },
-        { href: '/abc/products/' as never, label: 'Products', icon: <span data-testid="i-prod" /> },
-    ];
-
-    it('renders nav links for the given items', () => {
-        render(<IconRail items={ITEMS} expanded={false} />);
+    it('renders nav links for every item across groups', () => {
+        render(<IconRail groups={GROUPS} expanded={false} />);
         expect(screen.getByRole('link', { name: /Home/ })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: /Products/ })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Settings/ })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Users/ })).toBeInTheDocument();
     });
 
-    it('hides text labels when expanded=false (icon-only mode)', () => {
-        // Width-driven expansion lives in <ShellRoot>; here we exercise the
-        // `expanded` prop contract directly. Label is set as aria-label on the
-        // link and not rendered as visible text.
-        render(<IconRail items={ITEMS} expanded={false} />);
+    it('marks only the most specific matching link active (Settings does not co-activate with Users)', () => {
+        render(<IconRail groups={GROUPS} expanded={true} />);
+        const current = screen.getAllByRole('link').filter((el) => el.getAttribute('aria-current') === 'page');
+        expect(current).toHaveLength(1);
+        expect(current[0]).toHaveAccessibleName(/Users/);
+    });
+
+    it('hides text labels and shows section eyebrows accordingly', () => {
+        const { rerender } = render(<IconRail groups={GROUPS} expanded={false} />);
         expect(screen.queryByText('Home')).not.toBeInTheDocument();
-        expect(screen.queryByText('Products')).not.toBeInTheDocument();
-    });
+        // Eyebrows are visible text only in the expanded state.
+        expect(screen.queryByText('Workspace')).not.toBeInTheDocument();
 
-    it('shows text labels when expanded=true', () => {
-        render(<IconRail items={ITEMS} expanded={true} />);
+        rerender(<IconRail groups={GROUPS} expanded={true} />);
         expect(screen.getByText('Home')).toBeInTheDocument();
-        expect(screen.getByText('Products')).toBeInTheDocument();
+        expect(screen.getByText('Workspace')).toBeInTheDocument();
+        expect(screen.getByText('Administration')).toBeInTheDocument();
     });
 });

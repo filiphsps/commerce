@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Group, Panel, Separator, useDefaultLayout } from 'react-resizable-panels';
 
-import { IconRail, type IconRailItem } from '@/components/shell/icon-rail';
+import { IconRail, type IconRailGroup } from '@/components/shell/icon-rail';
 import { InspectorSlot } from '@/components/shell/inspector-slot';
 import { SubNavSlot } from '@/components/shell/sub-nav-slot';
 import { useBreakpoint } from '@/components/shell/use-breakpoint';
@@ -19,7 +19,7 @@ export type ShellRootProps = {
     inspector: ReactNode;
     /** Pre-rendered header (server component). */
     header: ReactNode;
-    iconRailItems: IconRailItem[];
+    iconRailGroups: IconRailGroup[];
 };
 
 const RAIL_MIN_PX = 82;
@@ -69,9 +69,9 @@ export function isSlotActive(segments: string[] | null): boolean {
  * @param props.subnav - Server-resolved @subnav parallel-route slot.
  * @param props.inspector - Server-resolved @inspector parallel-route slot.
  * @param props.header - Pre-rendered header server component.
- * @param props.iconRailItems - Navigation items passed through to the IconRail.
+ * @param props.iconRailGroups - Grouped navigation sections passed through to the IconRail.
  */
-export function ShellRoot({ children, subnav, inspector, header, iconRailItems }: ShellRootProps) {
+export function ShellRoot({ children, subnav, inspector, header, iconRailGroups }: ShellRootProps) {
     const breakpoint = useBreakpoint();
 
     // Detect parallel-route slot activity via Next's router state. The slot
@@ -144,7 +144,7 @@ export function ShellRoot({ children, subnav, inspector, header, iconRailItems }
                         collapsedSize={RAIL_MIN_PX}
                         groupResizeBehavior="preserve-pixel-size"
                     >
-                        <IconRail items={iconRailItems} expanded={railWidthPx >= RAIL_LABEL_THRESHOLD_PX} />
+                        <IconRail groups={iconRailGroups} expanded={railWidthPx >= RAIL_LABEL_THRESHOLD_PX} />
                     </Panel>
 
                     {hasSubnav ? (

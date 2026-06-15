@@ -39,7 +39,7 @@ describe('ShellRoot', () => {
         // Empty segments array = neither slot has any matched route at all.
         mockUseSelectedLayoutSegments.mockReturnValue([]);
         render(
-            <ShellRoot header={<div data-testid="hdr">HEAD</div>} subnav={null} inspector={null} iconRailItems={[]}>
+            <ShellRoot header={<div data-testid="hdr">HEAD</div>} subnav={null} inspector={null} iconRailGroups={[]}>
                 {/* Distinct testid: react-resizable-panels v4 stamps `data-testid="content"`
                  *  onto the Panel itself (id="content"), so this child needs its own name. */}
                 <div data-testid="page-content">CONTENT</div>
@@ -59,7 +59,7 @@ describe('ShellRoot', () => {
                 header={<div>H</div>}
                 subnav={<div data-testid="nav">NAV</div>}
                 inspector={null}
-                iconRailItems={[]}
+                iconRailGroups={[]}
             >
                 <div>C</div>
             </ShellRoot>,
@@ -76,7 +76,7 @@ describe('ShellRoot', () => {
                 header={<div>H</div>}
                 subnav={<div data-testid="nav">NAV</div>}
                 inspector={null}
-                iconRailItems={[]}
+                iconRailGroups={[]}
             >
                 <div>C</div>
             </ShellRoot>,

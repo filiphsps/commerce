@@ -7,10 +7,13 @@ import {
     Building2,
     ImageIcon,
     Images,
+    LogOut,
     MessageCircleHeart,
+    Plus,
     Settings,
     Store,
     Tag,
+    UserCog,
     Users,
 } from 'lucide-react';
 import type { Metadata, Route } from 'next';
@@ -19,7 +22,7 @@ import type { ReactNode } from 'react';
 
 import { auth } from '@/auth';
 import type { CommandPaletteItem } from '@/components/shell/command-palette';
-import type { IconRailItem } from '@/components/shell/icon-rail';
+import type { IconRailGroup, IconRailItem } from '@/components/shell/icon-rail';
 import { MobileNav } from '@/components/shell/mobile-nav';
 import { ShellHeader } from '@/components/shell/shell-header';
 import { ShellRoot } from '@/components/shell/shell-root';
@@ -68,49 +71,85 @@ export default async function ShopLayout({ children, subnav, inspector, params }
     const isAdmin = user.role === 'admin';
 
     const urlBase = `/${shop.domain}`;
-    const iconRailItems: IconRailItem[] = [
+    const workspaceItems: IconRailItem[] = [
         { href: `${urlBase}/` as Route, label: 'Home', icon: <Binoculars className="h-5 w-5" /> },
         { href: `${urlBase}/products` as Route, label: 'Products', icon: <Tag className="h-5 w-5" /> },
         { href: `${urlBase}/reviews` as Route, label: 'Reviews', icon: <MessageCircleHeart className="h-5 w-5" /> },
         { href: `${urlBase}/content` as Route, label: 'Content', icon: <Images className="h-5 w-5" /> },
         { href: `${urlBase}/settings` as Route, label: 'Settings', icon: <Settings className="h-5 w-5" /> },
-        ...(isAdmin
-            ? [
-                  {
-                      href: `${urlBase}/settings/tenants/` as Route,
-                      label: 'Tenants',
-                      icon: <Building2 className="h-5 w-5" />,
-                  },
-                  {
-                      href: `${urlBase}/settings/users/` as Route,
-                      label: 'Users',
-                      icon: <Users className="h-5 w-5" />,
-                  },
-                  {
-                      href: `${urlBase}/settings/media/` as Route,
-                      label: 'Media',
-                      icon: <ImageIcon className="h-5 w-5" />,
-                  },
-                  {
-                      href: `${urlBase}/settings/shop/` as Route,
-                      label: 'Shop',
-                      icon: <Store className="h-5 w-5" />,
-                  },
-              ]
+    ];
+    const administrationItems: IconRailItem[] = isAdmin
+        ? [
+              {
+                  href: `${urlBase}/settings/tenants/` as Route,
+                  label: 'Tenants',
+                  icon: <Building2 className="h-5 w-5" />,
+              },
+              { href: `${urlBase}/settings/users/` as Route, label: 'Users', icon: <Users className="h-5 w-5" /> },
+              { href: `${urlBase}/settings/media/` as Route, label: 'Media', icon: <ImageIcon className="h-5 w-5" /> },
+              { href: `${urlBase}/settings/shop/` as Route, label: 'Shop', icon: <Store className="h-5 w-5" /> },
+          ]
+        : [];
+
+    const iconRailGroups: IconRailGroup[] = [
+        { id: 'workspace', label: 'Workspace', items: workspaceItems },
+        ...(administrationItems.length > 0
+            ? [{ id: 'administration', label: 'Administration', items: administrationItems }]
             : []),
     ];
 
-    const commandPaletteItems: CommandPaletteItem[] = iconRailItems.map((item) => ({
-        id: item.label.toLowerCase(),
+    const navItems = iconRailGroups.flatMap((group) => group.items);
+    const shopsForSwitcher = await getShopsForUser(user.id);
+
+    // Palette groups render in this insertion order (the palette prepends a client-side "Recent"
+    // group and injects the theme toggle into Actions): Actions → Navigate → Shops.
+    const actionCommands: CommandPaletteItem[] = [
+        {
+            id: 'action:account',
+            label: 'Account settings',
+            href: '/accounts' as Route,
+            group: 'Actions',
+            icon: <UserCog className="h-4 w-4" />,
+            keywords: ['profile', 'preferences'],
+        },
+        {
+            id: 'action:new-shop',
+            label: 'Connect a new shop',
+            href: '/new' as Route,
+            group: 'Actions',
+            icon: <Plus className="h-4 w-4" />,
+            keywords: ['add', 'store', 'tenant'],
+        },
+        {
+            id: 'action:sign-out',
+            label: 'Sign out',
+            href: '/auth/logout' as Route,
+            group: 'Actions',
+            icon: <LogOut className="h-4 w-4" />,
+            keywords: ['logout', 'exit'],
+        },
+    ];
+    const navigateCommands: CommandPaletteItem[] = navItems.map((item) => ({
+        id: `nav:${item.label.toLowerCase()}`,
         label: item.label,
         href: item.href,
         group: 'Navigate',
         icon: item.icon,
     }));
+    const shopCommands: CommandPaletteItem[] =
+        shopsForSwitcher.length > 1
+            ? shopsForSwitcher.map((entry) => ({
+                  id: `shop:${entry.domain}`,
+                  label: entry.name,
+                  href: `/${entry.domain}/` as Route,
+                  group: 'Shops',
+                  icon: <Store className="h-4 w-4" />,
+                  keywords: [entry.domain],
+              }))
+            : [];
+    const commandPaletteItems: CommandPaletteItem[] = [...actionCommands, ...navigateCommands, ...shopCommands];
 
-    const shopsForSwitcher = await getShopsForUser(user.id);
-
-    const mobileNavContent = <MobileNav items={iconRailItems} subnav={subnav} />;
+    const mobileNavContent = <MobileNav groups={iconRailGroups} subnav={subnav} />;
     const header = (
         <ShellHeader
             shop={{ name: shop.name, domain: shop.domain }}
@@ -122,12 +161,13 @@ export default async function ShopLayout({ children, subnav, inspector, params }
             }}
             shopsForSwitcher={shopsForSwitcher}
             commandPaletteItems={commandPaletteItems}
+            navSections={navItems.map((item) => ({ label: item.label, href: item.href }))}
             mobileNavContent={mobileNavContent}
         />
     );
 
     return (
-        <ShellRoot header={header} subnav={subnav} inspector={inspector} iconRailItems={iconRailItems}>
+        <ShellRoot header={header} subnav={subnav} inspector={inspector} iconRailGroups={iconRailGroups}>
             {children}
         </ShellRoot>
     );

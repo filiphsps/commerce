@@ -9,6 +9,7 @@ import { AccountMenu, type AccountMenuUser } from '@/components/shell/account-me
 import { CommandPalette, type CommandPaletteItem } from '@/components/shell/command-palette';
 import { CommandPaletteTrigger } from '@/components/shell/command-palette-trigger';
 import { MobileDrawer } from '@/components/shell/mobile-drawer';
+import { SectionCrumb, type SectionCrumbSection } from '@/components/shell/section-crumb';
 import { ShopSwitcher, type ShopSwitcherShop } from '@/components/shell/shop-switcher';
 import { useBreakpoint } from '@/components/shell/use-breakpoint';
 import logo from '@/static/logo.svg';
@@ -19,6 +20,8 @@ export type ShellHeaderProps = {
     user: AccountMenuUser;
     shopsForSwitcher: ShopSwitcherShop[];
     commandPaletteItems: CommandPaletteItem[];
+    /** Top-level nav sections used to derive the contextual crumb beside the shop switcher. */
+    navSections: SectionCrumbSection[];
     /** Pre-rendered mobile nav content (server component children of MobileDrawer). Required for `<md` UX. */
     mobileNavContent: ReactNode;
 };
@@ -33,9 +36,17 @@ export type ShellHeaderProps = {
  * @param props.user - Authenticated user for the account menu.
  * @param props.shopsForSwitcher - All shops available for switching.
  * @param props.commandPaletteItems - Items rendered in the CommandPalette opened by the search trigger.
+ * @param props.navSections - Top-level nav sections for the contextual crumb beside the shop switcher.
  * @param props.mobileNavContent - Pre-rendered server component tree rendered inside the MobileDrawer.
  */
-export function ShellHeader({ shop, user, shopsForSwitcher, commandPaletteItems, mobileNavContent }: ShellHeaderProps) {
+export function ShellHeader({
+    shop,
+    user,
+    shopsForSwitcher,
+    commandPaletteItems,
+    navSections,
+    mobileNavContent,
+}: ShellHeaderProps) {
     // Gate the mobile drawer on the real breakpoint instead of `md:hidden`.
     // SSR + first-client-render both see the default 'comfortable' breakpoint,
     // so MobileDrawer is absent from the hydrated DOM — only mounted after
@@ -81,6 +92,7 @@ export function ShellHeader({ shop, user, shopsForSwitcher, commandPaletteItems,
                     />
                 </Link>
                 <ShopSwitcher current={shop} shops={shopsForSwitcher} />
+                <SectionCrumb sections={navSections} />
             </div>
 
             <div className="flex items-center gap-2">
