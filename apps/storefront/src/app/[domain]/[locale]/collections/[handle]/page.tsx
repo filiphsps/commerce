@@ -21,13 +21,13 @@ import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
-import Heading from '@/components/typography/heading';
 import { ShopifyContent } from '@/components/typography/shopify-content';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
+import { CollectionHeader } from './collection-header';
 import type { CollectionPageParams } from './static-params';
 
 export { type CollectionPageParams, generateStaticParams } from './static-params';
@@ -235,7 +235,7 @@ async function CollectionShell({ params, children }: { params: CollectionPagePar
                 </div>
             </Suspense>
 
-            <Heading title={collection.title || collection.seo.title} />
+            <CollectionHeader title={collection.title || collection.seo.title || handle} image={collection.image} />
             {cmsMeta?.descriptionOverride ? (
                 <Blocks
                     blocks={[{ blockType: 'rich-text', body: cmsMeta.descriptionOverride }] as BlockNode[]}

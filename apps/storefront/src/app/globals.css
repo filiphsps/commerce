@@ -121,7 +121,16 @@
  * defines the grid, regardless of the mode below it. Applied on a `grid w-full` element. */
 @utility rail-grid {
     grid-auto-flow: row;
-    grid-template-columns: repeat(auto-fill, minmax(var(--product-card-min-width), var(--product-card-max-width)));
+    /* `1fr` (not the fixed max) lets tracks expand to fill the row, so a width that isn't an exact
+     * multiple of the card size no longer leaves a ragged gap on the trailing edge. The `min()` caps
+     * each track's floor at half the row (minus the 0.5rem gap) so at least two cards always fit —
+     * fixing the one-card-per-row blow-up on narrow phones — while wider viewports still honor
+     * `--product-card-min-width`. `auto-fill` keeps phantom tracks, so a sparse collection's cards
+     * stay card-sized instead of stretching across the whole row. */
+    grid-template-columns: repeat(
+            auto-fill,
+            minmax(min(var(--product-card-min-width), calc((100% - 0.5rem) / 2)), 1fr)
+        );
     grid-auto-columns: auto;
     grid-template-rows: none;
     justify-content: var(--product-card-grid-align);
