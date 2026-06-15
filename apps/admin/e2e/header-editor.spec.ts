@@ -118,10 +118,14 @@ test('builds a depth-6 nav item, autosaves on the 2s clock, survives a reload, p
 
     await page.goto(`/${DOMAIN}/content/header/versions/`);
     await expect(page.getByRole('button', { name: 'Restore' }).first()).toBeVisible({ timeout: 15_000 });
-    // Rows are oldest-first; restore this run's PUBLISHED snapshot — the last
-    // row whose status label reads "published" (interleaved autosave drafts may
-    // follow it, so "last enabled" would be ambiguous).
-    await page.locator('li', { hasText: 'published' }).last().getByRole('button', { name: 'Restore' }).click();
+    // The versions page renders NEWEST first, so this run's depth-6 publish is the FIRST "published"
+    // row; an older seed-published (shallower) snapshot sits below it. Restoring `.last()` would
+    // re-materialize that stale seed version and drop the depth-6 spine.
+    await page.locator('li', { hasText: 'published' }).first().getByRole('button', { name: 'Restore' }).click();
+
+    // Restore is a Server Action form submit; let it (and its revalidation) commit before navigating,
+    // or the editor's one-shot load reads the pre-restore draft and never re-fetches the restored one.
+    await page.waitForLoadState('networkidle');
 
     // The restore re-materialized the published snapshot as the live draft.
     await page.goto(`/${DOMAIN}/content/header/`);
