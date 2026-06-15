@@ -10,6 +10,7 @@ import {
     jsonField,
     localized,
     numberField,
+    overridable,
     required,
     responsiveField,
     selectField,
@@ -146,6 +147,25 @@ const collectionFields: FieldDescriptor[] = [
 ];
 
 /**
+ * Store-wide default settings for the Collection block. `defaultLayout` sets the fallback layout for
+ * collection blocks whose instance leaves `layout` unset — the platform default (carousel on phones,
+ * grid from tablets up) applies when this is inherited, and a per-block `layout` still overrides both.
+ */
+const collectionSettings: FieldDescriptor[] = [
+    overridable(
+        selectField({
+            name: 'defaultLayout',
+            label: 'Default layout',
+            options: [
+                { label: 'Grid', value: 'grid' },
+                { label: 'Carousel', value: 'carousel' },
+            ],
+        }),
+        { inheritedSourceLabel: 'Platform default' },
+    ),
+];
+
+/**
  * Field descriptors for the `html` block. Server-side write gating is the
  * Convex mutations' concern; the editor descriptor only renders the field.
  */
@@ -275,7 +295,7 @@ export const BLOCK_DESCRIPTORS: Record<BlockType, BlockDescriptor> = {
     columns: { slug: 'columns', fields: columnsFields },
     alert: { slug: 'alert', fields: alertFields },
     banner: { slug: 'banner', fields: bannerFields },
-    collection: { slug: 'collection', fields: collectionFields },
+    collection: { slug: 'collection', fields: collectionFields, settings: collectionSettings },
     html: { slug: 'html', fields: htmlFields },
     'media-grid': { slug: 'media-grid', fields: mediaGridFields },
     overview: { slug: 'overview', fields: overviewFields },
@@ -288,3 +308,15 @@ export const BLOCK_DESCRIPTORS: Record<BlockType, BlockDescriptor> = {
  * a `blocksField` to allow authoring any block type, including `columns`.
  */
 export const allBlockDescriptors: BlockDescriptor[] = BLOCK_TYPES.map((type) => BLOCK_DESCRIPTORS[type]);
+
+/**
+ * Every block type that declares store-wide default {@link BlockDescriptor.settings}, in canonical
+ * {@link BLOCK_TYPES} order. The Customization hub's Blocks tab renders one section per entry; a block
+ * with no settings is omitted. A future custom block appears here automatically once it declares
+ * `settings` — no editor change required.
+ *
+ * @returns The settings-bearing block descriptors.
+ */
+export function blocksWithSettings(): BlockDescriptor[] {
+    return allBlockDescriptors.filter((descriptor) => (descriptor.settings?.length ?? 0) > 0);
+}

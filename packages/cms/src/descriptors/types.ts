@@ -191,6 +191,13 @@ export type GroupFieldDescriptor = CompositeFieldDescriptorBase & {
 export type BlockDescriptor = {
     slug: string;
     fields: FieldDescriptor[];
+    /**
+     * Store-wide default settings for this block type, distinct from per-instance content `fields`.
+     * Rendered in the Customization hub's Blocks tab (typically as `overridable()` descriptors) and
+     * stored under `extensions.blockDefaults.<slug>.<name>`. A block with no behavioral defaults omits
+     * this; a future custom block gains settings support simply by declaring it here.
+     */
+    settings?: FieldDescriptor[];
     labels?: {
         singular?: string;
         plural?: string;
