@@ -100,10 +100,12 @@ describe('components', () => {
             expect(screen.getByText(/Demo Title/)).toBeInTheDocument();
         });
 
-        it('renders selected option pills with Name·Value format', () => {
+        it('renders selected option values as chips reusing the product-card chip system', () => {
             render(<CartLine i18n={{} as any} data={buildCoreCartLine()} />);
-            expect(screen.getByText('Size·M')).toBeInTheDocument();
-            expect(screen.getByText('Color·Red')).toBeInTheDocument();
+            // Value-only chips matching the product card, not the legacy "Name·Value" pill format.
+            expect(screen.getByText('M')).toBeInTheDocument();
+            expect(screen.getByText('Red')).toBeInTheDocument();
+            expect(screen.queryByText('Size·M')).not.toBeInTheDocument();
         });
 
         it('does not render productType in the cart-line body', () => {
@@ -166,7 +168,9 @@ describe('components', () => {
                 render(<CartLine i18n={{} as any} data={tallLine()} />);
                 const media = screen.getByTestId('cart-line-image');
 
-                expect(media.className).toContain('aspect-square');
+                // The `size-*` token sets width and height together, so the frame is square by
+                // construction and tenant-tunable via `--cart-line-image-size`.
+                expect(media.className).toContain('size-(--cart-line-image-size)');
                 expect(media.className).toContain('shrink-0');
                 expect(media.className).toContain('self-start');
                 // Content-coupled height classes are what made sizes diverge.
@@ -190,7 +194,7 @@ describe('components', () => {
                 const media = screen.getByTestId('cart-line-image');
 
                 expect(screen.queryByRole('img')).toBeNull();
-                expect(media.className).toContain('aspect-square');
+                expect(media.className).toContain('size-(--cart-line-image-size)');
                 expect(media.querySelector('svg')).not.toBeNull();
             });
         });
@@ -214,7 +218,7 @@ describe('components', () => {
                 expect(title.parentElement?.className).toContain('min-w-0');
             });
 
-            it('truncates an over-long variant value inside its pill', () => {
+            it('truncates an over-long variant value inside its chip', () => {
                 render(
                     <CartLine
                         i18n={{} as any}
@@ -225,10 +229,10 @@ describe('components', () => {
                         })}
                     />,
                 );
-                const pill = screen.getByText(/^Material·/);
-                expect(pill.className).toContain('max-w-full');
-                expect(pill.className).toContain('overflow-hidden');
-                expect(pill.className).toContain('text-ellipsis');
+                // Value-only chip; the value span clips with an ellipsis rather than pushing the row.
+                const value = screen.getByText('Recycled-Ocean-Bound-Polyamide-With-A-Very-Long-Name');
+                expect(value.className).toContain('overflow-hidden');
+                expect(value.className).toContain('text-ellipsis');
             });
         });
 
