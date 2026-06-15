@@ -75,24 +75,53 @@ vi.mock('next/link', () => ({
     ),
 }));
 
-// Nordstar pulls CSS modules the node transform rejects; its Button renders
-// functionally so the REAL DraftPublishToolbar (error surfacing included)
-// stays under test.
-vi.mock('@nordcom/nordstar', () => ({
-    Button: ({
+// Nordstar pulls CSS modules the node transform rejects; its primitives render
+// functionally so the REAL DraftPublishToolbar (error surfacing included) and
+// the admin field widgets (which back the editor's text/select/switch leaves)
+// stay under test. `Select` renders a native `<select>` so `controlAt(…,
+// 'select')` + `fireEvent.change` drive it exactly as the package's native
+// selects; `Switch` renders a checkbox so boolean leaves toggle.
+vi.mock('@nordcom/nordstar', () => {
+    type Children = { children?: React.ReactNode };
+    const Select = ({
         children,
-        disabled,
-        onClick,
-    }: {
-        children: React.ReactNode;
-        disabled?: boolean;
-        onClick?: () => void;
-    }) => (
-        <button type="button" disabled={disabled} onClick={onClick}>
+        value,
+        onValueChange,
+    }: Children & { value?: string; onValueChange?: (value: string) => void }) => (
+        <select value={value ?? ''} onChange={(event) => onValueChange?.(event.target.value)}>
             {children}
-        </button>
-    ),
-}));
+        </select>
+    );
+    Select.Trigger = () => null;
+    Select.Value = () => null;
+    Select.Content = ({ children }: Children) => <>{children}</>;
+    Select.Item = ({ children, value }: Children & { value: string }) => <option value={value}>{children}</option>;
+
+    return {
+        Button: ({ children, disabled, onClick }: Children & { disabled?: boolean; onClick?: () => void }) => (
+            <button type="button" disabled={disabled} onClick={onClick}>
+                {children}
+            </button>
+        ),
+        Select,
+        Switch: ({
+            id,
+            checked,
+            onCheckedChange,
+        }: {
+            id?: string;
+            checked?: boolean;
+            onCheckedChange?: (checked: boolean) => void;
+        }) => (
+            <input
+                type="checkbox"
+                id={id}
+                checked={!!checked}
+                onChange={(event) => onCheckedChange?.(event.target.checked)}
+            />
+        ),
+    };
+});
 vi.mock('@/components/cms/collection-table', () => ({ CollectionTable: vi.fn() }));
 vi.mock('@/components/shell/empty-state', () => ({ EmptyState: vi.fn() }));
 

@@ -7,6 +7,15 @@ import { useAllFormFields } from '../hooks';
 import type { FieldRendererProps } from '../registry';
 import { RenderFields } from '../registry';
 import type { FormAction, FormState } from '../types';
+import {
+    addButtonClassName,
+    iconButtonClassName,
+    pickerSelectClassName,
+    removeButtonClassName,
+    rowCardClassName,
+    rowHeaderClassName,
+    rowTitleClassName,
+} from './control-styles';
 
 /**
  * A block row's stable identity. The `id` is the React key, decoupled from the
@@ -220,6 +229,7 @@ export function BlocksField({ field, path, registry }: FieldRendererProps<Blocks
             {rows.map((row, index) => {
                 const blockType = rowBlockType(state, path, index);
                 const descriptor = blockType !== undefined ? blocksBySlug.get(blockType) : undefined;
+                const blockLabel = descriptor?.labels?.singular ?? blockType ?? 'Block';
                 return (
                     <div
                         key={row.id}
@@ -227,39 +237,42 @@ export function BlocksField({ field, path, registry }: FieldRendererProps<Blocks
                         data-row-id={row.id}
                         data-row-index={index}
                         data-block-type={blockType}
-                        className="flex flex-col gap-3 rounded-md border border-border p-3"
+                        className={rowCardClassName}
                     >
-                        <div className="flex items-center justify-end gap-2">
-                            <button
-                                type="button"
-                                data-testid={`blocks-move-up-${path}-${index}`}
-                                aria-label="Move block up"
-                                disabled={index === 0}
-                                onClick={() => moveRow(index, -1)}
-                                className="rounded border border-border px-2 py-0.5 text-sm disabled:opacity-50"
-                            >
-                                ↑
-                            </button>
-                            <button
-                                type="button"
-                                data-testid={`blocks-move-down-${path}-${index}`}
-                                aria-label="Move block down"
-                                disabled={index === rows.length - 1}
-                                onClick={() => moveRow(index, 1)}
-                                className="rounded border border-border px-2 py-0.5 text-sm disabled:opacity-50"
-                            >
-                                ↓
-                            </button>
-                            <button
-                                type="button"
-                                data-testid={`blocks-remove-${path}-${index}`}
-                                aria-label="Remove block"
-                                disabled={atMin}
-                                onClick={() => removeRow(index)}
-                                className="rounded border border-border px-2 py-0.5 text-sm disabled:opacity-50"
-                            >
-                                Remove
-                            </button>
+                        <div className={rowHeaderClassName}>
+                            <span className={rowTitleClassName}>{blockLabel}</span>
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    type="button"
+                                    data-testid={`blocks-move-up-${path}-${index}`}
+                                    aria-label="Move block up"
+                                    disabled={index === 0}
+                                    onClick={() => moveRow(index, -1)}
+                                    className={iconButtonClassName}
+                                >
+                                    ↑
+                                </button>
+                                <button
+                                    type="button"
+                                    data-testid={`blocks-move-down-${path}-${index}`}
+                                    aria-label="Move block down"
+                                    disabled={index === rows.length - 1}
+                                    onClick={() => moveRow(index, 1)}
+                                    className={iconButtonClassName}
+                                >
+                                    ↓
+                                </button>
+                                <button
+                                    type="button"
+                                    data-testid={`blocks-remove-${path}-${index}`}
+                                    aria-label="Remove block"
+                                    disabled={atMin}
+                                    onClick={() => removeRow(index)}
+                                    className={removeButtonClassName}
+                                >
+                                    Remove
+                                </button>
+                            </div>
                         </div>
                         {descriptor ? (
                             <RenderFields
@@ -273,13 +286,13 @@ export function BlocksField({ field, path, registry }: FieldRendererProps<Blocks
                     </div>
                 );
             })}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border border-dashed bg-muted/20 p-2">
                 <select
                     data-testid={`blocks-picker-${path}`}
                     aria-label="Block type"
                     value={pendingType}
                     onChange={(event) => setPendingType(event.target.value)}
-                    className="rounded-md border border-border bg-background px-3 py-1.5 text-foreground text-sm"
+                    className={pickerSelectClassName}
                 >
                     {field.blocks.map((block) => (
                         <option key={block.slug} value={block.slug}>
@@ -292,8 +305,11 @@ export function BlocksField({ field, path, registry }: FieldRendererProps<Blocks
                     data-testid={`blocks-add-${path}`}
                     disabled={atMax || !pendingType}
                     onClick={addRow}
-                    className="rounded-md border border-border px-3 py-1.5 text-sm disabled:opacity-50"
+                    className={addButtonClassName}
                 >
+                    <span aria-hidden="true" className="text-base leading-none">
+                        +
+                    </span>
                     Add block
                 </button>
             </div>

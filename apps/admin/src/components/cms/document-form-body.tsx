@@ -1,7 +1,9 @@
 'use client';
 
-import { Form, type FormState } from '@nordcom/commerce-cms/editor/form';
+import { FieldWidgetsProvider, Form, type FormState } from '@nordcom/commerce-cms/editor/form';
 import type { ReactNode } from 'react';
+
+import { registerAdminFieldWidgets } from '@/components/cms/fields/registry';
 
 export type DocumentFormBodyProps = {
     /** Server action invoked when the user explicitly submits the form. */
@@ -33,7 +35,7 @@ export type DocumentFormBodyProps = {
 export function DocumentFormBody({ action, initialState, children }: DocumentFormBodyProps) {
     return (
         <Form action={action} initialState={initialState} isDocumentForm>
-            {children}
+            <FieldWidgetsProvider register={registerAdminFieldWidgets}>{children}</FieldWidgetsProvider>
         </Form>
     );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { isThemePreviewReadyMessage } from '@nordcom/commerce-cms/editor/preview';
+import { THEME_PREVIEW_READY_MESSAGE_TYPE } from '@nordcom/commerce-cms/editor/preview';
 import { Monitor, Smartphone } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -58,6 +58,14 @@ export type LivePreviewIframeProps = {
      * theme editor surfaces it; other document previews stay full-width.
      */
     showViewportToggle?: boolean;
+    /**
+     * The handshake message `type` to await before firing {@link onIframeReady}.
+     * Defaults to the theme bridge's `theme-preview-ready`; the content editor
+     * passes `content-preview-ready` so the same iframe shell serves both bridges
+     * without the storefront's two handshakes crossing wires. A plain string (not
+     * a guard function) so it stays a serializable client-component prop.
+     */
+    readyMessageType?: string;
 };
 
 /**
@@ -93,6 +101,7 @@ export function LivePreviewIframe({
     defaultOpen = false,
     onIframeReady,
     showViewportToggle = false,
+    readyMessageType = THEME_PREVIEW_READY_MESSAGE_TYPE,
 }: LivePreviewIframeProps) {
     const storageKey = domain ? `${STORAGE_KEY_PREFIX}.${domain}.open` : `${STORAGE_KEY_PREFIX}.open`;
     const [viewport, setViewport] = useState<Viewport>('desktop');
@@ -139,7 +148,10 @@ export function LivePreviewIframe({
 
         const handleMessage = (event: MessageEvent) => {
             if (event.origin !== storefrontOrigin) return;
-            if (!isThemePreviewReadyMessage(event.data)) return;
+            const data: unknown = event.data;
+            if (typeof data !== 'object' || data === null || (data as { type?: unknown }).type !== readyMessageType) {
+                return;
+            }
 
             const win = iframeRef.current?.contentWindow;
             if (win) onIframeReady(win);
@@ -147,7 +159,7 @@ export function LivePreviewIframe({
 
         window.addEventListener('message', handleMessage);
         return () => window.removeEventListener('message', handleMessage);
-    }, [onIframeReady, previewUrl]);
+    }, [onIframeReady, previewUrl, readyMessageType]);
 
     const handleRefresh = useCallback(() => {
         const iframe = iframeRef.current;

@@ -31,6 +31,7 @@ import { resolveFontClassName } from '@/utils/fonts';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { PreviewContentBridge } from './preview-content-bridge';
 import { PreviewThemeBridge } from './preview-theme-bridge';
 
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
@@ -111,7 +112,7 @@ export default async function RootLayout({
             </head>
             <body className="group/body overflow-x-hidden overscroll-x-none">
                 <Suspense fallback={null}>
-                    <PreviewThemeBridgeGate />
+                    <PreviewBridgesGate />
                 </Suspense>
 
                 <Suspense fallback={null}>
@@ -127,29 +128,37 @@ export default async function RootLayout({
 }
 
 /**
- * Mounts the live-preview bridge only while the CMS preview/draft cookie is set.
+ * Mounts the live-preview bridges (theme + content) only while the CMS
+ * preview/draft cookie is set.
  *
  * Reading `draftMode()` is the request-state signal that this storefront is being
- * rendered inside the admin theme editor's iframe (the cookie is toggled by
- * `cms-preview/route.ts`). Gating on it keeps the `postMessage` listener — and its
- * cross-origin attack surface — out of the public, statically-cached storefront.
- * The admin origin is resolved server-side so the secret-free origin allowlist
- * never relies on a client-readable env var: `ADMIN_ORIGIN` (a full origin incl.
- * scheme/port) wins when set, else it is constructed from `ADMIN_DOMAIN` over
- * https. The override exists because the constructed `https://<domain>` cannot
- * express a non-https or ported admin deployment, and a mismatched origin makes
- * the bridge silently drop every preview message.
+ * rendered inside the admin editor's iframe (the cookie is toggled by
+ * `cms-preview/route.ts`). Gating on it keeps both `postMessage` listeners — and
+ * their cross-origin attack surface — out of the public, statically-cached
+ * storefront: a normal visitor never enters this branch, so neither bridge's
+ * client chunk is ever shipped and no `data-cms-field` hint is emitted. The admin
+ * origin is resolved server-side so the secret-free origin allowlist never relies
+ * on a client-readable env var: `ADMIN_ORIGIN` (a full origin incl. scheme/port)
+ * wins when set, else it is constructed from `ADMIN_DOMAIN` over https. The
+ * override exists because the constructed `https://<domain>` cannot express a
+ * non-https or ported admin deployment, and a mismatched origin makes the bridges
+ * silently drop every preview message.
  *
- * @returns The {@link PreviewThemeBridge} when draft mode is active, otherwise `null`.
+ * @returns The theme + content preview bridges when draft mode is active, otherwise `null`.
  */
-async function PreviewThemeBridgeGate() {
+async function PreviewBridgesGate() {
     const { isEnabled } = await draftMode();
     if (!isEnabled) {
         return null;
     }
 
     const adminOrigin = process.env.ADMIN_ORIGIN ?? `https://${process.env.ADMIN_DOMAIN ?? 'admin.localhost'}`;
-    return <PreviewThemeBridge adminOrigin={adminOrigin} />;
+    return (
+        <>
+            <PreviewThemeBridge adminOrigin={adminOrigin} />
+            <PreviewContentBridge adminOrigin={adminOrigin} />
+        </>
+    );
 }
 
 async function CartIsland({ children }: { children: ReactNode }) {

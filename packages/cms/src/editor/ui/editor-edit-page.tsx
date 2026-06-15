@@ -35,8 +35,29 @@ export type EditorEditPageProps<TSlug extends CollectionSlug = CollectionSlug> =
      */
     generatedActions: EditorActions;
     /** Optional live-preview slot. Manifest's `livePreview` builder runs upstream
-     *  (in the route file) so this component takes the rendered element. */
+     *  (in the route file) so this component takes the rendered element. Use this
+     *  for previews whose target is static (e.g. the theme editor's homepage). */
     livePreview?: ReactNode;
+    /**
+     * Data-dependent live-preview builder, run AFTER the document is fetched so
+     * the preview can target the doc's own handle (a page's `slug`, a product's
+     * `shopifyHandle`). Both this and the page are Server Components, so the
+     * function crosses no client boundary; the host (admin) owns it because the
+     * preview-URL builder reads a server-only secret env the cms package can't.
+     * Takes precedence over {@link livePreview} when both are supplied.
+     *
+     * @param args.collection - The manifest collection slug.
+     * @param args.data - The fetched document data (read for `slug`/`shopifyHandle`).
+     * @param args.locale - The active editing locale.
+     * @param args.domain - The tenant domain segment.
+     * @returns The live-preview element, or `null` to render no preview.
+     */
+    renderLivePreview?: (args: {
+        collection: string;
+        data: Record<string, unknown>;
+        locale: string;
+        domain: string | null;
+    }) => ReactNode;
     /**
      * Optional replacement for the default field surface. When omitted the page
      * renders `<EditorFields collection=… omitPaths={omitPaths} />`; routes that
@@ -90,6 +111,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     searchParams,
     generatedActions,
     livePreview,
+    renderLivePreview,
     fieldSurface,
     omitPaths,
     selfPath,
@@ -184,6 +206,18 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
 
     const autosave = schema.drafts?.autosave;
 
+    // Resolve the live-preview pane: the data-dependent builder wins (it targets
+    // the doc's own handle), falling back to the static slot. Built here so the
+    // preview only mounts once the doc fetch has resolved its handle.
+    const livePreviewNode = renderLivePreview
+        ? renderLivePreview({
+              collection: String(manifest.collection),
+              data: existing?.data ?? {},
+              locale,
+              domain,
+          })
+        : livePreview;
+
     // Labels resolve in the ACTIVE locale (always one of the shop's configured set), so a German
     // shop reads "Deutsch", not a hardcoded English exonym; an untranslatable code falls back to
     // itself inside `localeLabel`.
@@ -207,7 +241,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
                     localeSwitcher={<LocaleSwitcher locales={localeOptions} currentLocale={locale} />}
                 />
             }
-            livePreview={livePreview}
+            livePreview={livePreviewNode}
         >
             {fieldSurface ?? (
                 <EditorFields

@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+    CONTENT_PREVIEW_MESSAGE_TYPE,
+    CONTENT_PREVIEW_READY_MESSAGE_TYPE,
+    isContentPreviewMessage,
+    isContentPreviewReadyMessage,
     isThemePreviewMessage,
     isThemePreviewReadyMessage,
     THEME_PREVIEW_MESSAGE_TYPE,
@@ -42,5 +46,33 @@ describe('preview message guards', () => {
         expect(isThemePreviewReadyMessage({ type: THEME_PREVIEW_MESSAGE_TYPE })).toBe(false);
         expect(isThemePreviewReadyMessage(null)).toBe(false);
         expect(isThemePreviewReadyMessage('theme-preview-ready')).toBe(false);
+    });
+
+    it('accepts a well-formed content-preview message (patches + refresh, or either omitted)', () => {
+        expect(
+            isContentPreviewMessage({
+                type: CONTENT_PREVIEW_MESSAGE_TYPE,
+                patches: [['blocks.0.heading', 'Hi']],
+                refresh: true,
+            }),
+        ).toBe(true);
+        expect(isContentPreviewMessage({ type: CONTENT_PREVIEW_MESSAGE_TYPE })).toBe(true);
+        expect(isContentPreviewMessage({ type: CONTENT_PREVIEW_MESSAGE_TYPE, refresh: false })).toBe(true);
+    });
+
+    it('rejects malformed content-preview patches / refresh and wrong discriminators', () => {
+        expect(isContentPreviewMessage({ type: CONTENT_PREVIEW_MESSAGE_TYPE, patches: [['only-one']] })).toBe(false);
+        expect(isContentPreviewMessage({ type: CONTENT_PREVIEW_MESSAGE_TYPE, patches: [['p', 2]] })).toBe(false);
+        expect(isContentPreviewMessage({ type: CONTENT_PREVIEW_MESSAGE_TYPE, patches: 'nope' })).toBe(false);
+        expect(isContentPreviewMessage({ type: CONTENT_PREVIEW_MESSAGE_TYPE, refresh: 'yes' })).toBe(false);
+        expect(isContentPreviewMessage({ type: THEME_PREVIEW_MESSAGE_TYPE })).toBe(false);
+        expect(isContentPreviewMessage(null)).toBe(false);
+    });
+
+    it('narrows the content readiness handshake by discriminator only', () => {
+        expect(isContentPreviewReadyMessage({ type: CONTENT_PREVIEW_READY_MESSAGE_TYPE })).toBe(true);
+        expect(isContentPreviewReadyMessage({ type: CONTENT_PREVIEW_MESSAGE_TYPE })).toBe(false);
+        expect(isContentPreviewReadyMessage({ type: THEME_PREVIEW_READY_MESSAGE_TYPE })).toBe(false);
+        expect(isContentPreviewReadyMessage(null)).toBe(false);
     });
 });

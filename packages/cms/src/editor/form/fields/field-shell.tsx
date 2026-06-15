@@ -15,7 +15,7 @@ import { reduceFieldsToValues } from '../state';
  * widgets sit consistently inside the admin shell without importing it.
  */
 export const fieldControlClassName =
-    'rounded-md border border-border bg-background px-3 py-1.5 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+    'w-full rounded-md border-2 border-border bg-background px-3 py-2 text-foreground text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
 
 /**
  * Props for {@link FieldShell}.
@@ -43,12 +43,15 @@ export type FieldShellProps = {
  */
 export function FieldShell({ htmlFor, label, required, errorMessage, children }: FieldShellProps) {
     return (
-        <div data-testid={`field-${htmlFor}`} className="flex flex-col gap-1.5">
+        <div data-testid={`field-${htmlFor}`} className="flex min-w-0 flex-col gap-1.5">
             {label ? (
-                <label htmlFor={htmlFor} className="font-medium text-foreground text-sm">
+                <label
+                    htmlFor={htmlFor}
+                    className="font-semibold text-muted-foreground text-xs uppercase tracking-wide"
+                >
                     {label}
                     {required ? (
-                        <span aria-hidden="true" className="ml-0.5 text-red-600">
+                        <span aria-hidden="true" className="ml-1 text-primary">
                             *
                         </span>
                     ) : null}
@@ -56,7 +59,7 @@ export function FieldShell({ htmlFor, label, required, errorMessage, children }:
             ) : null}
             {children}
             {errorMessage ? (
-                <p role="alert" className="text-red-600 text-xs">
+                <p role="alert" className="font-medium text-destructive text-xs">
                     {errorMessage}
                 </p>
             ) : null}

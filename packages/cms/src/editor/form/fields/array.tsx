@@ -7,6 +7,14 @@ import { useAllFormFields } from '../hooks';
 import type { FieldRendererProps } from '../registry';
 import { RenderFields } from '../registry';
 import type { FormAction, FormState } from '../types';
+import {
+    addButtonClassName,
+    iconButtonClassName,
+    removeButtonClassName,
+    rowCardClassName,
+    rowHeaderClassName,
+    rowTitleClassName,
+} from './control-styles';
 
 /**
  * A row's stable identity. The `id` is the React key, decoupled from the row's
@@ -196,39 +204,42 @@ export function ArrayField({ field, path, registry }: FieldRendererProps<ArrayFi
                     data-testid={`array-row-${path}`}
                     data-row-id={row.id}
                     data-row-index={index}
-                    className="flex flex-col gap-3 rounded-md border border-border p-3"
+                    className={rowCardClassName}
                 >
-                    <div className="flex items-center justify-end gap-2">
-                        <button
-                            type="button"
-                            data-testid={`array-move-up-${path}-${index}`}
-                            aria-label="Move row up"
-                            disabled={index === 0}
-                            onClick={() => moveRow(index, -1)}
-                            className="rounded border border-border px-2 py-0.5 text-sm disabled:opacity-50"
-                        >
-                            ↑
-                        </button>
-                        <button
-                            type="button"
-                            data-testid={`array-move-down-${path}-${index}`}
-                            aria-label="Move row down"
-                            disabled={index === rows.length - 1}
-                            onClick={() => moveRow(index, 1)}
-                            className="rounded border border-border px-2 py-0.5 text-sm disabled:opacity-50"
-                        >
-                            ↓
-                        </button>
-                        <button
-                            type="button"
-                            data-testid={`array-remove-${path}-${index}`}
-                            aria-label="Remove row"
-                            disabled={atMin}
-                            onClick={() => removeRow(index)}
-                            className="rounded border border-border px-2 py-0.5 text-sm disabled:opacity-50"
-                        >
-                            Remove
-                        </button>
+                    <div className={rowHeaderClassName}>
+                        <span className={rowTitleClassName}>{`${field.label ?? field.name} ${index + 1}`}</span>
+                        <div className="flex items-center gap-1.5">
+                            <button
+                                type="button"
+                                data-testid={`array-move-up-${path}-${index}`}
+                                aria-label="Move row up"
+                                disabled={index === 0}
+                                onClick={() => moveRow(index, -1)}
+                                className={iconButtonClassName}
+                            >
+                                ↑
+                            </button>
+                            <button
+                                type="button"
+                                data-testid={`array-move-down-${path}-${index}`}
+                                aria-label="Move row down"
+                                disabled={index === rows.length - 1}
+                                onClick={() => moveRow(index, 1)}
+                                className={iconButtonClassName}
+                            >
+                                ↓
+                            </button>
+                            <button
+                                type="button"
+                                data-testid={`array-remove-${path}-${index}`}
+                                aria-label="Remove row"
+                                disabled={atMin}
+                                onClick={() => removeRow(index)}
+                                className={removeButtonClassName}
+                            >
+                                Remove
+                            </button>
+                        </div>
                     </div>
                     <RenderFields registry={registry} fields={field.fields} parentPath={`${path}.${index}`} />
                 </div>
@@ -238,8 +249,11 @@ export function ArrayField({ field, path, registry }: FieldRendererProps<ArrayFi
                 data-testid={`array-add-${path}`}
                 disabled={atMax}
                 onClick={addRow}
-                className="self-start rounded-md border border-border px-3 py-1.5 text-sm disabled:opacity-50"
+                className={addButtonClassName}
             >
+                <span aria-hidden="true" className="text-base leading-none">
+                    +
+                </span>
                 Add row
             </button>
         </div>

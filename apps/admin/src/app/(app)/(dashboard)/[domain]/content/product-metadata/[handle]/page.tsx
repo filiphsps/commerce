@@ -4,6 +4,7 @@ import { productMetadataEditor } from '@nordcom/commerce-cms/editor/manifests';
 import { EditorEditPage } from '@nordcom/commerce-cms/editor/ui';
 import type { Metadata } from 'next';
 import * as actions from '@/lib/cms-actions/_generated/productMetadata';
+import { contentLivePreview } from '@/lib/content-live-preview';
 import { editorRuntime } from '@/lib/editor-runtime';
 
 export const metadata: Metadata = { title: 'Edit product metadata' };
@@ -22,6 +23,7 @@ export default async function ProductMetadataEditPage({ params, searchParams }: 
             runtime={editorRuntime}
             params={{ domain, id: handle }}
             searchParams={sp}
+            renderLivePreview={contentLivePreview}
             generatedActions={{
                 saveDraft: actions.productMetadataSaveDraft,
                 publish: actions.productMetadataPublish,

@@ -1,4 +1,5 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { isDraftModeEnabled } from '@/api/_draft';
 import { PageApi } from '@/api/page';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
@@ -33,7 +34,13 @@ export const CMSContent = async ({ shop, locale, handle }: CMSContentProps) => {
         return null;
     }
 
-    return <Blocks blocks={page.blocks as BlockNode[]} context={{ shop, locale }} />;
+    // `preview` is true only inside the admin preview iframe; it gates the
+    // `data-cms-field` hints the live-preview bridge patches, so a normal render
+    // emits none. `path` is the blocks array's form-state path the admin keys its
+    // optimistic patches by.
+    const preview = await isDraftModeEnabled();
+
+    return <Blocks blocks={page.blocks as BlockNode[]} context={{ shop, locale, preview, path: 'blocks' }} />;
 };
 
 /**

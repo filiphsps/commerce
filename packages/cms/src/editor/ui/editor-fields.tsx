@@ -7,6 +7,7 @@ import { editorCollectionSchema } from '../collection-fields';
 import {
     createFieldRegistry,
     type FieldRegistry,
+    type FieldWidgetExtension,
     FormLocaleProvider,
     type RelationshipOption,
     type RelationshipQuery,
@@ -18,6 +19,7 @@ import {
     registerScalarFieldWidgets,
     type UploadAction,
     UploadActionProvider,
+    useFieldWidgetExtension,
 } from '../form';
 
 /**
@@ -95,15 +97,21 @@ const unwiredUploadAction: UploadAction = async () => {
  * (registration is last-write-wins, so settings surfaces keep the raw JSON
  * editor).
  *
+ * A host-supplied `extend` pass runs LAST so the admin's nordstar-based widgets
+ * override the matching built-ins for the kinds they cover, while every other
+ * kind (and bespoke claims like the rich-text `json` widget) survives untouched.
+ *
  * @param richText - Whether `json` descriptors render through the rich-text widget.
+ * @param extend - Optional host override pass applied after the built-ins.
  * @returns The populated registry.
  */
-function buildEditorFieldRegistry(richText: boolean): FieldRegistry {
+function buildEditorFieldRegistry(richText: boolean, extend: FieldWidgetExtension | null): FieldRegistry {
     const registry = createFieldRegistry();
     registerScalarFieldWidgets(registry);
     registerCompositeFieldWidgets(registry);
     registerDataBoundFieldWidgets(registry);
     if (richText) registerRichTextFieldWidget(registry);
+    extend?.(registry);
     return registry;
 }
 
@@ -136,7 +144,11 @@ export function EditorFields({
     uploadAction,
 }: EditorFieldsProps) {
     const schema = editorCollectionSchema(collection);
-    const registry = useMemo(() => buildEditorFieldRegistry(schema.richText === true), [schema.richText]);
+    const widgetExtension = useFieldWidgetExtension();
+    const registry = useMemo(
+        () => buildEditorFieldRegistry(schema.richText === true, widgetExtension),
+        [schema.richText, widgetExtension],
+    );
 
     const relationshipQuery: RelationshipQuery = useMemo(
         () => (relationTo) => relationshipOptions?.[relationTo] ?? [],

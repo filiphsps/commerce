@@ -24,8 +24,13 @@ import { RenderFields } from '../registry';
  */
 export function GroupField({ field, path, registry }: FieldRendererProps<GroupFieldDescriptor>) {
     return (
-        <fieldset data-testid={`group-${path}`} className="flex flex-col gap-3 rounded-md border border-border p-3">
-            {field.label ? <legend className="px-1 font-medium text-foreground text-sm">{field.label}</legend> : null}
+        <fieldset
+            data-testid={`group-${path}`}
+            className="flex min-w-0 flex-col gap-4 rounded-lg border border-border bg-card/20 p-4"
+        >
+            {field.label ? (
+                <legend className="px-1.5 font-semibold text-foreground text-sm">{field.label}</legend>
+            ) : null}
             <RenderFields registry={registry} fields={field.fields} parentPath={path} />
         </fieldset>
     );

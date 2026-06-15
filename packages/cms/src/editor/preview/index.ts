@@ -6,6 +6,12 @@
  */
 
 export {
+    CONTENT_PREVIEW_MESSAGE_TYPE,
+    CONTENT_PREVIEW_READY_MESSAGE_TYPE,
+    type ContentPreviewMessage,
+    type ContentPreviewReadyMessage,
+    isContentPreviewMessage,
+    isContentPreviewReadyMessage,
     isThemePreviewMessage,
     isThemePreviewReadyMessage,
     THEME_PREVIEW_MESSAGE_TYPE,

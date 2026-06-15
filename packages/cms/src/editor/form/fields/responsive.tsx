@@ -7,7 +7,7 @@ import { useAllFormFields } from '../hooks';
 import type { FieldRendererProps } from '../registry';
 import { RenderFields } from '../registry';
 import type { FormState } from '../types';
-import { fieldControlClassName } from './field-shell';
+import { pickerSelectClassName, removeButtonClassName } from './control-styles';
 
 /**
  * The breakpoints currently present under `path` — always including `base` — in
@@ -125,9 +125,11 @@ export function ResponsiveField({ field, path, registry }: FieldRendererProps<Re
     return (
         <fieldset
             data-testid={`responsive-${path}`}
-            className="flex flex-col gap-3 rounded-md border border-border p-3"
+            className="flex min-w-0 flex-col gap-4 rounded-lg border border-border bg-card/20 p-4"
         >
-            {field.label ? <legend className="px-1 font-medium text-foreground text-sm">{field.label}</legend> : null}
+            {field.label ? (
+                <legend className="px-1.5 font-semibold text-foreground text-sm">{field.label}</legend>
+            ) : null}
 
             {active.map((breakpoint) => (
                 <div
@@ -149,7 +151,7 @@ export function ResponsiveField({ field, path, registry }: FieldRendererProps<Re
                             data-testid={`responsive-remove-${path}-${breakpoint}`}
                             aria-label={`Remove ${breakpointLabel(breakpoint)} override`}
                             onClick={() => removeBreakpoint(breakpoint)}
-                            className="rounded border border-border px-2 py-1.5 text-sm"
+                            className={removeButtonClassName}
                         >
                             Remove
                         </button>
@@ -167,7 +169,7 @@ export function ResponsiveField({ field, path, registry }: FieldRendererProps<Re
                         if (isBreakpoint(next)) addBreakpoint(next);
                         setPendingAdd('');
                     }}
-                    className={`self-start ${fieldControlClassName}`}
+                    className={`self-start ${pickerSelectClassName}`}
                 >
                     <option value="">Add device…</option>
                     {addable.map((breakpoint) => (

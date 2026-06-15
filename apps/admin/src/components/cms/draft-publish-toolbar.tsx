@@ -1,7 +1,9 @@
 'use client';
 
 import { Button } from '@nordcom/nordstar';
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
+
+import { CMS_SAVED_EVENT } from './preview-events';
 
 /** How often (ms) to re-render the toolbar so the relative timestamp stays fresh. */
 const RELATIVE_TIME_TICK_MS = 30_000;
@@ -90,6 +92,16 @@ export function DraftPublishToolbar({
         return () => clearInterval(id);
     }, [lastSavedAt]);
 
+    // Notify the live-preview hook that a save has persisted so it can refresh
+    // the storefront iframe against the freshly-written draft. Fires once per new
+    // `lastSavedAt` (every successful autosave / explicit save advances it).
+    const lastNotifiedRef = useRef<Date | string | undefined>(undefined);
+    useEffect(() => {
+        if (!lastSavedAt || lastNotifiedRef.current === lastSavedAt) return;
+        lastNotifiedRef.current = lastSavedAt;
+        window.dispatchEvent(new CustomEvent(CMS_SAVED_EVENT));
+    }, [lastSavedAt]);
+
     const runAction = (action: () => Promise<void>, fallback: string, start: typeof startDraftTransition) => {
         setErrorMessage(null);
         start(async () => {
@@ -121,13 +133,20 @@ export function DraftPublishToolbar({
         <div className="flex w-full flex-col gap-2">
             <div className="flex items-center gap-3">
                 {/* ── Status indicator ── */}
-                <div className="flex-1">
+                <div className="flex flex-1 items-center gap-2 text-muted-foreground text-sm">
                     {isSaving ? (
-                        <span className="text-muted-foreground text-sm">Saving…</span>
+                        <>
+                            <span
+                                className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-amber-500"
+                                aria-hidden="true"
+                            />
+                            <span>Saving…</span>
+                        </>
                     ) : lastSavedAt ? (
-                        <span className="text-muted-foreground text-sm">
-                            Last saved {formatRelativeTime(lastSavedAt)}
-                        </span>
+                        <>
+                            <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" aria-hidden="true" />
+                            <span>Last saved {formatRelativeTime(lastSavedAt)}</span>
+                        </>
                     ) : null}
                 </div>
 

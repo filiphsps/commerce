@@ -118,32 +118,40 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
             <div className="mb-8 flex items-center justify-end gap-4">
                 <LocaleSwitcher locales={localeOptions} currentLocale={locale} />
                 <nav>
-                    <Link href={backHref} className="text-blue-600 text-sm hover:underline">
+                    <Link
+                        href={backHref}
+                        className="font-medium text-muted-foreground text-sm transition-colors hover:text-foreground"
+                    >
                         ← Back to editor
                     </Link>
                 </nav>
             </div>
 
             {versions.length === 0 ? (
-                <p className="text-gray-500">No version history yet.</p>
+                <p className="rounded-lg border border-border border-dashed bg-card/20 px-4 py-8 text-center text-muted-foreground text-sm">
+                    No version history yet.
+                </p>
             ) : (
-                <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200">
+                <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border bg-card/30">
                     {versions.map((version) => {
                         const isLatest = doc?.latestVersionId === version.versionId;
                         const createdAt = new Date(version.createdAt);
                         const restoreThis = generatedActions.restoreVersion.bind(null, domain, id, version.versionId);
 
                         return (
-                            <li key={version.versionId} className="flex items-center justify-between px-4 py-3">
+                            <li
+                                key={version.versionId}
+                                className="flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:bg-muted/30"
+                            >
                                 <div className="flex flex-col gap-0.5">
                                     <time
                                         dateTime={createdAt.toISOString()}
                                         title={createdAt.toLocaleString()}
-                                        className="font-medium text-gray-900 text-sm"
+                                        className="font-medium text-foreground text-sm"
                                     >
                                         {relativeTimeLabel(version.createdAt, locale)}
                                     </time>
-                                    <span className="text-gray-500 text-xs">
+                                    <span className="text-muted-foreground text-xs">
                                         <span className="capitalize">{version.status}</span>
                                         {' · '}
                                         {version.author?.label ?? ABSENT_AUTHOR}
@@ -151,7 +159,7 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {isLatest && (
-                                        <span className="rounded bg-green-100 px-2 py-0.5 font-medium text-green-800 text-xs">
+                                        <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 font-medium text-emerald-400 text-xs">
                                             Current
                                         </span>
                                     )}
@@ -159,7 +167,7 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
                                         <button
                                             type="submit"
                                             disabled={isLatest}
-                                            className="rounded border border-gray-300 px-3 py-1 font-medium text-gray-700 text-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                            className="rounded-md border border-border px-3 py-1.5 font-medium text-foreground text-sm transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
                                         >
                                             Restore
                                         </button>

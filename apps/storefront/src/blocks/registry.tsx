@@ -86,11 +86,11 @@ function defineBlock<TBlock extends BlockNode>(
  */
 export const STOREFRONT_BLOCKS: Record<BlockType, StorefrontBlockEntry> = {
     alert: defineBlock<AlertBlockNode>(
-        ({ block }) => <AlertBlock block={block} />,
+        ({ block, context, index }) => <AlertBlock block={block} context={context} index={index} />,
         ({ block }) => <AlertBlock.Skeleton block={block} />,
     ),
     banner: defineBlock<BannerBlockNode>(
-        ({ block, context }) => <BannerBlock block={block} context={context} />,
+        ({ block, context, index }) => <BannerBlock block={block} context={context} index={index} />,
         ({ block }) => <BannerBlock.Skeleton block={block} />,
     ),
     collection: defineBlock<CollectionBlockNode>(

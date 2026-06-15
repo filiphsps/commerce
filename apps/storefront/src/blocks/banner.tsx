@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';
-import type { BlockContext } from './context';
+import { type BlockContext, cmsFieldAttrs } from './context';
 import { resolveLink } from './resolve-link';
 import type { BannerBlockNode } from './types';
 
@@ -36,10 +36,19 @@ const cssUrl = (raw: string): string => {
  * centered for legibility, alignment kicks in at md+ widths.
  *
  * @param block - The CMS banner block node with heading, alignment, and optional CTA/background.
- * @param context - Render context carrying locale and other block-tree metadata.
+ * @param context - Render context carrying locale, the preview flag, and other block-tree metadata.
+ * @param index - The block's position in the top-level blocks array, for the preview field path.
  * @returns The rendered banner section element.
  */
-export const BannerBlock = ({ block, context }: { block: BannerBlockNode; context: BlockContext }): JSX.Element => {
+export const BannerBlock = ({
+    block,
+    context,
+    index,
+}: {
+    block: BannerBlockNode;
+    context: BlockContext;
+    index: number;
+}): JSX.Element => {
     const bgUrl = typeof block.background === 'string' ? undefined : block.background?.url;
     const cta = resolveLink(block.cta, { locale: context.locale });
 
@@ -62,8 +71,14 @@ export const BannerBlock = ({ block, context }: { block: BannerBlockNode; contex
                 )}
                 data-alignment={block.alignment}
             >
-                <h1 className="font-bold text-h1">{block.heading}</h1>
-                {block.subheading ? <p className="text-base md:text-lg">{block.subheading}</p> : null}
+                <h1 className="font-bold text-h1" {...cmsFieldAttrs(context, index, 'heading')}>
+                    {block.heading}
+                </h1>
+                {block.subheading ? (
+                    <p className="text-base md:text-lg" {...cmsFieldAttrs(context, index, 'subheading')}>
+                        {block.subheading}
+                    </p>
+                ) : null}
             </div>
 
             {cta ? (

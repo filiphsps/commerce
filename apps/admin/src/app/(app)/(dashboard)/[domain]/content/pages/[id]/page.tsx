@@ -4,6 +4,7 @@ import { pagesEditor } from '@nordcom/commerce-cms/editor/manifests';
 import { EditorEditPage } from '@nordcom/commerce-cms/editor/ui';
 import type { Metadata } from 'next';
 import * as actions from '@/lib/cms-actions/_generated/pages';
+import { contentLivePreview } from '@/lib/content-live-preview';
 import { editorRuntime } from '@/lib/editor-runtime';
 
 export const metadata: Metadata = { title: 'Edit Page' };
@@ -22,6 +23,7 @@ export default async function EditPagePage({ params, searchParams }: Props) {
             runtime={editorRuntime}
             params={{ domain, id }}
             searchParams={sp}
+            renderLivePreview={contentLivePreview}
             generatedActions={{
                 saveDraft: actions.pagesSaveDraft,
                 publish: actions.pagesPublish,

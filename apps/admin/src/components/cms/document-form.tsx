@@ -44,17 +44,23 @@ export function DocumentForm({
         <div className="flex h-full min-w-0 flex-col">
             <PageHeader title={title} breadcrumbs={breadcrumbs} />
 
-            <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-6 py-4">
+            <div className="min-w-0 flex-1 overflow-y-auto">
                 <DocumentFormBody action={onSubmit} initialState={initialState}>
                     <div
                         className={
                             livePreview
-                                ? 'grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-2'
-                                : 'flex min-w-0 flex-col gap-4'
+                                ? // Editor + preview: fields left, preview right (sticky on lg+ so it
+                                  // stays in view while the field column scrolls). Slightly favors the
+                                  // preview so the storefront renders at a realistic width.
+                                  'mx-auto grid min-w-0 max-w-[120rem] grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]'
+                                : // Fields only: a single readable column, centered.
+                                  'mx-auto flex min-w-0 max-w-3xl flex-col gap-5 px-4 py-6 sm:px-6'
                         }
                     >
-                        <div className="flex min-w-0 flex-col gap-4 overflow-x-auto">{children}</div>
-                        {livePreview ? <div className="flex min-w-0 flex-col gap-4">{livePreview}</div> : null}
+                        <div className="flex min-w-0 flex-col gap-5">{children}</div>
+                        {livePreview ? (
+                            <div className="min-w-0 lg:sticky lg:top-6 lg:self-start">{livePreview}</div>
+                        ) : null}
                     </div>
 
                     {toolbar ? <PageFooter>{toolbar}</PageFooter> : null}

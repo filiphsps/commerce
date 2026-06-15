@@ -1,5 +1,6 @@
 import type { JSX } from 'react';
 import { Alert as AlertComponent } from '@/components/informational/alert';
+import { type BlockContext, cmsFieldAttrs } from './context';
 import type { AlertBlockNode } from './types';
 
 /**
@@ -10,12 +11,31 @@ import type { AlertBlockNode } from './types';
  * The Payload schema's severity union (info/success/warning/error) is a
  * subset of `Alert`'s storefront-side union (which also has `callout`), so
  * a direct pass-through is type-safe.
+ *
+ * @param block - The CMS alert block node (severity, title, body).
+ * @param context - Render context; carries the preview flag that enables `data-cms-field` hints.
+ * @param index - The block's position in the top-level blocks array, for the preview field path.
+ * @returns The rendered alert element.
  */
-export const AlertBlock = ({ block }: { block: AlertBlockNode }): JSX.Element => {
+export const AlertBlock = ({
+    block,
+    context,
+    index,
+}: {
+    block: AlertBlockNode;
+    context: BlockContext;
+    index: number;
+}): JSX.Element => {
     return (
         <AlertComponent severity={block.severity} data-block-type="alert">
-            <strong className="block font-semibold">{block.title}</strong>
-            {block.body ? <p className="text-sm leading-snug">{block.body}</p> : null}
+            <strong className="block font-semibold" {...cmsFieldAttrs(context, index, 'title')}>
+                {block.title}
+            </strong>
+            {block.body ? (
+                <p className="text-sm leading-snug" {...cmsFieldAttrs(context, index, 'body')}>
+                    {block.body}
+                </p>
+            ) : null}
         </AlertComponent>
     );
 };

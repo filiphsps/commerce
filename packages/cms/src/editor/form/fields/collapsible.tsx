@@ -30,13 +30,13 @@ export function CollapsibleField({ field, path, registry }: FieldRendererProps<C
     const regionId = useId();
 
     return (
-        <div data-testid={`collapsible-${field.label}`} className="rounded-md border border-border">
+        <div data-testid={`collapsible-${field.label}`} className="overflow-hidden rounded-lg border border-border">
             <button
                 type="button"
                 aria-expanded={open}
                 aria-controls={regionId}
                 onClick={() => setOpen((value) => !value)}
-                className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left font-medium text-foreground text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex w-full items-center justify-between gap-2 bg-card/30 px-4 py-3 text-left font-semibold text-foreground text-sm outline-none transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
             >
                 {field.label}
                 <svg
@@ -47,7 +47,7 @@ export function CollapsibleField({ field, path, registry }: FieldRendererProps<C
                     <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
             </button>
-            <div id={regionId} hidden={!open} className="flex flex-col gap-3 px-3 pb-3">
+            <div id={regionId} hidden={!open} className="flex flex-col gap-4 border-border/60 border-t px-4 py-4">
                 <RenderFields registry={registry} fields={field.fields} parentPath={path} />
             </div>
         </div>

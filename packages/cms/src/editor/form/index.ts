@@ -16,6 +16,7 @@
  */
 
 export { FieldsContext, type FieldsContextValue, FormContext, type FormContextValue } from './context';
+export { type FieldWidgetExtension, FieldWidgetsProvider, useFieldWidgetExtension } from './field-widgets';
 export {
     ArrayField,
     CollapsibleField,
