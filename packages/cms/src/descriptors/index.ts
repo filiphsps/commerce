@@ -20,7 +20,7 @@ export {
     textField,
     uploadField,
 } from './builders';
-export { collapseOverridable, OVERRIDE_INHERIT, type OverridableValue, overridable } from './overridable';
+export { overridable } from './overridable';
 export type {
     ArrayFieldDescriptor,
     BlockDescriptor,

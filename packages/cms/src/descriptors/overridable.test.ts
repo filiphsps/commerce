@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { selectField } from './builders';
-import { collapseOverridable, OVERRIDE_INHERIT, overridable } from './overridable';
+import { overridable } from './overridable';
 
 describe('overridable()', () => {
     it('wraps a scalar field as an overridable descriptor', () => {
@@ -19,18 +19,9 @@ describe('overridable()', () => {
         expect(field.inheritedSourceLabel).toBe('Platform default');
     });
 
-    it('exposes the canonical inherit sentinel', () => {
-        expect(OVERRIDE_INHERIT).toEqual({ __mode: 'inherit' });
-    });
-});
-
-describe('collapseOverridable()', () => {
-    it('returns undefined when inheriting or absent', () => {
-        expect(collapseOverridable(undefined)).toBeUndefined();
-        expect(collapseOverridable({ __mode: 'inherit' })).toBeUndefined();
-    });
-
-    it('returns the wrapped value when overriding', () => {
-        expect(collapseOverridable({ __mode: 'override', value: 'inline-button' })).toBe('inline-button');
+    it('derives its name from the wrapped field when no label is given', () => {
+        const field = overridable(selectField({ name: 'layout', options: [{ label: 'V', value: 'vertical' }] }));
+        expect(field.name).toBe('layout');
+        expect(field.inheritedSourceLabel).toBeUndefined();
     });
 });

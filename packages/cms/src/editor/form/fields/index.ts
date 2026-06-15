@@ -15,6 +15,7 @@ import { ArrayField } from './array';
 import { BlocksField } from './blocks';
 import { CollapsibleField } from './collapsible';
 import { GroupField } from './group';
+import { OverridableField } from './overridable';
 import { ResponsiveField } from './responsive';
 import {
     CheckboxField,
@@ -34,6 +35,7 @@ export { CollapsibleField } from './collapsible';
 export { ConditionalField } from './conditional';
 export { FieldShell, type FieldShellProps, fieldControlClassName, useEditorField } from './field-shell';
 export { GroupField } from './group';
+export { OverridableField } from './overridable';
 export {
     RelationshipField,
     type RelationshipOption,
@@ -88,13 +90,14 @@ export function registerScalarFieldWidgets(registry: FieldRegistry): FieldRegist
 }
 
 /**
- * Register the four composite container widgets — `group`, `array`, the
- * polymorphic `blocks`, and the presentational `collapsible` — into a field
- * registry. Registration is last-write-wins, so a host may override any of
- * these afterward. Returns the same registry for call-site chaining. The
- * widgets recurse through {@link RenderFields}, so a registry carrying both the
- * scalar and composite widgets renders an arbitrarily deep descriptor tree —
- * including a `columns` block nesting further blocks.
+ * Register the composite container widgets — `group`, `array`, the polymorphic
+ * `blocks`, the presentational `collapsible`, the per-breakpoint `responsive`, and
+ * the inherit/override `overridable` — into a field registry. Registration is
+ * last-write-wins, so a host may override any of these afterward. Returns the same
+ * registry for call-site chaining. The widgets recurse through {@link RenderFields}
+ * (and `responsive`/`overridable` render their wrapped scalar via the same registry),
+ * so a registry carrying both the scalar and composite widgets renders an arbitrarily
+ * deep descriptor tree — including a `columns` block nesting further blocks.
  *
  * @param registry - The registry to populate.
  * @returns The registry, with the composite widgets registered.
@@ -105,5 +108,6 @@ export function registerCompositeFieldWidgets(registry: FieldRegistry): FieldReg
     registry.register('blocks', BlocksField);
     registry.register('collapsible', CollapsibleField);
     registry.register('responsive', ResponsiveField);
+    registry.register('overridable', OverridableField);
     return registry;
 }
