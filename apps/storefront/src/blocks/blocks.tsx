@@ -49,6 +49,11 @@ export const Blocks = ({ blocks, context }: BlocksProps): ReactNode => {
             return null;
         }
 
+        if (context.config?.blocks && !context.config.blocks.isAvailable(block.blockType)) {
+            // The shop's extension manifest restricts this block type — skip it rather than render.
+            return null;
+        }
+
         const entry = STOREFRONT_BLOCKS[block.blockType];
         return <Fragment key={key}>{entry.render({ block, context, index: idx, Renderer: Blocks })}</Fragment>;
     });

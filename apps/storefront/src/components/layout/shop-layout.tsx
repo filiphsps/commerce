@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { resolveExtensions } from '@nordcom/commerce-cms/extensions';
 import { resolveChromeLayout } from '@nordcom/commerce-cms/layout';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { HTMLProps, ReactNode } from 'react';
@@ -47,10 +48,16 @@ const CHROME_GRID_CLASS =
  * @returns The main grid container element.
  */
 const ShopLayout = async ({ shop, locale, i18n, children, layout }: ShopLayoutProps) => {
-    const slots = resolveChromeLayout({
-        order: layout,
+    // Compose the per-shop extension manifest (section visibility + chrome order) over the P3-6
+    // section flags. An explicit `layout` prop still wins by overriding the manifest order. With no
+    // manifest and no flags the resolved order equals the historical default — byte-identical.
+    const manifest = shop.extensions ?? null;
+    const effectiveManifest = layout ? { ...manifest, chrome: { ...manifest?.chrome, order: layout } } : manifest;
+    const { chrome: slots } = resolveExtensions({
+        shop,
+        manifest: effectiveManifest,
         // Inside the `CachedShell` 'use cache' scope → sync `.evaluate(shop)`. Trade-offs in defineFlag JSDoc.
-        isVisible: (id) => sectionEnabled(id).evaluate(shop),
+        isSectionVisible: (id) => sectionEnabled(id).evaluate(shop),
     });
     const args = { shop, locale, i18n, children };
 
