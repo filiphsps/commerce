@@ -19,6 +19,7 @@ import { getDictionary } from '@/utils/dictionary';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale } from '@/utils/locale';
 import { isVariantOnSale } from '@/utils/sale-percent';
+import { resolveVendorHref } from '@/utils/vendor-href';
 
 /**
  * Slim view of a Product passed to the client provider. Drops prose
@@ -98,6 +99,11 @@ export default async function ProductCard({
     const isSingleBuyable = variantCount === 1 && seedVariant.availableForSale === true;
     const onSale = isVariantOnSale(seedVariant);
 
+    const vendorHref =
+        shop.showProductVendor && data.vendor
+            ? await resolveVendorHref({ domain: shop.domain, locale, vendor: data.vendor })
+            : null;
+
     return (
         <ProductCardOptionsProvider
             product={slim as Product}
@@ -124,12 +130,7 @@ export default async function ProductCard({
                     </ProductCardBoundary>
                 </div>
                 <div className="flex flex-col gap-1 pt-1">
-                    {shop.showProductVendor && data.vendor ? (
-                        <span className="font-semibold text-(--product-card-vendor-color) text-xs uppercase leading-none tracking-(--product-card-eyebrow-tracking)">
-                            {data.vendor}
-                        </span>
-                    ) : null}
-                    <ProductCardTitle shop={shop} data={data} />
+                    <ProductCardTitle shop={shop} data={data} vendorHref={vendorHref} />
                     <ProductCardPrice seedVariant={seedVariant} locale={locale} />
                     <ProductCardStockUrgency seedVariant={seedVariant} i18n={i18n} />
                 </div>

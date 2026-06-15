@@ -7,6 +7,7 @@ import { VariantTitle } from '@/components/product-display';
 export type ProductCardTitleProps = {
     shop: OnlineShop;
     data: Product;
+    vendorHref?: string | null;
     className?: string;
 };
 
@@ -15,12 +16,20 @@ export type ProductCardTitleProps = {
  *
  * @param props.shop - Shop configuration that controls whether the vendor line is shown.
  * @param props.data - Product providing the title and vendor.
+ * @param props.vendorHref - Destination for the vendor eyebrow, forwarded to `VariantTitle`.
  * @param props.className - CSS class names forwarded to `VariantTitle`.
  * @returns The `VariantTitle` element.
  */
-const ProductCardTitle = ({ shop, data, className }: ProductCardTitleProps) => {
+const ProductCardTitle = ({ shop, data, vendorHref, className }: ProductCardTitleProps) => {
     const showVendor = shop.showProductVendor === true;
-    return <VariantTitle product={data} showVendor={showVendor} className={className ?? 'product-card-title'} />;
+    return (
+        <VariantTitle
+            product={data}
+            showVendor={showVendor}
+            vendorHref={vendorHref}
+            className={className ?? 'product-card-title'}
+        />
+    );
 };
 
 ProductCardTitle.displayName = 'Nordcom.ProductCard.Title';
