@@ -320,9 +320,6 @@ jobs:
         needs: build
         timeout-minutes: 60
         runs-on: ubuntu-latest
-        # Kept non-blocking for the first green run; remove `continue-on-error` in a follow-up once
-        # e2e is stable so it gates merges.
-        continue-on-error: true
         strategy:
             fail-fast: false
             matrix:
