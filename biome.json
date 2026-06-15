@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
     "assist": {
         "actions": {
             "source": {
@@ -18,6 +18,7 @@
             "**",
             "!**/*.d.ts",
             "!**/*.scss",
+            "!**/*.svg",
             "!**/.claude",
             "!**/.specs",
             "!**/public/robots.txt*",
@@ -54,8 +55,8 @@
         "enabled": true,
         "includes": ["**", "!package.json"],
         "rules": {
-            "recommended": true,
-            "a11y": { "recommended": false },
+            "preset": "recommended",
+            "a11y": { "preset": "none" },
             "complexity": {
                 "noBannedTypes": "off",
                 "useArrowFunction": "off"
@@ -73,7 +74,7 @@
             },
             "performance": {
                 "noNamespaceImport": "off",
-                "recommended": true
+                "preset": "recommended"
             },
             "security": {
                 "noDangerouslySetInnerHtml": "off"

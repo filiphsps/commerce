@@ -1,9 +1,10 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+    "root": false,
+    "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
     "extends": "//",
     "linter": {
         "rules": {
-            "a11y": { "recommended": true }
+            "a11y": { "preset": "recommended" }
         }
     }
 }

@@ -32,7 +32,7 @@ export default async function NotFound() {
                     <p>Sorry we could not find a page in the language or region you requested.</p>
                     <p>
                         You&apos;ll be redirected to the default language and region in a few seconds. If you are not
-                        redirected automatically, please click <a href="/en-US/countries/">here</a>.
+                        redirected automatically, please <a href="/en-US/countries/">choose your country and region</a>.
                     </p>
                 </Content>
             </body>
