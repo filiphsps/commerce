@@ -91,11 +91,16 @@ export const SearchApi = async ({
         }
 
         return {
-            // hydrogen-react types search edge nodes as RecursivePartial<Product>;
-            // the Storefront API guarantees all queried fields are present.
-            result: data?.search.edges.map((item) => unsafe_cast<Product>(item.node)) || [],
-            productFilters: data?.search.productFilters || [],
-            totalCount: data?.search.totalCount ?? 0,
+            // `data.search` is null on an Apollo partial-error payload (errorPolicy: 'all'), so
+            // optional-chain it — `data?.search.edges` would throw on `.edges` and crash the page
+            // instead of degrading to an empty result. hydrogen-react types the nodes as
+            // RecursivePartial<Product>; drop any without an id (a non-product or field-less partial)
+            // so a field-less `unsafe_cast` product never reaches a card and breaks a downstream deref.
+            result: (data?.search?.edges ?? [])
+                .map((item) => unsafe_cast<Product>(item.node))
+                .filter((product) => !!product?.id),
+            productFilters: data?.search?.productFilters ?? [],
+            totalCount: data?.search?.totalCount ?? 0,
         };
     };
 
