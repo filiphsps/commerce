@@ -46,6 +46,8 @@
         "back-to-home": "Zurück zur Startseite",
         "browse-all-products": "Alle Produkte ansehen",
         "collections": "Kollektionen",
+        "invalid-price": "Bitte einen gültigen, nicht negativen Preis eingeben.",
+        "invalid-price-range": "Der Mindestpreis darf den Höchstpreis nicht überschreiten.",
         "empty-collection-title": "Noch keine Produkte",
         "empty-collection-description": "Diese Kollektion enthält derzeit keine Produkte. Schau bald wieder vorbei.",
         "error-title": "Etwas ist schiefgelaufen",

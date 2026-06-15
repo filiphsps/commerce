@@ -46,6 +46,8 @@
         "back-to-home": "Back to home",
         "browse-all-products": "Browse all products",
         "collections": "Collections",
+        "invalid-price": "Enter a valid, non-negative price.",
+        "invalid-price-range": "Minimum price can't exceed the maximum.",
         "empty-collection-title": "No products yet",
         "empty-collection-description": "This collection doesn't have any products right now. Check back soon.",
         "error-title": "Something went wrong",

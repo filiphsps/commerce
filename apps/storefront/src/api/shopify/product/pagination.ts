@@ -15,14 +15,52 @@ import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { PRODUCT_CARD_FRAGMENT } from './queries';
 
+/** Facet inputs compiled into a Shopify products-connection search query. */
+export type ProductsQueryFacets = {
+    available_for_sale?: boolean;
+    vendor?: string;
+    productType?: string;
+    minPrice?: number;
+    maxPrice?: number;
+};
+
+/**
+ * Compiles facet inputs into a Shopify `products(query: …)` search string so the listing and its
+ * page-count traversal apply the same constraints. Returns `null` when no facet is set (the
+ * unfiltered catalog).
+ *
+ * @param facets - The selected facet inputs.
+ * @returns The ` AND `-joined search query, or `null` when empty.
+ */
+export const buildProductsQueryString = (facets: ProductsQueryFacets): string | null => {
+    const entries: string[] = [];
+    if (facets.available_for_sale !== undefined) {
+        entries.push(`available_for_sale:${facets.available_for_sale ? 'true' : 'false'}`);
+    }
+    if (facets.vendor) {
+        entries.push(`vendor:"${facets.vendor}"`);
+    }
+    if (facets.productType) {
+        entries.push(`product_type:"${facets.productType}"`);
+    }
+    if (typeof facets.minPrice === 'number' && Number.isFinite(facets.minPrice)) {
+        entries.push(`variants.price:>=${facets.minPrice}`);
+    }
+    if (typeof facets.maxPrice === 'number' && Number.isFinite(facets.maxPrice)) {
+        entries.push(`variants.price:<=${facets.maxPrice}`);
+    }
+    return entries.length > 0 ? entries.join(' AND ') : null;
+};
+
 const PRODUCTS_PAGINATION_COUNT_QUERY = graphql(`
     query productsPaginationCount(
         $first: Int
         $sorting: ProductSortKeys
+        $query: String
         $before: String
         $after: String
     ) {
-        products(first: $first, sortKey: $sorting, before: $before, after: $after) {
+        products(first: $first, sortKey: $sorting, query: $query, before: $before, after: $after) {
             edges {
                 cursor
                 node {
@@ -44,7 +82,8 @@ export type ProductsFilters = {
     before?: Nullable<string>;
 
     sorting?: Nullable<ProductSortKeys>;
-} & LimitFilters;
+} & ProductsQueryFacets &
+    LimitFilters;
 
 export type ProductsOptions = ApiOptions & {
     filters: ProductsFilters;
@@ -81,6 +120,7 @@ export const ProductsPaginationCountApi = async ({
             PRODUCTS_PAGINATION_COUNT_QUERY,
             {
                 first: TRAVERSAL_PAGE_SIZE,
+                query: buildProductsQueryString(filters),
                 ...(({ sorting = 'BEST_SELLING' }) => ({
                     sorting,
                     after,
@@ -156,12 +196,26 @@ export const ProductsPaginationCountApi = async ({
  */
 export const ProductsPaginationApi = async ({
     api,
-    filters: { limit = 35, sorting = 'BEST_SELLING', available_for_sale, reverse, vendor, before, after },
+    filters: {
+        limit = 35,
+        sorting = 'BEST_SELLING',
+        available_for_sale,
+        reverse,
+        vendor,
+        productType,
+        minPrice,
+        maxPrice,
+        before,
+        after,
+    },
 }: {
     api: AbstractApi;
     filters: {
         limit?: number;
         vendor?: string;
+        productType?: string;
+        minPrice?: number;
+        maxPrice?: number;
         sorting?: ProductSortKeys;
         available_for_sale?: boolean;
         reverse?: boolean;
@@ -178,16 +232,8 @@ export const ProductsPaginationApi = async ({
     products: ProductEdge[];
     filters: Filter[];
 }> => {
-    const queryEntries = [];
-    if (available_for_sale !== undefined) {
-        queryEntries.push(`available_for_sale:${available_for_sale ? 'true' : 'false'}`);
-    }
-    if (vendor) {
-        queryEntries.push(`vendor:"${vendor}"`);
-    }
-
     const filter = {
-        query: queryEntries.length > 0 ? queryEntries.join(' AND ') : null,
+        query: buildProductsQueryString({ available_for_sale, vendor, productType, minPrice, maxPrice }),
         sorting: sorting || null,
         reverse: typeof reverse !== 'undefined' ? (reverse ? 'true' : 'false') : null,
     };

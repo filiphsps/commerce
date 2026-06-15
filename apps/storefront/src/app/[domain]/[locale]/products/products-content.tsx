@@ -1,19 +1,24 @@
+import { PackageOpen as EmptyProductsIcon } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { Shop } from '@/api/_loaders';
 import type { ProductSorting } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';
-import { Filters } from '@/components/actionable/filters';
 import { Pagination } from '@/components/actionable/pagination';
+import { EmptyState } from '@/components/empty-state';
 import CollectionProductCard from '@/components/products/collection-product-card';
+import { ProductFilters } from '@/components/products/product-filters';
 import { getDictionary } from '@/utils/dictionary';
-import type { Locale } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
+import { getTranslations, type Locale } from '@/utils/locale';
 
 type SearchParams = {
     page?: string;
     vendor?: string;
+    type?: string;
+    available?: string;
+    minPrice?: string;
+    maxPrice?: string;
     sorting?: string;
 };
 
@@ -23,15 +28,31 @@ export type ProductsContentContentProps = {
     locale: Locale;
     searchParams?: SearchParams;
 };
+
 /**
- * Server component that fetches and renders a paginated, filterable product
- * grid for the all-products page. Calls `notFound()` when the requested page
- * number is out of range.
+ * Parses a numeric query param, returning `undefined` for an absent or non-finite value so it never
+ * compiles into a `variants.price:>=NaN` clause.
+ *
+ * @param raw - The raw query-param string.
+ * @returns The finite number, or `undefined`.
+ */
+const numericParam = (raw: string | undefined): number | undefined => {
+    if (!raw) return undefined;
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : undefined;
+};
+
+/**
+ * Server component that fetches and renders a paginated, faceted product grid for the all-products
+ * page. The facet params (`vendor`, `type`, `available`, `minPrice`, `maxPrice`, `sorting`) compile
+ * into a Shopify products-connection search query applied to BOTH the page-count traversal and the
+ * page fetch, so pagination stays correct under filtering. A filtered-to-empty result renders the
+ * shared empty state rather than a 404.
  *
  * @param domain - The tenant shop domain used to resolve the shop record.
  * @param locale - The active locale forwarded to Shopify API calls and product cards.
- * @param searchParams - Optional query params; `page`, `vendor`, and `sorting` control the listing.
- * @returns The product grid with pagination controls above and below.
+ * @param searchParams - Optional query params controlling pagination, sorting, and faceting.
+ * @returns The faceted product listing.
  */
 export default async function ProductsContent({ domain, locale, searchParams = {} }: ProductsContentContentProps) {
     const shop = await Shop.findByDomain(domain);
@@ -39,22 +60,39 @@ export default async function ProductsContent({ domain, locale, searchParams = {
 
     const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
     const limit = 35; // TODO.
-    const vendor = searchParams.vendor || undefined;
     const sorting = (searchParams.sorting?.toUpperCase() || 'BEST_SELLING') as ProductSorting;
+    const facets = {
+        vendor: searchParams.vendor || undefined,
+        productType: searchParams.type || undefined,
+        available_for_sale: searchParams.available === 'true' ? true : undefined,
+        minPrice: numericParam(searchParams.minPrice),
+        maxPrice: numericParam(searchParams.maxPrice),
+    };
 
-    const { cursors, pages } = await ProductsPaginationCountApi({ api, filters: { first: limit } });
-    if (page > pages || page < 1) {
+    const {
+        cursors,
+        pages,
+        products: total,
+    } = await ProductsPaginationCountApi({ api, filters: { first: limit, ...facets } });
+    // Only 404 a genuinely out-of-range page; a filter that matches nothing (pages <= 0) falls through
+    // to the empty state below instead of a hard not-found.
+    if (page < 1 || (pages >= 1 && page > pages)) {
         notFound();
     }
 
     const after = page > 1 ? cursors[page - 2] : undefined;
 
-    const { products, filters } = await ProductsPaginationApi({ api, filters: { limit, vendor, sorting, after } });
+    const { products, filters } = await ProductsPaginationApi({
+        api,
+        filters: { limit, sorting, after, ...facets },
+    });
 
     const i18n = await getDictionary({ shop, locale });
+    const { t } = getTranslations('common', i18n);
+
     const pagination = (
         <section className="flex w-full items-center justify-center empty:hidden">
-            <Suspense key={`products.pagination`} fallback={<div className="h-8 w-full" data-skeleton />}>
+            <Suspense key="products.pagination" fallback={<div className="h-8 w-full" data-skeleton />}>
                 <Pagination i18n={i18n} knownFirstPage={1} knownLastPage={pages} />
             </Suspense>
         </section>
@@ -62,21 +100,27 @@ export default async function ProductsContent({ domain, locale, searchParams = {
 
     return (
         <>
-            {pagination}
+            <ProductFilters filters={filters} i18n={i18n} total={total} />
 
-            <Filters filters={filters} />
+            {products.length > 0 ? (
+                <>
+                    {pagination}
 
-            <section
-                className={cn(
-                    'grid w-full grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
-                )}
-            >
-                {products.map(({ node: product }) => (
-                    <CollectionProductCard key={product.id} shop={shop} locale={locale} data={product} />
-                ))}
-            </section>
+                    <section className="grid w-full grid-cols-[repeat(auto-fill,minmax(min(11rem,calc((100%-0.5rem)/2)),1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]">
+                        {products.map(({ node: product }) => (
+                            <CollectionProductCard key={product.id} shop={shop} locale={locale} data={product} />
+                        ))}
+                    </section>
 
-            {pagination}
+                    {pagination}
+                </>
+            ) : (
+                <EmptyState
+                    icon={<EmptyProductsIcon aria-hidden={true} />}
+                    title={t('empty-collection-title')}
+                    description={t('empty-collection-description')}
+                />
+            )}
         </>
     );
 }

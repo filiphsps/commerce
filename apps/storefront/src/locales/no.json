@@ -41,6 +41,8 @@
         "back-to-home": "Tilbake til forsiden",
         "browse-all-products": "Se alle produkter",
         "collections": "Kolleksjoner",
+        "invalid-price": "Oppgi en gyldig, ikke-negativ pris.",
+        "invalid-price-range": "Minimumsprisen kan ikke overstige maksprisen.",
         "empty-collection-title": "Ingen produkter ennå",
         "empty-collection-description": "Denne kolleksjonen har ingen produkter akkurat nå. Kom tilbake snart.",
         "error-title": "Noe gikk galt",

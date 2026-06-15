@@ -15,6 +15,10 @@ import ProductsContent from './products-content';
 type SearchParams = Promise<{
     page?: string;
     vendor?: string;
+    type?: string;
+    available?: string;
+    minPrice?: string;
+    maxPrice?: string;
     sorting?: string;
 }>;
 
