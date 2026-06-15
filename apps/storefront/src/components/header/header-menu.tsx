@@ -59,7 +59,9 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
     const [open, setOpen] = useState(false);
     const [hoverCapable, setHoverCapable] = useState(false);
     const [mounted, setMounted] = useState(false);
-    const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(null);
+    const [position, setPosition] = useState<{ top: number; left: number; width: number; viewport: number } | null>(
+        null,
+    );
     const pathname = usePathname();
     const triggerRef = useRef<HTMLDivElement | null>(null);
     const panelRef = useRef<HTMLDivElement | null>(null);
@@ -124,7 +126,7 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
             const el = triggerRef.current;
             if (!el) return;
             const rect = el.getBoundingClientRect();
-            setPosition({ top: rect.bottom, left: rect.left, width: rect.width });
+            setPosition({ top: rect.bottom, left: rect.left, width: rect.width, viewport: window.innerWidth });
         };
         update();
         window.addEventListener('scroll', update, true);
@@ -196,11 +198,46 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
         setOpen((prev) => !prev);
     }, []);
 
-    // Anchor the panel to the trigger's vertical position but span the
-    // full viewport width — the inner card is clamped to `--page-width`
-    // and centered. This mirrors the old nordcom-demo-shop mega-menu
-    // (single full-width dropdown beneath the nav) and keeps the panel
-    // from ever overflowing the viewport horizontally on mobile.
+    // Multi-column editorial / featured panels span the centered `--page-width` content band so
+    // their edges line up with the header content. The narrow variants (compact list, single-column
+    // editorial, single featured) used to share that band and `mx-auto`-center inside it, so they
+    // floated in the middle of the viewport rather than under their trigger — the "offset weird"
+    // misalignment. Those now anchor under the trigger (`position.left`), clamped so a trigger near
+    // the right edge can't push the panel off-screen.
+    const variant = resolveVariant(item.variant);
+    const itemCount = item.items?.length ?? 0;
+    const narrow =
+        variant === 'compact-list' ||
+        (variant === 'editorial-columns' && itemCount <= 1) ||
+        (variant === 'featured-promo' && itemCount <= 1);
+
+    const NARROW_MAX_PX = 480;
+    const EDGE_PAD_PX = 12;
+    const anchoredLeft = position
+        ? Math.min(
+              Math.max(EDGE_PAD_PX, position.left),
+              Math.max(EDGE_PAD_PX, position.viewport - NARROW_MAX_PX - EDGE_PAD_PX),
+          )
+        : 0;
+
+    const panelCard = (
+        <div
+            data-header-panel
+            data-header-accent-rail="true"
+            className={cn(
+                'relative rounded-header-panel border border-[var(--header-divider-color)] bg-(--surface-0) p-header-panel',
+                'shadow-header-panel',
+                'max-h-[calc(95dvh-var(--header-bar-height)-var(--header-nav-height))] overflow-y-auto',
+                'before:pointer-events-none before:absolute before:top-0 before:right-0 before:left-0',
+                'before:h-[var(--header-rail-thickness)] before:bg-primary',
+                'before:rounded-tl-header-panel before:rounded-tr-header-panel',
+                'before:content-[""]',
+            )}
+        >
+            <MegaMenuPanel item={item} locale={locale} />
+        </div>
+    );
+
     const panel =
         open && position ? (
             <div
@@ -210,26 +247,24 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                 aria-label={item.link?.label ?? 'navigation'}
                 onMouseEnter={handlePointerEnter}
                 onMouseLeave={handlePointerLeave}
-                style={{ position: 'fixed', top: position.top, left: 0, right: 0, zIndex: 50 }}
+                style={
+                    narrow
+                        ? {
+                              position: 'fixed',
+                              top: position.top,
+                              left: anchoredLeft,
+                              width: `min(${NARROW_MAX_PX}px, calc(100vw - ${EDGE_PAD_PX * 2}px))`,
+                              zIndex: 50,
+                          }
+                        : { position: 'fixed', top: position.top, left: 0, right: 0, zIndex: 50 }
+                }
                 className="animate-mega-menu-in pt-3"
             >
-                <div className="mx-auto w-full max-w-(--page-width) px-2 md:px-3">
-                    <div
-                        data-header-panel
-                        data-header-accent-rail="true"
-                        className={cn(
-                            'relative rounded-header-panel border border-[var(--header-divider-color)] bg-(--surface-0) p-header-panel',
-                            'shadow-header-panel',
-                            'max-h-[calc(95dvh-var(--header-bar-height)-var(--header-nav-height))] overflow-y-auto',
-                            'before:pointer-events-none before:absolute before:top-0 before:right-0 before:left-0',
-                            'before:h-[var(--header-rail-thickness)] before:bg-primary',
-                            'before:rounded-tl-header-panel before:rounded-tr-header-panel',
-                            'before:content-[""]',
-                        )}
-                    >
-                        <MegaMenuPanel item={item} locale={locale} />
-                    </div>
-                </div>
+                {narrow ? (
+                    panelCard
+                ) : (
+                    <div className="mx-auto w-full max-w-(--page-width) px-2 md:px-3">{panelCard}</div>
+                )}
             </div>
         ) : null;
 
