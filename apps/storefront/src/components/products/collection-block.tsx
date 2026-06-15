@@ -118,7 +118,11 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     const railId = handle ? `rail-${handle}` : 'rail';
 
     return (
-        <div className="relative">
+        // `w-full min-w-0` pins this wrapper to the container width. Without it, a parent that
+        // cross-aligns its children (`items-start`, e.g. the CMS Collection block section) shrink-wraps
+        // this div to content size: the grid layout then collapses to a single column (vertical list on
+        // mobile) and the horizontal rail blows past the viewport instead of scroll-containing.
+        <div className="relative w-full min-w-0">
             {isHorizontal ? <CollectionBlockArrows railSelector={`[data-rail='${railId}']`} /> : null}
             <Tag
                 {...props}
