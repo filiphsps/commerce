@@ -38,6 +38,7 @@
     "common": {
         "back-to-home": "Tillbaka till startsidan",
         "browse-all-products": "Se alla produkter",
+        "collections": "Kollektioner",
         "empty-collection-title": "Inga produkter ännu",
         "empty-collection-description": "Den här kollektionen har inga produkter just nu. Kom tillbaka snart.",
         "error-title": "Något gick fel",

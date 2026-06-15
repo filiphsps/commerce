@@ -40,6 +40,7 @@
     "common": {
         "back-to-home": "Retour à l'accueil",
         "browse-all-products": "Voir tous les produits",
+        "collections": "Collections",
         "empty-collection-title": "Aucun produit pour le moment",
         "empty-collection-description": "Cette collection ne contient aucun produit pour le moment. Revenez bientôt.",
         "error-title": "Une erreur s'est produite",
