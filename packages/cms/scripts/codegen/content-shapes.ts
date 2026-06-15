@@ -144,6 +144,16 @@ const collectionBlockShape: ContentBlockShape = {
             defaultValue: { base: 'carousel', md: 'grid' },
         }),
         { name: 'limit', type: 'number', defaultValue: 8, min: 1, max: 48 },
+        // Per-instance override of the store-wide `collection` default layout (BlockDescriptor.settings).
+        // Stored on the block node so the storefront resolves instance → store default → platform.
+        selectField({
+            name: 'defaultLayout',
+            label: 'Default layout',
+            options: [
+                { label: 'Grid', value: 'grid' },
+                { label: 'Carousel', value: 'carousel' },
+            ],
+        }),
     ),
 };
 
