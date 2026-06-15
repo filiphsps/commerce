@@ -49,6 +49,15 @@ export type EditorEditPageProps<TSlug extends CollectionSlug = CollectionSlug> =
      * `FormState` entries stay intact for save). Ignored when `fieldSurface` is set.
      */
     omitPaths?: string[];
+    /**
+     * Absolute path of the page hosting this editor, used as the target when the
+     * locale-coercion redirect fires. Defaults to the manifest's canonical edit
+     * URL (`basePath` + doc segment). Pass this when the editor is mounted off its
+     * canonical route — e.g. the theme editor reuses the `shops` manifest at
+     * `/settings/theme/`, so without it the locale redirect would eject to the
+     * manifest's `/settings/shop/`.
+     */
+    selfPath?: Route;
 };
 
 /**
@@ -83,6 +92,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     livePreview,
     fieldSurface,
     omitPaths,
+    selfPath,
 }: EditorEditPageProps<TSlug>): Promise<ReactNode> {
     const { domain, id } = params;
     const ctx = await runtime.getCtx(domain);
@@ -107,8 +117,8 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
             if (key !== 'locale' && typeof value === 'string') next.set(key, value);
         }
         next.set('locale', tenantDefault);
-        const base = manifest.routes.basePath(domain);
-        redirect(`${base}${docUrlSegment(manifest, id)}?${next.toString()}` as Route);
+        const editPath = selfPath ?? (`${manifest.routes.basePath(domain)}${docUrlSegment(manifest, id)}` as Route);
+        redirect(`${editPath}?${next.toString()}` as Route);
     }
 
     const locale = requested as string;

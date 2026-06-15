@@ -2,7 +2,7 @@ import 'server-only';
 
 import { shopsEditor } from '@nordcom/commerce-cms/editor/manifests';
 import { EditorEditPage } from '@nordcom/commerce-cms/editor/ui';
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 import { PreviewBridge } from '@/components/theme-editor/preview-bridge';
 import { ThemeEditor } from '@/components/theme-editor/theme-editor';
 import * as actions from '@/lib/cms-actions/_generated/shops';
@@ -23,6 +23,11 @@ type Props = {
  * surface so the `theme.*` subtree is owned by exactly one editor. The shop
  * route omits the `theme` group (`omitPaths={['theme']}`) to avoid two editors
  * writing the same paths.
+ *
+ * Because it reuses the `shops` manifest off its canonical `/settings/shop/`
+ * path, it passes `selfPath` so `EditorEditPage`'s locale-coercion redirect
+ * (which fires whenever `?locale=` is absent, e.g. the subnav link) returns to
+ * this route instead of ejecting to the shop settings page.
  *
  * @param props.params - Route params resolving to the tenant `domain`.
  * @param props.searchParams - Forwarded so `EditorEditPage` sees `?locale=…`
@@ -51,6 +56,7 @@ export default async function ThemeSettingsPage({ params, searchParams }: Props)
             runtime={editorRuntime}
             params={{ domain, id: domain }}
             searchParams={sp}
+            selfPath={`/${domain}/settings/theme/` as Route}
             fieldSurface={<ThemeEditor />}
             livePreview={<PreviewBridge previewUrl={previewUrl} domain={domain} />}
             generatedActions={{

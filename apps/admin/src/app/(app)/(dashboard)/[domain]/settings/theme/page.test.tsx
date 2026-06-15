@@ -45,6 +45,16 @@ describe('ThemeSettingsPage', () => {
         });
     });
 
+    it('passes its own route as selfPath so the locale redirect stays on /settings/theme', async () => {
+        const el = await ThemeSettingsPage({
+            params: Promise.resolve({ domain: 'acme.test' }),
+            searchParams: Promise.resolve({ locale: 'de-DE' }),
+        });
+
+        const element = el as { type: unknown; props: Record<string, unknown> };
+        expect(element.props.selfPath).toBe('/acme.test/settings/theme/');
+    });
+
     it('forwards searchParams.locale to <EditorEditPage>', async () => {
         const el = await ThemeSettingsPage({
             params: Promise.resolve({ domain: 'acme.test' }),

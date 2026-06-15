@@ -193,6 +193,22 @@ describe('<EditorEditPage>', () => {
         ).rejects.toThrow('NEXT_REDIRECT:/a.test/x/?locale=de');
     });
 
+    it('locale-redirect targets selfPath when the editor is mounted off its canonical route', async () => {
+        // The theme editor mounts the `shops` manifest at /settings/theme/ rather than the
+        // manifest's canonical /settings/shop/. Without selfPath the locale guard would eject to
+        // the canonical route, navigating away from the editor the user opened.
+        await expect(
+            EditorEditPage({
+                manifest: baseManifest,
+                runtime: buildRuntime(),
+                params: { domain: 'a.test', id: '' },
+                searchParams: {},
+                selfPath: '/a.test/theme/' as Route,
+                generatedActions,
+            }),
+        ).rejects.toThrow('NEXT_REDIRECT:/a.test/theme/?locale=de');
+    });
+
     it('does not redirect when searchParams.locale is in tenant.locales', async () => {
         const el = await EditorEditPage({
             manifest: baseManifest,
