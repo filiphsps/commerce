@@ -87,26 +87,50 @@ describe('(dashboard)/[domain]/settings/page', () => {
         expect(q.getByText('Settings')).toBeInTheDocument();
     });
 
-    it('renders admin-only cards (Tenants, Users, Media) when role is admin', async () => {
+    it('renders all four cards (General + admin-only Tenants, Users, Media) when role is admin', async () => {
         mockGetAuthedCmsCtx.mockResolvedValue(makeCtx(ADMIN_USER));
 
         const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
         const q = within(container as HTMLElement);
 
+        expect(q.getByText('General')).toBeInTheDocument();
         expect(q.getByText('Tenants')).toBeInTheDocument();
         expect(q.getByText('Users')).toBeInTheDocument();
         expect(q.getByText('Media')).toBeInTheDocument();
     });
 
-    it('hides admin-only cards when role is editor', async () => {
+    it('renders only the General card when role is editor', async () => {
         mockGetAuthedCmsCtx.mockResolvedValue(makeCtx(EDITOR_USER));
 
         const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
         const q = within(container as HTMLElement);
 
+        expect(q.getByText('General')).toBeInTheDocument();
         expect(q.queryByText('Tenants')).not.toBeInTheDocument();
         expect(q.queryByText('Users')).not.toBeInTheDocument();
         expect(q.queryByText('Media')).not.toBeInTheDocument();
+    });
+
+    it('links the General card to /<domain>/settings/general/', async () => {
+        mockGetAuthedCmsCtx.mockResolvedValue(makeCtx(EDITOR_USER));
+
+        const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
+        const q = within(container as HTMLElement);
+
+        const generalLink = q.getByText('General').closest('div')?.querySelector('a');
+        expect(generalLink?.getAttribute('href')).toMatch(/\/acme\.myshopify\.com\/settings\/general\/?$/);
+    });
+
+    it('links the Users and Media cards to their settings subpaths', async () => {
+        mockGetAuthedCmsCtx.mockResolvedValue(makeCtx(ADMIN_USER));
+
+        const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
+        const q = within(container as HTMLElement);
+
+        const usersLink = q.getByText('Users').closest('div')?.querySelector('a');
+        expect(usersLink?.getAttribute('href')).toMatch(/\/acme\.myshopify\.com\/settings\/users\/?$/);
+        const mediaLink = q.getByText('Media').closest('div')?.querySelector('a');
+        expect(mediaLink?.getAttribute('href')).toMatch(/\/acme\.myshopify\.com\/settings\/media\/?$/);
     });
 
     it('links Tenants card to /<domain>/settings/tenants/', async () => {
