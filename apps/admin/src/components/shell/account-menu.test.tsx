@@ -15,4 +15,22 @@ describe('AccountMenu', () => {
         render(<AccountMenu user={{ name: 'Filiph S', email: 'a@b.com', role: 'admin' }} />);
         expect(screen.getByRole('button', { name: /Account/i })).toBeInTheDocument();
     });
+
+    it('accepts a gravatar image and derives fallback initials from the name', () => {
+        render(
+            <AccountMenu
+                user={{
+                    name: 'Filiph S',
+                    email: 'a@b.com',
+                    image: 'https://www.gravatar.com/avatar/abc?d=mp&s=160',
+                    role: 'admin',
+                }}
+            />,
+        );
+        // The trigger renders without error when an image is supplied (the `user.image` branch), and
+        // the avatar fallback derives 'FS' from the name (the image element stays unmounted in the
+        // test DOM until it loads, so the fallback is the stable assertion).
+        expect(screen.getByRole('button', { name: /Account/i })).toBeInTheDocument();
+        expect(screen.getByText('FS')).toBeInTheDocument();
+    });
 });

@@ -25,6 +25,7 @@ import { ShellHeader } from '@/components/shell/shell-header';
 import { ShellRoot } from '@/components/shell/shell-root';
 import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 import { getShopsForUser } from '@/lib/shops-for-user';
+import { gravatarUrl } from '@/utils/gravatar';
 
 export type ShopLayoutProps = {
     children: ReactNode;
@@ -114,8 +115,9 @@ export default async function ShopLayout({ children, subnav, inspector, params }
         <ShellHeader
             shop={{ name: shop.name, domain: shop.domain }}
             user={{
-                name: undefined,
+                name: user.name,
                 email: user.email ?? undefined,
+                image: gravatarUrl(user.email),
                 role: user.role,
             }}
             shopsForSwitcher={shopsForSwitcher}

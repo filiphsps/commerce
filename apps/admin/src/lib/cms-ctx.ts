@@ -41,6 +41,7 @@ export type AuthedCmsCtx = {
     user: {
         id: string;
         email: string;
+        name: string;
         role: 'admin' | 'editor';
         tenants: Array<{ tenant: string }>;
         collection: 'users';
@@ -146,6 +147,7 @@ export async function getAuthedCmsCtx(domain?: string): Promise<AuthedCmsCtx> {
         user: {
             id: userId,
             email: userDoc.email,
+            name: userDoc.name,
             role,
             tenants: collaborations.map((collaborated) => ({ tenant: String(collaborated.id) })),
             collection: 'users',

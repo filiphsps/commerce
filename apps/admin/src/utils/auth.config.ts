@@ -2,6 +2,7 @@ import type { NextAuthConfig } from 'next-auth';
 import GitHub from 'next-auth/providers/github';
 
 import { LANDING_DOMAIN } from '@/utils/domains';
+import { gravatarUrl } from '@/utils/gravatar';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 // Vercel preview deploys run with `NODE_ENV === 'production'` but are served on an ephemeral
@@ -32,12 +33,16 @@ export default {
             clientId: process.env.GITHUB_ID as string,
             clientSecret: process.env.GITHUB_TOKEN as string,
 
-            profile({ id, name, email, login, avatar_url }) {
+            profile({ id, name, email, login }) {
+                const resolvedEmail = email || login;
                 return {
                     id: id.toString(),
                     name: name,
-                    email: email || login,
-                    image: avatar_url,
+                    email: resolvedEmail,
+                    // Operator avatars come from Gravatar (admin-only), not GitHub. The image is a
+                    // pure function of the email, so it stays consistent with the account page and
+                    // the shell header rather than depending on the provider's `avatar_url`.
+                    image: gravatarUrl(resolvedEmail),
                 };
             },
         }),
