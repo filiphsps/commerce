@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Override Affordance & Per-instance — Store-wide Defaults</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+    /* page-editor block shell (local to this mock) */
+    .pg { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    .blk { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; overflow: hidden; }
+    .blk-head { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, var(--panel-2), transparent); }
+    .blk-head .drag { color: var(--faint-fg); cursor: grab; }
+    .blk-head .ttl { font-weight: 800; font-size: 14px; }
+    .blk-head .type { font-family: var(--mono); font-size: 11px; color: var(--faint-fg); }
+    .grp { border-top: 1px solid var(--border); }
+    .grp summary { list-style: none; cursor: pointer; padding: 12px 16px; display: flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-fg); }
+    .grp summary::-webkit-details-marker { display: none; }
+    .grp summary .caret { transition: transform .2s; }
+    .grp[open] summary .caret { transform: rotate(90deg); }
+    .grp summary .right { margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--tier-instance); letter-spacing: .04em; }
+    .trace { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11px; }
+    .trace .step { color: var(--faint-fg); }
+    .trace .step.win { color: var(--tier-instance); font-weight: 700; }
+    .trace .sep { color: var(--faint-fg); opacity: .6; }
+</style>
+</head>
+<body>
+<div class="wrap" style="max-width:1040px">
+    <div class="eyebrow">Admin · Customization</div>
+    <h1 class="doc">The override affordance</h1>
+    <p class="lede">One control, four resolution outcomes. The same widget reads anywhere a setting appears — the store-defaults editor and the per-instance block Settings group — so the cascade is legible without leaving the field.</p>
+
+    <div class="section-t"><span>One setting, four resolutions</span><span class="line"></span></div>
+    <div class="anatomy" style="display:flex;flex-direction:column;gap:0">
+
+        <!-- 1: platform -->
+        <div class="field mode-inherit" data-field style="border:none">
+            <div class="label-col"><div class="flabel">CTA placement</div><div class="fhint">Untouched everywhere — falls all the way through.</div></div>
+            <div class="control-col">
+                <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button></div>
+                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">float-pill</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                <div data-override-view class="ctrl"><select class="select"><option selected>float-pill</option><option>inline-button</option></select><button class="btn ghost sm" data-reset>Reset</button></div>
+            </div>
+        </div>
+
+        <!-- 2: store -->
+        <div class="field mode-inherit" data-field style="border-top:1px solid var(--border)">
+            <div class="label-col"><div class="flabel">CTA placement</div><div class="fhint">Store default set; this usage inherits it.</div></div>
+            <div class="control-col">
+                <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button></div>
+                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">inline-button</span><span class="chip store"><span class="tick"></span>Store default</span></div>
+                <div data-override-view class="ctrl"><select class="select"><option>float-pill</option><option selected>inline-button</option></select><button class="btn ghost sm" data-reset>Reset</button></div>
+            </div>
+        </div>
+
+        <!-- 3: surface -->
+        <div class="field mode-override" data-field style="border-top:1px solid var(--border);background:hsl(38 92% 55% / .04)">
+            <div class="label-col"><div class="flabel">CTA placement</div><div class="fhint">Search surface pins its own value over the store default.</div></div>
+            <div class="control-col">
+                <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="false"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="true"><span class="led"></span>Override</button></div>
+                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">inline-button</span><span class="chip store"><span class="tick"></span>Store default</span></div>
+                <div data-override-view class="ctrl"><select class="select"><option selected>float-pill</option><option>inline-button</option></select><span class="chip surface"><span class="tick"></span>Search surface</span><button class="btn ghost sm" data-reset>Reset to inherited</button></div>
+            </div>
+        </div>
+
+        <!-- 4: instance -->
+        <div class="field mode-override is-overridden" data-field style="border-top:1px solid var(--border)">
+            <div class="label-col"><div class="flabel">CTA placement</div><div class="fhint">A single Collection block on the homepage wins.</div></div>
+            <div class="control-col">
+                <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="false"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="true"><span class="led"></span>Override</button></div>
+                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">inline-button</span><span class="chip store"><span class="tick"></span>Store default</span></div>
+                <div data-override-view class="ctrl"><select class="select"><option selected>float-pill</option><option>inline-button</option></select><span class="chip instance"><span class="tick"></span>This block</span><button class="btn ghost sm" data-reset>Reset to inherited</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="anno" style="margin-top:14px"><b>note</b> Empty at a level = inherit. Resetting clears the value at the current level and re-exposes whatever the next tier up resolves to — never deletes a parent's value.</div>
+
+    <div class="section-t"><span>Per-instance — inside the content editor</span><span class="line"></span></div>
+    <p class="note" style="margin-bottom:18px">The bottom of the cascade. A block placed on a page carries an optional <b>Settings</b> group, rendered from the same <code class="inl">BlockDescriptor.settings[]</code> as the store-defaults editor. Collapsed by default; the badge flags how many settings this instance overrides.</p>
+
+    <div class="pg">
+        <div class="blk">
+            <div class="blk-head">
+                <span class="drag">⠿</span>
+                <span class="ttl">Featured products</span>
+                <span class="type">block:collection</span>
+                <span style="margin-left:auto;display:flex;gap:6px"><button class="btn ghost sm">↑</button><button class="btn ghost sm">↓</button><button class="btn ghost sm">⋯</button></span>
+            </div>
+
+            <!-- content fields (collapsed summary, for context) -->
+            <details class="grp">
+                <summary><span class="caret">›</span> Content</summary>
+                <div class="rows">
+                    <div class="field" data-field-static><div class="label-col"><div class="flabel">Heading</div></div><div class="control-col"><div class="ctrl"><input class="text-input" value="New this week" style="min-width:280px" /></div></div></div>
+                    <div class="field" data-field-static><div class="label-col"><div class="flabel">Collection</div></div><div class="control-col"><div class="ctrl"><select class="select"><option selected>men</option><option>women</option><option>tops</option></select></div></div></div>
+                </div>
+            </details>
+
+            <!-- settings group (the override surface) -->
+            <details class="grp" open>
+                <summary><span class="caret">›</span> Settings <span class="right">2 overridden</span></summary>
+                <div class="rows">
+                    <div class="field mode-override is-overridden" data-field>
+                        <div class="label-col"><div class="flabel">CTA placement</div><div class="fhint">Card add-to-cart for this block only.</div></div>
+                        <div class="control-col">
+                            <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="false"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="true"><span class="led"></span>Override</button></div>
+                            <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">inline-button</span><span class="chip store"><span class="tick"></span>Store default</span></div>
+                            <div data-override-view class="ctrl">
+                                <select class="select"><option selected>float-pill</option><option>inline-button</option></select>
+                                <span class="chip instance"><span class="tick"></span>This block</span>
+                                <button class="btn ghost sm" data-reset>Reset</button>
+                            </div>
+                            <div class="trace">
+                                <span class="step">platform <code class="inl">float-pill</code></span><span class="sep">→</span>
+                                <span class="step">store <code class="inl">inline-button</code></span><span class="sep">→</span>
+                                <span class="step win">this block <code class="inl">float-pill</code> ✓</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field mode-override is-overridden" data-field>
+                        <div class="label-col"><div class="flabel">Items per row</div></div>
+                        <div class="control-col">
+                            <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="false"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="true"><span class="led"></span>Override</button></div>
+                            <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">4</span><span class="chip store"><span class="tick"></span>Store default</span></div>
+                            <div data-override-view class="ctrl"><select class="select"><option>2</option><option selected>3</option><option>4</option></select><span class="chip instance"><span class="tick"></span>This block</span><button class="btn ghost sm" data-reset>Reset</button></div>
+                        </div>
+                    </div>
+
+                    <div class="field mode-inherit" data-field>
+                        <div class="label-col"><div class="flabel">Show "view all"</div></div>
+                        <div class="control-col">
+                            <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button></div>
+                            <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">true</span><span class="chip store"><span class="tick"></span>Store default</span></div>
+                            <div data-override-view class="ctrl"><select class="select"><option selected>true</option><option>false</option></select><span class="chip instance"><span class="tick"></span>This block</span><button class="btn ghost sm" data-reset>Reset</button></div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="callout" style="margin-top:26px"><span class="ic">◆</span><span>Reuse target: this is the CMS field shell (<code class="inl">field-&lt;dotted.path&gt;</code>) wrapped by one new <code class="inl">overridable()</code> descriptor modifier — sibling to today's <code class="inl">localized()</code> and the responsive widget. The store editor and the block Settings group mount the identical widget; only the active tier changes.</span></div>
+
+    <p class="note" style="margin-top:24px"><a href="index.html" style="color:var(--primary);font-weight:700;text-decoration:none">← Design index</a> &nbsp;·&nbsp; <a href="customization-hub.html" style="color:var(--primary);font-weight:700;text-decoration:none">Customization hub →</a></p>
+</div>
+
+<script>
+document.querySelectorAll('[data-field]').forEach((field) => {
+    const setMode = (mode) => {
+        field.classList.toggle('mode-override', mode === 'override');
+        field.classList.toggle('mode-inherit', mode === 'inherit');
+        field.classList.toggle('is-overridden', mode === 'override');
+        field.querySelectorAll('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+    };
+    field.querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+    const reset = field.querySelector('[data-reset]');
+    if (reset) reset.addEventListener('click', () => setMode('inherit'));
+});
+</script>
+</body>
+</html>

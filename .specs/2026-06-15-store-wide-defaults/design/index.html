@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Store-wide Defaults — Design Index</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="wrap">
+    <div class="eyebrow">Admin · Customization</div>
+    <h1 class="doc">Store-wide default configuration</h1>
+    <p class="lede">
+        One place to set how every storefront block and component behaves by default —
+        product-card button placement, section visibility, block options — with a clean
+        cascade so any default can be overridden per surface or per block instance. Built to
+        extend to future custom, user-provided blocks without new plumbing.
+    </p>
+
+    <div class="section-t"><span>Locked decisions</span><span class="line"></span></div>
+    <div class="decisions">
+        <div class="decision">
+            <div class="n">1</div>
+            <div>
+                <div class="q">Architecture home</div>
+                <div class="a">Realize the existing <code class="inl">ShopExtensionManifest</code> as the storage + cascade home and wire it into the storefront render path. Unify the admin UI: theme tokens and component/block defaults render through <b>one shared editor shell</b>, extracted from today's bespoke theme editor.</div>
+            </div>
+        </div>
+        <div class="decision">
+            <div class="n">2</div>
+            <div>
+                <div class="q">Override model</div>
+                <div class="a">Four-level cascade — platform → store → surface → per-instance — surfaced as an explicit <b>Inherit ↔ Override</b> control per setting, reusing the locale-bucket / responsive "base + override" mental model. Empty = inherit.</div>
+            </div>
+        </div>
+        <div class="decision">
+            <div class="n">3</div>
+            <div>
+                <div class="q">Settings contract</div>
+                <div class="a">Blocks declare <code class="inl">settings: FieldDescriptor[]</code> alongside their content <code class="inl">fields</code>; non-block components (product card, header chrome) register through a small component registry. Both feed the same editor. Custom blocks inherit settings support via their descriptor.</div>
+            </div>
+        </div>
+        <div class="decision">
+            <div class="n">4</div>
+            <div>
+                <div class="q">Information architecture</div>
+                <div class="a">A unified <b>Customization</b> hub with tabs — Theme · Components · Blocks · Sections. The existing theme catalog becomes the Theme tab; search spans the hub. <code class="inl">/settings/theme</code> redirects in.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-t"><span>The cascade</span><span class="line"></span></div>
+    <p class="note" style="margin-bottom:18px">
+        Resolution is per-setting and last-write-wins down the chain. A tier only contributes the keys it explicitly sets; everything else falls through. Tier colors below are reused as the source chips throughout the editor.
+    </p>
+    <div class="cascade">
+        <div class="tier platform">
+            <div class="name"><span class="tick"></span>Platform default</div>
+            <div class="desc">Built-in baseline shipped with the storefront. Always present, never empty.</div>
+            <div class="ex">cta = "float-pill"</div>
+        </div>
+        <div class="arrow">overridden by</div>
+        <div class="tier store">
+            <div class="name"><span class="tick"></span>Store default</div>
+            <div class="desc">Set in this editor. Applies store-wide to every usage unless something more specific overrides it.</div>
+            <div class="ex">cta = "inline-button"</div>
+        </div>
+        <div class="arrow">overridden by</div>
+        <div class="tier surface">
+            <div class="name"><span class="tick"></span>Surface</div>
+            <div class="desc">Per usage context for components rendered in multiple places — collection grid vs search vs recommendations.</div>
+            <div class="ex">search.cta = "float-pill"</div>
+        </div>
+        <div class="arrow">overridden by</div>
+        <div class="tier instance">
+            <div class="name"><span class="tick"></span>Per-instance</div>
+            <div class="desc">A single block placed on a single page, overridden in the content editor's block Settings group.</div>
+            <div class="ex">block.cta = "inline-button"</div>
+        </div>
+    </div>
+
+    <div class="section-t"><span>Anatomy — the inherit / override control</span><span class="line"></span></div>
+    <div class="anatomy">
+        <div class="field" style="border:none;padding:0">
+            <div class="label-col">
+                <div class="flabel">CTA placement</div>
+                <div class="fhint">Where the add-to-cart action sits on the product card.</div>
+            </div>
+            <div class="control-col">
+                <div class="ov-toggle">
+                    <button class="inherit" aria-pressed="true"><span class="led"></span>Inherit</button>
+                    <button class="override" aria-pressed="false"><span class="led"></span>Override</button>
+                </div>
+                <div class="resolved"><span>Resolved</span><span class="val">float-pill</span><span class="chip store"><span class="tick"></span>Store default</span></div>
+            </div>
+        </div>
+        <div class="anno"><b>Inherit (default)</b> shows the resolved value as a read-only ghost plus a color-coded chip naming which tier supplied it.</div>
+        <div class="anno"><b>Override</b> swaps the ghost for the live control and writes a value at the current level; a Reset affordance returns it to Inherit.</div>
+        <div class="anno"><b>data-testid</b> reuses the CMS field shell — <code class="inl">field-&lt;dotted.path&gt;</code> — so e2e selectors stay consistent.</div>
+    </div>
+
+    <div class="section-t"><span>Screens</span><span class="line"></span></div>
+    <div class="cards-2">
+        <a class="linkcard" href="customization-hub.html">
+            <div class="lc-k">screen 01</div>
+            <h3>Customization hub →</h3>
+            <p>The unified editor with all four tabs. Default view is Components, showing product-card defaults with surface keys and the inherit/override control. Tabs are interactive.</p>
+        </a>
+        <a class="linkcard" href="override-affordance.html">
+            <div class="lc-k">screen 02</div>
+            <h3>Override affordance & per-instance →</h3>
+            <p>Close-up states of the control, plus the per-instance Settings group inside a page-editor block — the bottom of the cascade in context.</p>
+        </a>
+    </div>
+
+    <div class="callout" style="margin-top:28px">
+        <span class="ic">◆</span>
+        <span>These are throwaway spec mocks — static HTML, no framework. They exist to pin the visual + interaction model before the <code class="inl">spec.md</code> / <code class="inl">plan.md</code> are written. Iterate here first.</span>
+    </div>
+</div>
+</body>
+</html>

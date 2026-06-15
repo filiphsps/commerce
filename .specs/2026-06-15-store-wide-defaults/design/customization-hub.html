@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Customization Hub — Store-wide Defaults</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="shell">
+    <!-- Left rail (stub, matches admin nav register) -->
+    <aside class="rail">
+        <div class="brand"><span class="dot"></span> Nordcom</div>
+        <div class="nav-label">Store</div>
+        <a class="item"><span class="ico">▦</span> Overview</a>
+        <a class="item"><span class="ico">✦</span> Content</a>
+        <a class="item"><span class="ico">◷</span> Orders</a>
+        <a class="item"><span class="ico">▤</span> Catalog</a>
+        <div class="nav-label">Settings</div>
+        <a class="item"><span class="ico">⚙</span> General</a>
+        <a class="item active"><span class="ico">◐</span> Customization</a>
+        <a class="item"><span class="ico">⛁</span> Domains</a>
+        <a class="item"><span class="ico">⊞</span> Integrations</a>
+    </aside>
+
+    <main class="main">
+        <header class="page-header">
+            <div>
+                <div class="crumbs">Settings &nbsp;/&nbsp; <b>Customization</b></div>
+                <div class="page-title">Customization</div>
+            </div>
+            <div class="header-actions">
+                <div class="autosave"><span class="pulse"></span> Saved · just now</div>
+                <button class="btn ghost">Discard</button>
+                <button class="btn">Save draft</button>
+                <button class="btn primary">Publish</button>
+            </div>
+        </header>
+
+        <div class="canvas">
+            <div class="toolbar">
+                <div class="search">
+                    <span>⌕</span>
+                    <input id="search" placeholder="Search all settings…" />
+                    <span class="kbd">/</span>
+                </div>
+            </div>
+
+            <!-- Tablist (same pattern as theme-editor.tsx) -->
+            <div class="tablist" role="tablist" aria-label="Customization sections">
+                <button class="tab" role="tab" data-tab="theme" aria-selected="false">Theme <span class="count">42</span></button>
+                <button class="tab" role="tab" data-tab="components" aria-selected="true">Components <span class="count">6</span></button>
+                <button class="tab" role="tab" data-tab="blocks" aria-selected="false">Blocks <span class="count">9</span></button>
+                <button class="tab" role="tab" data-tab="sections" aria-selected="false">Sections <span class="count">7</span></button>
+            </div>
+
+            <!-- ===================== COMPONENTS ===================== -->
+            <section class="panel active" data-panel="components">
+
+                <!-- Product card -->
+                <div class="cfg-card">
+                    <div class="cfg-head">
+                        <div class="lead">
+                            <div class="glyph">▥</div>
+                            <div>
+                                <h3>Product card</h3>
+                                <div class="sub">Rendered across collection grids, search results, and recommendation rails.</div>
+                            </div>
+                        </div>
+                        <div class="path">productCard</div>
+                    </div>
+
+                    <!-- surface keys -->
+                    <div class="surfaces" role="group" aria-label="Surface">
+                        <span class="lbl">Surface</span>
+                        <button class="surface-pill" data-surface aria-pressed="true">Collection <span class="ov">2 set</span></button>
+                        <button class="surface-pill" data-surface aria-pressed="false">Search <span class="ov">1 set</span></button>
+                        <button class="surface-pill" data-surface aria-pressed="false">Recommendation</button>
+                    </div>
+
+                    <div class="rows">
+                        <!-- CTA placement: store-default overridden, with preview -->
+                        <div class="field mode-override is-overridden" data-field>
+                            <div class="label-col">
+                                <div class="flabel">CTA placement</div>
+                                <div class="fhint">Where add-to-cart sits. Float = pill over the image; inline = full-width button under the price.</div>
+                            </div>
+                            <div class="control-col">
+                                <div class="ov-toggle">
+                                    <button class="inherit" data-mode="inherit" aria-pressed="false"><span class="led"></span>Inherit</button>
+                                    <button class="override" data-mode="override" aria-pressed="true"><span class="led"></span>Override</button>
+                                </div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">float-pill</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl">
+                                    <select class="select">
+                                        <option>float-pill</option>
+                                        <option selected>inline-button</option>
+                                    </select>
+                                    <span class="chip store"><span class="tick"></span>Store default</span>
+                                    <button class="btn ghost sm" data-reset>Reset to inherited</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Layout: inherited -->
+                        <div class="field mode-inherit" data-field>
+                            <div class="label-col">
+                                <div class="flabel">Layout</div>
+                                <div class="fhint">Stacking direction of image and details.</div>
+                            </div>
+                            <div class="control-col">
+                                <div class="ov-toggle">
+                                    <button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button>
+                                    <button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button>
+                                </div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">vertical</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl">
+                                    <select class="select"><option selected>vertical</option><option>horizontal</option></select>
+                                    <span class="chip store"><span class="tick"></span>Store default</span>
+                                    <button class="btn ghost sm" data-reset>Reset to inherited</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chrome: inherited -->
+                        <div class="field mode-inherit" data-field>
+                            <div class="label-col">
+                                <div class="flabel">Chrome</div>
+                                <div class="fhint">Card framing.</div>
+                            </div>
+                            <div class="control-col">
+                                <div class="ov-toggle">
+                                    <button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button>
+                                    <button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button>
+                                </div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">boxed</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl">
+                                    <select class="select"><option selected>boxed</option><option>frameless</option></select>
+                                    <span class="chip store"><span class="tick"></span>Store default</span>
+                                    <button class="btn ghost sm" data-reset>Reset to inherited</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Picker presentation: inherited -->
+                        <div class="field mode-inherit" data-field>
+                            <div class="label-col">
+                                <div class="flabel">Variant picker</div>
+                                <div class="fhint">How size/color options surface on the card.</div>
+                            </div>
+                            <div class="control-col">
+                                <div class="ov-toggle">
+                                    <button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button>
+                                    <button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button>
+                                </div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">auto</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl">
+                                    <select class="select"><option selected>auto</option><option>float</option><option>sheet</option><option>inline</option></select>
+                                    <span class="chip store"><span class="tick"></span>Store default</span>
+                                    <button class="btn ghost sm" data-reset>Reset to inherited</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- live preview footer -->
+                    <div style="display:flex;gap:22px;padding:18px;border-top:1px solid var(--border);background:hsl(240 6% 4%);align-items:center">
+                        <div class="pc-preview">
+                            <div class="pc">
+                                <div class="img"></div>
+                                <div class="body">
+                                    <div class="vendor">Nordcom</div>
+                                    <div class="title">Runner Low</div>
+                                    <div class="price">€129</div>
+                                    <div class="cta-inline">Add to cart</div>
+                                </div>
+                            </div>
+                            <div class="pc-cap">Collection · inline-button</div>
+                        </div>
+                        <div style="font-size:12.5px;color:var(--muted-fg);max-width:42ch">
+                            Live preview reflects the resolved value for the selected surface. The
+                            store default <code class="inl">inline-button</code> overrides the platform
+                            <code class="inl">float-pill</code>; the Search surface keeps the float pill.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Header / chrome -->
+                <div class="cfg-card">
+                    <div class="cfg-head">
+                        <div class="lead">
+                            <div class="glyph">▭</div>
+                            <div>
+                                <h3>Header &amp; chrome</h3>
+                                <div class="sub">Global navigation shell shared by every page.</div>
+                            </div>
+                        </div>
+                        <div class="path">chrome</div>
+                    </div>
+                    <div class="rows">
+                        <div class="field mode-inherit" data-field>
+                            <div class="label-col"><div class="flabel">Slot order</div><div class="fhint">Order of header regions.</div></div>
+                            <div class="control-col">
+                                <div class="ov-toggle">
+                                    <button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button>
+                                    <button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button>
+                                </div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">logo · nav · search · cart</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl"><input class="text-input" style="min-width:280px" value="logo · nav · search · cart" /><span class="chip store"><span class="tick"></span>Store default</span><button class="btn ghost sm" data-reset>Reset to inherited</button></div>
+                            </div>
+                        </div>
+                        <div class="field mode-override is-overridden" data-field>
+                            <div class="label-col"><div class="flabel">Locale switcher</div><div class="fhint">Show the language selector in the header.</div></div>
+                            <div class="control-col">
+                                <div class="ov-toggle">
+                                    <button class="inherit" data-mode="inherit" aria-pressed="false"><span class="led"></span>Inherit</button>
+                                    <button class="override" data-mode="override" aria-pressed="true"><span class="led"></span>Override</button>
+                                </div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">off</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl"><select class="select"><option>off</option><option selected>on</option></select><span class="chip store"><span class="tick"></span>Store default</span><button class="btn ghost sm" data-reset>Reset to inherited</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== THEME ===================== -->
+            <section class="panel" data-panel="theme">
+                <div class="cfg-card">
+                    <div class="cfg-head">
+                        <div class="lead"><div class="glyph">◑</div><div><h3>Colors</h3><div class="sub">Brand palette and surface tokens.</div></div></div>
+                        <div class="path">theme.colors</div>
+                    </div>
+                    <div style="padding:18px">
+                        <div class="cluster-h"><h4>base</h4><span class="line"></span></div>
+                        <div class="rows" style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                            <div class="field" data-field-static>
+                                <div class="label-col"><div class="flabel">Background</div></div>
+                                <div class="control-col"><div class="ctrl"><span class="swatch" style="background:#000"></span><input class="text-input" value="hsl(0 0% 0%)" style="min-width:170px" /></div></div>
+                            </div>
+                            <div class="field" data-field-static>
+                                <div class="label-col"><div class="flabel">Foreground</div></div>
+                                <div class="control-col"><div class="ctrl"><span class="swatch" style="background:#fefefe"></span><input class="text-input" value="hsl(0 0% 99.6%)" style="min-width:170px" /></div></div>
+                            </div>
+                            <div class="field" data-field-static>
+                                <div class="label-col"><div class="flabel">Accent · primary</div></div>
+                                <div class="control-col"><div class="ctrl"><span class="swatch" style="background:hsl(333.62 85% 52%)"></span><input class="text-input" value="hsl(333.62 85% 52%)" style="min-width:170px" /></div></div>
+                            </div>
+                        </div>
+                        <div class="cluster-h" style="margin-top:22px"><h4>typography</h4><span class="line"></span><span class="badge soft">specimen</span></div>
+                        <div class="rows" style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                            <div class="field" data-field-static>
+                                <div class="label-col"><div class="flabel">Body font</div></div>
+                                <div class="control-col"><div class="ctrl"><select class="select" style="font-family:Montserrat"><option>Montserrat</option><option>Geist</option><option>Fraunces</option></select></div></div>
+                            </div>
+                        </div>
+                        <div class="callout" style="margin-top:20px"><span class="ic">◆</span><span>The Theme tab is today's catalog rendered through the <b>same shared shell</b> — proving the extraction. Its color/dimension/font controls are tier-less (no inherit/override; theme tokens are store-scoped already).</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== BLOCKS ===================== -->
+            <section class="panel" data-panel="blocks">
+                <p class="note" style="margin-bottom:16px">Default settings per block type, declared via <code class="inl">BlockDescriptor.settings[]</code>. These become the store default for every instance of that block; a block on a page can still override in its content-editor Settings group.</p>
+
+                <div class="cfg-card">
+                    <div class="cfg-head"><div class="lead"><div class="glyph">⚑</div><div><h3>Alert</h3><div class="sub">Dismissible callout banner.</div></div></div><div class="path">block:alert</div></div>
+                    <div class="rows">
+                        <div class="field mode-inherit" data-field>
+                            <div class="label-col"><div class="flabel">Default severity</div></div>
+                            <div class="control-col">
+                                <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button></div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">info</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl"><select class="select"><option selected>info</option><option>success</option><option>warning</option><option>danger</option></select><span class="chip store"><span class="tick"></span>Store default</span><button class="btn ghost sm" data-reset>Reset to inherited</button></div>
+                            </div>
+                        </div>
+                        <div class="field mode-override is-overridden" data-field>
+                            <div class="label-col"><div class="flabel">Dismissible</div></div>
+                            <div class="control-col">
+                                <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="false"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="true"><span class="led"></span>Override</button></div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">true</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl"><select class="select"><option>true</option><option selected>false</option></select><span class="chip store"><span class="tick"></span>Store default</span><button class="btn ghost sm" data-reset>Reset to inherited</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cfg-card">
+                    <div class="cfg-head"><div class="lead"><div class="glyph">▦</div><div><h3>Collection</h3><div class="sub">Shopify collection product grid / carousel.</div></div></div><div class="path">block:collection</div></div>
+                    <div class="rows">
+                        <div class="field mode-inherit" data-field>
+                            <div class="label-col"><div class="flabel">Items per row</div></div>
+                            <div class="control-col">
+                                <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button></div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">4</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl"><select class="select"><option>2</option><option>3</option><option selected>4</option><option>5</option></select><span class="chip store"><span class="tick"></span>Store default</span><button class="btn ghost sm" data-reset>Reset to inherited</button></div>
+                            </div>
+                        </div>
+                        <div class="field mode-inherit" data-field>
+                            <div class="label-col"><div class="flabel">Show "view all"</div></div>
+                            <div class="control-col">
+                                <div class="ov-toggle"><button class="inherit" data-mode="inherit" aria-pressed="true"><span class="led"></span>Inherit</button><button class="override" data-mode="override" aria-pressed="false"><span class="led"></span>Override</button></div>
+                                <div data-inherit-view class="resolved"><span>Resolved</span><span class="val">true</span><span class="chip platform"><span class="tick"></span>Platform default</span></div>
+                                <div data-override-view class="ctrl"><select class="select"><option selected>true</option><option>false</option></select><span class="chip store"><span class="tick"></span>Store default</span><button class="btn ghost sm" data-reset>Reset to inherited</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cfg-card" style="border-style:dashed;opacity:.85">
+                    <div class="cfg-head"><div class="lead"><div class="glyph">＋</div><div><h3>Custom block <span class="badge new">future</span></h3><div class="sub">A user-provided block registers its <code class="inl">settings[]</code> the same way — it appears here automatically, no editor changes.</div></div></div><div class="path">block:&lt;slug&gt;</div></div>
+                </div>
+            </section>
+
+            <!-- ===================== SECTIONS ===================== -->
+            <section class="panel" data-panel="sections">
+                <p class="note" style="margin-bottom:16px">Toggle storefront regions and gate which block types are available in the content editor.</p>
+                <div class="cfg-card">
+                    <div class="cfg-head"><div class="lead"><div class="glyph">◧</div><div><h3>Section visibility</h3></div></div><div class="path">sections</div></div>
+                    <div class="rows">
+                        <div class="field" data-field-static><div class="label-col"><div class="flabel">Announcement bar</div></div><div class="control-col"><div class="ctrl"><select class="select" style="min-width:120px"><option selected>on</option><option>off</option></select></div></div></div>
+                        <div class="field" data-field-static><div class="label-col"><div class="flabel">Newsletter footer</div></div><div class="control-col"><div class="ctrl"><select class="select" style="min-width:120px"><option selected>on</option><option>off</option></select></div></div></div>
+                        <div class="field" data-field-static><div class="label-col"><div class="flabel">Recently viewed rail</div></div><div class="control-col"><div class="ctrl"><select class="select" style="min-width:120px"><option>on</option><option selected>off</option></select></div></div></div>
+                    </div>
+                </div>
+                <div class="cfg-card">
+                    <div class="cfg-head"><div class="lead"><div class="glyph">▤</div><div><h3>Block availability</h3><div class="sub">Which blocks editors can add to pages.</div></div></div><div class="path">blocks.available</div></div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;padding:18px">
+                        <span class="badge soft">✓ columns</span><span class="badge soft">✓ alert</span><span class="badge soft">✓ banner</span>
+                        <span class="badge soft">✓ collection</span><span class="badge soft">✓ media-grid</span><span class="badge soft">✓ overview</span>
+                        <span class="badge soft">✓ rich-text</span><span class="badge soft">✓ vendors</span><span class="badge" style="opacity:.45">○ html</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script>
+// Tab switching (mirrors theme-editor's roving-tab pattern; ?group deep link omitted for the mock).
+const tabs = [...document.querySelectorAll('.tab')];
+const panels = [...document.querySelectorAll('.panel')];
+tabs.forEach((tab) => tab.addEventListener('click', () => {
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+    const key = tab.dataset.tab;
+    panels.forEach((p) => p.classList.toggle('active', p.dataset.panel === key));
+}));
+
+// Surface-key pills (single-select within a component card).
+document.querySelectorAll('.surfaces').forEach((group) => {
+    const pills = [...group.querySelectorAll('[data-surface]')];
+    pills.forEach((pill) => pill.addEventListener('click', () => {
+        pills.forEach((p) => p.setAttribute('aria-pressed', String(p === pill)));
+    }));
+});
+
+// Inherit / override toggle — flips the field's view and override state.
+document.querySelectorAll('[data-field]').forEach((field) => {
+    const setMode = (mode) => {
+        field.classList.toggle('mode-override', mode === 'override');
+        field.classList.toggle('mode-inherit', mode === 'inherit');
+        field.classList.toggle('is-overridden', mode === 'override');
+        field.querySelectorAll('[data-mode]').forEach((b) =>
+            b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+    };
+    field.querySelectorAll('[data-mode]').forEach((b) =>
+        b.addEventListener('click', () => setMode(b.dataset.mode)));
+    const reset = field.querySelector('[data-reset]');
+    if (reset) reset.addEventListener('click', () => setMode('inherit'));
+});
+
+// Slash focuses search.
+addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault(); document.getElementById('search').focus();
+    }
+});
+</script>
+</body>
+</html>
