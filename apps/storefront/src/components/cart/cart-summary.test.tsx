@@ -178,5 +178,44 @@ describe('components', () => {
             const button = screen.getByRole('button') as HTMLButtonElement;
             expect(button.disabled).toBe(false);
         });
+
+        it('truncates a long automatic-discount title instead of shoving the amount off-row', () => {
+            const longTitle = 'Spring Mega Clearance Loyalty Bonus Stacked Seasonal Promotion 2026 Members Only';
+            setState({
+                cartReady: true,
+                status: 'idle',
+                totalQuantity: 1,
+                lines: [
+                    {
+                        id: 'line-1',
+                        quantity: 1,
+                        merchandise: {
+                            compareAtUnitPrice: null,
+                            unitPrice: { amount: '10', currencyCode: 'USD' },
+                            selectedOptions: [],
+                        },
+                        cost: {
+                            total: { amount: '5', currencyCode: 'USD' },
+                            subtotal: { amount: '10', currencyCode: 'USD' },
+                        },
+                        discountAllocations: [
+                            { title: longTitle, discountedAmount: { amount: '5', currencyCode: 'USD' } },
+                        ],
+                    },
+                ],
+                subtotal: { amount: '10', currencyCode: 'USD' },
+                total: { amount: '5', currencyCode: 'USD' },
+            });
+            render(<CartSummary shop={mockShop()} onCheckout={mockOnCheckout} i18n={{} as any} />);
+
+            const label = screen.getByText(longTitle);
+            expect(label.className).toContain('min-w-0');
+            expect(label.className).toContain('truncate');
+
+            const row = label.parentElement;
+            expect(row?.className).toContain('gap-2');
+            // The amount must keep its width while the title yields.
+            expect(row?.querySelector('.shrink-0')).not.toBeNull();
+        });
     });
 });

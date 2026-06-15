@@ -55,6 +55,8 @@ const buildCoreCartLine = (
         variantTitle: string;
         selectedOptions: Array<{ name: string; value: string }>;
         quantityAvailable: number | null;
+        compareAtUnitPrice: { amount: string; currencyCode: 'USD' } | null;
+        image: { url: string; altText: string | null; width: number; height: number } | null;
     }>,
 ) => ({
     id: 'gid://shopify/CartLine/core-1',
@@ -69,13 +71,16 @@ const buildCoreCartLine = (
         productVendor: overrides?.productVendor ?? 'Demo Vendor',
         productType: 'Bakery',
         variantTitle: overrides?.variantTitle ?? 'M / Red',
-        image: { url: 'https://cdn.shopify.com/demo.jpg', altText: null, width: 200, height: 200 },
+        image:
+            overrides?.image !== undefined
+                ? overrides.image
+                : { url: 'https://cdn.shopify.com/demo.jpg', altText: null, width: 200, height: 200 },
         selectedOptions: overrides?.selectedOptions ?? [
             { name: 'Size', value: 'M' },
             { name: 'Color', value: 'Red' },
         ],
         unitPrice: { amount: '10.00', currencyCode: 'USD' as const },
-        compareAtUnitPrice: null,
+        compareAtUnitPrice: overrides?.compareAtUnitPrice !== undefined ? overrides.compareAtUnitPrice : null,
         availableForSale: true,
         quantityAvailable: overrides?.quantityAvailable !== undefined ? overrides.quantityAvailable : 10,
         sku: null,
@@ -119,37 +124,97 @@ describe('components', () => {
             expect(screen.queryByText(/·/)).not.toBeInTheDocument();
         });
 
-        describe('layout and theming', () => {
-            it('frames the image in a fixed square media box that does not stretch to the text height', () => {
-                render(<CartLine i18n={{} as any} data={buildCoreCartLine()} />);
+        describe('media sizing', () => {
+            // The headline regression: image boxes rendered at different sizes
+            // because the box height tracked the variable text column. happy-dom
+            // has no layout engine, so we assert the *contract* that made the
+            // sizes diverge instead of measuring pixels: the frame is a fixed
+            // square whose classes never vary with content.
+
+            const shortLine = () =>
+                buildCoreCartLine({ productTitle: 'Tee', selectedOptions: [], quantityAvailable: null });
+
+            const tallLine = () =>
+                buildCoreCartLine({
+                    productTitle:
+                        'An Extraordinarily Long Product Title That Wraps Across Several Lines And Inflates The Text Column Height',
+                    selectedOptions: [
+                        { name: 'Size', value: 'Medium' },
+                        { name: 'Color', value: 'Burnt Sienna' },
+                        { name: 'Material', value: 'Wool' },
+                        { name: 'Fit', value: 'Relaxed' },
+                    ],
+                    compareAtUnitPrice: { amount: '40.00', currencyCode: 'USD' },
+                    quantityAvailable: 2,
+                });
+
+            it('keeps the media box class signature identical regardless of text volume', () => {
+                const short = render(<CartLine i18n={{} as any} data={shortLine()} />);
+                const shortClass = screen.getByTestId('cart-line-image').className;
+                short.unmount();
+
+                const tall = render(<CartLine i18n={{} as any} data={tallLine()} />);
+                const tallClass = screen.getByTestId('cart-line-image').className;
+                tall.unmount();
+
+                // Same frame whether the line has one short word or a wrapped
+                // title plus four option pills, a sale price, and a stock warning.
+                expect(shortClass).toBe(tallClass);
+            });
+
+            it('sizes the media box as a fixed square decoupled from the row/text height', () => {
+                render(<CartLine i18n={{} as any} data={tallLine()} />);
                 const media = screen.getByTestId('cart-line-image');
 
-                // Consistent media box: a fixed square that never inherits the
-                // variable text-column height — the root cause of mismatched
-                // line-item image sizes.
                 expect(media.className).toContain('aspect-square');
                 expect(media.className).toContain('shrink-0');
                 expect(media.className).toContain('self-start');
+                // Content-coupled height classes are what made sizes diverge.
                 expect(media.className).not.toMatch(/\bh-full\b/);
-                expect(media.className).not.toMatch(/\bmin-h-32\b/);
+                expect(media.className).not.toMatch(/\bmin-h-/);
             });
 
-            it('clamps long product titles instead of letting them overflow', () => {
+            it('gives the image square intrinsic dimensions and contains it without distortion', () => {
+                render(<CartLine i18n={{} as any} data={buildCoreCartLine()} />);
+                const img = screen.getByRole('img');
+
+                // Square intrinsic ratio + object-contain keeps non-square source
+                // art letterboxed inside the uniform frame rather than stretched.
+                expect(img.getAttribute('width')).toBe('160');
+                expect(img.getAttribute('height')).toBe('160');
+                expect(img.className).toContain('object-contain');
+            });
+
+            it('renders a square placeholder when the variant has no image so the frame stays uniform', () => {
+                render(<CartLine i18n={{} as any} data={buildCoreCartLine({ image: null })} />);
+                const media = screen.getByTestId('cart-line-image');
+
+                expect(screen.queryByRole('img')).toBeNull();
+                expect(media.className).toContain('aspect-square');
+                expect(media.querySelector('svg')).not.toBeNull();
+            });
+        });
+
+        describe('overflow guards', () => {
+            it('clamps a long title and lets its flex column shrink below content width', () => {
                 render(
                     <CartLine
                         i18n={{} as any}
                         data={buildCoreCartLine({
                             productTitle:
-                                'An Extraordinarily Long Product Title That Would Otherwise Overflow Its Column And Break The Cart Layout',
+                                'Supercalifragilisticexpialidocious-Unbreakable-Single-Token-Product-Name-That-Would-Push-The-Layout',
                         })}
                     />,
                 );
                 const title = screen.getByTestId('cart-line-title');
                 expect(title.className).toContain('line-clamp-2');
                 expect(title.className).toContain('break-words');
+                // Without a min-w-0 ancestor the flex item refuses to shrink and
+                // the long token overflows the card regardless of line-clamp.
+                expect(title.parentElement?.className).toContain('min-w-0');
             });
 
-            it('truncates long variant option values inside their pill', () => {
+            it('truncates an over-long variant value inside its pill', () => {
                 render(
                     <CartLine
                         i18n={{} as any}
@@ -165,15 +230,30 @@ describe('components', () => {
                 expect(pill.className).toContain('overflow-hidden');
                 expect(pill.className).toContain('text-ellipsis');
             });
+        });
 
-            it('paints the media frame with semantic theme tokens, not hardcoded colors', () => {
-                render(<CartLine i18n={{} as any} data={buildCoreCartLine()} />);
-                const media = screen.getByTestId('cart-line-image');
+        describe('theming', () => {
+            it('uses only semantic CSS-variable colors so tenant palettes flow through', () => {
+                // Exercise every colored branch: sale strikethrough, low-stock
+                // warning, option pills, and the media frame.
+                const { container } = render(
+                    <CartLine
+                        i18n={{} as any}
+                        data={buildCoreCartLine({
+                            compareAtUnitPrice: { amount: '40.00', currencyCode: 'USD' },
+                            quantityAvailable: 2,
+                        })}
+                    />,
+                );
 
-                // Tenant theming flows through CSS custom properties; a hardcoded
-                // hex here would make the frame ignore the shop's palette.
-                expect(media.className).toContain('bg-(--surface-0)');
-                expect(media.className).not.toMatch(/#[0-9a-fA-F]{3,8}/);
+                // A hardcoded hex in any class attribute means that element ignores
+                // the shop's theme tokens.
+                const hardcoded = Array.from(container.querySelectorAll('[class]'))
+                    .map((el) => el.getAttribute('class') ?? '')
+                    .filter((cls) => /#[0-9a-fA-F]{3,8}\b/.test(cls));
+                expect(hardcoded).toEqual([]);
+
+                expect(screen.getByTestId('cart-line-image').className).toContain('bg-(--surface-0)');
             });
         });
     });
