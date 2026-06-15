@@ -25,6 +25,15 @@ export declare const api: {
       get: FunctionReference<"query", "public", {}, any>;
       provision: FunctionReference<"mutation", "public", {}, any>;
     };
+    self: {
+      get: FunctionReference<"query", "public", {}, any>;
+      update: FunctionReference<
+        "mutation",
+        "public",
+        { name?: string; theme?: "dark" | "system" },
+        any
+      >;
+    };
   };
   cms: {
     actions: {
