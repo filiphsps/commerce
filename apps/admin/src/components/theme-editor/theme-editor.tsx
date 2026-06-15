@@ -5,6 +5,7 @@ import { Accordion } from '@nordcom/nordstar';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/utils/tailwind';
 import { AccentRepeater } from './accent-repeater';
 import { isAccentRepeaterToken } from './control-registry';
@@ -177,16 +178,8 @@ function ClusterPanel({ entry }: { entry: ClusterEntry }) {
             <header className="mb-2 flex items-center gap-2 border-border border-b pb-2">
                 <h2 className="font-bold text-foreground text-lg capitalize">{humanizeKey(entry.cluster)}</h2>
                 <span className="text-muted-foreground text-sm">{entry.tokens.length} knobs</span>
-                {legacy.length > 0 ? (
-                    <span className="rounded-full bg-muted px-2 py-0.5 font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
-                        {legacy.length} legacy
-                    </span>
-                ) : null}
-                {forthcomingCount > 0 ? (
-                    <span className="rounded-full bg-muted px-2 py-0.5 font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
-                        {forthcomingCount} forthcoming
-                    </span>
-                ) : null}
+                {legacy.length > 0 ? <Badge>{legacy.length} legacy</Badge> : null}
+                {forthcomingCount > 0 ? <Badge>{forthcomingCount} forthcoming</Badge> : null}
             </header>
 
             {accentTokens.length > 0 ? (

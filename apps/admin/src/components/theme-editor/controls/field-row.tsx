@@ -2,8 +2,8 @@ import type { ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
 import { RotateCcw } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/utils/tailwind';
 
 /**
  * The value a leaf control reads and writes. The catalog's `valueKind` decides
@@ -89,9 +89,9 @@ export function FieldRow({ token, htmlFor, children, onReset, showError }: Field
                     {humanizeKey(key)}
                 </label>
                 <div className="flex items-center gap-1.5">
-                    {token.deprecated ? <Pill className="bg-muted text-muted-foreground">Deprecated</Pill> : null}
-                    {token.forthcoming ? <Pill className="bg-muted text-muted-foreground">No effect yet</Pill> : null}
-                    {token.derived ? <Pill className="bg-muted text-muted-foreground">Auto (derived)</Pill> : null}
+                    {token.deprecated ? <Badge>Deprecated</Badge> : null}
+                    {token.forthcoming ? <Badge>No effect yet</Badge> : null}
+                    {token.derived ? <Badge>Auto (derived)</Badge> : null}
                     <Button
                         type="button"
                         variant="ghost"
@@ -112,25 +112,5 @@ export function FieldRow({ token, htmlFor, children, onReset, showError }: Field
                 </p>
             ) : null}
         </div>
-    );
-}
-
-/**
- * Small rounded status badge used for the token pills.
- *
- * @param props.className - Color/variant classes merged onto the badge.
- * @param props.children - The badge label.
- * @returns The pill element.
- */
-function Pill({ className, children }: { className?: string; children: ReactNode }) {
-    return (
-        <span
-            className={cn(
-                'inline-flex items-center rounded-full px-2 py-0.5 font-medium text-[10px] uppercase tracking-wide',
-                className,
-            )}
-        >
-            {children}
-        </span>
     );
 }
