@@ -20,7 +20,7 @@ const Swatch = ({ value, onSelect }: OptionValueRendererProps) => {
             data-available={value.available ? 'true' : 'false'}
             data-active={value.selected ? 'true' : 'false'}
             disabled={false}
-            className="product-options-swatch group/swatch relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center p-(--product-card-swatch-hit-padding) transition-transform focus-visible:outline-none focus-visible:outline-offset-2 data-[available=false]:cursor-not-allowed motion-safe:active:scale-95 motion-safe:hover:scale-110 focus-visible:[outline:2px_solid_var(--accent)]"
+            className="product-options-swatch group/swatch relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center p-(--product-card-swatch-hit-padding) transition-transform focus-visible:outline-none focus-visible:outline-offset-2 data-[available=false]:cursor-not-allowed motion-safe:active:scale-95 motion-safe:hover:scale-110 focus-visible:[outline:2px_solid_var(--focus-ring)]"
             style={{ touchAction: 'manipulation', userSelect: 'none' }}
         >
             <span

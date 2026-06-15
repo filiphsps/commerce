@@ -352,7 +352,12 @@ html:root {
     /* Swatch */
     --product-card-swatch-size: 18px; /* LEGACY value; Phase 3 chassis reads 16px */
     --product-card-swatch-gap: 5px;
-    --product-card-swatch-ring-color: #14110b;
+    /* `currentColor` so the selected-swatch ring tracks its surface's text color: it stays near-black
+     * on a light card and turns light on a dark section/banner where the surface sets light text —
+     * fixing the invisible "selected" ring on dark backgrounds. A tenant override (serialized from
+     * theme.productCard.swatchRingColor) still wins, and on light surfaces this is visually identical
+     * to the previous #14110b. */
+    --product-card-swatch-ring-color: currentColor;
     --product-card-swatch-hit-padding: 6px; /* LEGACY value; Phase 3 chassis reads 10px */
 
     /* Chip + More */
@@ -494,6 +499,29 @@ html:root {
     --elevation-1: var(--product-card-shadow);
     --elevation-2: var(--product-card-shadow-hover);
     --elevation-3: var(--header-panel-shadow);
+}
+
+/* Dark-surface context. Drop `on-dark` on any section that renders light text on a dark fill (a
+ * photographic banner, a dark editorial section) so the tenant-overridable ink / border / option
+ * tokens flip to legible light values. Deliberately leaves `--surface-*` and `--product-card-bg`
+ * alone, so filled controls (buttons, card chassis) keep their own backgrounds rather than inheriting
+ * a translucent wash; the surface element owns its background, this only re-tints what sits on it.
+ * The selected-swatch ring already tracks `currentColor`, so it inherits the flipped `--text`. */
+.on-dark {
+    --text: var(--color-bright);
+    --text-muted: color-mix(in oklab, var(--color-bright) 72%, transparent);
+    --border-default: color-mix(in oklab, var(--color-bright) 24%, transparent);
+    --border-strong: color-mix(in oklab, var(--color-bright) 40%, transparent);
+    --product-card-border-color: color-mix(in oklab, var(--color-bright) 24%, transparent);
+    --product-card-title-color: var(--color-bright);
+    --product-card-price-color: var(--color-bright);
+    --product-card-vendor-color: color-mix(in oklab, var(--color-bright) 66%, transparent);
+    --product-card-compare-color: color-mix(in oklab, var(--color-bright) 60%, transparent);
+    --product-card-chip-color: var(--color-bright);
+    --product-card-chip-border: color-mix(in oklab, var(--color-bright) 30%, transparent);
+    --product-card-chip-active-bg: var(--color-bright);
+    --product-card-chip-active-color: var(--color-dark);
+    --focus-ring: var(--color-bright);
 }
 
 @media (min-width: 48em) {
