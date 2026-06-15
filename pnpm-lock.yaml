@@ -250,8 +250,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       convex:
-        specifier: 1.39.1
-        version: 1.39.1(react@19.2.7)
+        specifier: 1.41.0
+        version: 1.41.0(react@19.2.7)
       critters:
         specifier: 0.0.25
         version: 0.0.25
@@ -636,8 +636,8 @@ importers:
         specifier: 2.3.4
         version: 2.3.4
       convex:
-        specifier: 1.39.1
-        version: 1.39.1(react@19.2.7)
+        specifier: 1.41.0
+        version: 1.41.0(react@19.2.7)
       cookies-next:
         specifier: 6.1.1
         version: 6.1.1(next@16.2.9(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.100.0))(react@19.2.7)
@@ -1011,10 +1011,10 @@ importers:
     dependencies:
       '@convex-dev/action-retrier':
         specifier: 0.3.0
-        version: 0.3.0(convex@1.39.1(react@19.2.7))
+        version: 0.3.0(convex@1.41.0(react@19.2.7))
       '@convex-dev/prosemirror-sync':
         specifier: 0.2.4
-        version: 0.2.4(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(convex@1.39.1(react@19.2.7))(decode-named-character-reference@1.3.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 0.2.4(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(convex@1.41.0(react@19.2.7))(decode-named-character-reference@1.3.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@nordcom/commerce-cms':
         specifier: workspace:*
         version: link:../cms
@@ -1022,15 +1022,15 @@ importers:
         specifier: workspace:*
         version: link:../tagtree/core
       convex:
-        specifier: 1.39.1
-        version: 1.39.1(react@19.2.7)
+        specifier: 1.41.0
+        version: 1.41.0(react@19.2.7)
       convex-helpers:
-        specifier: 0.1.118
-        version: 0.1.118(@standard-schema/spec@1.1.0)(convex@1.39.1(react@19.2.7))(react@19.2.7)(typescript@6.0.3)(zod@4.4.3)
+        specifier: 0.1.119
+        version: 0.1.119(@standard-schema/spec@1.1.0)(convex@1.41.0(react@19.2.7))(react@19.2.7)(typescript@6.0.3)(zod@4.4.3)
     devDependencies:
       convex-test:
         specifier: 0.0.53
-        version: 0.0.53(convex@1.39.1(react@19.2.7))
+        version: 0.0.53(convex@1.41.0(react@19.2.7))
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -1050,8 +1050,8 @@ importers:
         specifier: 2.9.3
         version: 2.9.3
       convex:
-        specifier: 1.39.1
-        version: 1.39.1(react@19.2.7)
+        specifier: 1.41.0
+        version: 1.41.0(react@19.2.7)
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1
@@ -1377,11 +1377,11 @@ importers:
         specifier: workspace:*
         version: link:../cms
       convex:
-        specifier: 1.39.1
-        version: 1.39.1(react@19.2.7)
+        specifier: 1.41.0
+        version: 1.41.0(react@19.2.7)
       convex-test:
         specifier: 0.0.53
-        version: 0.0.53(convex@1.39.1(react@19.2.7))
+        version: 0.0.53(convex@1.41.0(react@19.2.7))
     devDependencies:
       rimraf:
         specifier: 6.1.3
@@ -4484,8 +4484,8 @@ packages:
   convert-units@2.3.4:
     resolution: {integrity: sha512-ERHfdA0UhHJp1IpwE6PnFJx8LqG7B1ZjJ20UvVCmopEnVCfER68Tbe3kvN63dLbYXDA2xFWRE6zd4Wsf0w7POg==}
 
-  convex-helpers@0.1.118:
-    resolution: {integrity: sha512-07t10n8CZG/YCDzOy5/WDdNNQYL+mP7VU76BLJCZrB2dvJTH7UZJxPqNrhPH+pZbW52joQ91eQHSksdcgOXebQ==}
+  convex-helpers@0.1.119:
+    resolution: {integrity: sha512-fGNK9KAlBLk8Un729ZXBqD9S5jy910nxSrH6PloIL/Gl6TalFJvjN8+xCCwahlox8Ft+bb54SSg9MbcrsQb98w==}
     hasBin: true
     peerDependencies:
       '@standard-schema/spec': ^1.0.0
@@ -4511,8 +4511,8 @@ packages:
     peerDependencies:
       convex: ^1.32.0
 
-  convex@1.39.1:
-    resolution: {integrity: sha512-W+gVXA7BpRF1xLlS1kGTtKVaqd5yonqbGESKiPtIUXjV744GdDz8IG7RVsSY5KzHbgxuJBHKaJYk+92OIHTskQ==}
+  convex@1.41.0:
+    resolution: {integrity: sha512-euxVf6yfpB7/VGKOobkLgjpbJidsUgW+b0ezonEyCUPqlpHFwR4/yIiI1hjjErzraiw91GxrtxpXQClMLNqU+w==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
     hasBin: true
     peerDependencies:
@@ -5998,8 +5998,8 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  prettier@3.8.3:
-    resolution: {integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==}
+  prettier@3.8.4:
+    resolution: {integrity: sha512-N2MylSdi48+5N/6S5j+maeHbUSIzzZ5uOcX5Hm4QpV8Dkb1HFjfAKTKX6yNPJQD9AhcT3ifHNB66tWTTJDi11Q==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -6818,8 +6818,8 @@ packages:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
 
-  ws@8.18.0:
-    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
+  ws@8.20.1:
+    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -7290,14 +7290,14 @@ snapshots:
       unplugin: 1.16.1
       vite: 8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.3)(yaml@2.9.0)
 
-  '@convex-dev/action-retrier@0.3.0(convex@1.39.1(react@19.2.7))':
+  '@convex-dev/action-retrier@0.3.0(convex@1.41.0(react@19.2.7))':
     dependencies:
-      convex: 1.39.1(react@19.2.7)
+      convex: 1.41.0(react@19.2.7)
 
-  '@convex-dev/prosemirror-sync@0.2.4(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(convex@1.39.1(react@19.2.7))(decode-named-character-reference@1.3.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@convex-dev/prosemirror-sync@0.2.4(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(convex@1.41.0(react@19.2.7))(decode-named-character-reference@1.3.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@tiptap/core': 3.26.0(@tiptap/pm@3.26.0)
-      convex: 1.39.1(react@19.2.7)
+      convex: 1.41.0(react@19.2.7)
       decode-named-character-reference: 1.3.0
       prosemirror-collab: 1.3.1
       react: 19.2.7
@@ -9664,24 +9664,24 @@ snapshots:
       lodash.foreach: 2.3.0
       lodash.keys: 2.3.0
 
-  convex-helpers@0.1.118(@standard-schema/spec@1.1.0)(convex@1.39.1(react@19.2.7))(react@19.2.7)(typescript@6.0.3)(zod@4.4.3):
+  convex-helpers@0.1.119(@standard-schema/spec@1.1.0)(convex@1.41.0(react@19.2.7))(react@19.2.7)(typescript@6.0.3)(zod@4.4.3):
     dependencies:
-      convex: 1.39.1(react@19.2.7)
+      convex: 1.41.0(react@19.2.7)
     optionalDependencies:
       '@standard-schema/spec': 1.1.0
       react: 19.2.7
       typescript: 6.0.3
       zod: 4.4.3
 
-  convex-test@0.0.53(convex@1.39.1(react@19.2.7)):
+  convex-test@0.0.53(convex@1.41.0(react@19.2.7)):
     dependencies:
-      convex: 1.39.1(react@19.2.7)
+      convex: 1.41.0(react@19.2.7)
 
-  convex@1.39.1(react@19.2.7):
+  convex@1.41.0(react@19.2.7):
     dependencies:
       esbuild: 0.27.0
-      prettier: 3.8.3
-      ws: 8.18.0
+      prettier: 3.8.4
+      ws: 8.20.1
     optionalDependencies:
       react: 19.2.7
     transitivePeerDependencies:
@@ -11496,7 +11496,7 @@ snapshots:
 
   prettier@2.8.8: {}
 
-  prettier@3.8.3: {}
+  prettier@3.8.4: {}
 
   pretty-format@27.5.1:
     dependencies:
@@ -12358,7 +12358,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  ws@8.18.0: {}
+  ws@8.20.1: {}
 
   ws@8.21.0: {}
 

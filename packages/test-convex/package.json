@@ -48,7 +48,7 @@
     },
     "dependencies": {
         "@nordcom/commerce-cms": "workspace:*",
-        "convex": "1.39.1",
+        "convex": "1.41.0",
         "convex-test": "0.0.53"
     },
     "devDependencies": {

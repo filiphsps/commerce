@@ -62,7 +62,7 @@
     "dependencies": {
         "@nordcom/commerce-errors": "workspace:*",
         "colord": "2.9.3",
-        "convex": "1.39.1"
+        "convex": "1.41.0"
     },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
