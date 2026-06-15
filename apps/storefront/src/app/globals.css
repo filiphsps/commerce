@@ -138,13 +138,22 @@
     grid-auto-columns: var(--product-card-max-width);
     grid-template-rows: repeat(1, minmax(0, 1fr));
     justify-content: start;
-    scroll-snap-type: x mandatory;
+    /* `proximity`, not `mandatory`: a near-the-end scroll isn't yanked to force the last card
+     * flush against the edge — it rests where the user leaves it and snaps only when already close. */
+    scroll-snap-type: x proximity;
     overflow-x: auto;
     overscroll-behavior-x: auto;
+    /* Inline gutter (with matching scroll-padding) insets the first/last card from the scroll
+     * viewport edge so their drop-shadows and the next-card peek render, instead of being clipped
+     * flush against the overflow / paint-containment boundary. The negative inline margin bleeds the
+     * scroll box back out to the container edge so a card at rest still lines up with sibling content.
+     * Vertical bleed (`-0.75rem` margin / `0.75rem` padding) keeps the hover-lift shadow off the clip
+     * edge without shifting siblings. */
+    padding-inline: var(--block-padding);
+    margin-inline: calc(var(--block-padding) * -1);
     scroll-padding-inline: var(--block-padding);
-    /* Bleed the scroll-shadow vertically (`-0.5rem` margin / `0.5rem` padding) without shifting siblings. */
-    margin-block: -0.5rem;
-    padding-block: 0.5rem;
+    margin-block: -0.75rem;
+    padding-block: 0.75rem;
 
     @supports (animation-timeline: scroll()) {
         animation: overflow-x-scroll-shadow linear;

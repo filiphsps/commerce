@@ -10,6 +10,8 @@ export type CollectionBlockArrowsProps = {
 };
 
 const ARROW_CLASSES = cn(
+    // Inset the arrows just inside the rail wrapper. A negative offset (e.g. `-8px`) put them
+    // outside the relative parent, where any ancestor with clipped horizontal overflow shears them.
     'absolute top-[38%] z-4 inline-flex size-9 cursor-pointer items-center justify-center',
     'rounded-full border border-(--product-card-border-color) bg-(--surface-0) shadow-product-card-hover',
     'font-semibold text-base text-(--product-card-title-color)',
@@ -73,7 +75,7 @@ const CollectionBlockArrows = ({ railSelector }: CollectionBlockArrowsProps) => 
                 data-side="prev"
                 onClick={() => scroll(-1)}
                 {...(firstVisible || allVisible ? { 'data-hidden': '' } : {})}
-                className={cn(ARROW_CLASSES, 'left-[-8px]')}
+                className={cn(ARROW_CLASSES, 'left-1')}
             >
                 <ChevronLeft aria-hidden className="size-5" />
             </button>
@@ -83,7 +85,7 @@ const CollectionBlockArrows = ({ railSelector }: CollectionBlockArrowsProps) => 
                 data-side="next"
                 onClick={() => scroll(1)}
                 {...(lastVisible || allVisible ? { 'data-hidden': '' } : {})}
-                className={cn(ARROW_CLASSES, 'right-[-8px]')}
+                className={cn(ARROW_CLASSES, 'right-1')}
             >
                 <ChevronRight aria-hidden className="size-5" />
             </button>

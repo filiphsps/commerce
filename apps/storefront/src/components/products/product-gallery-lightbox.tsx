@@ -79,7 +79,11 @@ export const ProductGalleryLightbox = ({ image, open, onClose, i18n }: ProductGa
             onClose={onClose}
             aria-label={altText ?? t('zoom-image')}
             className={cn(
-                'fixed inset-0 m-0 flex h-dvh max-h-dvh w-dvw max-w-dvw items-center justify-center overflow-hidden bg-transparent p-4 md:p-8',
+                // A bare `flex` utility would override the UA `dialog:not([open]){display:none}`
+                // rule, leaving the dialog laid out (and stacking against page z-index) even while
+                // closed. Gate the flex on `[open]` and pin `hidden` as the closed-state display so
+                // the dialog only paints once `showModal()` has promoted it into the top layer.
+                'fixed inset-0 m-0 hidden h-dvh max-h-dvh w-dvw max-w-dvw items-center justify-center overflow-hidden bg-transparent p-4 open:flex md:p-8',
                 'backdrop:bg-[color-mix(in_oklab,var(--text)_82%,transparent)]',
             )}
         >

@@ -108,8 +108,12 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     const legal = footer?.legal ?? [];
     const copyrightLine = footer?.copyrightLine || `© ${COPYRIGHT_YEAR} ${shop.name}`;
 
+    // iOS home-indicator gap: with `viewport-fit=cover` the page paints under the inset, so a
+    // dark footer left a white strip where the body background showed through the safe area. The
+    // bottom padding folds `env(safe-area-inset-bottom)` into the footer's own box, so its
+    // `bg-primary` fills the inset instead of the body. No-op on devices without an inset.
     return (
-        <footer className="flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden bg-primary p-2 pt-8 text-primary-foreground [grid-area:footer] md:p-3 md:pt-6">
+        <footer className="flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden bg-primary p-2 pt-8 pb-[calc(0.5rem+env(safe-area-inset-bottom))] text-primary-foreground [grid-area:footer] md:p-3 md:pt-6 md:pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
             <div className="flex h-full w-full max-w-(--page-width) flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
                 <section className="grid h-full w-full grid-cols-1 items-start justify-between gap-6 pb-6 text-left md:flex lg:pb-12">
                     <div className={BLOCK_STYLES}>
