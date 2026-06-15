@@ -125,9 +125,9 @@ export default async function OverviewPage() {
                             href={'/new/' as Route}
                             color="primary"
                             variant="solid"
-                            className="flex h-12 w-full items-center justify-center gap-2"
+                            className="h-12 w-full"
+                            icon={<Plus className="size-5" />}
                         >
-                            <Plus className="size-5" />
                             Connect a new Shop
                         </Button>
                     </footer>
