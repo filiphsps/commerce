@@ -5,6 +5,7 @@ import {
     accentTokenValidator,
     featureFlagOptionValidator,
     jsonValueValidator,
+    shopExtensionManifestValidator,
     shopThemeTokensValidator,
     targetingRuleValidator,
 } from '../lib/validators';
@@ -155,6 +156,7 @@ export const shopValidator = v.object({
     showProductVendor: v.optional(v.boolean()),
     design: shopDesignValidator,
     theme: v.optional(shopThemeTokensValidator),
+    extensions: v.optional(shopExtensionManifestValidator),
     icons: v.optional(shopIconsValidator),
     commerceProvider: commerceProviderValidator,
     integrations: v.optional(shopIntegrationsValidator),

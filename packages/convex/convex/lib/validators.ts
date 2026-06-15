@@ -252,6 +252,35 @@ export const shopThemeTokensValidator = deepPartialValidator(resolvedShopThemeVa
 >;
 
 /**
+ * Declarative per-surface product-card variant selection — the Convex mirror of
+ * `ProductCardVariantSelection` from `@nordcom/commerce-cms/extensions`. Open `string` names (not
+ * literal unions) on purpose: a surface may select a registered custom layout/chrome/picker/CTA, so
+ * the storefront completes resolution against its variant registries. Every field absent → the
+ * surface resolves to its current preset, unchanged.
+ */
+const productCardVariantSelectionValidator = v.object({
+    layout: v.optional(v.string()),
+    chrome: v.optional(v.string()),
+    ctaPlacement: v.optional(v.string()),
+    pickerPresentation: v.optional(v.string()),
+});
+
+/**
+ * Runtime validator for the optional per-shop extension manifest — the Convex mirror of
+ * `ShopExtensionManifest` from `@nordcom/commerce-cms/extensions`. Every field is optional and every
+ * sub-field defaults to today's platform behavior, so an absent or empty manifest composes — through
+ * `resolveExtensions` — byte-identically to today's resolved theme, chrome, sections, block
+ * availability, and card variants. This is the stored `shops.extensions` shape.
+ */
+export const shopExtensionManifestValidator = v.object({
+    theme: v.optional(shopThemeTokensValidator),
+    chrome: v.optional(v.object({ order: v.optional(v.array(v.string())) })),
+    sections: v.optional(v.record(v.string(), v.boolean())),
+    blocks: v.optional(v.object({ available: v.optional(v.array(v.string())) })),
+    productCard: v.optional(v.record(v.string(), productCardVariantSelectionValidator)),
+});
+
+/**
  * JSON-serializable value mirroring `JsonValue` from `@nordcom/commerce-db`'s feature-flag model
  * (`packages/db/src/models/feature-flag.ts`) — the `Mixed`-typed payload a feature flag stores as its
  * `defaultValue`, targeting-rule output, and option value:

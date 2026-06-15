@@ -37,6 +37,7 @@ const writableShopValidator = v.object({
     showProductVendor: shopFields.showProductVendor,
     design: v.optional(shopFields.design),
     theme: shopFields.theme,
+    extensions: shopFields.extensions,
     icons: shopFields.icons,
     commerceProvider: v.optional(shopFields.commerceProvider),
     integrations: shopFields.integrations,

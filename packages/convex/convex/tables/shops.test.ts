@@ -79,6 +79,33 @@ describe('shopValidator', () => {
         expect(validate(shopValidator, themed)).toBe(true);
     });
 
+    it('accepts a per-surface product-card extension manifest', () => {
+        const withExtensions = {
+            ...fullShop,
+            extensions: { productCard: { collection: { ctaPlacement: 'inline-button', layout: 'vertical' } } },
+        };
+        expect(validate(shopValidator, withExtensions)).toBe(true);
+    });
+
+    it('accepts a full extension manifest across every section', () => {
+        const withExtensions = {
+            ...fullShop,
+            extensions: {
+                theme: { colors: { background: '#0b0b0b' } },
+                chrome: { order: ['header', 'content', 'footer'] },
+                sections: { 'info-bar': false },
+                blocks: { available: ['banner', 'rich-text'] },
+                productCard: { search: { layout: 'horizontal' } },
+            },
+        };
+        expect(validate(shopValidator, withExtensions)).toBe(true);
+    });
+
+    it('rejects an unknown key inside a product-card variant selection', () => {
+        const leaky = { ...fullShop, extensions: { productCard: { collection: { bogus: 'x' } } } };
+        expect(validate(shopValidator, leaky)).toBe(false);
+    });
+
     it('rejects a masked private token on the shop row (it lives in shopCredentials)', () => {
         const leaky = {
             ...fullShop,
