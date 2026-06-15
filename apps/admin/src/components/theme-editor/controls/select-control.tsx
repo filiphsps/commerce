@@ -16,14 +16,14 @@ import type { ControlProps } from './field-row';
  * @param props.id - DOM id linking to the field-row label.
  * @returns The select control.
  */
-export function SelectControl({ token, value, onChange, placeholder, id }: ControlProps) {
+export function SelectControl({ token, value, onChange, placeholder, id, invalid, describedBy }: ControlProps) {
     const options = token.enumValues ?? [];
     const readOnly = options.length <= 1;
     const current = typeof value === 'string' ? value : undefined;
 
     return (
         <Select value={current} onValueChange={(next) => onChange(next)} disabled={readOnly}>
-            <Select.Trigger id={id}>
+            <Select.Trigger id={id} aria-invalid={invalid || undefined} aria-describedby={describedBy}>
                 <Select.Value placeholder={placeholder ?? 'Select…'} />
             </Select.Trigger>
             <Select.Content>

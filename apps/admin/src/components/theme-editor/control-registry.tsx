@@ -25,12 +25,12 @@ import { SwitchControl } from './controls/switch-control';
  * @param props.id - DOM id linking to the field-row label.
  * @returns The font-preview select control.
  */
-function FontPreviewControl({ value, onChange, placeholder, id }: ControlProps) {
+function FontPreviewControl({ value, onChange, placeholder, id, invalid, describedBy }: ControlProps) {
     const current = typeof value === 'string' ? value : undefined;
 
     return (
         <Select value={current} onValueChange={(next) => onChange(next)}>
-            <Select.Trigger id={id}>
+            <Select.Trigger id={id} aria-invalid={invalid || undefined} aria-describedby={describedBy}>
                 <Select.Value placeholder={placeholder ?? 'Select font…'} />
             </Select.Trigger>
             <Select.Content>

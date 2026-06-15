@@ -14,7 +14,7 @@ import type { ControlProps } from './field-row';
  * @param props.id - DOM id linking to the field-row label.
  * @returns The number control.
  */
-export function NumberControl({ token, value, onChange, placeholder, id }: ControlProps) {
+export function NumberControl({ token, value, onChange, placeholder, id, invalid, describedBy }: ControlProps) {
     return (
         <Input
             id={id}
@@ -29,6 +29,8 @@ export function NumberControl({ token, value, onChange, placeholder, id }: Contr
                 const raw = event.target.value;
                 onChange(raw === '' ? undefined : Number(raw));
             }}
+            aria-invalid={invalid || undefined}
+            aria-describedby={describedBy}
             className="font-mono"
         />
     );

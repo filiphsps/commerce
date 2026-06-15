@@ -14,7 +14,7 @@ import type { ControlProps } from './field-row';
  * @param props.id - DOM id linking to the field-row label.
  * @returns The dimension control.
  */
-export function DimensionControl({ value, onChange, placeholder, id }: ControlProps) {
+export function DimensionControl({ value, onChange, placeholder, id, invalid, describedBy }: ControlProps) {
     return (
         <Input
             id={id}
@@ -23,6 +23,8 @@ export function DimensionControl({ value, onChange, placeholder, id }: ControlPr
             value={typeof value === 'string' ? value : ''}
             placeholder={placeholder}
             onChange={(event) => onChange(event.target.value)}
+            aria-invalid={invalid || undefined}
+            aria-describedby={describedBy}
             className="font-mono"
         />
     );

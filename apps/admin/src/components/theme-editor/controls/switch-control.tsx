@@ -11,10 +11,16 @@ import type { ControlProps } from './field-row';
  * @param props.id - DOM id linking to the field-row label.
  * @returns The switch control.
  */
-export function SwitchControl({ value, onChange, id }: ControlProps) {
+export function SwitchControl({ value, onChange, id, invalid, describedBy }: ControlProps) {
     return (
         <div className="flex h-9 items-center">
-            <Switch id={id} checked={value === true} onCheckedChange={(next) => onChange(next)} />
+            <Switch
+                id={id}
+                checked={value === true}
+                onCheckedChange={(next) => onChange(next)}
+                aria-invalid={invalid || undefined}
+                aria-describedby={describedBy}
+            />
         </div>
     );
 }

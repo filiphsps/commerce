@@ -13,13 +13,15 @@ import type { ControlProps } from './field-row';
  * @param props.id - DOM id linking to the field-row label.
  * @returns The color control.
  */
-export function ColorControl({ value, onChange, placeholder, id }: ControlProps) {
+export function ColorControl({ value, onChange, placeholder, id, invalid, describedBy }: ControlProps) {
     return (
         <ColorField
             id={id}
             value={typeof value === 'string' ? value : ''}
             placeholder={placeholder}
             onChange={(next) => onChange(next)}
+            aria-invalid={invalid || undefined}
+            aria-describedby={describedBy}
         />
     );
 }

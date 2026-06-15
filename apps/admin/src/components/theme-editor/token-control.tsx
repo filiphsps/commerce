@@ -5,7 +5,7 @@ import { THEME_DEFAULTS } from '@nordcom/commerce-db/lib/theme';
 import type { ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
 
 import { resolveControl } from './control-registry';
-import { type ControlValue, FieldRow } from './controls/field-row';
+import { type ControlValue, errorTextId, FieldRow, hintTextId } from './controls/field-row';
 
 /**
  * Reads the platform default for a token from `THEME_DEFAULTS` by walking its
@@ -62,9 +62,22 @@ export function TokenControl({ token }: TokenControlProps) {
 
     const onReset = () => setValue(token.derived ? undefined : fallback);
 
+    const describedBy =
+        [!valid ? errorTextId(token.path) : null, token.quoted ? hintTextId(token.path) : null]
+            .filter(Boolean)
+            .join(' ') || undefined;
+
     return (
         <FieldRow token={token} htmlFor={token.path} onReset={onReset} showError={!valid}>
-            <Control token={token} value={value} onChange={setValue} placeholder={placeholder} id={token.path} />
+            <Control
+                token={token}
+                value={value}
+                onChange={setValue}
+                placeholder={placeholder}
+                id={token.path}
+                invalid={!valid}
+                describedBy={describedBy}
+            />
         </FieldRow>
     );
 }

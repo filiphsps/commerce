@@ -29,7 +29,17 @@ export type ControlProps = {
     placeholder?: string;
     /** DOM id, wired to the field-row label. */
     id?: string;
+    /** When `true`, the bound field failed validation; controls set `aria-invalid`. */
+    invalid?: boolean;
+    /** Space-separated ids of the error/hint copy describing this control, for `aria-describedby`. */
+    describedBy?: string;
 };
+
+/** The `aria-describedby` target id for a token's inline error copy. */
+export const errorTextId = (htmlFor: string): string => `${htmlFor}-error`;
+
+/** The `aria-describedby` target id for a token's inline hint copy. */
+export const hintTextId = (htmlFor: string): string => `${htmlFor}-hint`;
 
 /** A leaf control component resolved from the control registry. */
 export type Control = (props: ControlProps) => ReactNode;
@@ -105,9 +115,13 @@ export function FieldRow({ token, htmlFor, children, onReset, showError }: Field
                 </div>
             </div>
             {children}
-            {showError ? <p className="text-destructive text-xs">This value is invalid.</p> : null}
+            {showError ? (
+                <p id={errorTextId(htmlFor)} role="alert" className="text-destructive text-xs">
+                    This value is invalid.
+                </p>
+            ) : null}
             {token.quoted ? (
-                <p className="text-muted-foreground text-xs">
+                <p id={hintTextId(htmlFor)} className="text-muted-foreground text-xs">
                     Stored unquoted — the storefront adds CSS quotes on emit.
                 </p>
             ) : null}
