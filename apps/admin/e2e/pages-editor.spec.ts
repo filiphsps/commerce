@@ -176,7 +176,9 @@ test('authors all nine blocks (nested rich-text included), uploads media through
 
     // ── Publish via the real toolbar; validation passes (title + slug set). ──
     await page.getByRole('button', { name: 'Publish' }).click();
-    await expect(page.locator('[role="alert"]')).toHaveCount(0);
+    // Scope to the toolbar's own error node — a bare `[role="alert"]` also matches Next's route
+    // announcer (`#__next-route-announcer__`, always present, carrying the page title).
+    await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
 
     // The published state survives a reload.
     await page.reload();
@@ -201,5 +203,5 @@ test('a draft with the required title empty autosaves, but publish fails closed 
     // crashing the page.
     await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/(?!new/)[^/]+/\\?locale=`));
     await page.getByRole('button', { name: 'Publish' }).click();
-    await expect(page.locator('[role="alert"]')).toContainText(/required field/i);
+    await expect(page.getByTestId('editor-toolbar-error')).toContainText(/required field/i);
 });

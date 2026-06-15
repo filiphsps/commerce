@@ -157,7 +157,7 @@ export function DraftPublishToolbar({
             </div>
 
             {errorMessage ? (
-                <p role="alert" className="text-destructive text-sm">
+                <p role="alert" data-testid="editor-toolbar-error" className="text-destructive text-sm">
                     {errorMessage}
                 </p>
             ) : null}
