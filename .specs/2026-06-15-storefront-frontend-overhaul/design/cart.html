@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cart — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* page-local layout for the cart mockup only */
+
+  /* two-column cart: line items left, sticky summary right */
+  .cart {
+    display: grid; grid-template-columns: 1.55fr 0.85fr; gap: 2.25rem;
+    padding: 1.5rem clamp(1rem, 3vw, 2rem) 1.75rem;
+  }
+  @media (max-width: 820px) { .cart { grid-template-columns: 1fr; } }
+  .cart-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.25rem; }
+  .cart-head h1 { margin: 0; font: 800 var(--text-h2)/1.1 var(--font-heading); letter-spacing: -0.02em; }
+  .cart-head .ct-count { font: 600 0.875rem/1 var(--font-sans); color: var(--text-muted); }
+  .cart-lines { display: flex; flex-direction: column; }
+  /* first line drops the top padding so the list hugs the heading */
+  .cart-lines .cart-line:first-child { padding-top: 0.35rem; }
+
+  /* the image placeholder glyph, in the shared .cart-line-img shell */
+  .cart-line-img .glyph { font: 800 1.6rem/1 var(--font-sans); color: color-mix(in oklab, var(--text) 14%, transparent); }
+  /* the read-only variant row inside a cart line */
+  .cart-line-variants { display: flex; align-items: center; gap: var(--product-card-swatch-gap); flex-wrap: wrap; }
+  .cart-line-variants .vlabel { font: 500 0.8125rem/1 var(--font-sans); color: var(--text-muted); }
+
+  /* the summary column sticks while the (potentially long) line list scrolls */
+  .cart-summary-col { position: sticky; top: 1.5rem; align-self: start; display: flex; flex-direction: column; gap: 0.9rem; }
+  .summary .row.discount { color: var(--text-success-strong); font-weight: 600; }
+  .summary .ship-note { font: 500 0.8125rem/1.4 var(--font-sans); color: var(--text-muted); }
+  .summary .pay { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.15rem; }
+  .summary .pay .pm {
+    width: 2.35rem; height: 1.55rem; border-radius: 5px; border: 1px solid var(--border-default);
+    background: var(--surface-0); display: grid; place-items: center;
+    font: 800 0.625rem/1 var(--font-sans); letter-spacing: 0.02em; color: var(--text-muted);
+  }
+  .summary .continue { text-align: center; font: 600 0.875rem/1 var(--font-sans); color: var(--accent); text-decoration: none; padding-top: 0.15rem; }
+  .summary .continue:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+  /* the OLD bespoke variant pills, replicated locally for the before/after only.
+   * mirrors cart-line.tsx today: rounded-md border bg-surface-2 px-2 py-0.5 text-xs `name·value`. */
+  .old-vpill {
+    display: inline-block; font: 500 0.75rem/1.3 var(--font-sans);
+    padding: 0.125rem 0.5rem; border-radius: 0.375rem;
+    border: 1px solid var(--border-default); background: var(--surface-2); color: var(--text);
+  }
+  .old-vrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
+
+  /* density side-by-side */
+  .density-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 760px) { .density-grid { grid-template-columns: 1fr; } }
+  .density-col .dlabel {
+    display: inline-flex; align-items: center; gap: 7px; margin-bottom: 10px;
+    font: 700 11px/1 ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 5px 10px; border-radius: 999px; color: #334155; background: #f1f5f9; border: 1px solid #e2e8f0;
+  }
+  .density-col .density-frame { padding: 0.25rem 1rem; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 10 · /cart</p>
+    <h1 class="spec-title">Cart</h1>
+    <p class="spec-lede">The cart is redrawn as a clean two-column page — line items on the left, a sticky order summary on the right. Each line's variants stop being a bespoke <code style="font-family:ui-monospace,monospace">name·value</code> pill and instead reuse the SAME option primitives as the product card and buy box (<code style="font-family:ui-monospace,monospace">.opt-swatch</code> for color, <code style="font-family:ui-monospace,monospace">.opt-chip</code> for size / weight) as read-only indicators — one swatch system everywhere. The whole line is tenant-customizable through new <code style="font-family:ui-monospace,monospace">--cart-line-*</code> tokens on <code style="font-family:ui-monospace,monospace">ShopThemeTokens</code>, so the admin theme editor renders the knobs for free.</p>
+  </header>
+
+  <!-- ============ VARIANT DISPLAY — BEFORE / AFTER ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> Variant display — before / after</h2>
+    <p class="desc">Today <code>cart-line.tsx</code> renders each selected option as a one-off text pill (<code>{name}·{value}</code> in a <code>rounded-md border bg-surface-2</code> chip) — a styling that exists nowhere else, so a "Sand" swatch on the product card becomes flat text in the cart. The fix reuses the shared primitives read-only: color as an active <code>.opt-swatch</code> + label, size / weight as <code>.opt-chip</code>. Same components the card and buy box use, marked <code>aria-disabled</code> so they read as indicators, not controls.</p>
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · bespoke text pills</span>
+        <div class="stage">
+          <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">… / cart</span><span class="vp">line</span></div>
+          <div class="stage-body" style="padding:0 1.25rem">
+            <div class="cart-line">
+              <div class="cart-line-img"><span class="glyph">▣</span></div>
+              <div class="cart-line-main">
+                <span class="cart-line-vendor">Acme Studio</span>
+                <a class="cart-line-title" href="#">Pool Slides</a>
+                <div class="old-vrow">
+                  <span class="old-vpill">Color·Sand</span>
+                  <span class="old-vpill">Size·42</span>
+                </div>
+              </div>
+              <div class="cart-line-side">
+                <div class="cart-line-price">$45.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="ba-tag after">After · shared swatch system</span>
+        <div class="stage">
+          <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">… / cart</span><span class="vp">line</span></div>
+          <div class="stage-body" style="padding:0 1.25rem">
+            <div class="cart-line">
+              <div class="cart-line-img"><span class="glyph">▣</span></div>
+              <div class="cart-line-main">
+                <span class="cart-line-vendor">Acme Studio</span>
+                <a class="cart-line-title" href="#">Pool Slides</a>
+                <div class="cart-line-variants">
+                  <span class="opt-swatch active" style="--_c:#d9c7a3" aria-disabled="true" aria-label="Color: Sand"></span>
+                  <span class="vlabel">Sand</span>
+                  <span class="opt-chip active" aria-disabled="true">42</span>
+                </div>
+              </div>
+              <div class="cart-line-side">
+                <div class="cart-line-price">$45.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Today</b><span>Variants are mapped to a private <code>&lt;span&gt;{name}·{value}&lt;/span&gt;</code> pill. Color is never shown as a swatch, so the cart line and the product card disagree on what "Sand" looks like.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span>Render variants through <code>.opt-swatch</code> / <code>.opt-chip</code> in their <code>active</code> state, but read-only: <code>aria-disabled="true"</code>, no <code>aria-pressed</code> toggle, no click handler. Visually identical to the card; semantically an indicator, not a control.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ FULL CART LAYOUT ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> Cart (full layout)</h2>
+    <p class="desc">Two columns: line items left, summary right. Each line is the shared <code>.cart-line</code> — image, vendor eyebrow, title link, read-only variant row, a <code>.qty</code> stepper, line price (with <code>.was</code> strikethrough on the discounted line), and a remove <code>✕</code>. The summary sticks to the viewport while a long list scrolls, so checkout is always one click away.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / cart</span><span class="vp">1280×</span></div>
+      <div class="stage-body">
+        <div class="cart">
+          <!-- LEFT: line items -->
+          <div>
+            <div class="cart-head">
+              <h1>Your bag</h1>
+              <span class="ct-count">3 items</span>
+            </div>
+            <div class="cart-lines">
+              <!-- line 1: on sale (.was strikethrough) -->
+              <div class="cart-line">
+                <div class="cart-line-img"><span class="glyph">▣</span></div>
+                <div class="cart-line-main">
+                  <span class="cart-line-vendor">Acme Studio</span>
+                  <a class="cart-line-title" href="#">Pool Slides</a>
+                  <div class="cart-line-variants">
+                    <span class="opt-swatch active" style="--_c:#d9c7a3" aria-disabled="true" aria-label="Color: Sand"></span>
+                    <span class="vlabel">Sand</span>
+                    <span class="opt-chip active" aria-disabled="true">EU 42</span>
+                  </div>
+                  <div class="qty" role="group" aria-label="Quantity">
+                    <button type="button" aria-label="Decrease quantity">−</button>
+                    <span>1</span>
+                    <button type="button" aria-label="Increase quantity">+</button>
+                  </div>
+                </div>
+                <div class="cart-line-side">
+                  <button class="cart-line-remove" type="button" aria-label="Remove Pool Slides">✕</button>
+                  <div class="cart-line-price">$36.00<span class="was">$45.00</span></div>
+                </div>
+              </div>
+
+              <!-- line 2: low stock badge -->
+              <div class="cart-line">
+                <div class="cart-line-img"><span class="glyph">◨</span></div>
+                <div class="cart-line-main">
+                  <span class="cart-line-vendor">North Range</span>
+                  <a class="cart-line-title" href="#">Heavyweight Tee</a>
+                  <div class="cart-line-variants">
+                    <span class="opt-swatch active" style="--_c:#3f3a2e" aria-disabled="true" aria-label="Color: Olive"></span>
+                    <span class="vlabel">Olive</span>
+                    <span class="opt-chip active" aria-disabled="true">M</span>
+                  </div>
+                  <span class="badge low" style="text-transform:none;letter-spacing:0;font-size:.8125rem">Only 3 left</span>
+                  <div class="qty" role="group" aria-label="Quantity">
+                    <button type="button" aria-label="Decrease quantity">−</button>
+                    <span>2</span>
+                    <button type="button" aria-label="Increase quantity">+</button>
+                  </div>
+                </div>
+                <div class="cart-line-side">
+                  <button class="cart-line-remove" type="button" aria-label="Remove Heavyweight Tee">✕</button>
+                  <div class="cart-line-price">$56.00</div>
+                </div>
+              </div>
+
+              <!-- line 3: weight variant chip -->
+              <div class="cart-line">
+                <div class="cart-line-img"><span class="glyph">▤</span></div>
+                <div class="cart-line-main">
+                  <span class="cart-line-vendor">North Range</span>
+                  <a class="cart-line-title" href="#">Fleece Sweatpants</a>
+                  <div class="cart-line-variants">
+                    <span class="opt-swatch active" style="--_c:#2b2b2b" aria-disabled="true" aria-label="Color: Charcoal"></span>
+                    <span class="vlabel">Charcoal</span>
+                    <span class="opt-chip active" aria-disabled="true">L</span>
+                    <span class="opt-chip active" aria-disabled="true">Heavyweight</span>
+                  </div>
+                  <div class="qty" role="group" aria-label="Quantity">
+                    <button type="button" aria-label="Decrease quantity">−</button>
+                    <span>1</span>
+                    <button type="button" aria-label="Increase quantity">+</button>
+                  </div>
+                </div>
+                <div class="cart-line-side">
+                  <button class="cart-line-remove" type="button" aria-label="Remove Fleece Sweatpants">✕</button>
+                  <div class="cart-line-price">$58.00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: sticky summary -->
+          <aside class="cart-summary-col">
+            <div class="summary">
+              <div class="row"><span>Subtotal</span><span>$150.00</span></div>
+              <div class="row"><span>Shipping</span><span class="ship-note">Calculated at checkout</span></div>
+              <div class="row discount"><span>Discount · SUMMER10</span><span>−$15.00</span></div>
+              <div class="row total"><span>Total</span><span>$135.00</span></div>
+              <button class="btn ink lg block" type="button">Checkout</button>
+              <div class="pay" aria-label="Accepted payment methods">
+                <span class="pm">VISA</span>
+                <span class="pm">MC</span>
+                <span class="pm">AMEX</span>
+                <span class="pm">PAY</span>
+                <span class="pm">KL.</span>
+              </div>
+              <a class="continue" href="#">← Continue shopping</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Sticky summary</b><span>The summary column is <code>position: sticky</code> so a tall list scrolls under a permanently visible total + checkout CTA. On phones it stacks below the lines (no sticky) and the CTA falls into normal flow.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ TENANT TOKENS / DENSITY ============ -->
+  <section class="spec-section">
+    <h2><span class="num">3</span> Tenant tokens / density</h2>
+    <p class="desc">The same line, two densities. <code>[data-density="compact"]</code> tightens vertical padding and shrinks the thumbnail via <code>--cart-line-image-size</code>; <code>comfortable</code> is the default. Both are driven entirely by <code>--cart-line-*</code> tokens added to <code>ShopThemeTokens</code> alongside the 90-odd product-card knobs — so the admin theme editor renders sliders / swatches / toggles for them automatically, no new editor code.</p>
+    <div class="density-grid">
+      <div class="density-col">
+        <span class="dlabel">data-density="comfortable"</span>
+        <div class="stage">
+          <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">88px · 1rem pad</span></div>
+          <div class="stage-body density-frame">
+            <div class="cart-line" data-density="comfortable">
+              <div class="cart-line-img"><span class="glyph">▣</span></div>
+              <div class="cart-line-main">
+                <span class="cart-line-vendor">Acme Studio</span>
+                <a class="cart-line-title" href="#">Pool Slides</a>
+                <div class="cart-line-variants">
+                  <span class="opt-swatch active" style="--_c:#d9c7a3" aria-disabled="true" aria-label="Color: Sand"></span>
+                  <span class="vlabel">Sand</span>
+                  <span class="opt-chip active" aria-disabled="true">42</span>
+                </div>
+                <div class="qty" role="group" aria-label="Quantity">
+                  <button type="button" aria-label="Decrease quantity">−</button>
+                  <span>1</span>
+                  <button type="button" aria-label="Increase quantity">+</button>
+                </div>
+              </div>
+              <div class="cart-line-side">
+                <button class="cart-line-remove" type="button" aria-label="Remove Pool Slides">✕</button>
+                <div class="cart-line-price">$45.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="density-col">
+        <span class="dlabel">data-density="compact"</span>
+        <div class="stage">
+          <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">64px · 0.65rem pad</span></div>
+          <div class="stage-body density-frame">
+            <div class="cart-line" data-density="compact">
+              <div class="cart-line-img"><span class="glyph">▣</span></div>
+              <div class="cart-line-main">
+                <span class="cart-line-vendor">Acme Studio</span>
+                <a class="cart-line-title" href="#">Pool Slides</a>
+                <div class="cart-line-variants">
+                  <span class="opt-swatch active" style="--_c:#d9c7a3" aria-disabled="true" aria-label="Color: Sand"></span>
+                  <span class="vlabel">Sand</span>
+                  <span class="opt-chip active" aria-disabled="true">42</span>
+                </div>
+                <div class="qty" role="group" aria-label="Quantity">
+                  <button type="button" aria-label="Decrease quantity">−</button>
+                  <span>1</span>
+                  <button type="button" aria-label="Increase quantity">+</button>
+                </div>
+              </div>
+              <div class="cart-line-side">
+                <button class="cart-line-remove" type="button" aria-label="Remove Pool Slides">✕</button>
+                <div class="cart-line-price">$45.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tokenrow">
+      <span class="tokenchip">--cart-line-image-size <span class="sw" style="background:#d8d8d8"></span> 88px</span>
+      <span class="tokenchip">--cart-line-image-radius · 8px</span>
+      <span class="tokenchip">--cart-line-gap · 1rem</span>
+      <span class="tokenchip">--cart-line-density · comfortable | compact</span>
+      <span class="tokenchip">--cart-line-divider-color <span class="sw" style="background:#ece6d4"></span></span>
+      <span class="tokenchip">--cart-line-variant-style · swatch | chip | text</span>
+      <span class="tokenchip">--cart-line-show-vendor · 1</span>
+      <span class="tokenchip">--cart-line-show-sku · 0</span>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>variant-style fallback</b><span><code>--cart-line-variant-style</code> lets a tenant opt back to <code>chip</code>-only or even the legacy <code>text</code> rendering — the default <code>swatch</code> keeps color as a swatch + label, size / weight as chips. <code>--cart-line-show-vendor</code> / <code>-show-sku</code> toggle the eyebrow and an optional SKU line.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ EMPTY CART ============ -->
+  <section class="spec-section">
+    <h2><span class="num">4</span> Empty cart</h2>
+    <p class="desc">No items renders the shared <code>.empty</code> state — the same component the empty collection and no-results search use — never a blank panel or a stranded summary with a $0.00 total.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / cart</span><span class="vp">1280×</span></div>
+      <div class="stage-body">
+        <div class="empty">
+          <div class="ic" style="font-size:2.25rem" aria-hidden="true">🛍</div>
+          <h3>Your bag is empty</h3>
+          <p>Nothing in here yet. Browse the catalog and add a few things — they'll show up right here.</p>
+          <a class="btn ink" href="#">Start shopping</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NOTES ============ -->
+  <section class="spec-section">
+    <h2><span class="num">5</span> Notes</h2>
+    <div class="notes">
+      <div class="note dry"><div class="ic">⊕</div><div><b>One swatch system</b><span>Color swatches and size / weight chips on the cart line are the exact same <code>.opt-swatch</code> / <code>.opt-chip</code> primitives the product card and buy box render. One option system across card, buy box, and cart — change the swatch design once, it updates everywhere.</span></div></div>
+      <div class="note info"><div class="ic">i</div><div><b>Tokens → admin for free</b><span>The cart-line look is new <code>--cart-line-*</code> tokens on <code>ShopThemeTokens</code>, declared the same way as the product-card knobs. The admin theme editor introspects the token schema, so it renders the image-size slider, density toggle, divider-color picker, show-vendor / show-sku switches, and variant-style selector with no editor changes.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Read-only semantics</b><span>Reusing the option primitives in the cart does not make them interactive: each carries <code>aria-disabled="true"</code>, drops <code>aria-pressed</code>, and has no click handler. They are visual indicators of what was bought, not pickers — the swatch / chip look is shared, the behavior is not.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

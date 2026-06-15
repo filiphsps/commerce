@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Product page — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* page-local layout for the PDP mockup only */
+  .pdp { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2.5rem; padding: 1.75rem; }
+  @media (max-width: 760px) { .pdp { grid-template-columns: 1fr; } }
+  .pdp-gallery { display: grid; grid-template-columns: 84px 1fr; gap: 0.9rem; }
+  .pdp-thumbs { display: flex; flex-direction: column; gap: 0.6rem; }
+  .pdp-thumb { aspect-ratio: 4/5; border-radius: 10px; border: 2px solid var(--border-default); background: var(--surface-2); cursor: pointer; display: grid; place-items: center; color: color-mix(in oklab, var(--text) 25%, transparent); font-weight: 700; }
+  .pdp-thumb.sel { border-color: var(--accent); }
+  .pdp-main-img { position: relative; aspect-ratio: 4/5; border-radius: 14px; border: 1px solid var(--border-default); background: var(--surface-2); display: grid; place-items: center; cursor: zoom-in; overflow: hidden; }
+  .pdp-main-img .glyph { font: 800 4rem/1 var(--font-sans); color: color-mix(in oklab, var(--text) 12%, transparent); }
+  .pdp-main-img .zhint { position: absolute; bottom: 10px; right: 10px; background: var(--surface-0); border: 1px solid var(--border-default); border-radius: 8px; padding: 4px 8px; font: 600 11px/1 var(--font-sans); color: var(--text-muted); }
+  .buybox { display: flex; flex-direction: column; gap: 1.1rem; }
+  .buybox .crumbs { font: 500 0.8125rem/1 var(--font-sans); color: var(--text-muted); }
+  .buybox h1 { font: 800 var(--text-h1)/1.1 var(--font-heading); letter-spacing: -0.02em; margin: 0; }
+  .buybox .vendor { font: 600 0.75rem/1 var(--font-sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+  .buybox .price { font: 800 1.75rem/1 var(--font-sans); }
+  .opt-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .opt-group .lbl { font: 600 0.8125rem/1 var(--font-sans); color: var(--text); }
+  .opt-group .lbl .val { color: var(--text-muted); font-weight: 500; }
+
+  /* lightbox demo */
+  .lb-demo { position: relative; height: 420px; border-radius: 14px; overflow: hidden; background: var(--surface-1); }
+  .lb-scrim { position: absolute; inset: 0; background: color-mix(in oklab, #14110b 82%, transparent); display: grid; place-items: center; }
+  .lb-img { width: 70%; max-width: 320px; aspect-ratio: 4/5; background: var(--surface-0); border-radius: 12px; display: grid; place-items: center; font: 800 3rem/1 var(--font-sans); color: color-mix(in oklab, #14110b 14%, transparent); }
+  .lb-close { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 999px; border: 2px solid var(--border-strong); background: var(--surface-2); display: grid; place-items: center; cursor: pointer; font-weight: 700; }
+  /* the BUG illustration: dialog forced display:flex even when closed */
+  .bug-stack { position: relative; height: 260px; border-radius: 12px; border: 1px dashed #fca5a5; overflow: hidden; background: #fff; }
+  .bug-stack .pageblock { position: absolute; border-radius: 8px; font: 600 11px/1 ui-monospace, monospace; display: grid; place-items: center; }
+  .bug-stack .b1 { inset: 14px 14px auto 14px; height: 48px; background: #e2e8f0; color: #475569; }
+  .bug-stack .b2 { inset: auto 14px 14px 14px; height: 70px; background: #e2e8f0; color: #475569; }
+  .bug-stack .ghost { inset: 50px 40px 40px 60px; background: rgba(20,17,11,.5); color: #fff; display: grid; place-items: center; text-align: center; z-index: 5; }
+  .bug-stack .ghost small { display: block; font-weight: 700; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 01 · /products/[handle]</p>
+    <h1 class="spec-title">Product page</h1>
+    <p class="spec-lede">The gallery is sound in structure (sticky thumbnails + cross-fading primary image) but the fullscreen lightbox leaks: a Tailwind <code style="font-family:ui-monospace,monospace">flex</code> utility on the native <code style="font-family:ui-monospace,monospace">&lt;dialog&gt;</code> overrides the UA <code style="font-family:ui-monospace,monospace">dialog:not([open]){display:none}</code> rule, so it renders permanently — floating over and under siblings.</p>
+  </header>
+
+  <!-- ============ THE BUG ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> The lightbox bug</h2>
+    <p class="desc">Root cause in <code>product-gallery-lightbox.tsx</code>: the dialog className starts with <code>fixed inset-0 m-0 flex …</code>. <code>flex</code> wins over the user-agent <code>dialog:not([open]){display:none}</code> by specificity, so the dialog is always laid out. It is not in the top layer (because <code>showModal()</code> only ran on open), so it stacks against page z-index — hence "over some elements and under others".</p>
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · always painted</span>
+        <div class="bug-stack">
+          <div class="pageblock b1">header (z-auto)</div>
+          <div class="pageblock b2">add-to-cart bar (z-10) — covers part of ghost</div>
+          <div class="pageblock ghost"><span><small>lightbox image</small>display:flex, not top-layer<br/>bleeds through the page</span></div>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="ba-tag after">After · hidden until opened</span>
+        <div class="bug-stack" style="border-style:solid;border-color:#bbf7d0">
+          <div class="pageblock b1">header</div>
+          <div class="pageblock b2">add-to-cart bar</div>
+          <div style="position:absolute;inset:0;display:grid;place-items:center;color:#15803d;font:600 12px/1.5 ui-monospace,monospace;text-align:center">dialog closed →<br/>display:none<br/>(no ghost, clean page)</div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Cause</b><span>Utility <code>flex</code> overrides <code>dialog:not([open]){display:none}</code>. The dialog is rendered unconditionally and never enters the top layer until opened.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span>Keep the dialog display-none when closed and only flex when open: gate the flex with <code>open:flex [&:not([open])]:hidden</code> (or render-on-open). The native top layer then handles stacking — no z-index war, no bleed.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ FIXED LAYOUT ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> Gallery + buy box (fixed)</h2>
+    <p class="desc">Sticky vertical thumbnail rail on desktop, primary image click-to-zoom. The buy box reuses the shared option primitives (<code>.opt-swatch</code> / <code>.opt-chip</code>) — the SAME components the product card and cart line use.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / products / slides</span><span class="vp">1280×</span></div>
+      <div class="stage-body">
+        <div class="pdp">
+          <div class="pdp-gallery">
+            <div class="pdp-thumbs">
+              <div class="pdp-thumb sel">1</div>
+              <div class="pdp-thumb">2</div>
+              <div class="pdp-thumb">3</div>
+              <div class="pdp-thumb">4</div>
+            </div>
+            <div class="pdp-main-img"><span class="glyph">▣</span><span class="zhint">⤢ click to zoom</span></div>
+          </div>
+          <div class="buybox">
+            <div class="crumbs">Home / Collections / Footwear</div>
+            <a class="vendor" href="#">Acme Studio</a>
+            <h1>Pool Slides</h1>
+            <div class="price">$45.00</div>
+            <div class="opt-group">
+              <div class="lbl">Color · <span class="val">Sand</span></div>
+              <div class="opt-row">
+                <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                <button class="opt-swatch" style="--_c:#b91c1c" aria-label="Red"></button>
+                <button class="opt-swatch unavailable" style="--_c:#3b82f6" aria-label="Blue (sold out)"></button>
+              </div>
+            </div>
+            <div class="opt-group">
+              <div class="lbl">Size · <span class="val">EU 42</span></div>
+              <div class="opt-row">
+                <button class="opt-chip">40</button>
+                <button class="opt-chip">41</button>
+                <button class="opt-chip active" aria-pressed="true">42</button>
+                <button class="opt-chip">43</button>
+                <button class="opt-chip unavailable">44</button>
+              </div>
+            </div>
+            <div class="opt-group">
+              <div class="lbl">Weight · <span class="val">Standard</span></div>
+              <div class="opt-row">
+                <button class="opt-chip active" aria-pressed="true">Standard</button>
+                <button class="opt-chip">Lightweight</button>
+              </div>
+            </div>
+            <button class="btn ink lg block">Add to bag — $45.00</button>
+            <p class="badge low" style="text-transform:none;letter-spacing:0;font-size:.8125rem">Only 3 left in this size</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LIGHTBOX OPEN ============ -->
+  <section class="spec-section">
+    <h2><span class="num">3</span> Lightbox (open state)</h2>
+    <p class="desc">When opened it enters the native top layer, dims the page with a tokenized scrim, traps focus, and dismisses on Escape / backdrop click / close button. Click image toggles zoom.</p>
+    <div class="stage" data-bg="muted">
+      <div class="stage-body pad">
+        <div class="lb-demo">
+          <div class="lb-scrim">
+            <div class="lb-img">▣</div>
+            <button class="lb-close">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Mobile</b><span>On phones the thumbnail rail moves below the primary image (horizontal scroll); the buy box stacks under the gallery. Sticky is desktop-only.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

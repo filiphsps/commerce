@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>All products & filters — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* page-local illustration only — the faceted filter itself is ui.css verbatim */
+
+  /* number inputs for the price facet (range min/max) */
+  .price-range { display: flex; align-items: center; gap: 0.5rem; }
+  .price-range input {
+    width: 100%; min-width: 0; font: 500 0.875rem/1 var(--font-sans);
+    padding: 0.5rem 0.6rem; border-radius: var(--block-border-radius-small);
+    border: 1px solid var(--border-default); background: var(--surface-0); color: var(--text);
+  }
+  .price-range input:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+  .price-range .dash { color: var(--text-muted); font-weight: 700; }
+
+  /* BEFORE: today's thin bar — just a sort + vendor select, nothing else */
+  .before-bar { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; padding: 0.9rem; background: var(--color-background); border: 1px dashed #fca5a5; border-radius: 12px; }
+  .before-bar .lbl { font: 600 0.75rem/1 var(--font-sans); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .before-bar .miss { margin-left: auto; font: 600 11px/1 ui-monospace, monospace; color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; border-radius: 5px; padding: 4px 7px; }
+
+  /* AFTER: a tiny preview of the full faceted layout */
+  .after-mini { background: var(--color-background); border: 1px solid #bbf7d0; border-radius: 12px; padding: 0.9rem; display: grid; grid-template-columns: 92px 1fr; gap: 0.8rem; }
+  .after-mini .mini-aside { display: flex; flex-direction: column; gap: 0.4rem; }
+  .after-mini .mini-facet { height: 11px; border-radius: 4px; background: var(--surface-1); border: 1px solid var(--border-default); }
+  .after-mini .mini-facet.lg { height: 34px; }
+  .after-mini .mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; }
+  .after-mini .mini-card { aspect-ratio: 4/5; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border-default); display: grid; place-items: center; color: color-mix(in oklab, var(--text) 16%, transparent); font: 700 1.1rem/1 var(--font-sans); }
+
+  /* compact card glyphs for the dense results grid */
+  .stage .pc-media .ph { font-size: 2rem; }
+
+  /* mobile bottom-sheet filter drawer (phone device demo) */
+  .sheet-demo { position: relative; height: 100%; display: flex; flex-direction: column; }
+  .sheet-dim { position: absolute; inset: 0; background: color-mix(in oklab, #14110b 42%, transparent); }
+  .sheet-peek { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; opacity: 0.55; }
+  .sheet-peek .row { height: 13px; border-radius: 5px; background: var(--surface-1); }
+  .sheet-peek .row.short { width: 60%; }
+  .sheet-peek .row.tall { height: 120px; border-radius: 10px; background: var(--surface-2); }
+  .sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+    background: var(--surface-0); border-top: 1px solid var(--border-default);
+    border-radius: 18px 18px 0 0; box-shadow: 0 -16px 40px -20px rgb(20 17 11 / 0.4);
+    max-height: 86%; display: flex; flex-direction: column;
+  }
+  .sheet .grip { width: 38px; height: 4px; border-radius: 999px; background: var(--border-strong); margin: 10px auto 4px; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 1rem 0.6rem; }
+  .sheet-head h4 { margin: 0; font: 800 1rem/1 var(--font-sans); }
+  .sheet-head .x { background: none; border: none; font-size: 1.2rem; line-height: 1; color: var(--text-muted); cursor: pointer; padding: 4px; }
+  .sheet-body { padding: 0 1rem; overflow-y: auto; flex: 1; }
+  .sheet-foot {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem 1rem calc(0.9rem + var(--safe-bottom));
+    border-top: 1px solid var(--border-default); background: var(--surface-0);
+  }
+  .sheet-foot .clear { color: var(--accent); font: 600 0.875rem/1 var(--font-sans); text-decoration: none; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 06 · /products + shared filter</p>
+    <h1 class="spec-title">All products & filters</h1>
+    <p class="spec-lede">The <code style="font-family:ui-monospace,monospace">/products</code> route exists but today exposes only a vendor select and a sort select — you cannot actually narrow the catalog. This adds a full faceted filter (price, availability, vendor, product type, and product options as color swatches + size chips) and, because it is the DRY anchor, the <em>same</em> component is reused by collection pages and search. One filter, three pages.</p>
+  </header>
+
+  <!-- ============ BEFORE / AFTER ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> Before / after</h2>
+    <p class="desc">Before: a thin bar with a sort select and a vendor select — the only two ways to slice the catalog. After: a real sidebar of facets (the locked set) beside a results grid, with active-filter chips and a mobile drawer. The facets are derived from Shopify's product filters + variant options, so they reflect what is actually in the catalog.</p>
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · vendor + sort only</span>
+        <div class="before-bar">
+          <span class="lbl">Sort</span>
+          <select class="select"><option>Featured</option><option>Price ↑</option><option>Newest</option></select>
+          <span class="lbl">Vendor</span>
+          <select class="select"><option>All vendors</option><option>Acme Studio</option></select>
+          <span class="miss">no price · no stock · no type · no options ✂</span>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="ba-tag after">After · full faceted layout</span>
+        <div class="after-mini">
+          <div class="mini-aside">
+            <div class="mini-facet lg"></div>
+            <div class="mini-facet"></div>
+            <div class="mini-facet"></div>
+            <div class="mini-facet lg"></div>
+            <div class="mini-facet"></div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-card">▣</div><div class="mini-card">▤</div><div class="mini-card">▥</div>
+            <div class="mini-card">▦</div><div class="mini-card">▧</div><div class="mini-card">▨</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THE PAGE ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> The page</h2>
+    <p class="desc">The shared filter lives in <code>.shop-aside &gt; .filters</code> as a stack of <code>&lt;details class="facet"&gt;</code> groups (open by default, no JS needed). Results sit beside it: a <code>.toolbar</code> with the count + sort + a mobile <code>.filter-trigger</code>, an <code>.active-filters</code> row of removable <code>.filter-chip</code>s, and the one true <code>.pc-grid</code> of <code>.pc</code> cards. Every selection is mirrored to the URL.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / products</span><span class="vp">1280×</span></div>
+      <div class="stage-body pad">
+        <div class="shop-layout">
+
+          <!-- ---- shared faceted sidebar ---- -->
+          <aside class="shop-aside">
+            <div class="filters">
+
+              <details class="facet" open>
+                <summary>Price <span class="chev">▾</span></summary>
+                <div class="facet-body">
+                  <div class="price-range">
+                    <input type="number" inputmode="numeric" min="0" placeholder="Min" value="20" aria-label="Minimum price" />
+                    <span class="dash">–</span>
+                    <input type="number" inputmode="numeric" min="0" placeholder="Max" value="80" aria-label="Maximum price" />
+                  </div>
+                  <button class="btn secondary">Apply</button>
+                </div>
+              </details>
+
+              <details class="facet" open>
+                <summary>Availability <span class="chev">▾</span></summary>
+                <div class="facet-body">
+                  <label class="facet-opt"><input type="checkbox" checked /> In stock only <span class="count">112</span></label>
+                </div>
+              </details>
+
+              <details class="facet" open>
+                <summary>Vendor <span class="chev">▾</span></summary>
+                <div class="facet-body">
+                  <label class="facet-opt"><input type="checkbox" checked /> Acme Studio <span class="count">41</span></label>
+                  <label class="facet-opt"><input type="checkbox" /> Northbound <span class="count">33</span></label>
+                  <label class="facet-opt"><input type="checkbox" /> Field &amp; Co <span class="count">28</span></label>
+                  <label class="facet-opt"><input type="checkbox" /> Harbor Goods <span class="count">26</span></label>
+                </div>
+              </details>
+
+              <details class="facet" open>
+                <summary>Product type <span class="chev">▾</span></summary>
+                <div class="facet-body">
+                  <label class="facet-opt"><input type="checkbox" /> Footwear <span class="count">22</span></label>
+                  <label class="facet-opt"><input type="checkbox" /> Tops <span class="count">48</span></label>
+                  <label class="facet-opt"><input type="checkbox" /> Bottoms <span class="count">31</span></label>
+                  <label class="facet-opt"><input type="checkbox" /> Accessories <span class="count">27</span></label>
+                </div>
+              </details>
+
+              <details class="facet" open>
+                <summary>Color <span class="chev">▾</span></summary>
+                <div class="facet-body">
+                  <div class="facet-swatches">
+                    <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                    <button class="opt-swatch active" style="--_c:#1f2937" aria-pressed="true" aria-label="Black"></button>
+                    <button class="opt-swatch" style="--_c:#ffffff" aria-label="White"></button>
+                    <button class="opt-swatch" style="--_c:#073b4c" aria-label="Navy"></button>
+                    <button class="opt-swatch" style="--_c:#b91c1c" aria-label="Red"></button>
+                    <button class="opt-swatch" style="--_c:#4d5b3c" aria-label="Olive"></button>
+                    <button class="opt-swatch unavailable" style="--_c:#3b82f6" aria-label="Blue (none in stock)"></button>
+                  </div>
+                </div>
+              </details>
+
+              <details class="facet" open>
+                <summary>Size <span class="chev">▾</span></summary>
+                <div class="facet-body">
+                  <div class="opt-row">
+                    <button class="opt-chip">XS</button>
+                    <button class="opt-chip active" aria-pressed="true">S</button>
+                    <button class="opt-chip">M</button>
+                    <button class="opt-chip">L</button>
+                    <button class="opt-chip">XL</button>
+                    <button class="opt-chip unavailable">XXL</button>
+                  </div>
+                </div>
+              </details>
+
+            </div>
+          </aside>
+
+          <!-- ---- results column ---- -->
+          <div>
+            <div class="toolbar">
+              <span class="count">128 products</span>
+              <button class="btn secondary filter-trigger" aria-haspopup="dialog">⛂ Filters</button>
+              <select class="select" aria-label="Sort by">
+                <option>Featured</option>
+                <option>Price: Low to high</option>
+                <option>Price: High to low</option>
+                <option>Newest</option>
+                <option>Best selling</option>
+              </select>
+            </div>
+
+            <div class="active-filters" style="margin:0.25rem 0 1rem">
+              <button class="filter-chip">Vendor: Acme Studio <span class="x">✕</span></button>
+              <button class="filter-chip">In stock <span class="x">✕</span></button>
+              <button class="filter-chip">Color: Sand <span class="x">✕</span></button>
+              <button class="filter-chip">Color: Black <span class="x">✕</span></button>
+              <button class="filter-chip">Size: S <span class="x">✕</span></button>
+              <button class="filter-chip">$20 – $80 <span class="x">✕</span></button>
+              <button class="filter-chip clear">Clear all</button>
+            </div>
+
+            <div class="pc-grid">
+              <div class="pc">
+                <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=acme-studio">Acme Studio</a>
+                  <a class="pc-title" href="#">Pool Slides</a>
+                  <div class="pc-price"><span class="now">$45.00</span></div>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#d9c7a3"></span><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-swatch" style="--_c:#b91c1c"></span></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="pc-media"><span class="ph">▤</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=northbound">Northbound</a>
+                  <a class="pc-title" href="#">Fleece Sweatpants</a>
+                  <div class="pc-price"><span class="now onsale">$48.00</span><span class="was">$60.00</span></div>
+                  <div class="pc-badges"><span class="badge sale">Sale</span></div>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#3f3f46"></span><span class="opt-swatch" style="--_c:#a8a29e"></span></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="pc-media"><span class="ph">▥</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=acme-studio">Acme Studio</a>
+                  <a class="pc-title" href="#">Men's Tech T-Shirt</a>
+                  <div class="pc-price"><span class="now">$28.00</span></div>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#ffffff"></span><span class="opt-swatch" style="--_c:#073b4c"></span><span class="opt-swatch" style="--_c:#118ab2"></span><span class="opt-more">+3</span></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="pc-media"><span class="ph">▦</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=field-co">Field &amp; Co</a>
+                  <a class="pc-title" href="#">Five-Panel Field Cap</a>
+                  <div class="pc-price"><span class="now">$32.00</span></div>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#4d5b3c"></span><span class="opt-swatch" style="--_c:#2b2b2b"></span></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="pc-media"><span class="ph">▧</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=northbound">Northbound</a>
+                  <a class="pc-title" href="#">Ribbed Beanie</a>
+                  <div class="pc-price"><span class="now">$22.00</span></div>
+                  <p class="badge low" style="text-transform:none;letter-spacing:0;font-size:.75rem">Only 2 left</p>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#7c2d12"></span><span class="opt-swatch" style="--_c:#1e293b"></span><span class="opt-swatch" style="--_c:#d9c7a3"></span></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="pc-media"><span class="ph">▨</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=harbor-goods">Harbor Goods</a>
+                  <a class="pc-title" href="#">Canvas Tote</a>
+                  <div class="pc-price"><span class="now">$38.00</span></div>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#e7e2d4"></span><span class="opt-swatch" style="--_c:#1f2937"></span></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="pc-media"><span class="ph">▩</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=acme-studio">Acme Studio</a>
+                  <a class="pc-title" href="#">Linen Overshirt</a>
+                  <div class="pc-price"><span class="now onsale">$54.00</span><span class="was">$72.00</span></div>
+                  <div class="pc-badges"><span class="badge sale">Sale</span></div>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#d9c7a3"></span><span class="opt-swatch" style="--_c:#073b4c"></span><span class="opt-swatch unavailable" style="--_c:#3b82f6"></span></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="pc-media"><span class="ph">◧</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=field-co">Field &amp; Co</a>
+                  <a class="pc-title" href="#">Trail Crew Socks</a>
+                  <div class="pc-price"><span class="now">$14.00</span></div>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#1f2937"></span><span class="opt-swatch" style="--_c:#e7e2d4"></span><span class="opt-swatch" style="--_c:#4d5b3c"></span></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="pc-media"><span class="ph">◨</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="/products?vendor=harbor-goods">Harbor Goods</a>
+                  <a class="pc-title" href="#">Quilted Vest</a>
+                  <div class="pc-price"><span class="now">$96.00</span></div>
+                  <p class="badge low" style="text-transform:none;letter-spacing:0;font-size:.75rem">Only 1 left</p>
+                  <div class="pc-options"><span class="opt-swatch active" style="--_c:#2b2b2b"></span><span class="opt-swatch" style="--_c:#4d5b3c"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Vendor link target</b><span>A product card's vendor link points at <code>/products?vendor=acme-studio</code> — landing here with that vendor facet pre-selected (its checkbox checked and a <code>Vendor: Acme Studio</code> chip already in the active row). Same component, deep-linked.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ MOBILE DRAWER ============ -->
+  <section class="spec-section">
+    <h2><span class="num">3</span> Mobile filter drawer</h2>
+    <p class="desc">On phones the sidebar collapses (<code>.shop-aside</code> is <code>display:none</code> under 900px) and the <code>.filter-trigger</code> in the toolbar opens the SAME facets as a bottom sheet — pinned to the bottom of the viewport, scrollable, with a sticky footer that applies the current result count and a clear link. No new facet markup: the drawer renders the identical <code>.facet</code> groups.</p>
+    <div class="devices">
+      <div class="device phone">
+        <div class="screen">
+          <div class="sheet-demo">
+            <div class="sheet-peek">
+              <div class="row short"></div>
+              <div class="row"></div>
+              <div class="row tall"></div>
+              <div class="row short"></div>
+            </div>
+            <div class="sheet-dim"></div>
+            <div class="sheet">
+              <div class="grip"></div>
+              <div class="sheet-head">
+                <h4>Filters</h4>
+                <button class="x" aria-label="Close">✕</button>
+              </div>
+              <div class="sheet-body">
+                <div class="filters">
+                  <details class="facet" open>
+                    <summary>Price <span class="chev">▾</span></summary>
+                    <div class="facet-body">
+                      <div class="price-range">
+                        <input type="number" inputmode="numeric" placeholder="Min" value="20" aria-label="Minimum price" />
+                        <span class="dash">–</span>
+                        <input type="number" inputmode="numeric" placeholder="Max" value="80" aria-label="Maximum price" />
+                      </div>
+                    </div>
+                  </details>
+                  <details class="facet" open>
+                    <summary>Availability <span class="chev">▾</span></summary>
+                    <div class="facet-body">
+                      <label class="facet-opt"><input type="checkbox" checked /> In stock only <span class="count">112</span></label>
+                    </div>
+                  </details>
+                  <details class="facet" open>
+                    <summary>Vendor <span class="chev">▾</span></summary>
+                    <div class="facet-body">
+                      <label class="facet-opt"><input type="checkbox" checked /> Acme Studio <span class="count">41</span></label>
+                      <label class="facet-opt"><input type="checkbox" /> Northbound <span class="count">33</span></label>
+                      <label class="facet-opt"><input type="checkbox" /> Field &amp; Co <span class="count">28</span></label>
+                    </div>
+                  </details>
+                  <details class="facet" open>
+                    <summary>Color <span class="chev">▾</span></summary>
+                    <div class="facet-body">
+                      <div class="facet-swatches">
+                        <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                        <button class="opt-swatch active" style="--_c:#1f2937" aria-pressed="true" aria-label="Black"></button>
+                        <button class="opt-swatch" style="--_c:#ffffff" aria-label="White"></button>
+                        <button class="opt-swatch" style="--_c:#073b4c" aria-label="Navy"></button>
+                        <button class="opt-swatch" style="--_c:#b91c1c" aria-label="Red"></button>
+                      </div>
+                    </div>
+                  </details>
+                  <details class="facet" open>
+                    <summary>Size <span class="chev">▾</span></summary>
+                    <div class="facet-body">
+                      <div class="opt-row">
+                        <button class="opt-chip">XS</button>
+                        <button class="opt-chip active" aria-pressed="true">S</button>
+                        <button class="opt-chip">M</button>
+                        <button class="opt-chip">L</button>
+                        <button class="opt-chip">XL</button>
+                      </div>
+                    </div>
+                  </details>
+                </div>
+              </div>
+              <div class="sheet-foot">
+                <a class="clear" href="#">Clear</a>
+                <button class="btn ink block">Apply (128)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">bottom-sheet · &lt; 900px</div>
+      </div>
+    </div>
+    <p class="scrollnote">Sheet pinned to the bottom of the screen, dims the results behind it; the footer applies the live count.</p>
+  </section>
+
+  <!-- ============ DRY / NOTES ============ -->
+  <section class="spec-section">
+    <h2><span class="num">4</span> Why this is the DRY anchor</h2>
+    <div class="notes">
+      <div class="note dry"><div class="ic">⊕</div><div><b>One filter, three pages</b><span>This exact component — <code>.filters</code> sidebar, <code>.active-filters</code> chips, and the bottom-sheet drawer — serves <code>/products</code>, every collection page, and search. Same facets, same chips, same mobile behavior; only the result set and the available facet values differ.</span></div></div>
+      <div class="note info"><div class="ic">i</div><div><b>URL-param driven</b><span>Every selection is reflected in the query string: <code>?vendor=&amp;type=&amp;color=&amp;size=&amp;price=&amp;availability=&amp;sort=</code>. State lives in the URL, so filtered views are shareable, back/forward works, and the product-card vendor link (<code>/products?vendor=acme-studio</code>) deep-links straight into a pre-selected facet.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Facets come from the data</b><span>Available facets and counts are derived from Shopify product filters and variant options — not a hand-maintained list. Color renders as <code>.opt-swatch</code>, size as <code>.opt-chip</code>, and an option value with no in-stock match shows as <code>.unavailable</code> rather than disappearing.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Product carousel — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* page-local illustration of the BUG only — the fixed rail uses ui.css verbatim */
+
+  /* BEFORE: an ancestor that clips. Real-world this is a section/figure with
+   * overflow:hidden (or overflow-clip) wrapping a rail that bleeds its shadow. */
+  .clip-box { position: relative; overflow: hidden; padding: 1.25rem; background: var(--color-background); border: 1px dashed #fca5a5; border-radius: 12px; }
+  .clip-box .clip-label { position: absolute; top: 6px; right: 8px; z-index: 6; font: 600 10px/1 ui-monospace, monospace; color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; border-radius: 5px; padding: 3px 6px; }
+  /* the broken rail: negative BLOCK margins bleed a shadow the clip-box eats,
+   * mandatory snap forces the last card flush to the hard right edge. */
+  .bad-rail { display: grid; grid-auto-flow: column; grid-auto-columns: 150px; gap: 0.7rem; overflow-x: auto; scroll-snap-type: x mandatory; margin-block: -0.5rem; padding-block: 0.5rem; scrollbar-width: none; }
+  .bad-rail::-webkit-scrollbar { display: none; }
+  .bad-rail > * { scroll-snap-align: start; }
+  /* hard right edge: the last card is forced flush, no peek, shadow sheared off */
+  .bad-rail .pc:last-child { margin-right: -1.25rem; }
+  /* negative-offset arrow, like the real left:-8px — clipped to a sliver */
+  .bad-arrow { position: absolute; top: 42%; left: -8px; z-index: 5; width: 2.25rem; height: 2.25rem; border-radius: 999px; background: var(--surface-0); border: 1px solid var(--product-card-border-color); box-shadow: var(--elevation-2); display: grid; place-items: center; color: var(--text); }
+
+  /* compact card glyphs for the illustration */
+  .mini .pc-media .ph { font-size: 1.75rem; }
+  .mini .pc-body { padding: 9px; gap: 0.2rem; }
+  .mini .pc-title { font-size: 0.8125rem; }
+  .mini .pc-price .now { font-size: 0.9rem; }
+
+  /* the AFTER hint chip */
+  .peek-hint { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); z-index: 6; font: 600 10px/1 ui-monospace, monospace; color: #047857; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 5px; padding: 3px 7px; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 02 · recommended-products rail</p>
+    <h1 class="spec-title">Product carousel</h1>
+    <p class="spec-lede">The recommendations rail composes the SAME <code style="font-family:ui-monospace,monospace">.pc</code> card as every other surface, but two layout choices break it. The <code style="font-family:ui-monospace,monospace">rail-carousel</code> utility bleeds its vertical scroll-shadow with negative <em>block</em> margins and parks its arrows at <code style="font-family:ui-monospace,monospace">left:-8px</code> — any ancestor with <code style="font-family:ui-monospace,monospace">overflow:hidden</code> shears both off. And <code style="font-family:ui-monospace,monospace">scroll-snap-type:x mandatory</code> paired with a <code style="font-family:ui-monospace,monospace">0.95</code>-threshold IntersectionObserver forces the last card flush into view. The fix re-routes the bleed to <em>inline</em> gutters and moves the fade + arrows onto the wrap.</p>
+  </header>
+
+  <!-- ============ THE CLIPPED-EDGE BUG ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> The clipped-edge bug</h2>
+    <p class="desc">Root cause in <code>globals.css</code>: the rail uses <code>margin-block:-0.5rem;padding-block:0.5rem</code> to let the card hover-lift shadow bleed past its own box, and the prev/next arrows live at <code>left:-8px</code>/<code>right:-8px</code>. The moment a parent clips overflow, that bleed disappears — the edge cards look shadow-less and the arrows render as half-moons. <code>scroll-snap-type:x mandatory</code> compounds it, slamming the last card flush against the clip edge with no peek.</p>
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · clipped + forced flush</span>
+        <div class="clip-box mini">
+          <span class="clip-label">overflow: hidden ✂</span>
+          <div class="bad-arrow">‹</div>
+          <div class="bad-rail">
+            <div class="pc"><div class="pc-media"><span class="ph">▣</span></div><div class="pc-body"><a class="pc-title">Pool Slides</a><div class="pc-price"><span class="now">$45</span></div></div></div>
+            <div class="pc"><div class="pc-media"><span class="ph">▤</span></div><div class="pc-body"><a class="pc-title">Sweatpants</a><div class="pc-price"><span class="now">$60</span></div></div></div>
+            <div class="pc"><div class="pc-media"><span class="ph">▥</span></div><div class="pc-body"><a class="pc-title">Tech Tee</a><div class="pc-price"><span class="now">$28</span></div></div></div>
+            <div class="pc"><div class="pc-media"><span class="ph">▦</span></div><div class="pc-body"><a class="pc-title">Field Cap</a><div class="pc-price"><span class="now">$32</span></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="ba-tag after">After · peek + soft fade + full shadow</span>
+        <div class="stage" style="border-radius:12px">
+          <div class="stage-body pad" style="padding:1.25rem;position:relative;overflow:hidden;border-radius:12px">
+            <div class="pc-rail-wrap mini" data-at-start style="--color-background:#fff">
+              <button class="rail-arrow prev" hidden aria-label="Previous">‹</button>
+              <button class="rail-arrow next" aria-label="Next">›</button>
+              <div class="pc-rail">
+                <div class="pc"><div class="pc-media"><span class="ph">▣</span></div><div class="pc-body"><a class="pc-title">Pool Slides</a><div class="pc-price"><span class="now">$45</span></div></div></div>
+                <div class="pc"><div class="pc-media"><span class="ph">▤</span></div><div class="pc-body"><a class="pc-title">Sweatpants</a><div class="pc-price"><span class="now">$60</span></div></div></div>
+                <div class="pc"><div class="pc-media"><span class="ph">▥</span></div><div class="pc-body"><a class="pc-title">Tech Tee</a><div class="pc-price"><span class="now">$28</span></div></div></div>
+                <div class="pc"><div class="pc-media"><span class="ph">▦</span></div><div class="pc-body"><a class="pc-title">Field Cap</a><div class="pc-price"><span class="now">$32</span></div></div></div>
+              </div>
+            </div>
+            <span class="peek-hint">last card peeks · shadow + arrow intact</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Cause</b><span>The rail bleeds its scroll-shadow with <code>margin-block:-0.5rem;padding-block:0.5rem</code> and offsets arrows to <code>left:-8px</code>/<code>right:-8px</code>. An ancestor with <code>overflow:hidden</code>/<code>overflow-clip</code> clips the bleed and the negative-offset arrows. <code>scroll-snap-type:x mandatory</code> + an IntersectionObserver <code>threshold:0.95</code> on the last child then snaps the final card forced-flush.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span>Route the bleed through INLINE gutters instead: <code>.pc-rail</code> uses <code>padding-inline</code> + matching negative <code>margin-inline</code> (with <code>scroll-padding-inline</code>), so first/last cards peek and shadows render fully even inside a clipping ancestor. No block-margin bleed to clip.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ THE RAIL (FIXED) ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> The rail (fixed)</h2>
+    <p class="desc">A real "You may also like" block: <code>.sec-head</code> for the title + "View all", then <code>.pc-rail-wrap &gt; .pc-rail</code> rendering the one true <code>.pc</code> card. Fade masks live on <code>.pc-rail-wrap::before/::after</code> (which never clip), toggled by <code>data-at-start</code>/<code>data-at-end</code>; arrows sit INSIDE the wrap at <code>0.25rem</code> and hide on <code>pointer:coarse</code>. The wrap below carries <code>data-at-start</code>, so the left fade is off and the prev arrow is <code>[hidden]</code>.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / products / slides</span><span class="vp">1280×</span></div>
+      <div class="stage-body pad">
+        <div class="sec-head">
+          <h2>You may also like</h2>
+          <a href="#">View all →</a>
+        </div>
+        <div class="pc-rail-wrap" data-at-start>
+          <button class="rail-arrow prev" hidden aria-label="Previous">‹</button>
+          <button class="rail-arrow next" aria-label="Next">›</button>
+          <div class="pc-rail">
+            <div class="pc">
+              <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body">
+                <a class="pc-vendor" href="#">Acme Studio</a>
+                <a class="pc-title" href="#">Pool Slides</a>
+                <div class="pc-price"><span class="now">$45.00</span></div>
+                <div class="pc-options"><span class="opt-swatch active" style="--_c:#d9c7a3"></span><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-swatch" style="--_c:#b91c1c"></span></div>
+              </div>
+            </div>
+            <div class="pc">
+              <div class="pc-media"><span class="ph">▤</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body">
+                <a class="pc-vendor" href="#">Northbound</a>
+                <a class="pc-title" href="#">Fleece Sweatpants</a>
+                <div class="pc-price"><span class="now onsale">$48.00</span><span class="was">$60.00</span></div>
+                <div class="pc-badges"><span class="badge sale">Sale</span></div>
+                <div class="pc-options"><span class="opt-swatch active" style="--_c:#3f3f46"></span><span class="opt-swatch" style="--_c:#a8a29e"></span></div>
+              </div>
+            </div>
+            <div class="pc">
+              <div class="pc-media"><span class="ph">▥</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body">
+                <a class="pc-vendor" href="#">Acme Studio</a>
+                <a class="pc-title" href="#">Men's Tech T-Shirt</a>
+                <div class="pc-price"><span class="now">$28.00</span></div>
+                <div class="pc-options"><span class="opt-swatch active" style="--_c:#ffffff"></span><span class="opt-swatch" style="--_c:#073b4c"></span><span class="opt-swatch" style="--_c:#118ab2"></span><span class="opt-more">+3</span></div>
+              </div>
+            </div>
+            <div class="pc">
+              <div class="pc-media"><span class="ph">▦</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body">
+                <a class="pc-vendor" href="#">Field &amp; Co</a>
+                <a class="pc-title" href="#">Five-Panel Field Cap</a>
+                <div class="pc-price"><span class="now">$32.00</span></div>
+                <div class="pc-options"><span class="opt-swatch active" style="--_c:#4d5b3c"></span><span class="opt-swatch" style="--_c:#2b2b2b"></span></div>
+              </div>
+            </div>
+            <div class="pc">
+              <div class="pc-media"><span class="ph">▧</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body">
+                <a class="pc-vendor" href="#">Northbound</a>
+                <a class="pc-title" href="#">Ribbed Beanie</a>
+                <div class="pc-price"><span class="now">$22.00</span></div>
+                <div class="pc-options"><span class="opt-swatch active" style="--_c:#7c2d12"></span><span class="opt-swatch" style="--_c:#1e293b"></span><span class="opt-swatch" style="--_c:#d9c7a3"></span></div>
+              </div>
+            </div>
+            <div class="pc">
+              <div class="pc-media"><span class="ph">▨</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body">
+                <a class="pc-vendor" href="#">Acme Studio</a>
+                <a class="pc-title" href="#">Canvas Tote</a>
+                <div class="pc-price"><span class="now">$38.00</span></div>
+                <div class="pc-options"><span class="opt-swatch active" style="--_c:#e7e2d4"></span><span class="opt-swatch" style="--_c:#1f2937"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Cause</b><span>Negative <code>margin-block</code> + <code>left:-8px</code> arrows bleed OUTSIDE the rail box, so a clipping ancestor shears the shadow and arrow edges; <code>scroll-snap-type:x mandatory</code> with a <code>0.95</code> observer threshold forces the last card flush.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span><code>.pc-rail</code> bleeds via <code>padding-inline</code> + negative <code>margin-inline</code> only — peek and shadows survive any clip. Fades render on <code>.pc-rail-wrap::before/::after</code> (no clipping), toggled by <code>data-at-start</code>/<code>data-at-end</code>; arrows sit INSIDE the wrap at <code>0.25rem</code>.</span></div></div>
+      <div class="note info"><div class="ic">i</div><div><b>Touch &amp; grid mode</b><span>On <code>pointer:coarse</code> devices the arrows hide and the rail relies on native momentum scroll with the same edge fades. Switching the wrap to <code>.pc-grid</code> reflows the IDENTICAL <code>.pc</code> cards into a responsive grid — one component, two layouts.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

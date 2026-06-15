@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<!-- viewport-fit=cover is HALF the fix: it lets the page paint into the home-indicator
+     inset instead of letterboxing above it. Without it, env(safe-area-inset-bottom)
+     resolves to 0 and the footer can never reach the physical bottom edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Footer &amp; iOS safe area — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* ====================================================================
+   * page-local style for the FOOTER mockup only.
+   * The footer itself is the proposed storefront UI; everything else is
+   * the spec annotation chrome inherited from shell.css.
+   * ================================================================== */
+
+  /* ---- The site footer (proposed component) ------------------------- */
+  /* Dark, full-bleed footer. Light text/borders come from the shared
+   * .on-dark token flip in ui.css, so swatches, links and rules read
+   * correctly without hard-coded colors. */
+  .site-footer {
+    background: var(--color-lights-out); /* #051821 — token, not hard-coded */
+    color: var(--text);
+    /* THE FIX: extend the footer's OWN background into the home-indicator
+     * inset. Stacked on top of the normal block padding so content keeps
+     * its rhythm while the colored box grows down to the physical edge.
+     * Result: the BLACK footer fills env(safe-area-inset-bottom) — the
+     * body never shows through, so there is no white strip on iOS. */
+    padding-bottom: calc(2.25rem + env(safe-area-inset-bottom, 0px));
+  }
+  .site-footer .footer-inner {
+    display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2.5rem;
+    padding: clamp(2rem, 4vw, 3rem) 0 2.25rem;
+  }
+  @media (max-width: 820px) {
+    .site-footer .footer-inner { grid-template-columns: 1fr 1fr; gap: 1.75rem 2rem; }
+    .site-footer .footer-brand { grid-column: 1 / -1; }
+  }
+
+  .footer-brand { display: flex; flex-direction: column; gap: 0.9rem; max-width: 34ch; }
+  .footer-wordmark { font: 800 1.5rem/1 var(--font-heading); letter-spacing: -0.02em; color: #fff; }
+  .footer-wordmark .dot { color: var(--accent-secondary); }
+  .footer-blurb { margin: 0; font: 500 0.9375rem/1.6 var(--font-sans); color: var(--text-muted); }
+
+  .footer-social { display: flex; gap: 0.6rem; margin-top: 0.25rem; }
+  .footer-social a {
+    width: 2.25rem; height: 2.25rem; border-radius: 999px;
+    border: 1px solid var(--border-default); color: var(--text);
+    display: grid; place-items: center;
+    transition: border-color var(--product-card-motion-base), color var(--product-card-motion-base), transform var(--product-card-motion-base);
+  }
+  .footer-social a:hover { border-color: var(--accent-secondary); color: #fff; transform: translateY(-1px); }
+  .footer-social svg { width: 18px; height: 18px; }
+
+  .footer-col h3 {
+    margin: 0 0 0.9rem; font: 700 0.6875rem/1 var(--font-sans);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+  .footer-col a { color: var(--text); text-decoration: none; font: 500 0.9375rem/1.2 var(--font-sans); }
+  .footer-col a:hover { color: var(--accent-secondary); }
+
+  /* legal + payments strip, divided by a tokenized rule */
+  .footer-legal {
+    border-top: 1px solid var(--border-default);
+    padding-top: 1.5rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  .footer-legal .copy { font: 500 0.8125rem/1.4 var(--font-sans); color: var(--text-muted); }
+  .footer-legal .legal-links { display: flex; gap: 1.25rem; }
+  .footer-legal .legal-links a { color: var(--text-muted); text-decoration: none; font: 500 0.8125rem/1 var(--font-sans); }
+  .footer-legal .legal-links a:hover { color: #fff; }
+
+  .footer-meta { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+  .pay-methods { display: flex; gap: 0.4rem; align-items: center; }
+  .pay-methods .pay {
+    height: 1.5rem; min-width: 2.4rem; padding: 0 0.45rem; border-radius: 5px;
+    background: var(--surface-1); border: 1px solid var(--border-default);
+    display: grid; place-items: center;
+    font: 800 0.625rem/1 var(--font-sans); letter-spacing: 0.04em; color: var(--text);
+  }
+  .locale-select {
+    appearance: none; font: 600 0.8125rem/1 var(--font-sans);
+    padding: 0.5rem 1.9rem 0.5rem 0.7rem; border-radius: var(--block-border-radius-small);
+    border: 1px solid var(--border-default); background: var(--surface-0); color: var(--text); cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23ffffff' stroke-width='2' opacity='0.7'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.6rem center;
+  }
+
+  /* ---- Device-frame illustration of the bug (annotation chrome) ----- */
+  /* A simulated iPhone screen: a tall page that ends in the dark footer,
+   * then a strip standing in for env(safe-area-inset-bottom). */
+  .ios-screen { position: relative; display: flex; flex-direction: column; height: 100%; background: var(--color-background); }
+  .ios-statusbar {
+    flex-shrink: 0; height: 30px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; font: 700 11px/1 var(--font-sans); color: var(--text);
+  }
+  .ios-statusbar .signal { letter-spacing: 1px; }
+  .ios-page { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .ios-page .row { height: 14px; margin: 12px 16px 0; border-radius: 6px; background: var(--surface-1); }
+  .ios-page .row.w70 { width: 70%; } .ios-page .row.w50 { width: 50%; } .ios-page .row.w85 { width: 85%; }
+  .ios-page .card { margin: 16px 16px 0; flex: 1; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border-default); }
+
+  /* the dark footer at the bottom of the simulated page */
+  .ios-footer {
+    flex-shrink: 0; background: var(--color-lights-out); color: #fff;
+    padding: 14px 16px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .ios-footer .fw { font: 800 13px/1 var(--font-heading); letter-spacing: -0.01em; }
+  .ios-footer .fl { font: 500 10px/1.4 var(--font-sans); color: rgba(255,255,255,0.6); }
+
+  /* the simulated safe-area inset (home-indicator zone) */
+  .ios-inset { flex-shrink: 0; height: 34px; position: relative; }
+  /* BEFORE: the inset is the BODY background bleeding through → the white gap */
+  .ios-inset.gap { background: var(--color-background); }
+  .ios-inset.gap::after {
+    content: "body bg · white gap"; position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font: 700 8px/1 ui-monospace, monospace; letter-spacing: 0.04em; color: #b91c1c;
+  }
+  /* AFTER: the FOOTER color extends through the inset → seamless */
+  .ios-inset.filled { background: var(--color-lights-out); }
+  /* faint home-indicator pill drawn on top of the (now black) inset */
+  .ios-inset .home-pill {
+    position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+    width: 120px; height: 5px; border-radius: 999px; background: rgba(255,255,255,0.45);
+  }
+  .ios-inset.gap .home-pill { background: rgba(15,23,42,0.32); }
+
+  /* dashed boundary marker between footer and inset so the difference is unmistakable */
+  .ios-inset::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 0;
+    border-top: 1px dashed rgba(148,163,184,0.55);
+  }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 09 · footer</p>
+    <h1 class="spec-title">Footer &amp; iOS safe area</h1>
+    <p class="spec-lede">The site footer is sound — but on iOS a thin <strong>white strip</strong> appears below it, pinned to the very bottom of the screen. The footer's dark background stops short of the home-indicator inset, so the page <em>body</em> background shows through <code style="font-family:ui-monospace,monospace">env(safe-area-inset-bottom)</code>. The fix is two lines: ship <code style="font-family:ui-monospace,monospace">viewport-fit=cover</code> so the inset is non-zero, then pad the footer by <code style="font-family:ui-monospace,monospace">env(safe-area-inset-bottom)</code> so the footer's <em>own</em> color fills the inset and reaches the physical edge.</p>
+  </header>
+
+  <!-- ============ THE BUG ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> The white-gap bug</h2>
+    <p class="desc">Both frames are the same page on the same iPhone. The dashed line marks where the footer's background ends and the home-indicator inset begins. <strong>Before</strong>: the footer paints to its box edge and the body background (white) fills the inset — a white bar under a black footer. <strong>After</strong>: the footer's background extends through the inset, so the black reaches the bottom; the home indicator just rides on top.</p>
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · body bleeds through inset</span>
+        <div class="devices">
+          <div class="device phone" style="width:100%;max-width:300px">
+            <div class="screen">
+              <div class="ios-screen ui on-dark" style="--color-background:#ffffff">
+                <div class="ios-statusbar" style="color:#14110b"><span>9:41</span><span class="signal">●●● ⌃ ▮</span></div>
+                <div class="ios-page" style="--color-background:#ffffff">
+                  <div class="row w70"></div>
+                  <div class="row w50"></div>
+                  <div class="card"></div>
+                  <div class="row w85"></div>
+                </div>
+                <div class="ios-footer">
+                  <span class="fw">Nordcom<span style="color:var(--accent-secondary)">.</span></span>
+                  <span class="fl">Shop · Company · Support</span>
+                  <span class="fl">© 2026 Nordcom Commerce</span>
+                </div>
+                <!-- the gap: footer's bg stops here; body (white) fills the inset -->
+                <div class="ios-inset gap"><span class="home-pill"></span></div>
+              </div>
+            </div>
+            <div class="caption">iPhone · white strip below footer</div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="ba-tag after">After · footer color fills inset</span>
+        <div class="devices">
+          <div class="device phone" style="width:100%;max-width:300px">
+            <div class="screen">
+              <div class="ios-screen ui on-dark" style="--color-background:#ffffff">
+                <div class="ios-statusbar" style="color:#14110b"><span>9:41</span><span class="signal">●●● ⌃ ▮</span></div>
+                <div class="ios-page" style="--color-background:#ffffff">
+                  <div class="row w70"></div>
+                  <div class="row w50"></div>
+                  <div class="card"></div>
+                  <div class="row w85"></div>
+                </div>
+                <div class="ios-footer">
+                  <span class="fw">Nordcom<span style="color:var(--accent-secondary)">.</span></span>
+                  <span class="fl">Shop · Company · Support</span>
+                  <span class="fl">© 2026 Nordcom Commerce</span>
+                </div>
+                <!-- fixed: footer bg extends through the inset; pill rides on top -->
+                <div class="ios-inset filled"><span class="home-pill"></span></div>
+              </div>
+            </div>
+            <div class="caption">iPhone · seamless to the edge</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Cause</b><span>The footer's dark background only paints to its box edge. The home-indicator area (<code>env(safe-area-inset-bottom)</code>) is filled by whatever is behind it — the <code>&lt;body&gt;</code> background, which is white. Net: a white strip pinned below the black footer.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span>Add <code>viewport-fit=cover</code> to the viewport meta (otherwise the inset is always <code>0</code>), then <code>padding-bottom: env(safe-area-inset-bottom)</code> on the footer so its OWN color fills the inset down to the physical edge. No body override needed — the footer reaches the bottom.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ THE FOOTER ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> Footer design</h2>
+    <p class="desc">A full-bleed dark footer. Light text, borders and the locale/payment chips all read from the shared <code>.on-dark</code> token flip in <code>ui.css</code> — no hard-coded grays. The <code>padding-bottom: env(safe-area-inset-bottom)</code> from §1 lives on <code>.site-footer</code> (commented in this file's CSS), so on a real iPhone the dark band runs to the bottom edge.</p>
+    <div class="stage" data-bg="dark">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com</span><span class="vp">1280×</span></div>
+      <div class="stage-body">
+        <footer class="site-footer ui on-dark">
+          <div class="container">
+            <div class="footer-inner">
+              <div class="footer-brand">
+                <span class="footer-wordmark">Nordcom<span class="dot">.</span></span>
+                <p class="footer-blurb">Independent commerce, built right. We design and ship the storefront so you can focus on the product.</p>
+                <div class="footer-social">
+                  <a href="#" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                  </a>
+                  <a href="#" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H8v3h3v6h3v-6h2.5l.5-3H14V9.5c0-.3.2-.5.5-.5z"/></svg>
+                  </a>
+                  <a href="#" aria-label="X">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 3h2.6l-5.7 6.5L21 21h-5.2l-4-5.3L7 21H4.4l6-6.9L3.3 3h5.3l3.6 4.8L17.5 3zm-.9 16h1.4L8.1 4.5H6.6L16.6 19z"/></svg>
+                  </a>
+                  <a href="#" aria-label="YouTube">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="3.5"/><path d="M11 9.5l4 2.5-4 2.5z" fill="currentColor" stroke="none"/></svg>
+                  </a>
+                </div>
+              </div>
+
+              <div class="footer-col">
+                <h3>Shop</h3>
+                <ul>
+                  <li><a href="#">New arrivals</a></li>
+                  <li><a href="#">Best sellers</a></li>
+                  <li><a href="#">Collections</a></li>
+                  <li><a href="#">Gift cards</a></li>
+                </ul>
+              </div>
+
+              <div class="footer-col">
+                <h3>Company</h3>
+                <ul>
+                  <li><a href="#">About us</a></li>
+                  <li><a href="#">Careers</a></li>
+                  <li><a href="#">Stores</a></li>
+                  <li><a href="#">Sustainability</a></li>
+                </ul>
+              </div>
+
+              <div class="footer-col">
+                <h3>Support</h3>
+                <ul>
+                  <li><a href="#">Help center</a></li>
+                  <li><a href="#">Shipping &amp; returns</a></li>
+                  <li><a href="#">Track your order</a></li>
+                  <li><a href="#">Contact</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="footer-legal">
+              <span class="copy">© 2026 Nordcom Commerce. All rights reserved.</span>
+              <div class="footer-meta">
+                <div class="legal-links">
+                  <a href="#">Privacy</a>
+                  <a href="#">Terms</a>
+                </div>
+                <div class="pay-methods" aria-label="Accepted payment methods">
+                  <span class="pay">VISA</span>
+                  <span class="pay">MC</span>
+                  <span class="pay">AMEX</span>
+                  <span class="pay">PAY</span>
+                </div>
+                <select class="locale-select" aria-label="Region and currency">
+                  <option>🌐 United States · USD $</option>
+                  <option>Sweden · SEK kr</option>
+                  <option>United Kingdom · GBP £</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note fix"><div class="ic">✓</div><div><b>The safe-area line</b><span>On <code>.site-footer</code>: <code>padding-bottom: calc(2.25rem + env(safe-area-inset-bottom, 0px))</code>. On non-notch devices the inset is <code>0px</code>, so the footer is unchanged; on iPhones it grows by exactly the home-indicator height, in the footer's own color.</span></div></div>
+      <div class="note info"><div class="ic">i</div><div><b>Same trick, any bottom bar</b><span>Any colored element pinned to the bottom edge needs this — most importantly the mobile sticky add-to-cart bar. Pad it by <code>env(safe-area-inset-bottom)</code> too, or the same white strip appears under the buy button.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

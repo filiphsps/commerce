@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Collection page — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* page-local layout for the collection mockup only */
+
+  /* (a) hero band — collection HAS an image */
+  .collection-hero {
+    position: relative; border-radius: var(--block-border-radius-large); overflow: hidden;
+    min-height: 320px; display: grid; align-items: end;
+    /* placeholder "image" — CSS gradient stands in for the collection cover */
+    background:
+      radial-gradient(900px 420px at 78% -20%, color-mix(in oklab, var(--accent-secondary) 70%, transparent), transparent 60%),
+      linear-gradient(135deg, var(--accent-primary), #0a2733 55%, #14110b);
+  }
+  /* scrim keeps the overlaid text legible over any cover image */
+  .collection-hero .scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgb(5 24 33 / 0.78) 0%, rgb(5 24 33 / 0.32) 46%, rgb(5 24 33 / 0.06) 100%);
+  }
+  .collection-hero .hero-inner { position: relative; padding: clamp(1.5rem, 3vw, 2.5rem); display: flex; flex-direction: column; gap: 0.6rem; max-width: 60ch; }
+  .collection-hero .hero-eyebrow { font: 600 0.6875rem/1 var(--font-sans); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.78); }
+  .collection-hero h2 { margin: 0; font: 800 var(--text-display)/1.04 var(--font-heading); letter-spacing: -0.02em; color: #fff; }
+  .collection-hero .hero-desc { margin: 0; font: 500 1.0625rem/1.5 var(--font-sans); color: rgba(255,255,255,0.84); }
+  .collection-hero .hero-count { margin-top: 0.2rem; font: 600 0.8125rem/1 var(--font-sans); color: rgba(255,255,255,0.78); }
+  .collection-hero .hero-glyph { position: absolute; top: 50%; right: clamp(1rem, 4vw, 3rem); transform: translateY(-50%); font: 800 7rem/1 var(--font-sans); color: rgba(255,255,255,0.07); pointer-events: none; }
+
+  /* (b) typographic header — collection has NO image */
+  .collection-head { padding: clamp(1.25rem, 3vw, 2rem) 0 0; }
+  .collection-head .ch-eyebrow { font: 600 0.6875rem/1 var(--font-sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-secondary); margin: 0 0 0.7rem; }
+  .collection-head h2 { margin: 0; font: 800 var(--text-display)/1.04 var(--font-heading); letter-spacing: -0.02em; color: var(--text); }
+  .collection-head .ch-desc { margin: 0.7rem 0 0; font: 500 1.0625rem/1.5 var(--font-sans); color: var(--text-muted); max-width: 62ch; }
+  .collection-head .ch-count { margin: 0.9rem 0 0; font: 600 0.8125rem/1 var(--font-sans); color: var(--text-muted); }
+  .collection-head .ch-rule { margin-top: 1.25rem; border: 0; border-top: 1px solid var(--border-default); }
+
+  /* "today" bare heading — what the real page renders now (weak/awkward) */
+  .bare-head { text-align: center; padding: 2.5rem 1rem; }
+  .bare-head h2 { margin: 0; font: 800 var(--text-h1)/1.1 var(--font-heading); letter-spacing: -0.02em; color: var(--text); }
+  .bare-head .bare-note { margin-top: 0.9rem; font: 600 11px/1.5 ui-monospace, monospace; color: #94a3b8; }
+
+  /* tiny phone device sample reuses shell.css .device .phone */
+  .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; padding: 0.75rem; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 04 · /collections/[handle]</p>
+    <h1 class="spec-title">Collection page</h1>
+    <p class="spec-lede">The route renders a bare <code style="font-family:ui-monospace,monospace">&lt;Heading title&gt;</code> with no treatment for the collection's cover image, so a collection <em>with</em> an image gets no hero and one <em>without</em> looks weak and empty. Two header treatments fix both ends — a scrimmed hero band when there's an image, a confident typographic header when there isn't. The product grid then reuses the shared <code style="font-family:ui-monospace,monospace">.pc-grid</code> auto-fill so cards fill every row evenly from phone to ultrawide.</p>
+  </header>
+
+  <!-- ============ HEADER — TWO CASES ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> Header — two cases</h2>
+    <p class="desc">Today the header is a centered <code>&lt;Heading&gt;</code> regardless of whether the collection has a cover image. With no image it reads thin; with an image the image is simply dropped. Below: the no-image header fixed as a typographic block (left/right), then the full hero treatment for the with-image case.</p>
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · no image, today</span>
+        <div class="stage">
+          <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">… / collections / tops</span><span class="vp">1280×</span></div>
+          <div class="stage-body" style="padding:0 1.5rem">
+            <div class="bare-head">
+              <h2>Tops</h2>
+              <p class="bare-note">bare centered &lt;Heading&gt; — no eyebrow, no description,<br/>no count, no rule. Floats with nothing under it.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="ba-tag after">After · no image, fixed</span>
+        <div class="stage">
+          <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">… / collections / tops</span><span class="vp">1280×</span></div>
+          <div class="stage-body" style="padding:0 1.5rem 1.25rem">
+            <header class="collection-head">
+              <p class="ch-eyebrow">Collection</p>
+              <h2>Tops</h2>
+              <p class="ch-desc">Everyday tees, knits, and overshirts built for layering. Cut from mid-weight cotton that softens with every wash.</p>
+              <p class="ch-count">42 products</p>
+              <hr class="ch-rule" />
+            </header>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Cause</b><span>The page mounts <code>&lt;Heading title={collection.title} /&gt;</code> only. There is no branch on <code>collection.image</code>, so the cover is never shown and a description-less collection has nothing to anchor the header.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span>Branch on the image: image present → scrimmed hero band; image absent → typographic header (eyebrow + display title + description + product count + a subtle rule). Both consume the same accent / text / border tokens, so any tenant theme inherits the treatment.</span></div></div>
+    </div>
+
+    <!-- full-width hero (WITH image) -->
+    <p class="desc" style="margin-top:28px"><b>With image · hero band.</b> The cover fills the band; a vertical scrim from the bottom guarantees the overlaid eyebrow, title, description, and count stay legible over any photo (same <code>.on-dark</code> contrast idea the rest of the spec uses).</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">… / collections / men</span><span class="vp">1280×</span></div>
+      <div class="stage-body" style="padding:1.5rem">
+        <section class="collection-hero on-dark">
+          <span class="hero-glyph" aria-hidden="true">▦</span>
+          <div class="scrim"></div>
+          <div class="hero-inner">
+            <p class="hero-eyebrow">Collection</p>
+            <h2>Men</h2>
+            <p class="hero-desc">The full men's lineup — slides, tees, and bottoms in this season's earth-tone palette.</p>
+            <p class="hero-count">128 products</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GRID FILL ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> Grid fill</h2>
+    <p class="desc">"Cards look weird at mobile and some resolutions" is the grid not filling evenly. The shared <code>.pc-grid</code> uses <code>repeat(auto-fill, minmax(var(--product-card-min-width), 1fr))</code> — cards clamp to a sensible minimum, then the <code>1fr</code> share distributes the remainder so a row is always full and no card stretches to an absurd width or leaves a dead gap. One toolbar (count · sort · filter trigger) sits above it.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">… / collections / men</span><span class="vp">1280×</span></div>
+      <div class="stage-body" style="padding:1.25rem 1.5rem 1.75rem">
+        <div class="toolbar">
+          <span class="count">128 products</span>
+          <button class="btn secondary filter-trigger" type="button">⛃ Filters</button>
+          <select class="select" aria-label="Sort products">
+            <option>Sort · Featured</option>
+            <option>Price · Low to high</option>
+            <option>Price · High to low</option>
+            <option>Newest</option>
+          </select>
+        </div>
+        <div class="pc-grid" style="margin-top:1rem">
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▣</span>
+              <div class="pc-badges"><span class="badge sale">Sale</span></div>
+              <button class="pc-cta" aria-label="Add to bag">+</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Acme Studio</a>
+              <a class="pc-title" href="#">Pool Slides</a>
+              <div class="pc-price"><span class="now onsale">$36.00</span><span class="was">$45.00</span></div>
+              <div class="pc-options opt-row">
+                <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                <button class="opt-swatch" style="--_c:#b91c1c" aria-label="Red"></button>
+              </div>
+            </div>
+          </article>
+          <article class="pc">
+            <div class="pc-media"><span class="ph">◨</span>
+              <button class="pc-cta" aria-label="Add to bag">+</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">North Range</a>
+              <a class="pc-title" href="#">Heavyweight Tee</a>
+              <div class="pc-price"><span class="now">$28.00</span></div>
+              <div class="pc-options opt-row">
+                <button class="opt-swatch active" style="--_c:#3f3a2e" aria-pressed="true" aria-label="Olive"></button>
+                <button class="opt-swatch" style="--_c:#e8e2d3" aria-label="Bone"></button>
+              </div>
+            </div>
+          </article>
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▤</span>
+              <button class="pc-cta" aria-label="Add to bag">+</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">North Range</a>
+              <a class="pc-title" href="#">Fleece Sweatpants</a>
+              <div class="pc-price"><span class="now">$58.00</span></div>
+              <div class="pc-options opt-row">
+                <button class="opt-swatch active" style="--_c:#2b2b2b" aria-pressed="true" aria-label="Charcoal"></button>
+                <button class="opt-swatch" style="--_c:#8a8170" aria-label="Stone"></button>
+                <button class="opt-swatch unavailable" style="--_c:#3b82f6" aria-label="Blue (sold out)"></button>
+              </div>
+            </div>
+          </article>
+          <article class="pc">
+            <div class="pc-media"><span class="ph">◧</span>
+              <div class="pc-badges"><span class="badge new">New</span></div>
+              <button class="pc-cta" aria-label="Add to bag">+</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Acme Studio</a>
+              <a class="pc-title" href="#">Canvas Overshirt</a>
+              <div class="pc-price"><span class="now">$74.00</span></div>
+              <div class="pc-options opt-row">
+                <button class="opt-swatch active" style="--_c:#9c7a4d" aria-pressed="true" aria-label="Tobacco"></button>
+                <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+              </div>
+            </div>
+          </article>
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▥</span>
+              <div class="pc-badges"><span class="badge sale">Sale</span></div>
+              <button class="pc-cta" aria-label="Add to bag">+</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Field Co.</a>
+              <a class="pc-title" href="#">Ripstop Shorts</a>
+              <div class="pc-price"><span class="now onsale">$32.00</span><span class="was">$40.00</span></div>
+              <div class="pc-options opt-row">
+                <button class="opt-swatch active" style="--_c:#5b6650" aria-pressed="true" aria-label="Sage"></button>
+                <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                <button class="opt-swatch" style="--_c:#c2b59b" aria-label="Khaki"></button>
+              </div>
+            </div>
+          </article>
+          <article class="pc">
+            <div class="pc-media"><span class="ph">◩</span>
+              <button class="pc-cta" aria-label="Add to bag">+</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">North Range</a>
+              <a class="pc-title" href="#">Waffle Henley</a>
+              <div class="pc-price"><span class="now">$46.00</span></div>
+              <div class="pc-options opt-row">
+                <button class="opt-swatch active" style="--_c:#7a3b2e" aria-pressed="true" aria-label="Rust"></button>
+                <button class="opt-swatch" style="--_c:#e8e2d3" aria-label="Bone"></button>
+              </div>
+            </div>
+          </article>
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▧</span>
+              <button class="pc-cta" aria-label="Add to bag">+</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Acme Studio</a>
+              <a class="pc-title" href="#">Linen Camp Shirt</a>
+              <div class="pc-price"><span class="now">$62.00</span></div>
+              <div class="pc-options opt-row">
+                <button class="opt-swatch active" style="--_c:#e8e2d3" aria-pressed="true" aria-label="Bone"></button>
+                <button class="opt-swatch" style="--_c:#6d7d8a" aria-label="Slate"></button>
+              </div>
+            </div>
+          </article>
+          <article class="pc">
+            <div class="pc-media"><span class="ph">◪</span>
+              <div class="pc-badges"><span class="badge new">New</span></div>
+              <button class="pc-cta" aria-label="Add to bag">+</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Field Co.</a>
+              <a class="pc-title" href="#">Quilted Liner Jacket</a>
+              <div class="pc-price"><span class="now">$118.00</span></div>
+              <div class="pc-options opt-row">
+                <button class="opt-swatch active" style="--_c:#3f3a2e" aria-pressed="true" aria-label="Olive"></button>
+                <button class="opt-swatch" style="--_c:#2b2b2b" aria-label="Charcoal"></button>
+                <button class="opt-swatch" style="--_c:#9c7a4d" aria-label="Tobacco"></button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Same grid everywhere</b><span>This is the identical <code>.pc-grid</code> used by <code>/products</code> and search results — one rail/grid component, so the fill behavior and card spacing are guaranteed consistent across every listing surface.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span>Auto-fill + <code>minmax(--product-card-min-width, 1fr)</code> means columns are derived from available width: 1–2 on phones, up to 5–6 on ultrawide, always a full row. No fixed column count to misfire at "some resolutions", no stretched cards, no dead gaps.</span></div></div>
+    </div>
+
+    <!-- optional responsive sample (phone) -->
+    <p class="desc" style="margin-top:28px"><b>At phone width.</b> The same grid collapses to two columns with no extra breakpoint code — the minmax minimum does the work.</p>
+    <div class="devices">
+      <div class="device phone">
+        <div class="screen">
+          <div style="padding:0.75rem 0.75rem 0">
+            <header class="collection-head" style="padding-top:0.25rem">
+              <p class="ch-eyebrow">Collection</p>
+              <h2 style="font-size:1.75rem">Men</h2>
+              <p class="ch-count" style="margin-top:0.5rem">128 products</p>
+              <hr class="ch-rule" style="margin-top:0.85rem" />
+            </header>
+          </div>
+          <div class="mini-grid">
+            <article class="pc">
+              <div class="pc-media"><span class="ph">▣</span><div class="pc-badges"><span class="badge sale">Sale</span></div></div>
+              <div class="pc-body"><a class="pc-title" href="#">Pool Slides</a><div class="pc-price"><span class="now onsale">$36</span><span class="was">$45</span></div></div>
+            </article>
+            <article class="pc">
+              <div class="pc-media"><span class="ph">◨</span></div>
+              <div class="pc-body"><a class="pc-title" href="#">Heavyweight Tee</a><div class="pc-price"><span class="now">$28</span></div></div>
+            </article>
+            <article class="pc">
+              <div class="pc-media"><span class="ph">▤</span></div>
+              <div class="pc-body"><a class="pc-title" href="#">Fleece Sweatpants</a><div class="pc-price"><span class="now">$58</span></div></div>
+            </article>
+            <article class="pc">
+              <div class="pc-media"><span class="ph">◧</span><div class="pc-badges"><span class="badge new">New</span></div></div>
+              <div class="pc-body"><a class="pc-title" href="#">Canvas Overshirt</a><div class="pc-price"><span class="now">$74</span></div></div>
+            </article>
+          </div>
+        </div>
+        <div class="caption">375 × — 2 columns</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EMPTY COLLECTION ============ -->
+  <section class="spec-section">
+    <h2><span class="num">3</span> Empty collection</h2>
+    <p class="desc">A collection with no products renders the shared <code>.empty</code> state — never a broken or blank grid. The "Browse all products" CTA (already in code) routes the shopper to <code>/products</code> so the trip never dead-ends.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">… / collections / clearance</span><span class="vp">1280×</span></div>
+      <div class="stage-body" style="padding:0 1.5rem 1.25rem">
+        <header class="collection-head">
+          <p class="ch-eyebrow">Collection</p>
+          <h2>Clearance</h2>
+          <p class="ch-count">0 products</p>
+          <hr class="ch-rule" />
+        </header>
+        <div class="empty">
+          <div class="ic" style="font-size:2.25rem" aria-hidden="true">▦</div>
+          <h3>Nothing here yet</h3>
+          <p>This collection doesn't have any products right now. Check back soon, or browse the full catalog.</p>
+          <a class="btn ink" href="#">Browse all products</a>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Header still renders</b><span>The empty state sits under the same typographic header (or hero), so an empty collection still looks intentional — title, count, rule, then the recovery CTA — instead of an orphaned heading over blank space.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

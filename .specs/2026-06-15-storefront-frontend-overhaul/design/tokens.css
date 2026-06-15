@@ -1,0 +1,169 @@
+/* ============================================================================
+ * tokens.css — faithful extract of the storefront platform-default theme.
+ *
+ * Source of truth: apps/storefront/src/app/globals.css (:root defaults) and
+ * packages/db/src/lib/theme.ts (THEME_DEFAULTS). These mockups are spec
+ * references, so they re-skin from THESE tokens exactly the way a tenant theme
+ * re-skins the real storefront. Change a value here -> every mockup updates,
+ * mirroring the real serializer. Do NOT hard-code colors in a mockup; read a
+ * token. That is the DRY contract the implementation must honor too.
+ *
+ * "Hybrid" design decision (locked 2026-06-15): keep these tokens, the accent
+ * palette and Public Sans. Layout is reimagined only where broken/weak.
+ * ========================================================================== */
+
+:root {
+    /* ---- Brand accents (platform default; per-shop overrides these) -------- */
+    --accent-primary: #073b4c;
+    --accent-primary-text: #ffffff;
+    --accent-secondary: #118ab2;
+    --accent-secondary-text: #ffffff;
+    --accent: var(--accent-primary);
+    /* Soft warm accent surface (chip hover / overlay row hover). */
+    --accent-soft: #f3eedc;
+
+    /* ---- Neutrals / page chrome ------------------------------------------- */
+    --color-bright: #ffffff;
+    --color-dark: #222222;
+    --color-dark-secondary: #555555;
+    --color-background: var(--color-bright);
+    --color-foreground: var(--color-dark);
+
+    --color-block: #f3f3f3;
+    --color-block-light: #f5f5f5;
+    --color-block-dark: #d8d8d8;
+    --color-block-darker: #a8a8a8;
+    --color-lights-out: #051821;
+    --color-gray: #989898;
+
+    /* ---- Semantic surface / text / border layer (P3-3) -------------------- */
+    --surface-0: var(--color-bright);
+    --surface-1: var(--color-block);
+    --surface-2: var(--color-block-light);
+    --surface-3: var(--color-block-dark);
+    --text: var(--color-foreground);
+    --text-muted: var(--color-dark-secondary);
+    --border-default: #ece6d4;
+    --border-strong: var(--color-block-dark);
+
+    /* ---- State ------------------------------------------------------------ */
+    --color-sale: #b51200;
+    --state-sale: var(--color-sale);
+    --state-danger: #a53d3a;
+    --state-success: #3b9e2e;
+    --state-info: #6dc0d5;
+    --state-warning: #b54a2a;
+    --surface-success: #e1faea;
+    --text-success-strong: #093f09;
+    --focus-ring: var(--accent);
+
+    /* ---- Type scale (fluid display + body) -------------------------------- */
+    --font-fallback: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-sans: "Public Sans", var(--font-fallback);
+    --font-heading: var(--font-sans);
+
+    --text-display: clamp(2.5rem, 1.8rem + 3.5vw, 4rem);
+    --text-h1: clamp(1.875rem, 1.4rem + 2.4vw, 2.75rem);
+    --text-h2: clamp(1.5rem, 1.2rem + 1.5vw, 2.125rem);
+    --text-h3: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+    --text-body: 1rem;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* ---- Block geometry --------------------------------------------------- */
+    --page-width: 1536px;
+    --block-border-radius-large: 1rem;
+    --block-border-radius: 0.75rem;
+    --block-border-radius-small: 0.5625rem;
+    --block-border-radius-tiny: 0.325rem;
+    --block-padding: 0.6rem;
+    --block-padding-large: 0.9rem;
+    --block-spacer: 0.55rem;
+    --block-spacer-large: 0.7425rem;
+    --block-border-width: 0.1625rem;
+    --block-border-width-small: 0.135rem;
+
+    --elevation-1: 0 1px 0 rgb(20 17 11 / 2%), 0 1px 2px rgb(20 17 11 / 4%);
+    --elevation-2: 0 1px 0 rgb(20 17 11 / 2%), 0 10px 24px -12px rgb(20 17 11 / 22%);
+    --elevation-3: 0 24px 60px -24px rgb(15 23 42 / 0.18), 0 8px 20px -8px rgb(15 23 42 / 0.08);
+
+    /* ---- Header tokens ---------------------------------------------------- */
+    --header-bar-height: 4rem;
+    --header-nav-height: 3rem;
+    --header-panel-pad: 1.44rem;
+    --header-panel-radius: var(--block-border-radius-large);
+    --header-divider-color: rgb(0 0 0 / 0.06);
+    --header-column-gap-x: 2.5rem;
+    --header-column-gap-y: 1.25rem;
+    --header-sublink-radius: var(--block-border-radius-small);
+    --header-sublink-hover-bg: rgb(0 0 0 / 0.04);
+    --header-panel-shadow: var(--elevation-3);
+    --header-eyebrow-tracking: 0.08em;
+    --header-easing: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* ---- Product card knobs ----------------------------------------------- */
+    --product-card-bg: #ffffff;
+    --product-card-border-color: #ece6d4;
+    --product-card-border-width: 1px;
+    --product-card-radius: 12px;
+    --product-card-padding: 12px;
+    --product-card-gap: 8px;
+    --product-card-shadow: var(--elevation-1);
+    --product-card-shadow-hover: var(--elevation-2);
+    --product-card-min-width: 200px;
+    --product-card-max-width: 240px;
+    --product-card-image-radius: 8px;
+    --aspect-product-card: 4 / 5;
+
+    --product-card-vendor-color: #6b6555;
+    --product-card-title-color: #14110b;
+    --product-card-title-weight: 600;
+    --product-card-price-color: #14110b;
+    --product-card-price-weight: 700;
+    --product-card-compare-color: #6b6555;
+    --product-card-urgency-color: #b54a2a;
+    --product-card-eyebrow-tracking: 0.14em;
+
+    --product-card-swatch-size: 20px;
+    --product-card-swatch-gap: 5px;
+    --product-card-swatch-ring-color: #14110b;
+
+    --product-card-chip-bg: #ffffff;
+    --product-card-chip-color: #14110b;
+    --product-card-chip-border: #ece6d4;
+    --product-card-chip-active-bg: #14110b;
+    --product-card-chip-active-color: #ffffff;
+
+    --product-card-cta-bg: #14110b;
+    --product-card-cta-color: #ffffff;
+    --product-card-cta-radius: 8px;
+
+    --product-card-motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --product-card-motion-base: 160ms;
+
+    /* ---- NEW: cart-line tokens (proposed; locked decision) ----------------
+     * Extends ShopThemeTokens the same way the 90+ productCard knobs do, so the
+     * admin theme editor renders them for free. Cart line variant chips/swatches
+     * REUSE the product-options primitives above (one swatch system everywhere). */
+    --cart-line-image-size: 88px;
+    --cart-line-image-radius: var(--product-card-image-radius);
+    --cart-line-gap: 1rem;
+    --cart-line-density: comfortable; /* compact | comfortable */
+    --cart-line-divider-color: var(--border-default);
+    --cart-line-variant-style: swatch; /* swatch | chip | text — reuses product-options primitives */
+    --cart-line-show-vendor: 1;
+    --cart-line-show-sku: 0;
+}
+
+/* iOS safe-area aware footer: the fix demonstrated across mockups. */
+:root {
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+}

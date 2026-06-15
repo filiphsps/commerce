@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Product card — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* page-local annotation helpers for the product-card spec only */
+
+  /* out-of-stock card: dim the media + drop a "Sold out" overlay */
+  .pc .pc-media.oos { filter: grayscale(0.4); }
+  .pc .pc-media.oos::before {
+    content: ""; position: absolute; inset: 0; z-index: 1;
+    background: color-mix(in oklab, var(--surface-0) 55%, transparent);
+  }
+  .pc .pc-media.oos .oos-tag {
+    position: absolute; inset: auto 0 0 0; z-index: 2; text-align: center;
+    padding: 0.45rem; font: 700 0.6875rem/1 var(--font-sans);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: color-mix(in oklab, #14110b 86%, transparent); color: #fff;
+  }
+
+  /* hover-state demo: pin the lifted/elevated look so it reads in a static doc */
+  .pc.is-hover { box-shadow: var(--product-card-shadow-hover); transform: translateY(-2px); border-color: color-mix(in oklab, var(--accent) 30%, var(--product-card-border-color)); }
+
+  /* anatomy callout: a labeled single card with leader pins */
+  .anat { display: grid; grid-template-columns: 248px 1fr; gap: 2.25rem; align-items: center; }
+  @media (max-width: 720px) { .anat { grid-template-columns: 1fr; } }
+  .anat-legend { display: flex; flex-direction: column; gap: 0.55rem; }
+  .anat-legend .row { display: grid; grid-template-columns: 22px 1fr; gap: 0.6rem; align-items: start; font: 500 0.8125rem/1.35 var(--font-sans); color: #475569; }
+  .anat-legend .row b { color: #0f172a; font-weight: 700; }
+  .anat-legend .pin { width: 22px; height: 22px; border-radius: 999px; background: #0f172a; color: #fff; font: 700 11px/22px ui-monospace, monospace; text-align: center; }
+  .anat-legend code { font: 600 12px/1.4 ui-monospace, monospace; background: #f1f5f9; padding: 1px 5px; border-radius: 5px; color: #0f172a; }
+
+  /* mark the vendor eyebrow on the zoom card */
+  .vendor-zoom { display: grid; grid-template-columns: 248px 1fr; gap: 2.25rem; align-items: center; }
+  @media (max-width: 720px) { .vendor-zoom { grid-template-columns: 1fr; } }
+  .pc .pc-vendor.marked { outline: 2px dashed var(--accent-secondary); outline-offset: 3px; border-radius: 4px; }
+
+  /* compact swatch/chip rows for the dark-bg before/after demo */
+  .prim-demo { display: flex; flex-direction: column; gap: 0.9rem; }
+  .prim-demo .lbl { font: 600 0.75rem/1 var(--font-sans); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+  .prim-row { display: flex; flex-direction: column; gap: 0.45rem; }
+  .dark-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
+  @media (max-width: 560px) { .dark-grid { grid-template-columns: 1fr; } }
+
+  /* a single product card sized for the dark stage */
+  .dark-grid .pc { max-width: 240px; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 03 · product-card</p>
+    <h1 class="spec-title">Product card</h1>
+    <p class="spec-lede">There is exactly <b>one</b> card and one option system. The same <code style="font-family:ui-monospace,monospace">.pc</code> shell and the same <code style="font-family:ui-monospace,monospace">.opt-swatch</code> / <code style="font-family:ui-monospace,monospace">.opt-chip</code> primitives render in the grid, the buy box, and the cart line. This page documents the card's anatomy and states, the locked vendor-link target, and the dark-background selected-state fix — one token flip that corrects every component at once.</p>
+  </header>
+
+  <!-- ============ ANATOMY & STATES ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> Anatomy &amp; states</h2>
+    <p class="desc">Every card is a <code>.pc</code> with <code>.pc-media</code> (badges + float-pill CTA), then <code>.pc-body</code> holding the <code>.pc-vendor</code> eyebrow, <code>.pc-title</code>, <code>.pc-price</code>, and an optional <code>.pc-options</code> row. The states below are the same component under different data — never different components.</p>
+
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / collections / men</span><span class="vp">1280×</span></div>
+      <div class="stage-body pad">
+        <div class="pc-grid">
+
+          <!-- default -->
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▢</span>
+              <button class="pc-cta" aria-label="Add Pool Slides to bag">＋</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Acme Studio</a>
+              <a class="pc-title" href="#">Pool Slides</a>
+              <div class="pc-price"><span class="now">$45.00</span></div>
+            </div>
+          </article>
+
+          <!-- hover -->
+          <article class="pc is-hover">
+            <div class="pc-media"><span class="ph">◫</span>
+              <button class="pc-cta" aria-label="Add Knit Sweatpants to bag">＋</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Northbound</a>
+              <a class="pc-title" href="#">Knit Sweatpants</a>
+              <div class="pc-price"><span class="now">$68.00</span></div>
+            </div>
+          </article>
+
+          <!-- on sale -->
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▤</span>
+              <div class="pc-badges"><span class="badge sale">Sale</span></div>
+              <button class="pc-cta" aria-label="Add Men's T-Shirt to bag">＋</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Acme Studio</a>
+              <a class="pc-title" href="#">Men's T-Shirt</a>
+              <div class="pc-price"><span class="now onsale">$18.00</span><span class="was">$28.00</span></div>
+            </div>
+          </article>
+
+          <!-- low stock -->
+          <article class="pc">
+            <div class="pc-media"><span class="ph">◨</span>
+              <button class="pc-cta" aria-label="Add Canvas Tote to bag">＋</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Northbound</a>
+              <a class="pc-title" href="#">Canvas Tote</a>
+              <div class="pc-price"><span class="now">$32.00</span></div>
+              <p class="badge low">Only 2 left</p>
+            </div>
+          </article>
+
+          <!-- out of stock -->
+          <article class="pc">
+            <div class="pc-media oos"><span class="ph">▦</span>
+              <span class="oos-tag">Sold out</span>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Acme Studio</a>
+              <a class="pc-title" href="#">Wool Beanie</a>
+              <div class="pc-price"><span class="now">$24.00</span></div>
+            </div>
+          </article>
+
+          <!-- with full options row -->
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▣</span>
+              <button class="pc-cta" aria-label="Add Trail Runner to bag">＋</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Northbound</a>
+              <a class="pc-title" href="#">Trail Runner</a>
+              <div class="pc-price"><span class="now">$96.00</span></div>
+              <div class="pc-options">
+                <div class="opt-row">
+                  <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                  <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                  <button class="opt-swatch" style="--_c:#b91c1c" aria-label="Red"></button>
+                  <button class="opt-more" aria-label="2 more colors">+2</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- labeled anatomy callout -->
+    <div class="stage" data-bg="muted" style="margin-top:18px">
+      <div class="stage-body pad">
+        <div class="anat">
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▣</span>
+              <div class="pc-badges"><span class="badge sale">Sale</span></div>
+              <button class="pc-cta" aria-label="Add to bag">＋</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor" href="#">Acme Studio</a>
+              <a class="pc-title" href="#">Trail Runner</a>
+              <div class="pc-price"><span class="now onsale">$72.00</span><span class="was">$96.00</span></div>
+              <div class="pc-options">
+                <div class="opt-row">
+                  <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                  <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                  <button class="opt-more">+2</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <div class="anat-legend">
+            <div class="row"><span class="pin">1</span><span><b><code>.pc-media</code></b> — fixed <code>4 / 5</code> aspect, holds <code>.pc-badges</code> (top-left) and the float-pill <code>.pc-cta</code> (top-right).</span></div>
+            <div class="row"><span class="pin">2</span><span><b><code>.pc-vendor</code></b> — uppercase eyebrow; a link to the brand (see §2).</span></div>
+            <div class="row"><span class="pin">3</span><span><b><code>.pc-title</code></b> — two-line clamp, accent on hover.</span></div>
+            <div class="row"><span class="pin">4</span><span><b><code>.pc-price</code></b> — <code>.now</code> + optional <code>.now.onsale</code> &amp; struck <code>.was</code>.</span></div>
+            <div class="row"><span class="pin">5</span><span><b><code>.pc-options</code></b> — the shared <code>.opt-swatch</code> / <code>.opt-chip</code> / <code>.opt-more</code> primitives, identical to the buy box and cart.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Hover</b><span>The card lifts (<code>translateY(-2px)</code>), deepens its shadow to <code>--product-card-shadow-hover</code>, and warms its border toward the accent. Pinned on the second card above so the lift reads in a static document.</span></div></div>
+      <div class="note dry"><div class="ic">⊕</div><div><b>One card, many states</b><span>Default, on-sale, low-stock, sold-out, and the options row are all the SAME <code>.pc</code> markup driven by data. No state forks the component.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ VENDOR / BRAND LINK ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> Vendor / brand link</h2>
+    <p class="desc">The <code>.pc-vendor</code> eyebrow is a real link to the brand. Its target resolves at render time so a shop with curated brand collections gets the rich landing page, while everyone else still gets a working, filtered listing.</p>
+
+    <div class="stage">
+      <div class="stage-body pad">
+        <div class="vendor-zoom">
+          <article class="pc">
+            <div class="pc-media"><span class="ph">▣</span>
+              <button class="pc-cta" aria-label="Add to bag">＋</button>
+            </div>
+            <div class="pc-body">
+              <a class="pc-vendor marked" href="#">Acme Studio</a>
+              <a class="pc-title" href="#">Pool Slides</a>
+              <div class="pc-price"><span class="now">$45.00</span></div>
+            </div>
+          </article>
+          <div class="anat-legend">
+            <div class="row"><span class="pin">↑</span><span>The dashed-outlined eyebrow is the <code>.pc-vendor</code> link. Tap target is the brand name only (<code>width: fit-content</code>), so it never swallows clicks meant for the title or image.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Resolution order (locked)</b><span>For vendor <code>Acme Studio</code> → handle <code>acme-studio</code>: <b>1.</b> if a collection with handle <code>acme-studio</code> exists, link to <code>/collections/acme-studio</code> (the brand's curated page). <b>2.</b> otherwise fall back to <code>/products?vendor=acme-studio</code> with the vendor pre-selected as a filter facet. The card never renders a dead link.</span></div></div>
+      <div class="note dry"><div class="ic">⊕</div><div><b>Same resolver everywhere</b><span>The buy box vendor link and any "Shop by brand" list resolve the target through the same helper — one resolution order, not three copies.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ SELECTED COLOR ON DARK BACKGROUNDS ============ -->
+  <section class="spec-section">
+    <h2><span class="num">3</span> Selected color on dark backgrounds</h2>
+    <p class="desc">On a dark surface — the homepage banner, a dark-themed section, or a dark product-card area — the default selected-swatch ring (<code>--product-card-swatch-ring-color: #14110b</code>) and the active chip (dark ink on white) vanish into the background. The fix is NOT a per-component override: adding <code>.on-dark</code> flips the ink/border/ring tokens so every component below reads correctly at once.</p>
+
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · no .on-dark</span>
+        <div class="stage" data-bg="dark">
+          <div class="stage-body pad">
+            <div class="dark-grid">
+              <div class="prim-demo">
+                <div class="prim-row">
+                  <span class="lbl">Selected swatch</span>
+                  <div class="opt-row">
+                    <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                    <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                    <button class="opt-swatch" style="--_c:#b91c1c" aria-label="Red"></button>
+                  </div>
+                </div>
+                <div class="prim-row">
+                  <span class="lbl">Active chip</span>
+                  <div class="opt-row">
+                    <button class="opt-chip active" aria-pressed="true">M</button>
+                    <button class="opt-chip">L</button>
+                    <button class="opt-chip">XL</button>
+                  </div>
+                </div>
+              </div>
+              <article class="pc">
+                <div class="pc-media"><span class="ph">▣</span></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="#">Acme Studio</a>
+                  <a class="pc-title" href="#">Trail Runner</a>
+                  <div class="pc-price"><span class="now">$96.00</span></div>
+                  <div class="pc-options">
+                    <div class="opt-row">
+                      <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                      <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                      <button class="opt-more">+2</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ba-col">
+        <span class="ba-tag after">After · class="on-dark"</span>
+        <div class="stage on-dark" data-bg="dark">
+          <div class="stage-body pad">
+            <div class="dark-grid">
+              <div class="prim-demo">
+                <div class="prim-row">
+                  <span class="lbl">Selected swatch</span>
+                  <div class="opt-row">
+                    <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                    <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                    <button class="opt-swatch" style="--_c:#b91c1c" aria-label="Red"></button>
+                  </div>
+                </div>
+                <div class="prim-row">
+                  <span class="lbl">Active chip</span>
+                  <div class="opt-row">
+                    <button class="opt-chip active" aria-pressed="true">M</button>
+                    <button class="opt-chip">L</button>
+                    <button class="opt-chip">XL</button>
+                  </div>
+                </div>
+              </div>
+              <article class="pc">
+                <div class="pc-media"><span class="ph">▣</span></div>
+                <div class="pc-body">
+                  <a class="pc-vendor" href="#">Acme Studio</a>
+                  <a class="pc-title" href="#">Trail Runner</a>
+                  <div class="pc-price"><span class="now">$96.00</span></div>
+                  <div class="pc-options">
+                    <div class="opt-row">
+                      <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                      <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                      <button class="opt-more">+2</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Cause</b><span>The selected ring color is a hard-coded dark token (<code>--product-card-swatch-ring-color: #14110b</code>) and the active chip is dark ink on white. Both disappear against a dark surface — invisible or near-invisible selection.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span>Components read tokens, never hard-coded ink. <code>.on-dark</code> flips the ring to <code>#ffffff</code> and the active chip to a white background with ink text. One token flip on the dark wrapper — no per-component hacks, no extra props.</span></div></div>
+      <div class="note dry"><div class="ic">⊕</div><div><b>One flip fixes all</b><span>Because cards, the buy box, and cart lines all read the same swatch/chip tokens, the single <code>.on-dark</code> context the homepage banner already uses fixes selection contrast across every surface at once.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

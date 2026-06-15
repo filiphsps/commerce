@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Collections index — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* page-local layout for the /collections index mockup only.
+   * .col-card is the one NEW component this surface introduces; everything
+   * around it (.container, .sec-head, .btn, .badge) is reused from ui.css. */
+
+  /* page hero header — eyebrow + title + lede, centered on the stage */
+  .col-hero { padding: 2.5rem 0 1.75rem; text-align: center; max-width: 60ch; margin-inline: auto; }
+  .col-hero .eyebrow { font: 600 0.6875rem/1 var(--font-sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-secondary); margin: 0 0 0.75rem; }
+  .col-hero h1 { font: 800 var(--text-display)/1.05 var(--font-heading); letter-spacing: -0.025em; margin: 0; }
+  .col-hero p { font: 400 1.0625rem/1.55 var(--font-sans); color: var(--text-muted); margin: 0.9rem auto 0; max-width: 52ch; }
+
+  /* responsive collection grid — auto-fill, ~280px floor */
+  .col-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  /* editorial: the first two cards span two tracks as larger "featured" tiles */
+  @media (min-width: 760px) {
+    .col-grid .col-card.featured { grid-column: span 2; }
+    .col-grid .col-card.featured .col-media { aspect-ratio: 16 / 9; }
+  }
+
+  /* the one true collection card */
+  .col-card {
+    position: relative; display: flex; flex-direction: column;
+    text-decoration: none; color: inherit; min-width: 0;
+    background: var(--product-card-bg);
+    border: var(--product-card-border-width) solid var(--product-card-border-color);
+    border-radius: var(--product-card-radius);
+    box-shadow: var(--product-card-shadow); overflow: hidden;
+    transition: box-shadow var(--product-card-motion-base) var(--product-card-motion-ease),
+                transform var(--product-card-motion-base) var(--product-card-motion-ease),
+                border-color var(--product-card-motion-base);
+  }
+  .col-card:hover { box-shadow: var(--product-card-shadow-hover); transform: translateY(-2px); border-color: color-mix(in oklab, var(--accent) 30%, var(--product-card-border-color)); }
+  .col-card:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+  /* 16:10 image area — gradient placeholder + big glyph, no external images */
+  .col-media {
+    position: relative; aspect-ratio: 16 / 10; display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: rgba(255, 255, 255, 0.92); overflow: hidden;
+  }
+  .col-media .glyph { font: 800 3.25rem/1 var(--font-sans); opacity: 0.9; }
+  .col-card.featured .col-media .glyph { font-size: 4.5rem; }
+  /* scrim so an overlaid title stays legible over the gradient */
+  .col-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(7 27 33 / 0.5), transparent 55%); }
+  /* count badge floats on the media */
+  .col-media .col-count { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 2; background: rgb(255 255 255 / 0.92); color: var(--accent-primary); }
+
+  .col-body { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; padding: var(--product-card-padding) calc(var(--product-card-padding) + 2px); }
+  .col-title { font: 700 1.0625rem/1.25 var(--font-heading); color: var(--product-card-title-color); letter-spacing: -0.01em; }
+  .col-card.featured .col-title { font-size: 1.25rem; }
+  .col-meta { font: 500 0.8125rem/1 var(--font-sans); color: var(--text-muted); white-space: nowrap; }
+
+  /* ---- Anatomy callout: one annotated card with leader pins ---------------- */
+  .anatomy { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; gap: 2rem; align-items: center; }
+  @media (max-width: 720px) { .anatomy { grid-template-columns: 1fr; } }
+  .anatomy .pinlist { display: flex; flex-direction: column; gap: 0.85rem; margin: 0; padding: 0; list-style: none; }
+  .anatomy .pinlist li { display: grid; grid-template-columns: 28px 1fr; gap: 0.7rem; align-items: start; }
+  .anatomy .pinlist .pin { width: 26px; height: 26px; border-radius: 999px; background: var(--accent-primary); color: #fff; display: grid; place-items: center; font: 700 12px/1 ui-monospace, monospace; }
+  .anatomy .pinlist b { display: block; font: 700 0.875rem/1.3 var(--font-sans); color: #0f172a; }
+  .anatomy .pinlist span { font: 500 0.8125rem/1.45 var(--font-sans); color: #475569; }
+  .anatomy .pinlist code { font: 600 12px/1.4 ui-monospace, monospace; background: #f1f5f9; padding: 1px 6px; border-radius: 5px; color: #0f172a; }
+  /* number markers overlaid on the demo card */
+  .anatomy .demo { position: relative; }
+  .anatomy .demo .mk { position: absolute; z-index: 5; width: 24px; height: 24px; border-radius: 999px; background: #0f172a; color: #fff; display: grid; place-items: center; font: 700 12px/1 ui-monospace, monospace; box-shadow: 0 2px 6px rgb(15 23 42 / 0.35); }
+  .anatomy .demo .mk.m1 { top: 38%; left: -12px; }
+  .anatomy .demo .mk.m2 { bottom: 14px; left: -12px; }
+  .anatomy .demo .mk.m3 { top: 0.6rem; right: -12px; }
+
+  /* page-local .note.new — additive route callout (matches the index "new" blue) */
+  .note.new { border-color: #bfdbfe; background: #f5f9ff; }
+  .note.new .ic { background: #dbeafe; color: #1d4ed8; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 05 · /collections (new route)</p>
+    <h1 class="spec-title">Collections index</h1>
+    <p class="spec-lede">Today only <code style="font-family:ui-monospace,monospace">/collections/[handle]</code> exists; the bare <code style="font-family:ui-monospace,monospace">/collections</code> route <b>404s</b>. This surface introduces it: a browsable, token-driven listing of every collection in the shop, built from the same <code style="font-family:ui-monospace,monospace">.container</code> + grid conventions as the rest of the spec.</p>
+  </header>
+
+  <!-- ============ THE PAGE ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> The page</h2>
+    <p class="desc">A hero header (eyebrow + title + short description) over a responsive grid of collection cards. The first two run as larger editorial "featured" tiles (a two-track span); the rest fill an <code>auto-fill minmax(280px, 1fr)</code> grid. Each card carries a product-count badge. Colors come straight from the locked accent palette via <code>tokens.css</code> — no hard-codes.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / collections</span><span class="vp">1280×</span></div>
+      <div class="stage-body">
+        <div class="container" style="padding-block:1.5rem 2.25rem">
+          <header class="col-hero">
+            <p class="eyebrow">Shop by edit</p>
+            <h1>Collections</h1>
+            <p>Every curated edit in one place — browse the full range, then dive into a collection to filter, sort, and shop.</p>
+          </header>
+
+          <div class="col-grid">
+            <a class="col-card featured" href="#">
+              <div class="col-media"><span class="glyph">♂</span><span class="badge new col-count">42 products</span></div>
+              <div class="col-body"><span class="col-title">Men</span><span class="col-meta">Everyday essentials</span></div>
+            </a>
+            <a class="col-card featured" href="#">
+              <div class="col-media"><span class="glyph">♀</span><span class="badge new col-count">51 products</span></div>
+              <div class="col-body"><span class="col-title">Women</span><span class="col-meta">New-season staples</span></div>
+            </a>
+            <a class="col-card" href="#">
+              <div class="col-media"><span class="glyph">▤</span><span class="badge new col-count">24 products</span></div>
+              <div class="col-body"><span class="col-title">Tops</span><span class="col-meta">Tees & knits</span></div>
+            </a>
+            <a class="col-card" href="#">
+              <div class="col-media"><span class="glyph">▥</span><span class="badge new col-count">18 products</span></div>
+              <div class="col-body"><span class="col-title">Bottoms</span><span class="col-meta">Pants & shorts</span></div>
+            </a>
+            <a class="col-card" href="#">
+              <div class="col-media"><span class="glyph">◊</span><span class="badge new col-count">12 products</span></div>
+              <div class="col-body"><span class="col-title">Footwear</span><span class="col-meta">Slides & sneakers</span></div>
+            </a>
+            <a class="col-card" href="#">
+              <div class="col-media"><span class="glyph">✦</span><span class="badge new col-count">30 products</span></div>
+              <div class="col-body"><span class="col-title">New In</span><span class="col-meta">Just landed</span></div>
+            </a>
+            <a class="col-card" href="#">
+              <div class="col-media"><span class="glyph">%</span><span class="badge new col-count">16 products</span></div>
+              <div class="col-body"><span class="col-title">Sale</span><span class="col-meta">Last chance</span></div>
+            </a>
+            <a class="col-card" href="#">
+              <div class="col-media"><span class="glyph">◈</span><span class="badge new col-count">9 products</span></div>
+              <div class="col-body"><span class="col-title">Accessories</span><span class="col-meta">Bags & extras</span></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Mobile</b><span>Below 760px every card collapses to a single column and featured tiles drop their two-track span — the grid floor (<code>minmax(280px, 1fr)</code>) handles the reflow with no breakpoint juggling.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ ANATOMY ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> Anatomy of a collection card</h2>
+    <p class="desc">The card is intentionally lean — a media area, a title, and a count. It mirrors the product card's shape (same radius, border, shadow, and hover lift tokens) so the two read as one family across the storefront.</p>
+    <div class="stage" data-bg="muted">
+      <div class="stage-body pad">
+        <div class="anatomy">
+          <div class="demo">
+            <span class="mk m1">1</span>
+            <span class="mk m2">2</span>
+            <span class="mk m3">3</span>
+            <a class="col-card" href="#" style="pointer-events:none">
+              <div class="col-media"><span class="glyph">♂</span><span class="badge new col-count">42 products</span></div>
+              <div class="col-body"><span class="col-title">Men</span><span class="col-meta">Everyday essentials</span></div>
+            </a>
+          </div>
+          <ul class="pinlist">
+            <li><span class="pin">1</span><div><b>Image area · 16:10</b><span>A fixed <code>aspect-ratio: 16 / 10</code> media block (featured tiles widen to 16:9). Here a gradient placeholder + glyph; in production it's the collection's <code>image</code> from Shopify, <code>object-fit: cover</code>.</span></div></li>
+            <li><span class="pin">2</span><div><b>Title</b><span>The collection <code>title</code>, resolved for the active locale (the same fix landed in <code>collection-list</code>). Sits below the image; a tokenized scrim keeps it legible if a theme overlays it on the media instead.</span></div></li>
+            <li><span class="pin">3</span><div><b>Count meta</b><span>A <code>.badge.new</code> pill — reused, not bespoke — bound to <code>productsCount</code>. Reads "<i>N</i> products" so shoppers gauge depth before they click.</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Data source</b><span>Lists the shop's collections from Shopify (handle, localized <code>title</code>, <code>image</code>, <code>productsCount</code>) via the tenant-scoped <code>ShopifyApolloApiClient({ shop, locale })</code> — no new fetch shape, the same client every surface uses.</span></div></div>
+      <div class="note dry"><div class="ic">⊕</div><div><b>DRY</b><span>The page wraps in the shared <code>.container</code> and the grid follows the same <code>auto-fill minmax</code> convention as <code>/products</code> and the collection page. <code>.badge</code>, <code>.btn</code>, and the card's radius/shadow/hover all read from <code>tokens.css</code>, so a tenant theme re-skins this surface for free. Only <code>.col-card</code> is new.</span></div></div>
+      <div class="note new"><div class="ic">+</div><div><b>New route</b><span>This is a brand-new route to add at <code>apps/storefront/src/app/[domain]/[locale]/collections/page.tsx</code> — the missing index that currently 404s. Server Component by default; tenant + locale resolved from the route params, never implicit.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

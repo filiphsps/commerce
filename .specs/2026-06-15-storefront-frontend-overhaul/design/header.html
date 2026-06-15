@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Header &amp; navigation — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* ========================================================================
+   * page-local styles for the HEADER mockup only.
+   * Storefront header chrome is driven entirely by the --header-* tokens
+   * from tokens.css; nothing here hard-codes a color a tenant can re-skin.
+   * ===================================================================== */
+
+  /* the realistic sticky header bar -------------------------------------- */
+  .hdr { position: relative; background: var(--surface-0); border-bottom: 1px solid var(--border-default); }
+  /* the SHARED container: header content AND the panel card use THIS. */
+  .hdr-container { width: 100%; max-width: 1040px; margin: 0 auto; padding-inline: clamp(1rem, 3vw, 2rem); }
+  .hdr-bar { display: flex; align-items: center; gap: 1.25rem; height: var(--header-bar-height); }
+  .hdr-logo { font: 800 1.25rem/1 var(--font-sans); letter-spacing: -0.02em; color: var(--text); text-decoration: none; white-space: nowrap; }
+  .hdr-logo .dot { color: var(--accent); }
+  .hdr-nav { display: flex; align-items: center; gap: 0.25rem; margin: 0 auto; }
+  .hdr-link {
+      display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer;
+      font: 500 0.9375rem/1 var(--font-sans); color: var(--text); text-decoration: none;
+      padding: 0.5rem 0.7rem; border-radius: var(--header-sublink-radius); border: none; background: transparent;
+      transition: background var(--product-card-motion-base) var(--product-card-motion-ease), color var(--product-card-motion-base);
+  }
+  .hdr-link:hover { background: var(--header-sublink-hover-bg); }
+  .hdr-link .chev { width: 0.85rem; height: 0.85rem; color: var(--text-muted); transition: transform 160ms; }
+  .hdr-link.open { background: var(--surface-1); font-weight: 600; color: var(--accent); position: relative; }
+  .hdr-link.open .chev { transform: rotate(180deg); color: var(--accent); }
+  /* the active rail under the open trigger (mirrors after:bg-primary in the real header) */
+  .hdr-link.open::after { content: ""; position: absolute; left: 0.5rem; right: 0.5rem; bottom: -1px; height: 2px; border-radius: 1px; background: var(--accent); }
+  .hdr-actions { display: flex; align-items: center; gap: 0.35rem; }
+  .hdr-icon {
+      width: 2.25rem; height: 2.25rem; border-radius: 999px; border: none; background: transparent; cursor: pointer;
+      display: grid; place-items: center; color: var(--text);
+      transition: background var(--product-card-motion-base);
+  }
+  .hdr-icon:hover { background: var(--header-sublink-hover-bg); }
+  .hdr-icon svg { width: 1.15rem; height: 1.15rem; }
+  .hdr-cart { position: relative; display: inline-flex; align-items: center; gap: 0.45rem; }
+  .hdr-cart .count {
+      position: absolute; top: -2px; right: -2px; min-width: 1.05rem; height: 1.05rem; padding: 0 0.25rem;
+      border-radius: 999px; background: var(--accent); color: var(--accent-primary-text);
+      font: 700 0.625rem/1.05rem var(--font-sans); text-align: center;
+  }
+
+  /* the mega-menu PANEL — chrome driven by --header-* tokens --------------- */
+  /* outer positioner: top = trigger.bottom + one small consistent gap.
+   * In the real fix this is `position:fixed; top:trigger.bottom`. Here the
+   * header is the positioning context so we use absolute to demonstrate. */
+  .panel-pos { position: absolute; left: 0; right: 0; top: var(--header-bar-height); padding-top: 0.5rem; z-index: 20; }
+  /* the SAME container as the header bar → edges align with header content. */
+  .panel-card {
+      position: relative;
+      background: var(--surface-0);
+      border: 1px solid var(--header-divider-color);
+      border-radius: var(--header-panel-radius);
+      box-shadow: var(--header-panel-shadow);
+      padding: var(--header-panel-pad);
+      overflow: hidden;
+  }
+  /* the accent rail across the top of the card (before:bg-primary) */
+  .panel-card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: var(--accent);
+      border-top-left-radius: var(--header-panel-radius); border-top-right-radius: var(--header-panel-radius);
+  }
+
+  /* editorial-columns layout */
+  .mm-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--header-column-gap-y) var(--header-column-gap-x); }
+  @media (max-width: 760px) { .mm-cols { grid-template-columns: 1fr 1fr; } }
+  .mm-col { position: relative; display: flex; flex-direction: column; gap: 0.4rem; }
+  /* column dividers (mirrors COLUMN_DIVIDER_CLASSES) */
+  .mm-col:not(:last-child)::after { content: ""; position: absolute; top: 0; bottom: 0; right: calc(var(--header-column-gap-x) / -2); width: 1px; background: var(--header-divider-color); }
+  .mm-img {
+      aspect-ratio: 16 / 10; border-radius: calc(var(--header-panel-radius) * 0.66); margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      display: grid; place-items: center; color: rgb(255 255 255 / 0.85); font: 800 1.5rem/1 var(--font-sans);
+  }
+  .mm-img.b { background: linear-gradient(135deg, #118ab2, #8ec9d8); }
+  .mm-img.c { background: linear-gradient(135deg, #0a4a5e, #118ab2); }
+  .mm-img.d { background: linear-gradient(135deg, #073b4c, #2a6b7d); }
+  .mm-eyebrow {
+      font: 600 0.78rem/1 var(--font-sans); text-transform: uppercase; letter-spacing: var(--header-eyebrow-tracking);
+      color: var(--accent); text-decoration: none; width: fit-content;
+  }
+  .mm-eyebrow:hover { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; }
+  .mm-desc { font: 400 0.8125rem/1.4 var(--font-sans); color: var(--text-muted); margin: 0.1rem 0 0.3rem; }
+  .mm-sublinks { display: flex; flex-direction: column; gap: 2px; margin-top: 0.15rem; list-style: none; padding: 0; }
+  .mm-sublink {
+      display: block; text-decoration: none; color: var(--text);
+      font: 500 0.92rem/1 var(--font-sans); padding: 0.4rem 0.55rem; margin-inline: -0.55rem;
+      border-radius: var(--header-sublink-radius);
+      transition: background var(--product-card-motion-base), color var(--product-card-motion-base);
+  }
+  .mm-sublink:hover { background: var(--header-sublink-hover-bg); color: var(--accent); }
+
+  /* compact-list layout (narrow single column) */
+  .mm-compact { max-width: 320px; }
+  .mm-compact .mm-sublink { font-size: 0.95rem; padding: 0.5rem 0.65rem; margin-inline: -0.65rem; }
+
+  /* featured-promo layout (hero + side list) */
+  .mm-promo { display: grid; grid-template-columns: 3fr 2fr; gap: var(--header-column-gap-x); align-items: start; }
+  @media (max-width: 640px) { .mm-promo { grid-template-columns: 1fr; } }
+  .mm-hero { display: block; text-decoration: none; }
+  .mm-hero-img {
+      aspect-ratio: 4 / 3; max-height: 240px; width: 100%; border-radius: calc(var(--header-panel-radius) * 0.8);
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      display: grid; place-items: center; color: rgb(255 255 255 / 0.9); font: 800 2rem/1 var(--font-sans);
+  }
+  .mm-hero-title { font: 700 1.4rem/1.15 var(--font-sans); letter-spacing: -0.01em; color: var(--text); margin: 0.75rem 0 0; }
+  .mm-hero-desc { font: 400 0.875rem/1.4 var(--font-sans); color: var(--text-muted); margin: 0.35rem 0 0; }
+  .mm-hero-cta { display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.6rem; font: 600 0.875rem/1 var(--font-sans); color: var(--accent); }
+  .mm-promo-list { display: flex; flex-direction: column; gap: 2px; list-style: none; padding: 0; margin: 0; }
+  .mm-promo-list .mm-sublink { font-size: 0.95rem; padding: 0.55rem 0.6rem; margin-inline: -0.6rem; }
+
+  /* ---- The offset bug illustration (local) ----------------------------- */
+  /* dashed vertical guides mark the header content edges in BOTH columns. */
+  .align-demo { position: relative; height: 220px; border-radius: 12px; overflow: hidden; background: #fff; border: 1px solid #e2e8f0; }
+  .align-demo .mini-bar { position: relative; height: 38px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; z-index: 2; }
+  /* the centered max-width content zone of the header; its left/right edges are the guides */
+  .align-demo .content-zone { position: absolute; left: 14%; right: 14%; top: 0; bottom: 0; }
+  .align-demo .content-zone .row { display: flex; align-items: center; height: 38px; gap: 8px; font: 600 10px/1 ui-monospace, monospace; color: #475569; }
+  .align-demo .content-zone .row .logo { color: #0f172a; font-weight: 800; }
+  .align-demo .content-zone .row .nav { margin: 0 auto; display: flex; gap: 10px; }
+  .align-demo .content-zone .row .acts { color: #94a3b8; }
+  /* the dashed guide lines at the content edges */
+  .guide { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1.5px dashed #fb923c; z-index: 5; }
+  .guide.l { left: 14%; } .guide.r { right: 14%; }
+  .guide-lbl { position: absolute; top: 4px; font: 700 8px/1 ui-monospace, monospace; color: #c2410c; background: #fff7ed; padding: 2px 4px; border-radius: 3px; border: 1px solid #fed7aa; }
+  .guide.l .guide-lbl { left: 3px; } .guide.r .guide-lbl { right: 3px; }
+  /* the panel card placeholder in each demo */
+  .demo-panel { position: absolute; top: 44px; border-radius: 8px; border: 1.5px solid; padding: 10px 12px; font: 700 10px/1.4 ui-monospace, monospace; }
+  .demo-panel small { display: block; font-weight: 500; opacity: 0.8; }
+  /* BEFORE: narrow card centered in the VIEWPORT (not the content zone) — misaligned. */
+  .demo-panel.bad { left: 30%; right: 30%; background: #fef2f2; border-color: #fca5a5; color: #b91c1c; }
+  /* trigger marker (where "Shop" lives) to show the panel ISN'T under it */
+  .trig { position: absolute; top: 8px; width: 44px; height: 22px; border-radius: 5px; background: #0f172a; color: #fff; display: grid; place-items: center; font: 700 9px/1 ui-monospace, monospace; z-index: 6; }
+  /* the trigger sits inside the content zone, left-ish (just after the logo) */
+  .demo-before .trig { left: calc(14% + 70px); }
+  .demo-after .trig { left: calc(14% + 70px); }
+  /* AFTER (compact): card anchored UNDER the trigger, clamped, edges respect guides. */
+  .demo-panel.good-anchor { left: calc(14% + 64px); width: 150px; background: #f6fffb; border-color: #6ee7b7; color: #047857; }
+  /* AFTER (editorial): card spans the content zone exactly (guide to guide). */
+  .demo-panel.good-span { left: 14%; right: 14%; background: #f6fffb; border-color: #6ee7b7; color: #047857; }
+  .demo-tag { position: absolute; bottom: 8px; left: 12px; font: 700 9px/1 ui-monospace, monospace; padding: 3px 7px; border-radius: 999px; z-index: 7; }
+  .demo-tag.bad { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+  .demo-tag.good { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+
+  /* three-variant comparison grid */
+  .var-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .var-grid { grid-template-columns: 1fr; } }
+  .var-cell { display: flex; flex-direction: column; gap: 10px; }
+  .var-cap { display: flex; align-items: center; gap: 8px; font: 700 11px/1 ui-monospace, monospace; color: #334155; }
+  .var-cap code { background: #f1f5f9; padding: 2px 7px; border-radius: 5px; color: #0f172a; }
+  /* scaled-down mini panels for the variant gallery */
+  .mini-panel { position: relative; background: var(--surface-0); border: 1px solid var(--header-divider-color); border-radius: var(--header-panel-radius); box-shadow: var(--elevation-2); padding: 14px; overflow: hidden; }
+  .mini-panel::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+  .mini-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+  .mini-col { display: flex; flex-direction: column; gap: 4px; }
+  .mini-thumb { aspect-ratio: 16/10; border-radius: 6px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); }
+  .mini-eyebrow { font: 600 0.62rem/1 var(--font-sans); text-transform: uppercase; letter-spacing: var(--header-eyebrow-tracking); color: var(--accent); }
+  .mini-line { height: 7px; border-radius: 3px; background: var(--surface-1); }
+  .mini-line.s { width: 70%; } .mini-line.m { width: 88%; }
+  .mini-list { display: flex; flex-direction: column; gap: 6px; }
+  .mini-list .mini-line { height: 9px; }
+  .mini-hero { aspect-ratio: 4/3; border-radius: 7px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); margin-bottom: 8px; }
+  .mini-promo { display: grid; grid-template-columns: 3fr 2fr; gap: 12px; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 08 · header + mega-menu</p>
+    <h1 class="spec-title">Header &amp; navigation</h1>
+    <p class="spec-lede">The mega-menu panel is portaled to <code style="font-family:ui-monospace,monospace">&lt;body&gt;</code> and laid full-viewport-width, while its inner card is clamped to page-width and <em>centered in the viewport</em> — so it never lines up under the trigger or with the header's content edges. The fix re-anchors the card to the SAME max-width container the header uses, then anchors the narrower variants under their trigger. Three CMS-selectable variants (<code style="font-family:ui-monospace,monospace">editorial-columns</code>, <code style="font-family:ui-monospace,monospace">compact-list</code>, <code style="font-family:ui-monospace,monospace">featured-promo</code>) recolor per-shop from the <code style="font-family:ui-monospace,monospace">--header-*</code> tokens.</p>
+  </header>
+
+  <!-- ============ THE OFFSET BUG ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> The offset bug</h2>
+    <p class="desc">Root cause in <code>header-menu.tsx</code>: the portaled positioner is styled <code>position:fixed; top:trigger.bottom; left:0; right:0</code> (full viewport width), and its inner card is <code>mx-auto max-w-(--page-width)</code> — so the card centers in the <b>viewport</b>, not under the trigger and not against the header's padded content edges. The header bar lives in a centered <code>max-w-(--page-width)</code> container, so the two never agree. Dashed guides below mark the header content edges.</p>
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · centered in viewport</span>
+        <div class="align-demo demo-before">
+          <div class="mini-bar"></div>
+          <div class="content-zone">
+            <div class="row"><span class="logo">nordcom°</span><span class="nav">Shop · Men · Women · Sale</span><span class="acts">⌕ ◌ ▢</span></div>
+          </div>
+          <span class="guide l"><span class="guide-lbl">content edge</span></span>
+          <span class="guide r"><span class="guide-lbl">content edge</span></span>
+          <div class="trig">Shop</div>
+          <div class="demo-panel bad">panel card<small>centered in viewport — left/right edges drift inside the guides, not under "Shop"</small></div>
+          <span class="demo-tag bad">misaligned ✕</span>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="ba-tag after">After · aligned to header + anchored</span>
+        <div class="align-demo demo-after">
+          <div class="mini-bar"></div>
+          <div class="content-zone">
+            <div class="row"><span class="logo">nordcom°</span><span class="nav">Shop · Men · Women · Sale</span><span class="acts">⌕ ◌ ▢</span></div>
+          </div>
+          <span class="guide l"><span class="guide-lbl">content edge</span></span>
+          <span class="guide r"><span class="guide-lbl">content edge</span></span>
+          <div class="trig">Shop</div>
+          <div class="demo-panel good-span">editorial-columns · spans guide → guide</div>
+          <div class="demo-panel good-anchor" style="top:108px">compact / promo<small>anchored under "Shop", clamped to viewport</small></div>
+          <span class="demo-tag good">aligned ✓</span>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Cause</b><span>The portaled positioner is <code>left:0; right:0</code> (full viewport) and the inner card is <code>mx-auto max-w-(--page-width)</code>. The card centers in the viewport — disconnected from both the trigger and the header's padded content box. Narrower compact/promo panels look "offset weird"; even editorial-columns edges miss the header padding.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix</b><span>Wrap the card in the SAME <code>max-w-(--page-width)</code> + horizontal-padding container the header content uses, so left/right edges line up with the header. <code>editorial-columns</code> spans that content width; <code>compact-list</code> / <code>featured-promo</code> anchor under the trigger (<code>left = clamp(pad, trigger.left, viewport − cardWidth − pad)</code>) so they sit beneath their item and never overflow. Keep <code>top = trigger.bottom</code> with one consistent gap.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ HEADER BAR + OPEN PANEL ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> Header bar</h2>
+    <p class="desc">Sticky bar: logo wordmark left, nav links (Shop, Men, Women, Sale) with chevrons center, search / account / cart with a count bubble right. Below it, the open <code>editorial-columns</code> panel — its card now shares the header's container, so its edges align with the bar's content and the accent rail (<code>before:bg-primary</code>) tops the card.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com</span><span class="vp">1280×</span></div>
+      <div class="stage-body" style="position:relative;min-height:430px">
+        <div class="hdr">
+          <div class="hdr-container">
+            <div class="hdr-bar">
+              <a class="hdr-logo" href="#">nordcom<span class="dot">°</span></a>
+              <nav class="hdr-nav">
+                <button class="hdr-link open" type="button" aria-expanded="true">Shop
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <button class="hdr-link" type="button">Men
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <button class="hdr-link" type="button">Women
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <a class="hdr-link" href="#">Sale</a>
+              </nav>
+              <div class="hdr-actions">
+                <button class="hdr-icon" type="button" aria-label="Search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                </button>
+                <button class="hdr-icon" type="button" aria-label="Account">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                </button>
+                <button class="hdr-icon hdr-cart" type="button" aria-label="Cart, 3 items">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M6 6L5 3H2"/></svg>
+                  <span class="count">3</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- OPEN editorial-columns panel, sharing the header container -->
+          <div class="panel-pos">
+            <div class="hdr-container">
+              <div class="panel-card" role="menu" aria-label="Shop">
+                <div class="mm-cols">
+                  <div class="mm-col">
+                    <div class="mm-img a">▦</div>
+                    <a class="mm-eyebrow" href="#">New In</a>
+                    <p class="mm-desc">This week's drops, fresh off the line.</p>
+                    <ul class="mm-sublinks">
+                      <li><a class="mm-sublink" href="#">Latest arrivals</a></li>
+                      <li><a class="mm-sublink" href="#">Back in stock</a></li>
+                      <li><a class="mm-sublink" href="#">Trending now</a></li>
+                      <li><a class="mm-sublink" href="#">Editor's picks</a></li>
+                    </ul>
+                  </div>
+                  <div class="mm-col">
+                    <div class="mm-img b">◫</div>
+                    <a class="mm-eyebrow" href="#">Clothing</a>
+                    <p class="mm-desc">Everyday essentials and layering staples.</p>
+                    <ul class="mm-sublinks">
+                      <li><a class="mm-sublink" href="#">T-shirts</a></li>
+                      <li><a class="mm-sublink" href="#">Sweatpants</a></li>
+                      <li><a class="mm-sublink" href="#">Outerwear</a></li>
+                      <li><a class="mm-sublink" href="#">Knitwear</a></li>
+                    </ul>
+                  </div>
+                  <div class="mm-col">
+                    <div class="mm-img c">▤</div>
+                    <a class="mm-eyebrow" href="#">Footwear</a>
+                    <p class="mm-desc">From pool slides to everyday runners.</p>
+                    <ul class="mm-sublinks">
+                      <li><a class="mm-sublink" href="#">Slides</a></li>
+                      <li><a class="mm-sublink" href="#">Sneakers</a></li>
+                      <li><a class="mm-sublink" href="#">Boots</a></li>
+                      <li><a class="mm-sublink" href="#">All footwear</a></li>
+                    </ul>
+                  </div>
+                  <div class="mm-col">
+                    <div class="mm-img d">◇</div>
+                    <a class="mm-eyebrow" href="#">Collections</a>
+                    <p class="mm-desc">Curated capsules and seasonal edits.</p>
+                    <ul class="mm-sublinks">
+                      <li><a class="mm-sublink" href="#">Men</a></li>
+                      <li><a class="mm-sublink" href="#">Women</a></li>
+                      <li><a class="mm-sublink" href="#">Tops</a></li>
+                      <li><a class="mm-sublink" href="#">Bottoms</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Top layer &amp; gap</b><span>The real panel still portals to <code>&lt;body&gt;</code> with <code>position:fixed</code> (so it escapes the nav's <code>overflow-x-auto</code> clip), but the inner card now sits in the same padded <code>max-w-(--page-width)</code> wrapper as the bar. One consistent gap (<code>top = trigger.bottom + pt-3</code>) bridges the trigger→panel hover traversal.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ THREE VARIANTS ============ -->
+  <section class="spec-section">
+    <h2><span class="num">3</span> Three variants</h2>
+    <p class="desc">Each top-level nav item picks one of the real <code>HEADER_VARIANTS</code>. All three share the same card chrome (tokenized pad / radius / shadow / accent rail) and differ only in interior layout. The narrower two anchor under the trigger; editorial spans the content width.</p>
+    <div class="stage" data-bg="muted">
+      <div class="stage-body pad">
+        <div class="var-grid">
+
+          <div class="var-cell">
+            <div class="var-cap"><code>editorial-columns</code></div>
+            <div class="mini-panel">
+              <div class="mini-cols">
+                <div class="mini-col"><div class="mini-thumb"></div><span class="mini-eyebrow">New In</span><div class="mini-line m"></div><div class="mini-list"><div class="mini-line s"></div><div class="mini-line m"></div><div class="mini-line s"></div></div></div>
+                <div class="mini-col"><div class="mini-thumb"></div><span class="mini-eyebrow">Clothing</span><div class="mini-line m"></div><div class="mini-list"><div class="mini-line m"></div><div class="mini-line s"></div><div class="mini-line m"></div></div></div>
+              </div>
+            </div>
+            <p class="scrollnote">Columns + images. Spans the full content width.</p>
+          </div>
+
+          <div class="var-cell">
+            <div class="var-cap"><code>compact-list</code></div>
+            <div class="mini-panel" style="max-width:240px">
+              <span class="mini-eyebrow">Sale</span>
+              <div class="mini-list" style="margin-top:8px">
+                <div class="mini-line m"></div>
+                <div class="mini-line s"></div>
+                <div class="mini-line m"></div>
+                <div class="mini-line s"></div>
+                <div class="mini-line m"></div>
+              </div>
+            </div>
+            <p class="scrollnote">A single narrow link column. Anchored under its trigger.</p>
+          </div>
+
+          <div class="var-cell">
+            <div class="var-cap"><code>featured-promo</code></div>
+            <div class="mini-panel">
+              <div class="mini-promo">
+                <div>
+                  <div class="mini-hero"></div>
+                  <span class="mini-eyebrow">Summer Capsule</span>
+                  <div class="mini-line m" style="margin-top:6px"></div>
+                </div>
+                <div class="mini-list" style="padding-top:2px">
+                  <div class="mini-line m"></div>
+                  <div class="mini-line s"></div>
+                  <div class="mini-line m"></div>
+                  <div class="mini-line s"></div>
+                </div>
+              </div>
+            </div>
+            <p class="scrollnote">A hero image block + a side link list.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- a full-size open featured-promo for fidelity -->
+    <div class="stage" style="margin-top:18px">
+      <div class="stage-body pad" style="background:var(--surface-1)">
+        <div class="panel-card" role="menu" aria-label="Featured" style="max-width:760px;margin-inline:auto">
+          <div class="mm-promo">
+            <a class="mm-hero" href="#">
+              <div class="mm-hero-img">◐</div>
+              <h3 class="mm-hero-title">Summer Capsule</h3>
+              <p class="mm-hero-desc">Lightweight pieces built for warm days — limited run.</p>
+              <span class="mm-hero-cta">Shop the capsule
+                <svg style="width:0.85rem;height:0.85rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>
+              </span>
+            </a>
+            <ul class="mm-promo-list">
+              <li><a class="mm-sublink" href="#">Linen shirts</a></li>
+              <li><a class="mm-sublink" href="#">Pool slides</a></li>
+              <li><a class="mm-sublink" href="#">Lightweight sweatpants</a></li>
+              <li><a class="mm-sublink" href="#">Sun hats &amp; caps</a></li>
+              <li><a class="mm-sublink" href="#">View all summer</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note info"><div class="ic">i</div><div><b>Per-shop config</b><span>Nav is a recursive CMS tree (<code>packages/cms/src/fields/nav-item.ts</code>): every level carries <code>link</code>, <code>image</code>, <code>description</code>, <code>backgroundColor</code>, <code>items</code>. Each top-level item sets <code>variant</code> to one of the real <code>HEADER_VARIANTS</code> — so a tenant configures Shop as <code>editorial-columns</code>, Sale as <code>compact-list</code>, and a campaign as <code>featured-promo</code> without code changes.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ NOTES ============ -->
+  <section class="spec-section">
+    <h2><span class="num">4</span> Notes</h2>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>The fixed full-viewport positioning</b><span><code>style={{ position:'fixed', top:position.top, left:0, right:0 }}</code> spans the viewport; the inner <code>mx-auto max-w-(--page-width)</code> card then centers in that viewport box — disconnected from the trigger and the header's content padding.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Align to header container + anchor under trigger</b><span>Reuse the header's exact <code>max-w-(--page-width)</code> + padding wrapper for the card so edges align with the bar. For <code>compact-list</code> / <code>featured-promo</code>, set the card's <code>left</code> from <code>trigger.left</code>, clamped to <code>[pad, viewport − cardWidth − pad]</code>, so it sits under the item and never overflows. <code>editorial-columns</code> spans the container.</span></div></div>
+      <div class="note info"><div class="ic">i</div><div><b>Per-shop: CMS nav tree + per-item variant</b><span>The recursive nav tree drives content; <code>resolveVariant</code> maps each item's <code>variant</code> onto <code>HEADER_VARIANTS</code> (<code>editorial-columns</code> / <code>compact-list</code> / <code>featured-promo</code>), falling back to <code>editorial-columns</code> for unknown values. No redeploy to reconfigure a tenant's menu.</span></div></div>
+      <div class="note dry"><div class="ic">⊕</div><div><b>Panel chrome is token-driven</b><span>Card pad (<code>--header-panel-pad</code>), radius (<code>--header-panel-radius</code>), shadow (<code>--header-panel-shadow</code>), column gaps (<code>--header-column-gap-x/y</code>), sublink styles (<code>--header-sublink-radius</code> / <code>--header-sublink-hover-bg</code>), accent rail and eyebrow tracking (<code>--header-eyebrow-tracking</code>) all read <code>--header-*</code> tokens — recolored by the tenant accent at once, same as the rest of the spec.</span></div></div>
+    </div>
+    <div class="tokenrow">
+      <span class="tokenchip"><span class="sw" style="background:#073b4c"></span>--accent (rail / eyebrow)</span>
+      <span class="tokenchip">--header-panel-pad 1.44rem</span>
+      <span class="tokenchip">--header-panel-radius 1rem</span>
+      <span class="tokenchip">--header-panel-shadow elevation-3</span>
+      <span class="tokenchip">--header-column-gap-x 2.5rem</span>
+      <span class="tokenchip">--header-sublink-hover-bg</span>
+      <span class="tokenchip">--header-eyebrow-tracking 0.08em</span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

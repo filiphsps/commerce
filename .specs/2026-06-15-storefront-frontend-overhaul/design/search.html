@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Search — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+<style>
+  /* page-local: search field row + landing hero. NOT new components —
+   * the field reuses the shop input shell; everything below it is shared UI. */
+  .search-row { display: flex; flex-direction: column; gap: 0.65rem; padding: 1.25rem 1.25rem 0; }
+  .search-field { display: flex; align-items: stretch; height: 3.5rem; border-radius: var(--block-border-radius); overflow: hidden; border: 2px solid var(--border-strong); background: var(--surface-0); }
+  .search-field input { flex: 1; min-width: 0; border: none; background: transparent; padding: 0 1rem; font: 500 1rem/1 var(--font-sans); color: var(--text); }
+  .search-field input:focus { outline: none; }
+  .search-field .go { width: 3.5rem; border: none; background: var(--product-card-cta-bg); color: var(--product-card-cta-color); font-size: 1.25rem; cursor: pointer; display: grid; place-items: center; }
+  .search-count { font: 600 0.875rem/1 var(--font-sans); color: var(--text-muted); padding: 0 0.15rem; }
+  .search-count b { color: var(--text); font-weight: 700; }
+
+  /* no-query landing hero */
+  .landing { padding: 2.5rem 1.25rem 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+  .landing h2 { font: 800 var(--text-h2)/1.1 var(--font-heading); letter-spacing: -0.02em; margin: 0; text-align: center; }
+  .landing p { color: var(--text-muted); margin: 0; text-align: center; max-width: 46ch; }
+  .landing .search-field { width: 100%; max-width: 620px; }
+  .landing-label { font: 600 0.6875rem/1 var(--font-sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); align-self: center; margin-top: 0.5rem; }
+  .pop-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; max-width: 620px; }
+  .trending { width: 100%; padding: 1.5rem 1.25rem 1.75rem; }
+
+  /* shop-layout body padding inside the stage */
+  .shop-body { padding: 1.25rem; }
+</style>
+</head>
+<body class="spec">
+<div class="spec-wrap ui">
+  <a class="spec-back" href="index.html">← All surfaces</a>
+  <header class="spec-head">
+    <p class="spec-eyebrow">Surface 07 · /search</p>
+    <h1 class="spec-title">Search</h1>
+    <p class="spec-lede">Search crashes today and has no filtering. The fix is two-fold: <b>guard every state</b> so a missing query, a malformed product, or a zero-result query can never throw — and <b>reuse the shared faceted filter</b> (the same component as <code style="font-family:ui-monospace,monospace">/products</code> and collections) plus the one true product card/grid, so search stops being a special case.</p>
+  </header>
+
+  <!-- ============ THE CRASH ============ -->
+  <section class="spec-section" style="margin-top:8px">
+    <h2><span class="num">1</span> The crash</h2>
+    <p class="desc">Search results are fetched in <code>search-content-gate.tsx</code> from <code>cachedSearch</code> (<code>api/shopify/search.ts</code>) and rendered through <code>search-content.tsx</code>. Two unguarded paths converge: search edge nodes are <code>unsafe_cast&lt;Product&gt;</code> with no runtime guarantee of the fields the card reads, and the client has no landing state for the no-query case — so the page either throws on the first malformed product or paints blank.</p>
+    <div class="ba">
+      <div class="ba-col">
+        <span class="ba-tag before">Before · throws / blank</span>
+        <div class="stage" style="box-shadow:none">
+          <div class="stage-body pad" style="background:#fff7f7">
+            <div style="font:600 12px/1.6 ui-monospace,monospace;color:#b91c1c">
+              GET /search?q=slides<br/>
+              → cachedSearch() → SearchApi<br/>
+              → node = unsafe_cast&lt;Product&gt;(edge.node)<br/>
+              → ProductCard reads node.variants.edges[0]<br/>
+              <b>→ TypeError: cannot read 'edges' of undefined</b><br/><br/>
+              GET /search  (no q)<br/>
+              → products: [] → &lt;section class="empty:hidden"&gt;<br/>
+              <b>→ collapses to nothing (no landing)</b>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="ba-tag after">After · always a guarded state</span>
+        <div class="stage" style="box-shadow:none">
+          <div class="stage-body pad" style="background:#f6fffb">
+            <div style="font:600 12px/1.6 ui-monospace,monospace;color:#15803d">
+              q present + results → grid + shared filter<br/>
+              q present + zero hits → branded .empty<br/>
+              no q → search landing (popular + trending)<br/><br/>
+              malformed node → skipped, never deref'd<br/>
+              <b>→ no path throws, no blank page</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note bug"><div class="ic">!</div><div><b>Cause</b><span>In <code>api/shopify/search.ts</code> the search edges are mapped with <code>unsafe_cast&lt;Product&gt;(item.node)</code> — the comment claims "the Storefront API guarantees all queried fields are present", but <code>PRODUCT_FRAGMENT_MINIMAL</code> has historically shipped without the <code>variants</code> the card dereferences. An unguarded <code>data.variants.edges[0]</code> in the product card then throws for any node missing the field. Compounding it, <code>search-content.tsx</code> only renders a branded empty state when <code>activeQuery.length &gt; 0</code>; with no query it falls through to <code>&lt;section class="… empty:hidden"&gt;</code>, which collapses to a blank page instead of a real no-query landing. Filtering is rendered as a loose <code>&lt;Filters&gt;</code> card row, not the shared faceted aside — so search "lacks filters" in the consolidated sense.</span></div></div>
+      <div class="note fix"><div class="ic">✓</div><div><b>Fix (design)</b><span>Three explicitly guarded states, none of which can throw: (1) <b>results</b> — query + hits → shared <code>.shop-layout</code> faceted aside + <code>.pc-grid</code>; (2) <b>no results</b> — query + zero hits → the shared <code>.empty</code> with suggestions + "Browse all products"; (3) <b>no query</b> — empty <code>q</code> → a search landing (big field, popular searches, trending grid). Product nodes are normalized/guarded before render so a missing <code>variants</code> field skips the card rather than dereferencing <code>undefined</code>.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="spec-section">
+    <h2><span class="num">2</span> Results</h2>
+    <p class="desc">A query with hits renders the shared faceted filter aside (sort, price, in stock, vendor, type, color, size — the SAME component as <code>/products</code> and collections) beside the shared product grid. The field shows the active query and a result count.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / search ?q=slides</span><span class="vp">1280×</span></div>
+      <div class="stage-body">
+        <div class="search-row">
+          <div class="search-field">
+            <input type="search" value="slides" aria-label="Search" />
+            <button class="go" aria-label="Search">⌕</button>
+          </div>
+          <div class="search-count"><b>12 results</b> for “slides”</div>
+        </div>
+        <div class="shop-body">
+          <div class="shop-layout">
+            <aside class="shop-aside">
+              <div class="toolbar">
+                <span class="count">12 products</span>
+              </div>
+              <div class="active-filters" style="margin-bottom:.5rem">
+                <span class="filter-chip">In stock <span class="x">✕</span></span>
+                <span class="filter-chip">Sand <span class="x">✕</span></span>
+                <span class="filter-chip clear">Clear all</span>
+              </div>
+              <div class="filters">
+                <details class="facet" open>
+                  <summary>Sort <span class="chev">▾</span></summary>
+                  <div class="facet-body">
+                    <select class="select" aria-label="Sort">
+                      <option>Relevance</option>
+                      <option>Price · low to high</option>
+                      <option>Price · high to low</option>
+                      <option>Newest</option>
+                    </select>
+                  </div>
+                </details>
+                <details class="facet" open>
+                  <summary>Price <span class="chev">▾</span></summary>
+                  <div class="facet-body">
+                    <label class="facet-opt"><input type="checkbox" /> Under $25 <span class="count">3</span></label>
+                    <label class="facet-opt"><input type="checkbox" checked /> $25 – $50 <span class="count">7</span></label>
+                    <label class="facet-opt"><input type="checkbox" /> $50 – $100 <span class="count">2</span></label>
+                  </div>
+                </details>
+                <details class="facet" open>
+                  <summary>Availability <span class="chev">▾</span></summary>
+                  <div class="facet-body">
+                    <label class="facet-opt"><input type="checkbox" checked /> In stock <span class="count">10</span></label>
+                  </div>
+                </details>
+                <details class="facet">
+                  <summary>Vendor <span class="chev">▾</span></summary>
+                  <div class="facet-body">
+                    <label class="facet-opt"><input type="checkbox" /> Acme Studio <span class="count">6</span></label>
+                    <label class="facet-opt"><input type="checkbox" /> Northwind <span class="count">4</span></label>
+                  </div>
+                </details>
+                <details class="facet">
+                  <summary>Type <span class="chev">▾</span></summary>
+                  <div class="facet-body">
+                    <label class="facet-opt"><input type="checkbox" /> Footwear <span class="count">8</span></label>
+                    <label class="facet-opt"><input type="checkbox" /> Apparel <span class="count">4</span></label>
+                  </div>
+                </details>
+                <details class="facet">
+                  <summary>Color <span class="chev">▾</span></summary>
+                  <div class="facet-body">
+                    <div class="facet-swatches">
+                      <button class="opt-swatch active" style="--_c:#d9c7a3" aria-pressed="true" aria-label="Sand"></button>
+                      <button class="opt-swatch" style="--_c:#1f2937" aria-label="Black"></button>
+                      <button class="opt-swatch" style="--_c:#b91c1c" aria-label="Red"></button>
+                      <button class="opt-swatch" style="--_c:#3b82f6" aria-label="Blue"></button>
+                    </div>
+                  </div>
+                </details>
+                <details class="facet">
+                  <summary>Size <span class="chev">▾</span></summary>
+                  <div class="facet-body">
+                    <div class="opt-row">
+                      <button class="opt-chip">40</button>
+                      <button class="opt-chip active" aria-pressed="true">42</button>
+                      <button class="opt-chip">43</button>
+                      <button class="opt-chip unavailable">44</button>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </aside>
+
+            <div>
+              <div class="toolbar">
+                <span class="filter-trigger"><button class="btn secondary">⚙ Filters</button></span>
+                <span class="count">12 products</span>
+                <select class="select" aria-label="Sort">
+                  <option>Relevance</option>
+                  <option>Price · low to high</option>
+                  <option>Newest</option>
+                </select>
+              </div>
+              <div class="pc-grid">
+                <article class="pc">
+                  <div class="pc-media"><span class="ph">▣</span><span class="pc-badges"><span class="badge new">New</span></span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                  <div class="pc-body"><a class="pc-vendor" href="#">Acme Studio</a><a class="pc-title" href="#">Pool Slides</a><div class="pc-price"><span class="now">$45.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#d9c7a3"></span><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-more">+2</span></div></div>
+                </article>
+                <article class="pc">
+                  <div class="pc-media"><span class="ph">▣</span><span class="pc-badges"><span class="badge sale">−20%</span></span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                  <div class="pc-body"><a class="pc-vendor" href="#">Northwind</a><a class="pc-title" href="#">Sport Slides Lightweight</a><div class="pc-price"><span class="now onsale">$32.00</span><span class="was">$40.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-swatch" style="--_c:#b91c1c"></span></div></div>
+                </article>
+                <article class="pc">
+                  <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                  <div class="pc-body"><a class="pc-vendor" href="#">Acme Studio</a><a class="pc-title" href="#">Beach Slides</a><div class="pc-price"><span class="now">$28.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#3b82f6"></span><span class="opt-swatch" style="--_c:#d9c7a3"></span><span class="opt-swatch" style="--_c:#1f2937"></span></div></div>
+                </article>
+                <article class="pc">
+                  <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                  <div class="pc-body"><a class="pc-vendor" href="#">Northwind</a><a class="pc-title" href="#">Cushioned Slides</a><div class="pc-price"><span class="now">$52.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#1f2937"></span></div></div>
+                </article>
+                <article class="pc">
+                  <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                  <div class="pc-body"><a class="pc-vendor" href="#">Acme Studio</a><a class="pc-title" href="#">Studio Slides</a><div class="pc-price"><span class="now">$39.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#d9c7a3"></span><span class="opt-swatch" style="--_c:#b91c1c"></span></div></div>
+                </article>
+                <article class="pc">
+                  <div class="pc-media"><span class="ph">▣</span><span class="pc-badges"><span class="badge new">New</span></span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                  <div class="pc-body"><a class="pc-vendor" href="#">Northwind</a><a class="pc-title" href="#">Trail Slides</a><div class="pc-price"><span class="now">$48.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-swatch" style="--_c:#3b82f6"></span><span class="opt-more">+1</span></div></div>
+                </article>
+                <article class="pc">
+                  <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                  <div class="pc-body"><a class="pc-vendor" href="#">Acme Studio</a><a class="pc-title" href="#">Everyday Slides</a><div class="pc-price"><span class="now">$24.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#d9c7a3"></span></div></div>
+                </article>
+                <article class="pc">
+                  <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+                  <div class="pc-body"><a class="pc-vendor" href="#">Northwind</a><a class="pc-title" href="#">Recovery Slides</a><div class="pc-price"><span class="now">$56.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-swatch" style="--_c:#b91c1c"></span><span class="opt-swatch" style="--_c:#3b82f6"></span></div></div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NO RESULTS ============ -->
+  <section class="spec-section">
+    <h2><span class="num">3</span> No results</h2>
+    <p class="desc">A committed query with zero hits is distinct from the unsearched state — it gets the shared branded <code>.empty</code> component (the SAME one used by cart and 404), never a thrown error or a blank section. The field keeps the query so the user can refine it.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / search ?q=xyzzy</span><span class="vp">1280×</span></div>
+      <div class="stage-body">
+        <div class="search-row">
+          <div class="search-field">
+            <input type="search" value="xyzzy" aria-label="Search" />
+            <button class="go" aria-label="Search">⌕</button>
+          </div>
+          <div class="search-count"><b>0 results</b> for “xyzzy”</div>
+        </div>
+        <div class="shop-body">
+          <div class="empty">
+            <div class="ic" aria-hidden="true" style="font-size:2rem">⌕</div>
+            <h3>No results for “xyzzy”</h3>
+            <p>We couldn't find anything matching your search. Try a different term, or check the spelling. Popular right now: <b>slides</b>, <b>tops</b>, <b>sweatpants</b>.</p>
+            <div class="active-filters" style="justify-content:center;margin:.25rem 0 .5rem">
+              <span class="filter-chip">slides</span>
+              <span class="filter-chip">sweatpants</span>
+              <span class="filter-chip">men t-shirt</span>
+            </div>
+            <a class="btn ink lg" href="#">Browse all products</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EMPTY / NO QUERY ============ -->
+  <section class="spec-section">
+    <h2><span class="num">4</span> Empty / no query</h2>
+    <p class="desc">Arriving at <code>/search</code> with no <code>q</code> is the common case (header search link, deep link). Instead of a blank page it shows a search landing: a large centered field, a popular-searches chip row, and a small trending grid built from the SAME product card.</p>
+    <div class="stage">
+      <div class="stage-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">nordcom-demo-shop.com / search</span><span class="vp">1280×</span></div>
+      <div class="stage-body">
+        <div class="landing">
+          <h2>What are you looking for?</h2>
+          <p>Search products, brands, categories, and collections.</p>
+          <div class="search-field">
+            <input type="search" placeholder="Search for products, brands, categories…" aria-label="Search" />
+            <button class="go" aria-label="Search">⌕</button>
+          </div>
+          <div class="landing-label">Popular searches</div>
+          <div class="pop-row">
+            <span class="filter-chip">slides</span>
+            <span class="filter-chip">sweatpants</span>
+            <span class="filter-chip">men t-shirt</span>
+            <span class="filter-chip">tops</span>
+            <span class="filter-chip">bottoms</span>
+            <span class="filter-chip">new arrivals</span>
+          </div>
+        </div>
+        <div class="trending">
+          <div class="sec-head"><h2>Trending</h2><a href="#">View all</a></div>
+          <div class="pc-grid">
+            <article class="pc">
+              <div class="pc-media"><span class="ph">▣</span><span class="pc-badges"><span class="badge new">New</span></span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body"><a class="pc-vendor" href="#">Acme Studio</a><a class="pc-title" href="#">Pool Slides</a><div class="pc-price"><span class="now">$45.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#d9c7a3"></span><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-more">+2</span></div></div>
+            </article>
+            <article class="pc">
+              <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body"><a class="pc-vendor" href="#">Northwind</a><a class="pc-title" href="#">Sweatpants</a><div class="pc-price"><span class="now">$60.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-swatch" style="--_c:#d9c7a3"></span></div></div>
+            </article>
+            <article class="pc">
+              <div class="pc-media"><span class="ph">▣</span><span class="pc-badges"><span class="badge sale">−15%</span></span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body"><a class="pc-vendor" href="#">Acme Studio</a><a class="pc-title" href="#">Men T-Shirt</a><div class="pc-price"><span class="now onsale">$17.00</span><span class="was">$20.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#ffffff"></span><span class="opt-swatch" style="--_c:#1f2937"></span><span class="opt-swatch" style="--_c:#b91c1c"></span></div></div>
+            </article>
+            <article class="pc">
+              <div class="pc-media"><span class="ph">▣</span><button class="pc-cta" aria-label="Add to bag">＋</button></div>
+              <div class="pc-body"><a class="pc-vendor" href="#">Northwind</a><a class="pc-title" href="#">Studio Slides</a><div class="pc-price"><span class="now">$39.00</span></div><div class="pc-options"><span class="opt-swatch" style="--_c:#d9c7a3"></span><span class="opt-swatch" style="--_c:#b91c1c"></span></div></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note dry"><div class="ic">⧉</div><div><b>DRY</b><span>Every interactive piece here is shared, not rebuilt: the faceted aside is the SAME <code>.filters</code> / <code>.facet</code> / <code>.toolbar</code> component as <code>/products</code> and collections; the cards are the one true <code>.pc</code> / <code>.pc-grid</code>; the zero-hit block is the shared <code>.empty</code>; the chips are <code>.filter-chip</code>. Search owns only the field row and the no-query landing copy.</span></div></div>
+      <div class="note info"><div class="ic">i</div><div><b>URL contract</b><span>Filters reuse the same query params as the rest of the catalog: <code>?q=slides&amp;vendor=acme-studio&amp;color=sand&amp;size=42&amp;price=25-50&amp;sort=price-asc&amp;availability=in-stock</code>. The shared filter reads and writes these params, so a filtered search is a shareable, indexable URL — and the result count + active-filter chips derive from them.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

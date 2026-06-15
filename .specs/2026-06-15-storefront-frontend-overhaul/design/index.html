@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Storefront Frontend Overhaul — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ui.css" />
+<link rel="stylesheet" href="shell.css" />
+</head>
+<body class="spec">
+<div class="spec-wrap">
+
+  <header class="spec-head">
+    <p class="spec-eyebrow">.specs/2026-06-15-storefront-frontend-overhaul</p>
+    <h1 class="spec-title">Storefront Frontend Overhaul</h1>
+    <p class="spec-lede">Visual reference for the storefront fix pass. These are static, token-driven mockups — they re-skin from <code style="font-family:ui-monospace,monospace">tokens.css</code> exactly the way a tenant theme re-skins the real storefront, and they compose one shared component layer (<code style="font-family:ui-monospace,monospace">ui.css</code>) so the spec itself proves the DRY direction. Iterate here before any app code changes.</p>
+  </header>
+
+  <section class="spec-section" style="margin-top:32px">
+    <h2><span class="num">◆</span> Design direction</h2>
+    <p class="desc"><b>Hybrid</b> (locked): keep the platform default tokens, accent palette, and Public Sans. Reimagine layout only where it is broken or weak. No tenant theme is invalidated — every fix is expressed as a token or a layout change that any theme inherits.</p>
+    <div class="tokenrow">
+      <span class="tokenchip"><span class="sw" style="background:#073b4c"></span>--accent-primary #073b4c</span>
+      <span class="tokenchip"><span class="sw" style="background:#118ab2"></span>--accent-secondary #118ab2</span>
+      <span class="tokenchip"><span class="sw" style="background:#14110b"></span>ink #14110b</span>
+      <span class="tokenchip"><span class="sw" style="background:#ece6d4"></span>--border-default #ece6d4</span>
+      <span class="tokenchip"><span class="sw" style="background:#b51200"></span>--state-sale #b51200</span>
+      <span class="tokenchip">Public Sans</span>
+    </div>
+  </section>
+
+  <section class="spec-section" style="margin-top:48px">
+    <h2><span class="num">▥</span> Surfaces</h2>
+    <p class="desc">Each page documents the bug, the fix, and the shared components it reuses. Open them in order or jump to a fix.</p>
+    <div class="idx">
+
+      <a class="idx-card" href="product-page.html">
+        <div class="thumb">PDP</div>
+        <div class="meta"><h3>Product page</h3><p>Gallery + the always-visible lightbox bug, sticky layout, buy box.</p>
+        <div class="tags"><span data-s="done">gallery</span><span data-s="done">lightbox</span></div></div>
+      </a>
+
+      <a class="idx-card" href="product-carousel.html">
+        <div class="thumb">▸▸</div>
+        <div class="meta"><h3>Product carousel</h3><p>Edge-shadow clip, forced last card, gutter rail, fade masks, arrows.</p>
+        <div class="tags"><span data-s="done">rail</span><span data-s="done">arrows</span></div></div>
+      </a>
+
+      <a class="idx-card" href="product-card.html">
+        <div class="thumb">▢</div>
+        <div class="meta"><h3>Product card</h3><p>Anatomy, swatch/chip system, vendor link target, dark-bg selected state.</p>
+        <div class="tags"><span data-s="done">swatch</span><span data-s="new">vendor link</span><span data-s="new">dark bg</span></div></div>
+      </a>
+
+      <a class="idx-card" href="collection.html">
+        <div class="thumb">▦</div>
+        <div class="meta"><h3>Collection page</h3><p>Header with/without image, grid fill at all widths, empty state.</p>
+        <div class="tags"><span data-s="done">header</span><span data-s="done">grid</span></div></div>
+      </a>
+
+      <a class="idx-card" href="collections-index.html">
+        <div class="thumb">▣</div>
+        <div class="meta"><h3>Collections index</h3><p>The missing <code style="font-family:ui-monospace,monospace">/collections</code> listing page.</p>
+        <div class="tags"><span data-s="new">new route</span></div></div>
+      </a>
+
+      <a class="idx-card" href="products-index.html">
+        <div class="thumb">⊞</div>
+        <div class="meta"><h3>/products + filters</h3><p>All-products page with the shared full-faceted filter (the DRY anchor).</p>
+        <div class="tags"><span data-s="new">filters</span><span data-s="done">grid</span></div></div>
+      </a>
+
+      <a class="idx-card" href="search.html">
+        <div class="thumb">⌕</div>
+        <div class="meta"><h3>Search</h3><p>Crash fix, results, reuse of the shared filter + facets.</p>
+        <div class="tags"><span data-s="done">crash</span><span data-s="new">filters</span></div></div>
+      </a>
+
+      <a class="idx-card" href="cart.html">
+        <div class="thumb">▤</div>
+        <div class="meta"><h3>Cart</h3><p>Redesign, line items with swatch-system variants, tenant cart-line tokens.</p>
+        <div class="tags"><span data-s="done">design</span><span data-s="new">tokens</span><span data-s="done">swatch</span></div></div>
+      </a>
+
+      <a class="idx-card" href="header.html">
+        <div class="thumb">≡</div>
+        <div class="meta"><h3>Header + mega-menu</h3><p>Offset fix, alignment, 3 variants, per-shop config.</p>
+        <div class="tags"><span data-s="done">offset</span><span data-s="done">menu</span></div></div>
+      </a>
+
+      <a class="idx-card" href="footer.html">
+        <div class="thumb">▬</div>
+        <div class="meta"><h3>Footer</h3><p>iOS safe-area gap fix (black footer / white notch gap).</p>
+        <div class="tags"><span data-s="done">iOS safe-area</span></div></div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="spec-section" style="margin-top:56px">
+    <h2><span class="num">⊕</span> DRY consolidation</h2>
+    <div class="notes">
+      <div class="note dry"><div class="ic">⊕</div><div><b>One option system everywhere</b><span><code>.opt-swatch</code> / <code>.opt-chip</code> / <code>.opt-more</code> render variants on the product card, the buy box, AND cart lines. Weight / color / size all flow through the same primitives.</span></div></div>
+      <div class="note dry"><div class="ic">⊕</div><div><b>One filter, three pages</b><span>The faceted filter component serves <code>/products</code>, collection pages, and search. Same facets, same chips, same mobile drawer.</span></div></div>
+      <div class="note dry"><div class="ic">⊕</div><div><b>One rail</b><span>The carousel and the grid are one component in two modes — gutter padding fixes the clipped edge shadow for both.</span></div></div>
+      <div class="note dry"><div class="ic">⊕</div><div><b>Tokens, not hard-codes</b><span>Cart-line look is new <code>--cart-line-*</code> tokens added to <code>ShopThemeTokens</code>, so the admin theme editor renders the knobs for free. The dark-bg fix is a token flip (<code>.on-dark</code>), not per-component overrides.</span></div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
