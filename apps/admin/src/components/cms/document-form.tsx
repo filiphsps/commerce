@@ -2,6 +2,7 @@ import type { FormState } from '@nordcom/commerce-cms/editor/form';
 import type { ReactNode } from 'react';
 
 import { DocumentFormBody } from '@/components/cms/document-form-body';
+import { SplitEditorLayout } from '@/components/cms/split-editor-layout';
 import { PageFooter } from '@/components/shell/page-footer';
 import { type Breadcrumb, PageHeader } from '@/components/shell/page-header';
 
@@ -27,8 +28,8 @@ export type DocumentFormProps = {
  * @param props.children - Field components rendered inside the form body.
  * @param props.onSubmit - Server action called on explicit form submit.
  * @param props.initialState - Native FormState used to seed the form.
- * @param props.toolbar - Optional toolbar slot rendered in the sticky PageFooter.
- * @param props.livePreview - When provided the form body switches to a two-column grid layout.
+ * @param props.toolbar - Optional toolbar slot rendered in the pinned PageFooter.
+ * @param props.livePreview - When provided the body becomes a two-column split with an independent-scroll preview.
  * @returns The assembled editor page layout.
  */
 export function DocumentForm({
@@ -40,32 +41,27 @@ export function DocumentForm({
     toolbar,
     livePreview,
 }: DocumentFormProps) {
+    // The form itself is the layout container: PageHeader pins to the top, the
+    // SplitEditorLayout fills the middle and owns ALL scrolling (per column, so
+    // the preview iframe can't capture the page scroll), and PageFooter sits as
+    // the last flex item — always visible without any sticky/viewport-height
+    // hack. `min-h-0` lets the scroll regions shrink instead of overflowing.
     return (
-        <div className="flex h-full min-w-0 flex-col">
+        <div className="flex h-full min-h-0 min-w-0 flex-col">
             <PageHeader title={title} breadcrumbs={breadcrumbs} />
 
-            <div className="min-w-0 flex-1 overflow-y-auto">
-                <DocumentFormBody action={onSubmit} initialState={initialState}>
-                    <div
-                        className={
-                            livePreview
-                                ? // Editor + preview: fields left, preview right (sticky on lg+ so it
-                                  // stays in view while the field column scrolls). Slightly favors the
-                                  // preview so the storefront renders at a realistic width.
-                                  'mx-auto grid min-w-0 max-w-[120rem] grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]'
-                                : // Fields only: a single readable column, centered.
-                                  'mx-auto flex min-w-0 max-w-3xl flex-col gap-5 px-4 py-6 sm:px-6'
-                        }
-                    >
-                        <div className="flex min-w-0 flex-col gap-5">{children}</div>
-                        {livePreview ? (
-                            <div className="min-w-0 lg:sticky lg:top-6 lg:self-start">{livePreview}</div>
-                        ) : null}
-                    </div>
-
-                    {toolbar ? <PageFooter>{toolbar}</PageFooter> : null}
-                </DocumentFormBody>
-            </div>
+            <DocumentFormBody
+                action={onSubmit}
+                initialState={initialState}
+                className="flex min-h-0 min-w-0 flex-1 flex-col"
+            >
+                <SplitEditorLayout preview={livePreview}>{children}</SplitEditorLayout>
+                {toolbar ? (
+                    <PageFooter sticky={false} className="shrink-0">
+                        {toolbar}
+                    </PageFooter>
+                ) : null}
+            </DocumentFormBody>
         </div>
     );
 }

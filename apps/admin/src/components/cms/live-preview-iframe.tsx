@@ -176,9 +176,17 @@ export function LivePreviewIframe({
     }, []);
 
     return (
-        <div className="flex flex-col rounded-lg border border-border bg-muted/20">
+        <div
+            className={cn(
+                'flex min-w-0 flex-col rounded-lg border border-border bg-muted/20',
+                // When open, fill the height of the bounded preview column so the
+                // iframe can size to its container (`h-full`) instead of guessing a
+                // viewport-relative height. When closed, collapse to the header bar.
+                isOpen ? 'h-full w-full' : 'w-full',
+            )}
+        >
             {/* ── Header bar ── */}
-            <div className="flex items-center justify-between gap-2 border-border border-b px-3 py-2">
+            <div className="flex shrink-0 items-center justify-between gap-2 border-border border-b px-3 py-2">
                 <span className="font-medium text-sm">Preview</span>
 
                 <div className="flex items-center gap-1">
@@ -281,15 +289,14 @@ export function LivePreviewIframe({
                   does not load in the background. When open, the iframe fills
                   the available panel height. */}
             {isOpen ? (
-                <div className="flex justify-center rounded-b-lg bg-muted/20 transition-all">
+                <div className="flex min-h-[20rem] min-w-0 flex-1 justify-center overflow-hidden rounded-b-lg bg-muted/20 transition-all">
                     <iframe
                         ref={iframeRef}
                         src={previewUrl}
                         title="Live preview"
-                        className="w-full rounded-b-lg transition-all"
+                        className="h-full w-full rounded-b-lg transition-all"
                         style={{
                             maxWidth: VIEWPORTS[viewport].maxWidth,
-                            height: 'calc(100vh - 12rem)',
                             border: 'none',
                         }}
                     />

@@ -225,6 +225,9 @@ importers:
       '@nordcom/commerce-test-convex':
         specifier: workspace:*
         version: link:../../packages/test-convex
+      '@nordcom/commerce-test-viewport':
+        specifier: workspace:*
+        version: link:../../packages/test-viewport
       '@playwright/test':
         specifier: 1.60.0
         version: 1.60.0
