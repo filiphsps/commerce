@@ -335,6 +335,16 @@ jobs:
             CONVEX_SERVER_SECRET: dev-local-secret
             CONVEX_AGENT_MODE: anonymous
             CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
+            # Admin e2e drives the real admin app, which mints RS256 operator tokens the backend must
+            # verify. Point the minter (this admin origin) AND the deployment's customJwt provider at
+            # the same issuer/audience, and the JWKS at the running app's reachable
+            # `/.well-known/jwks.json`, so a minted token validates against the one key the app serves.
+            # `convex-local` seeds these onto the backend via `resolveBackendAuthEnv`; the admin
+            # webServer reads issuer/audience directly. Blank for storefront, whose public e2e never
+            # exercises an operator token (the backend keeps its unreachable placeholder auth).
+            CONVEX_AUTH_ISSUER: ${{ matrix.app == 'admin' && 'http://localhost:3000' || '' }}
+            CONVEX_AUTH_APPLICATION_ID: ${{ matrix.app == 'admin' && 'convex' || '' }}
+            CONVEX_AUTH_JWKS_URL: ${{ matrix.app == 'admin' && 'http://localhost:3000/.well-known/jwks.json' || '' }}
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
@@ -344,6 +354,19 @@ jobs:
               uses: ./.github/common/bootstrap
               with:
                   turbo-cache: "false"
+
+            - name: 🔑 Generate the e2e operator signing key (admin)
+              if: matrix.app == 'admin'
+              # The admin mints operator tokens from CONVEX_AUTH_PRIVATE_KEY and derives the public half
+              # its /.well-known/jwks.json serves from the same material, so a throwaway per-run PKCS8
+              # keypair is the whole chain — nothing to commit. Export it for the webServer the test step
+              # spawns; the backend never needs the private half, only the JWKS the app serves from it.
+              run: |
+                  {
+                      echo 'CONVEX_AUTH_PRIVATE_KEY<<__OPERATOR_PEM__'
+                      openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 2>/dev/null
+                      echo '__OPERATOR_PEM__'
+                  } >> "$GITHUB_ENV"
 
             - name: 🌐 Local Convex backend (boot + seed)
               uses: ./.github/common/convex-local

@@ -5,7 +5,13 @@ import { setTimeout as sleep } from 'node:timers/promises';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { convexLocalCliEnv, DEV_LOCAL, isBackendHealthy, waitForAdminKeyMarker } from './dev-local';
+import {
+    convexLocalCliEnv,
+    DEV_LOCAL,
+    isBackendHealthy,
+    resolveBackendAuthEnv,
+    waitForAdminKeyMarker,
+} from './dev-local';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -43,6 +49,31 @@ describe('isBackendHealthy', () => {
     it('is false on a non-200', async () => {
         vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: false } as Response);
         expect(await isBackendHealthy('http://127.0.0.1:3210')).toBe(false);
+    });
+});
+
+describe('resolveBackendAuthEnv', () => {
+    it('falls back to the DEV_LOCAL placeholders when no override is present', () => {
+        const resolved = resolveBackendAuthEnv({});
+        expect(resolved.issuer).toBe(DEV_LOCAL.auth.issuer);
+        expect(resolved.applicationId).toBe(DEV_LOCAL.auth.applicationId);
+        expect(resolved.jwksUrl).toBe(DEV_LOCAL.auth.jwksUrl);
+    });
+
+    it('prefers explicit env overrides (the admin e2e operator-auth wiring)', () => {
+        const resolved = resolveBackendAuthEnv({
+            CONVEX_AUTH_ISSUER: 'http://localhost:3000',
+            CONVEX_AUTH_APPLICATION_ID: 'convex',
+            CONVEX_AUTH_JWKS_URL: 'http://localhost:3000/.well-known/jwks.json',
+        });
+        expect(resolved.issuer).toBe('http://localhost:3000');
+        expect(resolved.applicationId).toBe('convex');
+        expect(resolved.jwksUrl).toBe('http://localhost:3000/.well-known/jwks.json');
+    });
+
+    it('treats a blank override as unset and falls back', () => {
+        const resolved = resolveBackendAuthEnv({ CONVEX_AUTH_ISSUER: '   ' });
+        expect(resolved.issuer).toBe(DEV_LOCAL.auth.issuer);
     });
 });
 

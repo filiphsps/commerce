@@ -130,6 +130,32 @@ export async function waitForAdminKeyMarker(
 }
 
 /**
+ * Resolves the auth-provider config seeded onto the local backend's deployment, letting an explicit
+ * environment override the {@link DEV_LOCAL} placeholders.
+ *
+ * Dev and the unit/integration backends keep the unreachable `*.localhost.invalid` defaults — no
+ * operator JWT is exercised against them, so the deployment's `customJwt` provider never fetches the
+ * JWKS. The admin e2e job, by contrast, runs the real admin app, which mints operator tokens the
+ * backend must verify: it sets `CONVEX_AUTH_ISSUER`/`CONVEX_AUTH_APPLICATION_ID` to match the minter
+ * and `CONVEX_AUTH_JWKS_URL` at the running app's reachable `/.well-known/jwks.json`, so a minted
+ * token validates against the one key the app serves.
+ *
+ * @param env - Environment to read overrides from; defaults to `process.env`.
+ * @returns The issuer, application id, and JWKS URL to seed on the backend deployment.
+ */
+export function resolveBackendAuthEnv(env: NodeJS.ProcessEnv = process.env): {
+    issuer: string;
+    applicationId: string;
+    jwksUrl: string;
+} {
+    return {
+        issuer: env.CONVEX_AUTH_ISSUER?.trim() || DEV_LOCAL.auth.issuer,
+        applicationId: env.CONVEX_AUTH_APPLICATION_ID?.trim() || DEV_LOCAL.auth.applicationId,
+        jwksUrl: env.CONVEX_AUTH_JWKS_URL?.trim() || DEV_LOCAL.auth.jwksUrl,
+    };
+}
+
+/**
  * Idempotently ensures the local-first dev backend is up, configured, and seeded:
  *   1. If `/instance_name` is already healthy, skip the boot.
  *   2. Otherwise spawn the `test-convex start` daemon DETACHED (the CLI blocks, so `pnpm dev` cannot
@@ -142,7 +168,7 @@ export async function waitForAdminKeyMarker(
  * @throws {Error} When the backend never becomes healthy within the budget.
  */
 export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Promise<string> {
-    const { url, dataDir, serverSecret, auth } = DEV_LOCAL;
+    const { url, dataDir, serverSecret } = DEV_LOCAL;
     const adminKeyFile = resolve(dataDir, '.admin-key');
 
     if (!(await isBackendHealthy(url))) {
@@ -170,10 +196,11 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
 
     const adminKey = await waitForAdminKeyMarker(adminKeyFile);
 
+    const backendAuth = resolveBackendAuthEnv();
     convexEnvSet(url, adminKey, 'CONVEX_SERVER_SECRET', serverSecret);
-    convexEnvSet(url, adminKey, 'CONVEX_AUTH_ISSUER', auth.issuer);
-    convexEnvSet(url, adminKey, 'CONVEX_AUTH_APPLICATION_ID', auth.applicationId);
-    convexEnvSet(url, adminKey, 'CONVEX_AUTH_JWKS_URL', auth.jwksUrl);
+    convexEnvSet(url, adminKey, 'CONVEX_AUTH_ISSUER', backendAuth.issuer);
+    convexEnvSet(url, adminKey, 'CONVEX_AUTH_APPLICATION_ID', backendAuth.applicationId);
+    convexEnvSet(url, adminKey, 'CONVEX_AUTH_JWKS_URL', backendAuth.jwksUrl);
 
     // Deploy the functions now that the auth env exists — the daemon's continuous push failed before
     // the env was set and does not retry on an env change, so without this the seed's queries 404.
