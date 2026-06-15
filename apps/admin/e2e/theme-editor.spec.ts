@@ -3,15 +3,15 @@ import { expect, test } from '@playwright/test';
 import { DOMAIN } from './fixtures/editor';
 
 /**
- * The theme editor flow through the REAL admin app: the bespoke ThemeEditor mounts at
- * `/{domain}/settings/theme/` with its live-preview bridge, exposes interactive token controls, and
- * the editor toolbar persists a draft (Save Draft → "Last saved") without surfacing an error.
+ * The theme editor now lives as the Theme tab of the unified Customization hub. The legacy
+ * `/settings/theme/` route redirects there; the theme editor mounts with its live-preview bridge,
+ * exposes interactive token controls, and the shared editor toolbar persists a draft without error.
  */
 test.describe('Theme editor', () => {
-    test('mounts with the live preview and persists a draft', async ({ page }) => {
+    test('the legacy theme route redirects into the hub and persists a draft', async ({ page }) => {
         await page.goto(`/${DOMAIN}/settings/theme/`);
-        // The editor normalizes the URL onto the tenant's default locale.
-        await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/settings/theme/\\?locale=`));
+        // Redirected into the Customization hub's Theme tab (locale normalized by the editor host).
+        await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/settings/customization/\\?.*locale=`));
 
         // The live-preview bridge renders its iframe.
         await expect(page.locator('iframe[title="Live preview"]')).toBeVisible({ timeout: 30_000 });

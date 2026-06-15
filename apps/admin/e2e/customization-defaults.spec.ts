@@ -73,4 +73,33 @@ test.describe('Customization — store-wide component defaults', () => {
         await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
         await waitForAutosave(page);
     });
+
+    test('restricting block availability persists across reload, then resets', async ({ page }) => {
+        await page.goto(`/${DOMAIN}/settings/customization/`);
+        await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/settings/customization/\\?locale=`));
+
+        // Open the Sections tab; every block is available by default.
+        await page.getByRole('tab', { name: 'Sections' }).click();
+        await expect(page.getByTestId('block-available-html')).toHaveAttribute('aria-pressed', 'true');
+
+        // Restrict: turn the html block off.
+        await page.getByTestId('block-available-html').click();
+        await expect(page.getByTestId('block-available-html')).toHaveAttribute('aria-pressed', 'false');
+
+        await page.getByRole('button', { name: 'Save Draft' }).click();
+        await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
+        await waitForAutosave(page);
+
+        // Reload → the restriction persisted.
+        await page.reload();
+        await page.getByRole('tab', { name: 'Sections' }).click();
+        await expect(page.getByTestId('block-available-html')).toHaveAttribute('aria-pressed', 'false');
+
+        // Reset: re-enable html so the shared tenant is left with every block available.
+        await page.getByTestId('block-available-html').click();
+        await expect(page.getByTestId('block-available-html')).toHaveAttribute('aria-pressed', 'true');
+        await page.getByRole('button', { name: 'Save Draft' }).click();
+        await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
+        await waitForAutosave(page);
+    });
 });

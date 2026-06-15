@@ -6,6 +6,7 @@ import type { Metadata, Route } from 'next';
 import { BlocksTab } from '@/components/customization/blocks-tab';
 import { ComponentsTab } from '@/components/customization/components-tab';
 import { CustomizationShell } from '@/components/customization/customization-shell';
+import { SectionsTab } from '@/components/customization/sections-tab';
 import { PreviewBridge } from '@/components/theme-editor/preview-bridge';
 import { ThemeEditor } from '@/components/theme-editor/theme-editor';
 import * as actions from '@/lib/cms-actions/_generated/shops';
@@ -53,6 +54,7 @@ export default async function CustomizationPage({ params, searchParams }: Props)
                         { slug: 'theme', label: 'Theme', content: <ThemeEditor /> },
                         { slug: 'components', label: 'Components', content: <ComponentsTab /> },
                         { slug: 'blocks', label: 'Blocks', content: <BlocksTab /> },
+                        { slug: 'sections', label: 'Sections', content: <SectionsTab /> },
                     ]}
                 />
             }
