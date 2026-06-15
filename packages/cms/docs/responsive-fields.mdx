@@ -1,0 +1,123 @@
+---
+title: Responsive Fields
+sidebar_position: 7
+---
+
+A **responsive field** lets a single content value vary by viewport. Instead of
+one `layout`, an editor sets `layout` per device — a carousel on phones, a grid
+on tablets and up — and the storefront resolves it with the same mobile-first
+cascade Tailwind uses. The primitive lives in
+`@nordcom/commerce-cms/responsive` and is intentionally generic: any field, any
+value type, reused across the CMS editor and the storefront.
+
+> The first consumer is the storefront Collection block, whose `layout` field is
+> responsive (`{ base: 'carousel', md: 'grid' }` by default). The same machinery
+> works for any scalar field you want to make per-breakpoint.
+
+## The model
+
+A `ResponsiveValue<T>` is a breakpoint map with a mandatory mobile-first `base`
+and optional overrides that apply from their width up:
+
+```ts
+import type { ResponsiveValue } from '@nordcom/commerce-cms/responsive';
+
+// Carousel on phones; switches to a grid at the Tablet breakpoint and stays one.
+const layout: ResponsiveValue<'grid' | 'carousel'> = { base: 'carousel', md: 'grid' };
+```
+
+Omitted breakpoints inherit the nearest defined one below them, so you only
+declare the breakpoints where the value actually changes.
+
+## Breakpoints — named by device
+
+Cutoffs mirror the storefront Tailwind theme (`--breakpoint-*`); the editor
+surfaces them by **human device name** so an author picks "Tablet", not `md`:
+
+| Device          | Breakpoint | Min width |
+| --------------- | ---------- | --------- |
+| Mobile          | `base`     | 0px       |
+| Large phone     | `sm`       | 640px     |
+| Tablet          | `md`       | 768px     |
+| Laptop          | `lg`       | 1024px    |
+| Desktop         | `xl`       | 1280px    |
+| Wide            | `2xl`      | 1536px    |
+
+These are exported as `BREAKPOINTS` and `BREAKPOINT_PRESETS`; `breakpointLabel`
+maps a key to its device name.
+
+## Declaring a responsive field
+
+Wrap any scalar descriptor in `responsiveField`. Its `name` owns the data key;
+the wrapped field defines the per-breakpoint editor and value type:
+
+```ts
+import { responsiveField, selectField } from '@nordcom/commerce-cms/descriptors';
+
+responsiveField({
+    name: 'layout',
+    label: 'Layout',
+    field: selectField({
+        name: 'layout',
+        options: [
+            { label: 'Grid', value: 'grid' },
+            { label: 'Carousel', value: 'carousel' },
+        ],
+    }),
+    defaultValue: { base: 'carousel', md: 'grid' },
+});
+```
+
+## In the editor
+
+The admin renders the wrapped field once per active breakpoint — each row
+labeled with its device name — plus a **device dropdown** to add a breakpoint
+override and a remove control on every non-`base` row. A new override is seeded
+from whatever already renders at that width, so adding a stop never surprises the
+author. The widget is registered for the `responsive` descriptor kind, so any
+collection that uses `responsiveField` gets it for free.
+
+## In the storefront
+
+Resolve a stored value at a breakpoint, or turn one into Tailwind classes with a
+per-breakpoint, per-value lookup of **static literal** class names (so Tailwind's
+scanner emits every variant):
+
+```ts
+import {
+    BREAKPOINTS,
+    resolveResponsiveValue,
+    responsiveClassName,
+} from '@nordcom/commerce-cms/responsive';
+
+resolveResponsiveValue({ base: 'carousel', md: 'grid' }, 'lg'); // 'grid'
+
+// `rail-carousel md:rail-grid` — one class per defined breakpoint.
+responsiveClassName({ base: 'carousel', md: 'grid' }, RAIL_CLASS_TABLE);
+```
+
+`normalizeResponsiveValue(raw, fallbackBase)` coerces loose stored data — a
+partial map, a bare scalar from legacy single-value content, or nothing — into a
+value with a defined `base`, so consumers never branch on shape.
+
+## Codegen
+
+`responsiveField` participates in `pnpm cms:gen`: the content-types emitter wraps
+the inner type in the breakpoint map keyed by the shared scale, so the read
+contract stays in lockstep with the editor.
+
+```ts
+layout?: {
+    base: ('grid' | 'carousel');
+    sm?: ('grid' | 'carousel') | null;
+    md?: ('grid' | 'carousel') | null;
+    // …lg, xl, 2xl
+} | null;
+```
+
+## See also
+
+- **[API Reference](/reference/cms/responsive/)** — `ResponsiveValue`, the
+  breakpoint helpers, and the resolvers, auto-generated from source.
+- **[Blocks](/packages/core/cms/blocks/)** — the Collection block that consumes
+  the responsive `layout`.
