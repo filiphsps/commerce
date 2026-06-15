@@ -54,6 +54,16 @@ Group artifacts per topic under `.specs/<YYYY-MM-DD-kebab-slug>/{spec,plan,tasks
 -   **Environment-tier gates go through `@nordcom/commerce-utils`.** Never hand-roll `process.env.NODE_ENV` / `BuildConfig.environment` comparisons to gate behavior. Use `isProduction()` / `isDevelopment()` from `@nordcom/commerce-utils` — they read `VERCEL_ENV` so a Vercel **preview** deploy (which runs with `NODE_ENV='production'`) is correctly treated as non-production, the gap that leaked the live-chat launcher onto previews. Both are client-safe; client bundles can't see `VERCEL_ENV`, so for **client-side, host-aware** preview gating (suppressing on `preview.`/`staging.` hosts) use the storefront's `isPreviewEnv(hostname)` instead. Raw `NODE_ENV` reads are fine only for non-gating concerns (e.g. a cookie `secure` flag, instrumentation tier).
 -   **American English** — `color`, `behavior`, `organization`, `canceled`, `analyze`.
 
+## E2E coverage
+
+Every new user-facing flow in `apps/admin` or `apps/storefront` ships with a Playwright spec under that app's `e2e/` dir (`*.spec.ts`). A flow added without e2e coverage is incomplete — treat the spec as part of the feature, not a follow-up.
+
+-   **Reuse the harness, don't rebuild it.** `e2e/global-setup.ts` seeds the canonical tenant via `seedCanonical` and (admin) writes the pre-auth NextAuth cookie; specs read `E2E_SHOP_DOMAIN` (default `nordcom-demo-shop.com`). Drive the REAL app end to end, not mocks.
+-   **Storefront product data is live `mock.shop`** (the seeded `commerceProvider.domain`). Use REAL handles — products `slides` / `sweatpants` / `men-t-shirt`, collections `men` / `women` / `tops` / `bottoms` — never invent handles, and never `.skip` a flow "for mock-shop limitations".
+-   **Admin editor flows** assert through the native field shells (`[data-testid="field-<dotted.path>"]`), the array/blocks widgets (`array-add-<path>`, `blocks-picker/add/row-<path>`), the toolbar (Publish / Save Draft / `editor-toolbar-error`), and `/versions/` restore. Wait on autosave QUIESCENCE, not the sticky "Last saved" label.
+-   **Runs locally alongside `pnpm dev`.** `pnpm test:e2e --filter @nordcom/commerce-<app>` boots its own server on a fixed port (storefront 1337, admin 3000) into an isolated `E2E_DIST_DIR` (`.next-e2e`), so it never collides with a running dev server's Next dev-lock. CI builds + `next start`s the default `.next`.
+-   Keep specs rerun-safe against the shared deployment: stamp a unique run token and restore any state the spec mutates.
+
 ## Git commits
 
 -   **Conventional Commits with scope** — `<type>(<scope>): <subject>.`. Types: `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `perf`, `ci`, `build`. Imperative subject, lowercase, trailing period.
