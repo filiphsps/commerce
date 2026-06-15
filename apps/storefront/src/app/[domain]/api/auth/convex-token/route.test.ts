@@ -56,6 +56,17 @@ function stubSigningEnv() {
     vi.stubEnv('CONVEX_AUTH_APPLICATION_ID', AUDIENCE);
 }
 
+/**
+ * Clears the RS256 signing configuration so the unconfigured (degraded) path is exercised
+ * deterministically — `pnpm test` loads `.env.local` via dotenv, which a developer may have populated
+ * with CONVEX_AUTH_* for admin work.
+ */
+function clearSigningEnv() {
+    vi.stubEnv('CONVEX_AUTH_PRIVATE_KEY', '');
+    vi.stubEnv('CONVEX_AUTH_ISSUER', '');
+    vi.stubEnv('CONVEX_AUTH_APPLICATION_ID', '');
+}
+
 afterEach(() => {
     vi.unstubAllEnvs();
     vi.clearAllMocks();
@@ -106,6 +117,7 @@ describe('GET /api/auth/convex-token', () => {
     });
 
     it('returns 503 when token minting is unconfigured, so the fetcher degrades instead of retrying forever', async () => {
+        clearSigningEnv();
         arrange({ email: 'jane@example.com' });
 
         expect((await GET(REQUEST, routeContext())).status).toBe(503);

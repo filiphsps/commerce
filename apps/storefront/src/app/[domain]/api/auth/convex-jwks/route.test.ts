@@ -28,6 +28,9 @@ describe('GET /api/auth/convex-jwks', () => {
     });
 
     it('returns 404 (no-store) when no signing key is configured', async () => {
+        // Hermetic: clear the key so the test holds even when a developer's `.env.local` (loaded by
+        // `pnpm test` via dotenv) sets CONVEX_AUTH_PRIVATE_KEY; `afterEach` unstubs.
+        vi.stubEnv('CONVEX_AUTH_PRIVATE_KEY', '');
         const response = await GET();
         expect(response.status).toBe(404);
         expect(response.headers.get('cache-control')).toBe('no-store');

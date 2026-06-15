@@ -116,7 +116,16 @@ describe('accountProfileProvisionReference', () => {
 
 describe('mintAccountConvexToken', () => {
     it('issues no token while the RS256 signing env is unconfigured (snapshot-only by contract)', async () => {
-        await expect(mintAccountConvexToken({ email: 'jane@example.com' })).resolves.toBeNull();
+        // Hermetic: clear the signing env so the contract holds regardless of a developer's
+        // `.env.local` (loaded by `pnpm test` via dotenv) carrying CONVEX_AUTH_* for admin work.
+        vi.stubEnv('CONVEX_AUTH_PRIVATE_KEY', '');
+        vi.stubEnv('CONVEX_AUTH_ISSUER', '');
+        vi.stubEnv('CONVEX_AUTH_APPLICATION_ID', '');
+        try {
+            await expect(mintAccountConvexToken({ email: 'jane@example.com' })).resolves.toBeNull();
+        } finally {
+            vi.unstubAllEnvs();
+        }
     });
 
     it('mints the customer JWT in-process once the signing env is configured', async () => {
