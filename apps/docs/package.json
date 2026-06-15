@@ -14,7 +14,7 @@
         "build": "next build --turbo",
         "generate": "pnpm gen",
         "gen": "tsx scripts/gen.ts && fumadocs-mdx",
-        "gen:check": "tsx scripts/docs-gen-check.ts",
+        "docs:gen:check": "tsx scripts/docs-gen-check.ts",
         "clean": "rimraf -g dist coverage .turbo .next out .typedoc-out content/reference content/errors content/packages/applications *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",

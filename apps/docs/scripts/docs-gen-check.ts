@@ -65,9 +65,9 @@ for (const mdxFile of walkDir(path.join(DOCS_APP, 'content'))) {
 }
 
 if (unresolved.length > 0) {
-    console.error('[gen:check] unresolved {@link} references:');
+    console.error('[docs:gen:check] unresolved {@link} references:');
     for (const u of unresolved) console.error(`  ${u}`);
     process.exit(1);
 }
 
-console.info('[gen:check] OK');
+console.info('[docs:gen:check] OK');
