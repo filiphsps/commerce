@@ -40,6 +40,20 @@ export default async function ShopSettingsPage({ params }: ShopSettingsPageProps
                         </Link>
                     </div>
 
+                    {/* Customization — available to all roles */}
+                    <div className="rounded-lg border border-border bg-card p-5">
+                        <h2 className="mb-1 font-semibold text-base">Customization</h2>
+                        <p className="mb-4 text-muted-foreground text-sm">
+                            Theme tokens and store-wide defaults for blocks and components.
+                        </p>
+                        <Link
+                            href={`/${domain}/settings/customization/` as Route}
+                            className="text-primary text-sm hover:underline"
+                        >
+                            Manage →
+                        </Link>
+                    </div>
+
                     {/* Tenants — admin only */}
                     {isAdmin ? (
                         <div className="rounded-lg border border-border bg-card p-5">
