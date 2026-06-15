@@ -208,6 +208,16 @@ describe('createCollectionEditorActions.create', () => {
         expect(result).toEqual({ id: 'doc-new' });
     });
 
+    it('does NOT call revalidatePath on create (the first autosave tick must not refresh the editor)', async () => {
+        // `create` runs in the /new/ autosave loop; a revalidatePath here makes Next refresh the route
+        // and revert the toolbar's optimistic history.replaceState back to /new/ (and re-seed
+        // initialState mid-edit). Drafts stay revalidation-free — only `publish` refreshes the paths.
+        const bridge = buildBridge();
+        const actions = createCollectionEditorActions(baseManifest, buildRuntime(bridge));
+        await actions.create('a.test', fd({ title: 'Acme' }), 'en-US');
+        expect(mockRevalidatePath).not.toHaveBeenCalled();
+    });
+
     it('throws notFound() when the manifest declares no create gate', async () => {
         const bridge = buildBridge();
         const manifest = defineCollectionEditor({

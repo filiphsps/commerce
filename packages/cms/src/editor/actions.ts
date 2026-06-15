@@ -158,7 +158,12 @@ export const createCollectionEditorActions = (
             await assertAccess(domain, manifest.access.create);
             const data = parseFormPayload(formData);
             const { documentId } = await bridge().create({ collection: manifest.collection, data, locale });
-            refreshEditorPaths({ manifest, domain, doc: { id: documentId }, status: 'draft', revalidatePath });
+            // ZERO revalidation here, exactly like `saveDraft` — `create` IS the first autosave tick on
+            // the /new/ page. A `revalidatePath` makes Next refresh the current route once the action
+            // resolves, which reverts the toolbar's optimistic `history.replaceState` onto the edit URL
+            // (the address bar snaps back to /new/) and re-seeds `<Form>`'s `initialState` mid-edit. The
+            // new document is a draft, and drafts never revalidate; the published transition refreshes
+            // the manifest-declared list/edit paths.
             return { id: documentId };
         },
         async delete(domain, id) {
