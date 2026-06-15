@@ -20,6 +20,7 @@ export {
     textField,
     uploadField,
 } from './builders';
+export { collapseOverridable, OVERRIDE_INHERIT, type OverridableValue, overridable } from './overridable';
 export type {
     ArrayFieldDescriptor,
     BlockDescriptor,
@@ -38,6 +39,7 @@ export type {
     NamedFieldDescriptor,
     NamedFieldDescriptorBase,
     NumberFieldDescriptor,
+    OverridableFieldDescriptor,
     RelationshipFieldDescriptor,
     ResponsiveFieldDescriptor,
     ScalarFieldDescriptor,

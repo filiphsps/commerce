@@ -236,6 +236,21 @@ export type ResponsiveFieldDescriptor = CompositeFieldDescriptorBase & {
 };
 
 /**
+ * Wraps a scalar field with an explicit inherit/override control for cascading store defaults.
+ * The stored value is an {@link import('./overridable').OverridableValue}: `inherit` (the default)
+ * contributes NO key to the resolved manifest so the cascade falls through to the next tier;
+ * `override` writes the wrapped value. Composite, so it is never localized itself — localize the
+ * wrapped leaf instead. The inner field is re-keyed to `value` by the widget, so the override
+ * value stores at `<name>.value`.
+ */
+export type OverridableFieldDescriptor = CompositeFieldDescriptorBase & {
+    type: 'overridable';
+    field: ScalarFieldDescriptor;
+    /** Provenance label shown on the inherit ghost (e.g. "Platform default"). */
+    inheritedSourceLabel?: string;
+};
+
+/**
  * Presentational, collapsible container. Unnamed — it groups fields visually
  * without introducing a data key, so it carries a `label` instead of a `name`.
  */
@@ -265,16 +280,21 @@ export type NamedFieldDescriptor =
     | ArrayFieldDescriptor
     | GroupFieldDescriptor
     | BlocksFieldDescriptor
-    | ResponsiveFieldDescriptor;
+    | ResponsiveFieldDescriptor
+    | OverridableFieldDescriptor;
 
 /**
  * The named descriptors that may legally carry `localized: true` — every named
- * kind except the composites (group/array/blocks/responsive), whose types omit
+ * kind except the composites (group/array/blocks/responsive/overridable), whose types omit
  * the flag entirely (G4FIX-03).
  */
 export type LocalizableFieldDescriptor = Exclude<
     NamedFieldDescriptor,
-    ArrayFieldDescriptor | GroupFieldDescriptor | BlocksFieldDescriptor | ResponsiveFieldDescriptor
+    | ArrayFieldDescriptor
+    | GroupFieldDescriptor
+    | BlocksFieldDescriptor
+    | ResponsiveFieldDescriptor
+    | OverridableFieldDescriptor
 >;
 
 /**
