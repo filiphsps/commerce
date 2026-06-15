@@ -1,6 +1,6 @@
 import { MissingSessionUserIdError } from '@nordcom/commerce-errors';
 import { Accented, Button, Heading, Label } from '@nordcom/nordstar';
-import { Settings } from 'lucide-react';
+import { ChevronRight, LogOut, Plus, Settings, Store } from 'lucide-react';
 import type { Metadata, Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,6 +12,14 @@ export const metadata: Metadata = {
     title: 'Your Shops',
 };
 
+/**
+ * The admin landing view: an authenticated operator picks which of their shops to manage, connects a
+ * new one, or signs out. Shops are scoped to the session user (id, with the email as the stable
+ * fallback) via {@link getShopsForUser}; an unauthenticated visitor is redirected to login.
+ *
+ * @returns The shop-chooser screen for an authenticated operator.
+ * @throws {MissingSessionUserIdError} When the session carries a user without an id.
+ */
 export default async function OverviewPage() {
     const session = await auth();
     if (!session?.user) {
@@ -25,65 +33,106 @@ export default async function OverviewPage() {
     const shops = await getShopsForUser(user.id, user.email ?? undefined);
 
     const firstName = user.name?.split(' ').at(0) || null;
-    const lastName = user.name?.split(' ').slice(1).join(' ') || null;
 
-    const shopsActions = shops.map(({ id, domain, name }) => (
-        <Button
+    const shopsActions = shops.map(({ id, domain, name }, index) => (
+        <Link
             key={id}
-            as={Link}
-            href={`/${domain}` as Route}
+            href={`/${domain}/` as Route}
             title={name}
-            variant="outline"
-            color="foreground"
-            className="w-full"
+            className="group fade-in slide-in-from-bottom-2 flex animate-in items-center gap-3 rounded-xl border-3 border-border border-solid bg-background/40 p-3 transition-all duration-500 hover:-translate-y-0.5 hover:border-primary"
+            style={{ animationDelay: `${index * 60}ms`, animationFillMode: 'both' }}
         >
-            {name}
-        </Button>
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border-3 border-border border-solid bg-card font-black text-lg uppercase transition-colors group-hover:border-primary group-hover:text-primary">
+                {name.charAt(0)}
+            </span>
+            <span className="flex min-w-0 flex-col">
+                <span className="truncate font-bold leading-tight">{name}</span>
+                <span className="truncate text-muted-foreground text-xs">{domain}</span>
+            </span>
+            <ChevronRight className="ml-auto size-5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
+        </Link>
     ));
 
     return (
-        <main className="flex flex-col items-center justify-center">
-            <article className="flex flex-col gap-3 rounded-2xl border-3 border-border border-solid p-3">
-                <header className="flex flex-col">
-                    <section className="flex items-start justify-between">
-                        <Link href="/" title="Nordcom Commerce" className="block pb-4">
-                            <Image
-                                className="h-full w-auto object-contain object-left"
-                                src="/logo.svg"
-                                alt="Nordcom Commerce Logo"
-                                height={75}
-                                width={150}
-                                draggable={false}
-                                decoding="async"
-                                priority={true}
-                                loader={undefined}
-                            />
-                        </Link>
+        <main className="flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-8">
+            <div className="relative w-full max-w-xl">
+                {/* Subtle pink halo for atmosphere — echoes the primary accent without breaking the flat-dark canvas. */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-0 left-1/2 -z-10 h-48 w-3/4 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl"
+                />
 
-                        <div>
-                            <Link
-                                href="/accounts"
-                                className="flex w-5 overflow-hidden transition-colors hover:text-primary"
-                            >
-                                <Settings />
+                <article className="flex flex-col gap-6 rounded-2xl border-3 border-border border-solid bg-card/40 p-5 backdrop-blur-sm sm:p-6">
+                    <header className="flex flex-col gap-4">
+                        <section className="flex items-start justify-between gap-3">
+                            <Link href="/" title="Nordcom Commerce" className="block">
+                                <Image
+                                    className="h-full w-auto object-contain object-left"
+                                    src="/logo.svg"
+                                    alt="Nordcom Commerce Logo"
+                                    height={75}
+                                    width={150}
+                                    draggable={false}
+                                    decoding="async"
+                                    priority={true}
+                                    loader={undefined}
+                                />
                             </Link>
+
+                            <div className="flex items-center gap-2">
+                                <Link
+                                    href={'/accounts/' as Route}
+                                    title="Account settings"
+                                    aria-label="Account settings"
+                                    className="flex size-9 items-center justify-center rounded-lg border-3 border-border border-solid transition-colors hover:border-primary hover:text-primary"
+                                >
+                                    <Settings className="size-4" />
+                                </Link>
+                                <Link
+                                    href={'/auth/logout/' as Route}
+                                    title="Sign out"
+                                    className="flex h-9 items-center gap-2 rounded-lg border-3 border-border border-solid px-3 font-semibold text-sm transition-colors hover:border-destructive hover:text-destructive-foreground"
+                                >
+                                    <LogOut className="size-4" />
+                                    Sign out
+                                </Link>
+                            </div>
+                        </section>
+
+                        <div className="flex flex-col">
+                            <Label as="div" className="text-muted-foreground">
+                                Hi <Accented>{firstName || 'there'}</Accented>
+                            </Label>
+                            <Heading level="h1">Choose a Shop</Heading>
                         </div>
-                    </section>
+                    </header>
 
-                    <Label as="div">
-                        Hi <Accented>{firstName || 'there'}</Accented> {lastName || ''}
-                    </Label>
-                    <Heading level="h1">Choose a Shop</Heading>
-                </header>
+                    {shops.length > 0 ? (
+                        <section className="flex w-full flex-col gap-2">{shopsActions}</section>
+                    ) : (
+                        <section className="flex flex-col items-center gap-2 rounded-xl border-3 border-border border-dashed p-8 text-center">
+                            <Store className="size-7 text-muted-foreground" aria-hidden="true" />
+                            <Label as="div">No shops yet</Label>
+                            <span className="text-balance text-muted-foreground text-sm">
+                                Connect your first shop below to start managing it.
+                            </span>
+                        </section>
+                    )}
 
-                <section className="grid w-full grid-flow-row grid-cols-1 gap-2 py-2">{shopsActions}</section>
-
-                <footer className="border-0 border-border border-t-3 border-solid pt-3">
-                    <Button as={Link} href={'/new'} color="primary" variant="solid" className="h-12 w-full">
-                        Connect a new Shop
-                    </Button>
-                </footer>
-            </article>
+                    <footer className="border-0 border-border border-t-3 border-solid pt-4">
+                        <Button
+                            as={Link}
+                            href={'/new/' as Route}
+                            color="primary"
+                            variant="solid"
+                            className="flex h-12 w-full items-center justify-center gap-2"
+                        >
+                            <Plus className="size-5" />
+                            Connect a new Shop
+                        </Button>
+                    </footer>
+                </article>
+            </div>
         </main>
     );
 }
