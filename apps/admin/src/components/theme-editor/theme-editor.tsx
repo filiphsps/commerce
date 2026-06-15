@@ -4,8 +4,9 @@ import { deriveCatalog, type ThemeGroup, type ThemeTokenMeta } from '@nordcom/co
 import { Accordion } from '@nordcom/nordstar';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { type KeyboardEvent, useMemo, useRef } from 'react';
+import { type KeyboardEvent, useMemo, useRef, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/utils/tailwind';
 import { AccentRepeater } from './accent-repeater';
 import { isAccentRepeaterToken } from './control-registry';
@@ -97,6 +98,25 @@ export function ThemeEditor() {
     const active = sections[activeIndex];
     const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+    const [query, setQuery] = useState('');
+    const q = query.trim().toLowerCase();
+    const visibleClusters = active
+        ? active.clusters
+              .map((entry) => ({
+                  ...entry,
+                  tokens: q
+                      ? entry.tokens.filter((token) => {
+                            const leafKey = token.path.split('.').pop() ?? token.path;
+                            return (
+                                humanizeKey(leafKey).toLowerCase().includes(q) ||
+                                humanizeKey(entry.cluster).toLowerCase().includes(q)
+                            );
+                        })
+                      : entry.tokens,
+              }))
+              .filter((entry) => entry.tokens.length > 0)
+        : [];
+
     const selectGroup = (slug: string) => {
         const next = new URLSearchParams(searchParams);
         next.set('group', slug);
@@ -121,6 +141,14 @@ export function ThemeEditor() {
 
     return (
         <div className="flex min-h-[60vh] flex-col gap-4">
+            <Input
+                type="search"
+                aria-label="Search theme settings"
+                placeholder={active ? `Search ${active.label}…` : 'Search settings…'}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                className="max-w-xs"
+            />
             <div
                 role="tablist"
                 aria-label="Theme sections"
@@ -164,9 +192,11 @@ export function ThemeEditor() {
                     tabIndex={0}
                     className="flex min-w-0 flex-col gap-6 outline-none"
                 >
-                    {active.clusters.map((entry) => (
-                        <ClusterSection key={entry.id} entry={entry} />
-                    ))}
+                    {visibleClusters.length > 0 ? (
+                        visibleClusters.map((entry) => <ClusterSection key={entry.id} entry={entry} />)
+                    ) : (
+                        <p className="text-muted-foreground text-sm">No settings match your search.</p>
+                    )}
                 </div>
             ) : (
                 <p className="text-muted-foreground text-sm">No theme sections available.</p>

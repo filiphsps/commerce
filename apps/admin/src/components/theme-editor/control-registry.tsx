@@ -30,7 +30,12 @@ function FontPreviewControl({ value, onChange, placeholder, id, invalid, describ
 
     return (
         <Select value={current} onValueChange={(next) => onChange(next)}>
-            <Select.Trigger id={id} aria-invalid={invalid || undefined} aria-describedby={describedBy}>
+            <Select.Trigger
+                id={id}
+                aria-invalid={invalid || undefined}
+                aria-describedby={describedBy}
+                style={{ fontFamily: current ? FONT_FAMILIES[current as keyof typeof FONT_FAMILIES] : undefined }}
+            >
                 <Select.Value placeholder={placeholder ?? 'Select font…'} />
             </Select.Trigger>
             <Select.Content>

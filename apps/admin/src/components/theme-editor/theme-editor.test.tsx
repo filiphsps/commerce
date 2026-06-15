@@ -63,4 +63,20 @@ describe('<ThemeEditor> tablist', () => {
         fireEvent.keyDown(screen.getAllByRole('tab')[1]!, { key: 'ArrowRight' });
         expect(mockReplace).toHaveBeenCalledWith(expect.stringContaining('group=colors'), expect.anything());
     });
+
+    it('keeps clusters that match the search query', () => {
+        render(<ThemeEditor />);
+        fireEvent.change(screen.getByRole('searchbox', { name: 'Search theme settings' }), {
+            target: { value: 'brand' },
+        });
+        expect(screen.getByRole('heading', { name: 'Brand' })).toBeInTheDocument();
+    });
+
+    it('shows a no-results message when nothing matches the query', () => {
+        render(<ThemeEditor />);
+        fireEvent.change(screen.getByRole('searchbox', { name: 'Search theme settings' }), {
+            target: { value: 'zzzzz' },
+        });
+        expect(screen.getByText(/no settings match/i)).toBeInTheDocument();
+    });
 });
