@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import 'fumadocs-ui/style.css';
 import './globals.css';
 import { Logo } from '@/components/logo';
+import { StaticSearchDialog } from '@/components/static-search-dialog';
 import { TabChip } from '@/components/tab-chip';
 import { Topbar } from '@/components/topbar';
 import { docsEnv } from '@/lib/env';
@@ -37,7 +38,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="en" dir="ltr" suppressHydrationWarning className={`${primaryFont.variable} ${GeistMono.variable}`}>
             <body>
-                <RootProvider search={{ options: { type: 'static', api: `${docsEnv.basePath}/api/search` } }}>
+                <RootProvider
+                    search={{ SearchDialog: StaticSearchDialog, options: { api: `${docsEnv.basePath}/api/search` } }}
+                >
                     <DocsLayout
                         tree={source.pageTree}
                         tabMode="navbar"

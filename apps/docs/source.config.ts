@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { pageSchema } from 'fumadocs-core/source/schema';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
 import { rehypeLinkSymbolsInCode } from './lib/rehype-link-symbols-in-code';
 import { remarkLinkSymbols } from './lib/remark-link-symbols';
@@ -17,7 +18,20 @@ const indexPath = path.resolve(process.cwd(), 'lib/symbol-index.generated.json')
  * unprefixed default so its pages live directly under `content/`; the other
  * three tabs each have a subfolder.
  */
-export const docs = defineDocs({ dir: 'content' });
+export const docs = defineDocs({
+    dir: 'content',
+    // fumadocs-mdx 15.0.12 tightened the default page schema to require a string
+    // `title`. The generated typedoc reference pages under content/{packages,reference}
+    // ship without frontmatter and rely on fumadocs' auto-title pass, which derives
+    // `title` from the leading H1 — but that runs after schema validation. Relax
+    // `title` back to optional so validation defers to the auto-title pass instead
+    // of rejecting every generated page.
+    docs: {
+        schema: pageSchema.extend({
+            title: pageSchema.shape.title.optional(),
+        }),
+    },
+});
 
 export default defineConfig({
     mdxOptions: {
