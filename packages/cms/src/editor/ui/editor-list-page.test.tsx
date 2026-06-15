@@ -98,6 +98,44 @@ describe('<EditorListPage>', () => {
         expect(screen.getByRole('heading', { level: 1, name: /Pages/ })).toBeDefined();
     });
 
+    it('collapses a localized field bucket to the resolved locale before rendering its cell', async () => {
+        // `title` is a localized leaf (collection-fields), so it persists as a per-locale bucket. The
+        // list must project the active locale's slot, not stringify the raw object into `[object
+        // Object]`.
+        const localizedDoc: EditorCmsDocument = {
+            documentId: '1',
+            collection: 'pages',
+            data: { title: { fr: 'Bonjour', en: 'Hello' } },
+            status: 'draft',
+            updatedAt: 1_700_000_000_000,
+        };
+        const runtime = {
+            getCtx: async () => ({
+                user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
+                tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'fr', locales: ['fr', 'en'] },
+            }),
+            toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
+            convex: { list: async () => onePage([localizedDoc]) },
+            Table: ({ rows }: { rows: Array<{ title?: unknown }> }) => (
+                <div data-testid="title-cell">{String(rows[0]?.title ?? '')}</div>
+            ),
+            EmptyState: () => null,
+            DocumentForm: () => null,
+            Toolbar: () => null,
+            PageHeader: ({ title }: { title: string }) => <h1>{title}</h1>,
+            buildFormState: async () => ({ state: {} }),
+        } as never;
+
+        const el = await EditorListPage({
+            manifest,
+            runtime,
+            params: { domain: 'a.test' },
+            searchParams: { locale: 'fr' },
+        });
+        const { getByTestId } = render(el);
+        expect(getByTestId('title-cell').textContent).toBe('Bonjour');
+    });
+
     it('redirects to tenant.defaultLocale when searchParams.locale is missing', async () => {
         await expect(
             EditorListPage({

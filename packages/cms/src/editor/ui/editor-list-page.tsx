@@ -7,8 +7,29 @@ import { notFound, redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import { bridgeErrorCode, EditorBridgeErrorCode } from '../bridge-errors';
+import { editorCollectionSchema } from '../collection-fields';
+import { isLocaleBucketValue } from '../form/locale-bucket';
 import type { CollectionEditorManifest, CollectionSlug } from '../manifest';
 import type { EditorCmsListPage, EditorRuntime } from '../runtime';
+
+/**
+ * Resolves a localized field's stored value to a single value for a list cell. A localized leaf is
+ * stored as a per-locale bucket (`{ 'en-US': 'Title', … }`); the list renders one locale, so the
+ * bucket collapses to the active locale's slot, falling back to the first non-empty string slot so a
+ * row authored only in another locale still renders a label instead of `String({…})` → `[object
+ * Object]`. A non-bucket (legacy plain) value passes through untouched.
+ *
+ * @param value - The field's stored value (locale bucket or plain).
+ * @param locale - The active list locale to project.
+ * @returns The display value for the cell.
+ */
+function localizedCellValue(value: unknown, locale: string): unknown {
+    if (!isLocaleBucketValue(value)) return value;
+    const active = value[locale];
+    if (typeof active === 'string' && active.length > 0) return active;
+    const firstNonEmpty = Object.values(value).find((slot) => typeof slot === 'string' && slot.length > 0);
+    return firstNonEmpty ?? active ?? '';
+}
 
 /**
  * Props for {@link EditorListPage}.
@@ -125,15 +146,33 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
         );
     }
 
+    // Localized leaves persist as per-locale buckets; a list cell shows one locale. Collapse each
+    // schema-localized field to the resolved locale's slot before projecting, so a `String(value)`
+    // cell renders the title — not `[object Object]` for the raw bucket. Read off the optional
+    // descriptor props at runtime: composite descriptors omit `localized`, leaves carry it only when
+    // wrapped in `localized(…)`.
+    const activeLocale = requested ?? tenantDefault;
+    const localizedFieldNames = new Set<string>();
+    for (const field of editorCollectionSchema(String(manifest.collection)).fields) {
+        const named = field as { name?: string; localized?: boolean };
+        if (named.localized && typeof named.name === 'string') localizedFieldNames.add(named.name);
+    }
+
     // Project the bridge documents into table rows: the serialized field map
     // becomes the cell source, with the live id/status/timestamp layered on
     // top so column accessors like `updatedAt` and `_status` keep resolving.
-    const rows = result.docs.map((doc) => ({
-        ...doc.data,
-        id: doc.documentId,
-        _status: doc.status,
-        updatedAt: new Date(doc.updatedAt).toISOString(),
-    }));
+    const rows = result.docs.map((doc) => {
+        const data: Record<string, unknown> = { ...doc.data };
+        for (const name of localizedFieldNames) {
+            if (name in data) data[name] = localizedCellValue(data[name], activeLocale);
+        }
+        return {
+            ...data,
+            id: doc.documentId,
+            _status: doc.status,
+            updatedAt: new Date(doc.updatedAt).toISOString(),
+        };
+    });
 
     /**
      * Builds the href that addresses another page of this list, preserving every other search
