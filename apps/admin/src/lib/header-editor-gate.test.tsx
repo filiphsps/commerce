@@ -425,7 +425,10 @@ describe('CMSGATE-01 — header editor end to end (real engine, real Convex func
         expect(restored?.data).toEqual(published?.data);
         const versionsAfterRestore = await editorConvexBridge.listVersions({ documentId: String(created?._id) });
         expect(versionsAfterRestore).toHaveLength(4);
-    });
+        // Real Convex create→edit→autosave→publish→restore round trips run ~2.6s isolated;
+        // under the full suite's parallel CPU contention the default 5s ceiling starves them.
+        // A generous timeout keeps the real-engine pass robust without masking a genuine hang.
+    }, 30_000);
 
     it('never clobbers a keystroke typed while an autosave is in flight (full-stack interleaving)', async () => {
         const { shopId } = await seedTenant();

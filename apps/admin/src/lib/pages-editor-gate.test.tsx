@@ -686,7 +686,11 @@ describe('CMSGATE-02 — pages editor end to end (real engine, real Convex funct
             Record<string, unknown>
         >;
         expect(restoredItems[0]?.image).toBe(media._id);
-    });
+        // Real sharp resizes four derivatives on the libuv threadpool; under the full
+        // suite's parallel CPU contention the default 5s ceiling starves this CPU-bound
+        // leg (it runs in ~2.8s isolated). A generous timeout keeps the real-engine pass
+        // robust without masking a genuine hang.
+    }, 30_000);
 
     it('autosaves a draft with the required title EMPTY, then publish fails closed with the typed error surfaced in the REAL toolbar', async () => {
         const { shopId } = await seedTenant();
