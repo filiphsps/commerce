@@ -1,6 +1,11 @@
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { setTimeout as sleep } from 'node:timers/promises';
+
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { convexLocalCliEnv, DEV_LOCAL, isBackendHealthy } from './dev-local';
+import { convexLocalCliEnv, DEV_LOCAL, isBackendHealthy, waitForAdminKeyMarker } from './dev-local';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -38,5 +43,41 @@ describe('isBackendHealthy', () => {
     it('is false on a non-200', async () => {
         vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: false } as Response);
         expect(await isBackendHealthy('http://127.0.0.1:3210')).toBe(false);
+    });
+});
+
+describe('waitForAdminKeyMarker', () => {
+    it('returns the trimmed key once the daemon writes the marker after backend health', async () => {
+        const dir = mkdtempSync(join(tmpdir(), 'test-convex-marker-'));
+        const marker = join(dir, '.admin-key');
+        try {
+            // The detached daemon persists the marker AFTER the backend is HTTP-healthy; emulate that lag.
+            void sleep(100).then(() => writeFileSync(marker, 'admin-key-xyz\n'));
+            expect(await waitForAdminKeyMarker(marker, 5_000, 25)).toBe('admin-key-xyz');
+        } finally {
+            rmSync(dir, { recursive: true, force: true });
+        }
+    });
+
+    it('throws when the marker never appears within the budget', async () => {
+        const dir = mkdtempSync(join(tmpdir(), 'test-convex-marker-'));
+        const marker = join(dir, '.admin-key');
+        try {
+            await expect(waitForAdminKeyMarker(marker, 150, 25)).rejects.toThrow('admin-key marker missing');
+        } finally {
+            rmSync(dir, { recursive: true, force: true });
+        }
+    });
+
+    it('keeps waiting on an empty marker until a non-empty value lands', async () => {
+        const dir = mkdtempSync(join(tmpdir(), 'test-convex-marker-'));
+        const marker = join(dir, '.admin-key');
+        try {
+            writeFileSync(marker, '   ');
+            void sleep(100).then(() => writeFileSync(marker, 'late-key'));
+            expect(await waitForAdminKeyMarker(marker, 5_000, 25)).toBe('late-key');
+        } finally {
+            rmSync(dir, { recursive: true, force: true });
+        }
     });
 });

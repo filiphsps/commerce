@@ -5,6 +5,8 @@ import { dirname, resolve } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 
+import { ConvexError } from 'convex/values';
+
 import { resolveConvexProjectDir } from './start';
 
 const requireFromHere = createRequire(import.meta.url);
@@ -94,6 +96,40 @@ export function convexEnvSet(url: string, adminKey: string, key: string, value: 
 }
 
 /**
+ * Polls for the daemon's `.admin-key` marker until it holds a non-empty value, or the budget elapses.
+ *
+ * The detached daemon writes the marker only after its own `startConvex` resolves, and that lags
+ * backend health: the Convex CLI answers `/instance_name` before it persists the deployment admin key
+ * (`startConvex` then waits up to 5s for it). A consumer that probes health and reads the marker in one
+ * shot therefore races a cold boot and spuriously reports it missing — the exact failure that took both
+ * e2e matrix jobs down. Waiting on the condition rather than guessing a single read closes the race.
+ *
+ * @param adminKeyFile - Absolute path to the `.admin-key` marker the daemon writes.
+ * @param timeoutMs - Poll budget (default 30s; covers `startConvex`'s 5s admin-key persistence wait
+ *   plus the detached daemon's lag behind the parent's health probe).
+ * @param pollIntervalMs - Delay between marker probes (default mirrors the backend readiness cadence).
+ * @returns The trimmed admin key.
+ * @throws {ConvexError} When the marker never holds a non-empty value within the budget.
+ */
+export async function waitForAdminKeyMarker(
+    adminKeyFile: string,
+    timeoutMs = 30_000,
+    pollIntervalMs = 250,
+): Promise<string> {
+    const deadline = Date.now() + timeoutMs;
+    for (;;) {
+        if (existsSync(adminKeyFile)) {
+            const key = readFileSync(adminKeyFile, 'utf8').trim();
+            if (key) return key;
+        }
+        if (Date.now() >= deadline) {
+            throw new ConvexError(`[test-convex] admin-key marker missing at ${adminKeyFile}; is the daemon running?`);
+        }
+        await sleep(pollIntervalMs);
+    }
+}
+
+/**
  * Idempotently ensures the local-first dev backend is up, configured, and seeded:
  *   1. If `/instance_name` is already healthy, skip the boot.
  *   2. Otherwise spawn the `test-convex start` daemon DETACHED (the CLI blocks, so `pnpm dev` cannot
@@ -132,10 +168,7 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
         }
     }
 
-    if (!existsSync(adminKeyFile)) {
-        throw new Error(`[test-convex] admin-key marker missing at ${adminKeyFile}; is the daemon running?`);
-    }
-    const adminKey = readFileSync(adminKeyFile, 'utf8').trim();
+    const adminKey = await waitForAdminKeyMarker(adminKeyFile);
 
     convexEnvSet(url, adminKey, 'CONVEX_SERVER_SECRET', serverSecret);
     convexEnvSet(url, adminKey, 'CONVEX_AUTH_ISSUER', auth.issuer);
