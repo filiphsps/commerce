@@ -4,6 +4,10 @@ import GitHub from 'next-auth/providers/github';
 import { LANDING_DOMAIN } from '@/utils/domains';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
+// Vercel preview deploys run with `NODE_ENV === 'production'` but are served on an ephemeral
+// `*.vercel.app` host, so the production cookie domain (`.${LANDING_DOMAIN}`) can never match.
+// `VERCEL_ENV` is the Vercel-injected signal that distinguishes a preview build from the real one.
+const IS_PREVIEW = process.env.VERCEL_ENV === 'preview';
 
 // Auth.js v5's default session cookie name is `__Secure-authjs.session-token`
 // (note `authjs.` prefix, not the legacy `next-auth.` from NextAuth v4).
@@ -16,6 +20,13 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 // Only override the cookie OPTIONS here (domain, secure flag) so the cookie
 // is shared across `.${LANDING_DOMAIN}` subdomains.
 export default {
+    // On preview deploys the deployment URL is not known ahead of time, so OAuth can't register a
+    // per-deploy `redirect_uri`. `AUTH_REDIRECT_PROXY_URL` points OAuth at the stable production
+    // admin (`https://<admin>/api/auth`), which holds the single registered GitHub callback and
+    // forwards the verified response back to the originating preview via the `state` param. The
+    // proxy only activates when the stable deployment also has the var set, and both sides must
+    // share `AUTH_SECRET` to decrypt that state. Inert (undefined) outside Vercel.
+    redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
     providers: [
         GitHub({
             clientId: process.env.GITHUB_ID as string,
@@ -40,7 +51,11 @@ export default {
                 httpOnly: true,
                 sameSite: 'lax',
                 path: '/',
-                domain: IS_PROD ? `.${LANDING_DOMAIN}` : undefined,
+                // Scope to the shared `.${LANDING_DOMAIN}` apex only on the real production host.
+                // A preview deploy is served on `*.vercel.app`, so the apex-scoped cookie would
+                // never be sent back — fall back to a host-only cookie (still `__Secure-`/`secure`
+                // over the preview's HTTPS) so the session sticks to the preview host.
+                domain: IS_PROD && !IS_PREVIEW ? `.${LANDING_DOMAIN}` : undefined,
                 secure: IS_PROD,
             },
         },

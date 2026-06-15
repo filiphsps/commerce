@@ -85,6 +85,8 @@ describe('getHostname', () => {
     afterEach(() => {
         vi.clearAllMocks();
         delete process.env.STOREFRONT_DEV_SHOP;
+        delete process.env.STOREFRONT_PREVIEW_SHOP;
+        delete process.env.VERCEL_ENV;
     });
 
     it('routes <shop>.storefront.localhost host headers to STOREFRONT_DEV_SHOP', async () => {
@@ -118,6 +120,38 @@ describe('getHostname', () => {
         // previous hard-coded fallback.
         const calledWith = vi.mocked(Shop.findByDomain).mock.calls[0]?.[0];
         expect(calledWith).toBe('seeded-shop.example.com');
+    });
+
+    it('routes *.vercel.app preview hosts to STOREFRONT_PREVIEW_SHOP when VERCEL_ENV=preview', async () => {
+        // Preview deploys are served on an ephemeral `*.vercel.app` host that matches no
+        // tenant; the middleware pins them to the configured preview shop instead of 404ing.
+        process.env.VERCEL_ENV = 'preview';
+        process.env.STOREFRONT_PREVIEW_SHOP = 'preview-shop.example.com';
+
+        const req = new NextRequest('http://commerce-storefront-abc123-team.vercel.app/', {
+            headers: { host: 'commerce-storefront-abc123-team.vercel.app', 'accept-language': 'en-US' },
+        });
+
+        await getHostname(req);
+
+        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('preview-shop.example.com', expect.anything());
+    });
+
+    it('does not treat *.vercel.app as a preview host outside VERCEL_ENV=preview', async () => {
+        // The host suffix alone must never short-circuit tenant resolution — only a genuine
+        // preview deploy (VERCEL_ENV=preview) pins the shop, so production keeps full-hostname
+        // lookup and a `*.vercel.app` host attached to a real deploy still resolves normally.
+        delete process.env.VERCEL_ENV;
+        process.env.STOREFRONT_PREVIEW_SHOP = 'preview-shop.example.com';
+
+        const req = new NextRequest('http://my-shop.vercel.app/', {
+            headers: { host: 'my-shop.vercel.app', 'accept-language': 'en-US' },
+        });
+
+        await getHostname(req);
+
+        const calledWith = vi.mocked(Shop.findByDomain).mock.calls[0]?.[0];
+        expect(calledWith).not.toBe('preview-shop.example.com');
     });
 
     it('uses full hostname for production-style hosts', async () => {

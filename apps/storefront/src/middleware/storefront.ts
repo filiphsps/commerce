@@ -16,18 +16,20 @@ import type { Code } from '@/utils/locale';
 let cachedDevShopDomain: Promise<string> | undefined;
 
 /**
- * Resolves the shop domain that `*.storefront.localhost` should rewrite to
- * during local dev. Honours `STOREFRONT_DEV_SHOP` when set; otherwise picks
- * the first Shop the Convex-backed Shop service returns — which, after
- * `pnpm predev`, is the canonical seed (`nordcom-demo-shop.com`). The result
- * is cached for the process lifetime so we don't re-query the backend on
- * every request.
+ * Resolves the shop domain that hostless requests should render — local dev
+ * (`*.storefront.localhost`) and Vercel preview deploys (`*.vercel.app`), both
+ * of which carry no real tenant segment. Honours `STOREFRONT_PREVIEW_SHOP` then
+ * `STOREFRONT_DEV_SHOP` when set; otherwise picks the first Shop the Convex-backed
+ * Shop service returns — which, after `pnpm predev`, is the canonical seed
+ * (`nordcom-demo-shop.com`). The result is cached for the process lifetime so we
+ * don't re-query the backend on every request.
  *
- * @returns The resolved dev shop domain, falling back to a hard-coded
+ * @returns The resolved fallback shop domain, falling back to a hard-coded
  *          beta tenant if neither env nor the backend provides one.
  */
 async function resolveDevShopDomain(): Promise<string> {
-    if (process.env.STOREFRONT_DEV_SHOP) return process.env.STOREFRONT_DEV_SHOP;
+    const pinned = process.env.STOREFRONT_PREVIEW_SHOP || process.env.STOREFRONT_DEV_SHOP;
+    if (pinned) return pinned;
     if (cachedDevShopDomain) return cachedDevShopDomain;
     cachedDevShopDomain = (async () => {
         try {
@@ -48,10 +50,26 @@ async function resolveDevShopDomain(): Promise<string> {
 }
 
 /**
+ * True when the request is served by a Vercel preview deploy on its ephemeral
+ * `*.vercel.app` host. Preview deploys read the shared production Convex, so real
+ * tenants exist — but the deploy host matches none of them, which would otherwise
+ * 404 every request. `VERCEL_ENV` is the deploy-wide signal; the host-suffix guard
+ * keeps a preview deploy that somehow carries a real attached domain on the normal
+ * tenant-resolution path.
+ *
+ * @param host - The resolved request host.
+ * @returns Whether the request should resolve to the pinned preview shop.
+ */
+function isVercelPreviewHost(host: string): boolean {
+    return process.env.VERCEL_ENV === 'preview' && host.endsWith('.vercel.app');
+}
+
+/**
  * Extracts the effective shop hostname from an incoming request. On dev hosts
- * (`localhost`, `.test`, etc.) falls back to the dev-shop resolution so
- * any subdomain form (including `storefront.localhost:1337`) resolves
- * correctly without requiring a real Shopify shop.
+ * (`localhost`, `.test`, etc.) and Vercel preview hosts (`*.vercel.app`) — neither
+ * of which has a real shop segment to parse — falls back to the pinned-shop
+ * resolution so any subdomain form (including `storefront.localhost:1337`) resolves
+ * correctly without requiring a matching tenant domain.
  *
  * @param req - The incoming Next.js edge request.
  * @returns The resolved shop hostname for tenant lookup.
@@ -63,8 +81,9 @@ async function hostnameFromRequest(req: NextRequest): Promise<string> {
     // subdomain form — has no real shop segment to parse, so fall back to the
     // dev-shop resolution. `isDevHost` normalizes the port suffix so the
     // Playwright non-CI baseURL `storefront.localhost:1337` matches; the prior
-    // `host.endsWith('storefront.localhost')` check missed it.
-    if (isDevHost(host)) {
+    // `host.endsWith('storefront.localhost')` check missed it. Preview deploys
+    // share the same hostless fallback so PR builds render the pinned tenant.
+    if (isDevHost(host) || isVercelPreviewHost(host)) {
         return resolveDevShopDomain();
     }
 

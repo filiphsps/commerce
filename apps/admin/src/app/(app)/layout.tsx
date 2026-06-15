@@ -2,6 +2,7 @@ import '../globals.css';
 
 import { GeistMono } from 'geist/font/mono';
 import type { ReactNode } from 'react';
+import { PreviewBanner } from '@/components/preview-banner';
 import { Providers } from '@/components/providers';
 import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
@@ -22,6 +23,7 @@ export default async function AppShellLayout({ children }: { children: ReactNode
                 <meta name="mobile-web-app-capable" content="yes" />
             </head>
             <body className="font-sans">
+                <PreviewBanner />
                 <Providers>{children}</Providers>
             </body>
         </html>
