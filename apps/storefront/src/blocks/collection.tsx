@@ -68,11 +68,13 @@ export const CollectionBlock = ({
     /** Forwarded to the inner CollectionBlock for image priority hints. */
     index?: number;
 }) => {
+    // Default-layout cascade: this block's per-instance override (Overrides group) wins over the
+    // store-wide default, which wins over the platform default. An explicit responsive `layout`
+    // still takes top priority inside resolveBlockLayout when set.
     const storeDefaultLayout = context.config?.blockDefaults?.collection?.defaultLayout;
-    const layout = resolveBlockLayout(
-        block.layout,
-        typeof storeDefaultLayout === 'string' ? storeDefaultLayout : undefined,
-    );
+    const fallbackLayout =
+        block.defaultLayout ?? (typeof storeDefaultLayout === 'string' ? storeDefaultLayout : undefined);
+    const layout = resolveBlockLayout(block.layout, fallbackLayout ?? undefined);
 
     return (
         <section

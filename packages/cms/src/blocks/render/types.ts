@@ -214,6 +214,12 @@ export type CollectionBlockNode = {
     title?: string;
     layout?: ResponsiveValue<CollectionLayoutMode> | CollectionLayoutMode;
     limit: number;
+    /**
+     * Per-instance override of the store-wide `collection` default layout (the Overrides group in the
+     * page editor). Applies as the fallback when `layout` is unset, ahead of the store default and
+     * platform default. Absent → inherit the store/platform default.
+     */
+    defaultLayout?: CollectionLayoutMode;
 };
 
 /**
