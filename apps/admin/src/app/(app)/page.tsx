@@ -22,7 +22,7 @@ export default async function OverviewPage() {
     if (!user.id) {
         throw new MissingSessionUserIdError();
     }
-    const shops = await getShopsForUser(user.id);
+    const shops = await getShopsForUser(user.id, user.email ?? undefined);
 
     const firstName = user.name?.split(' ').at(0) || null;
     const lastName = user.name?.split(' ').slice(1).join(' ') || null;

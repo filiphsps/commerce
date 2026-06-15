@@ -182,7 +182,12 @@ export type ServiceSeamContractSnapshot = [
             (id: string, ..._rest: never[]) => Promise<OnlineShop> & Promise<ShopBase | null>
         >
     >,
-    Expect<Equal<(typeof Shop)['findByCollaborator'], (args: { collaboratorId: string }) => Promise<OnlineShop[]>>>,
+    Expect<
+        Equal<
+            (typeof Shop)['findByCollaborator'],
+            (args: { collaboratorId: string; email?: string }) => Promise<OnlineShop[]>
+        >
+    >,
     Expect<Equal<(typeof Shop)['findAll'], () => Promise<OnlineShop[]>>>,
     // --- `ReviewService`: standalone (no `Service` base). `findByShop` caps via
     // an optional `{ count }`; `findAll` filters via an optional `{ tenant }`.

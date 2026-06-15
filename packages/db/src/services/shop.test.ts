@@ -274,6 +274,13 @@ describe('Shop.findByCollaborator (Convex-backed)', () => {
         expect(queryMock.mock.calls[0]?.[1]).toMatchObject({ userId: 'user-123' });
     });
 
+    it('forwards the email as the stable identity when supplied', async () => {
+        queryMock.mockResolvedValueOnce(collaboratedPayload);
+        await Shop.findByCollaborator({ collaboratorId: 'stale-id', email: 'owner@test' });
+
+        expect(queryMock.mock.calls[0]?.[1]).toMatchObject({ userId: 'stale-id', email: 'owner@test' });
+    });
+
     it('resolves the collaborator as an id-ref join row (no embedded user)', async () => {
         queryMock.mockResolvedValueOnce(collaboratedPayload);
         const result = await Shop.findByCollaborator({ collaboratorId: 'user-123' });

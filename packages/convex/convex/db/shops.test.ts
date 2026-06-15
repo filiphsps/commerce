@@ -37,6 +37,10 @@ const domainVerificationRef = makeFunctionReference<'query', DomainArgs, Verific
     'db/shops:domainVerification',
 );
 
+type CollaboratorArgs = { serverSecret: string; userId: string; email?: string };
+type CollaboratedView = { shop: { _id: string; name: string } }[];
+const byCollaboratorRef = makeFunctionReference<'query', CollaboratorArgs, CollaboratedView>('db/shops:byCollaborator');
+
 /**
  * Seeds one shop with a primary + alternative domain (one `shopDomains` row each, mirroring the
  * write-side de-embedding) and a split-out credentials row.
@@ -144,5 +148,85 @@ describe('db/shops domain resolution', () => {
         await expect(t.query(byDomainRef, { serverSecret: 'wrong', domain: 'acme.example.com' })).rejects.toMatchObject(
             { data: { code: 'SERVER_SECRET_INVALID' } },
         );
+    });
+});
+
+/**
+ * Seeds one user (by email) collaborating on one shop and returns the user's Convex id.
+ *
+ * @param t - The convex-test harness.
+ * @param email - The collaborator's email.
+ * @returns The seeded user's Convex `users` id.
+ */
+function seedCollaborator(t: ReturnType<typeof convexTest>, email: string): Promise<string> {
+    const now = 1_700_000_000_000;
+    return t.run(async (ctx) => {
+        const userId = await ctx.db.insert('users', {
+            email,
+            name: 'Owner',
+            emailVerified: null,
+            identities: [],
+            createdAt: now,
+            updatedAt: now,
+        });
+        const shopId = await ctx.db.insert('shops', {
+            legacyId: 'shop_owned',
+            name: 'Owned Shop',
+            domain: 'owned.example.com',
+            alternativeDomains: [],
+            design: {
+                header: { logo: { width: 512, height: 512, src: 'https://cdn/logo.png', alt: 'Owned' } },
+                accents: [],
+            },
+            commerceProvider: { type: 'stripe', authentication: {} },
+            createdAt: now,
+            updatedAt: now,
+        });
+        await ctx.db.insert('shopCollaborators', { shop: shopId, user: userId, permissions: ['admin'] });
+        return userId;
+    });
+}
+
+describe('db/shops collaborator resolution', () => {
+    afterEach(() => {
+        delete process.env.CONVEX_SERVER_SECRET;
+    });
+
+    it('resolves the user shops by their Convex id', async () => {
+        process.env.CONVEX_SERVER_SECRET = SERVER_SECRET;
+        const t = convexTest(schema, modules);
+        const userId = await seedCollaborator(t, 'owner@example.com');
+
+        const result = await t.query(byCollaboratorRef, { serverSecret: SERVER_SECRET, userId });
+        expect(result.map((view) => view.shop.name)).toEqual(['Owned Shop']);
+    });
+
+    it('falls back to email when the id is stale (pre-migration session) and never normalizes', async () => {
+        process.env.CONVEX_SERVER_SECRET = SERVER_SECRET;
+        const t = convexTest(schema, modules);
+        await seedCollaborator(t, 'owner@example.com');
+
+        // A legacy Mongo ObjectId baked into a JWT before the Convex cutover: it
+        // never `normalizeId`s to a Convex users id, so id-only resolution returns
+        // nothing until the cookie is re-minted by a re-login.
+        const result = await t.query(byCollaboratorRef, {
+            serverSecret: SERVER_SECRET,
+            userId: '6a0620e4a307e45fbe0bc9d7',
+            email: 'owner@example.com',
+        });
+        expect(result.map((view) => view.shop.name)).toEqual(['Owned Shop']);
+    });
+
+    it('returns empty when neither the id nor the email resolves a user', async () => {
+        process.env.CONVEX_SERVER_SECRET = SERVER_SECRET;
+        const t = convexTest(schema, modules);
+        await seedCollaborator(t, 'owner@example.com');
+
+        const result = await t.query(byCollaboratorRef, {
+            serverSecret: SERVER_SECRET,
+            userId: '6a0620e4a307e45fbe0bc9d7',
+            email: 'stranger@example.com',
+        });
+        expect(result).toEqual([]);
     });
 });

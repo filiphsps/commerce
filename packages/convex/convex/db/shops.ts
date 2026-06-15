@@ -177,12 +177,24 @@ export const byId = serverQuery({
  * join via `by_user` and re-attaching each shop's full collaborator list (the embedded shape the
  * seam's `OnlineShop.collaborators` preserves).
  *
- * @returns The user's collaborated shops; empty when the id is not a users id or has no memberships.
+ * Resolution prefers the unique `email` over `userId`: an admin session JWT minted before the Convex
+ * cutover carries a legacy Mongo user id that never `normalizeId`s to a Convex users id, so id-only
+ * resolution silently returns zero shops until the cookie is re-minted by a re-login. The email is
+ * the stable identity that survives the id change, so it wins when supplied and matched.
+ *
+ * @returns The user's collaborated shops; empty when neither the email nor the id resolves a user, or
+ *   the resolved user has no memberships.
  */
 export const byCollaborator = serverQuery({
-    args: { userId: v.string() },
-    handler: async (ctx, { userId }): Promise<CollaboratedShopView[]> => {
-        const user = ctx.db.normalizeId('users', userId);
+    args: { userId: v.string(), email: v.optional(v.string()) },
+    handler: async (ctx, { userId, email }): Promise<CollaboratedShopView[]> => {
+        const byEmail = email
+            ? await ctx.db
+                  .query('users')
+                  .withIndex('by_email', (q) => q.eq('email', email))
+                  .first()
+            : null;
+        const user = byEmail?._id ?? ctx.db.normalizeId('users', userId);
         if (!user) {
             return [];
         }

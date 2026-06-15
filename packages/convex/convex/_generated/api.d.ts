@@ -633,7 +633,7 @@ export declare const api: {
       byCollaborator: FunctionReference<
         "query",
         "public",
-        { serverSecret: string; userId: string },
+        { email?: string; serverSecret: string; userId: string },
         any
       >;
       byDomain: FunctionReference<

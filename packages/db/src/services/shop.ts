@@ -307,15 +307,25 @@ export class ShopService extends Service<ShopBase> {
      * collaborator rows as `{ user, permissions }` id refs, never an embedded user document.
      *
      * @param options.collaboratorId - The user's id string matched against the join's `user` ref.
+     * @param options.email - The user's unique email, preferred over `collaboratorId` for resolution:
+     *   a session minted before the Convex cutover carries a legacy id that no longer resolves, so the
+     *   stable email keeps shops visible without forcing a re-login.
      * @returns Shops the collaborator has access to; empty array when none.
      * @example
      * ```ts
-     * const myShops = await Shop.findByCollaborator({ collaboratorId: user.id });
+     * const myShops = await Shop.findByCollaborator({ collaboratorId: user.id, email: user.email });
      * ```
      */
-    public async findByCollaborator({ collaboratorId }: { collaboratorId: string }): Promise<OnlineShop[]> {
+    public async findByCollaborator({
+        collaboratorId,
+        email,
+    }: {
+        collaboratorId: string;
+        email?: string;
+    }): Promise<OnlineShop[]> {
         const payloads = await convexServerQuery<CollaboratedShopPayload[]>('db/shops:byCollaborator', {
             userId: collaboratorId,
+            email,
         });
         return payloads
             .map(({ shop, collaborators }) => docToOnlineShop({ ...shop, collaborators }))
