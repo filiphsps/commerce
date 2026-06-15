@@ -1,3 +1,5 @@
+import type { ResponsiveValue } from '../../responsive';
+
 /**
  * Minimal shop reference passed through the block render context to loader
  * functions that need to scope Shopify queries to the current tenant.
@@ -193,17 +195,24 @@ export type BannerBlockNode = {
     alignment: 'left' | 'center' | 'right';
 };
 
+/** Whether a collection renders as a wrapping grid or a horizontal scroll rail. */
+export type CollectionLayoutMode = 'grid' | 'carousel';
+
 /**
  * CMS node shape for a Shopify collection embed block.
  *
+ * `layout` is a per-breakpoint {@link ResponsiveValue} (e.g.
+ * `{ base: 'carousel', md: 'grid' }`). A bare string is accepted as legacy
+ * single-axis content authored before the field went responsive.
+ *
  * @example
- *   const node: CollectionBlockNode = { blockType: 'collection', handle: 'sale', layout: 'grid', limit: 8 };
+ *   const node: CollectionBlockNode = { blockType: 'collection', handle: 'sale', layout: { base: 'carousel', md: 'grid' }, limit: 8 };
  */
 export type CollectionBlockNode = {
     blockType: 'collection';
     handle: string;
     title?: string;
-    layout: 'grid' | 'carousel';
+    layout?: ResponsiveValue<CollectionLayoutMode> | CollectionLayoutMode;
     limit: number;
 };
 

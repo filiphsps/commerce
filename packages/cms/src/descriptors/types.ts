@@ -209,6 +209,33 @@ export type BlocksFieldDescriptor = CompositeFieldDescriptorBase & {
 };
 
 /**
+ * The non-composite (scalar) named descriptors — those whose value is a single
+ * leaf. These are the fields a {@link ResponsiveFieldDescriptor} may wrap.
+ */
+export type ScalarFieldDescriptor =
+    | TextFieldDescriptor
+    | TextareaFieldDescriptor
+    | SelectFieldDescriptor
+    | CheckboxFieldDescriptor
+    | NumberFieldDescriptor
+    | DateFieldDescriptor
+    | EmailFieldDescriptor;
+
+/**
+ * Wraps a scalar field so its value can vary per breakpoint. The editor renders
+ * the inner `field` once per active breakpoint (Mobile/Tablet/Laptop/…) and an
+ * "add breakpoint" device dropdown; the stored value is a `{ base, sm?, md?, … }`
+ * map (a {@link ResponsiveValue}). The inner field's own `name` is ignored — this
+ * descriptor owns the data key. Composite, so it is never localized; localize the
+ * wrapped leaf instead if needed.
+ */
+export type ResponsiveFieldDescriptor = CompositeFieldDescriptorBase & {
+    type: 'responsive';
+    field: ScalarFieldDescriptor;
+    defaultValue?: Record<string, unknown>;
+};
+
+/**
  * Presentational, collapsible container. Unnamed — it groups fields visually
  * without introducing a data key, so it carries a `label` instead of a `name`.
  */
@@ -237,16 +264,17 @@ export type NamedFieldDescriptor =
     | UploadFieldDescriptor
     | ArrayFieldDescriptor
     | GroupFieldDescriptor
-    | BlocksFieldDescriptor;
+    | BlocksFieldDescriptor
+    | ResponsiveFieldDescriptor;
 
 /**
  * The named descriptors that may legally carry `localized: true` — every named
- * kind except the composites (group/array/blocks), whose types omit the flag
- * entirely (G4FIX-03).
+ * kind except the composites (group/array/blocks/responsive), whose types omit
+ * the flag entirely (G4FIX-03).
  */
 export type LocalizableFieldDescriptor = Exclude<
     NamedFieldDescriptor,
-    ArrayFieldDescriptor | GroupFieldDescriptor | BlocksFieldDescriptor
+    ArrayFieldDescriptor | GroupFieldDescriptor | BlocksFieldDescriptor | ResponsiveFieldDescriptor
 >;
 
 /**

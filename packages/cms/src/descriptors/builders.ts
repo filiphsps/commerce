@@ -15,6 +15,7 @@ import type {
     NamedFieldDescriptor,
     NumberFieldDescriptor,
     RelationshipFieldDescriptor,
+    ResponsiveFieldDescriptor,
     SelectFieldDescriptor,
     TextareaFieldDescriptor,
     TextFieldDescriptor,
@@ -198,6 +199,25 @@ export const blocksField = (config: BuilderConfig<BlocksFieldDescriptor>): Block
  */
 export const collapsibleField = (config: BuilderConfig<CollapsibleFieldDescriptor>): CollapsibleFieldDescriptor => ({
     type: 'collapsible',
+    ...config,
+});
+
+/**
+ * Builds a responsive field descriptor: the wrapped scalar `field` becomes
+ * editable per breakpoint, storing a `{ base, sm?, md?, … }` value.
+ *
+ * @param config - Field options excluding the `type` tag; must include the wrapped `field`.
+ * @returns A {@link ResponsiveFieldDescriptor}.
+ *
+ * @example
+ * responsiveField({
+ *     name: 'layout',
+ *     field: selectField({ name: 'layout', options: [{ label: 'Grid', value: 'grid' }, { label: 'Carousel', value: 'carousel' }] }),
+ *     defaultValue: { base: 'carousel', md: 'grid' },
+ * });
+ */
+export const responsiveField = (config: BuilderConfig<ResponsiveFieldDescriptor>): ResponsiveFieldDescriptor => ({
+    type: 'responsive',
     ...config,
 });
 

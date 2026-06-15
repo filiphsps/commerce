@@ -15,6 +15,7 @@ import { ArrayField } from './array';
 import { BlocksField } from './blocks';
 import { CollapsibleField } from './collapsible';
 import { GroupField } from './group';
+import { ResponsiveField } from './responsive';
 import {
     CheckboxField,
     CodeField,
@@ -41,6 +42,7 @@ export {
     registerDataBoundFieldWidgets,
     useRelationshipOptions,
 } from './relationship';
+export { ResponsiveField } from './responsive';
 export {
     EMPTY_PROSE_MIRROR_DOC,
     type ProseMirrorDoc,
@@ -102,5 +104,6 @@ export function registerCompositeFieldWidgets(registry: FieldRegistry): FieldReg
     registry.register('array', ArrayField);
     registry.register('blocks', BlocksField);
     registry.register('collapsible', CollapsibleField);
+    registry.register('responsive', ResponsiveField);
     return registry;
 }

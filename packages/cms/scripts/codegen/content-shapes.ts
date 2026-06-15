@@ -30,6 +30,7 @@ import {
     localized,
     numberField,
     required,
+    responsiveField,
     selectField,
     textareaField,
     textField,
@@ -130,13 +131,17 @@ const collectionBlockShape: ContentBlockShape = {
     fields: shape(
         { name: 'handle', type: 'text', required: true },
         localized(textField({ name: 'title' })),
-        selectField({
+        responsiveField({
             name: 'layout',
-            defaultValue: 'grid',
-            options: [
-                { label: 'Grid', value: 'grid' },
-                { label: 'Carousel', value: 'carousel' },
-            ],
+            label: 'Layout',
+            field: selectField({
+                name: 'layout',
+                options: [
+                    { label: 'Grid', value: 'grid' },
+                    { label: 'Carousel', value: 'carousel' },
+                ],
+            }),
+            defaultValue: { base: 'carousel', md: 'grid' },
         }),
         { name: 'limit', type: 'number', defaultValue: 8, min: 1, max: 48 },
     ),

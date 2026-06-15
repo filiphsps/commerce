@@ -38,6 +38,10 @@
             "./src/descriptors/index.ts",
             "./dist/descriptors/index.js"
         ],
+        "./responsive": [
+            "./src/responsive/index.ts",
+            "./dist/responsive/index.js"
+        ],
         "./cache": [
             "./src/cache.ts",
             "./dist/cache.js"

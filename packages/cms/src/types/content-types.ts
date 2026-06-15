@@ -606,7 +606,7 @@ export interface BannerBlock {
 export interface CollectionBlock {
     handle: string;
     title?: string | null;
-    layout?: ('grid' | 'carousel') | null;
+    layout?: { base: ('grid' | 'carousel'); sm?: ('grid' | 'carousel') | null; md?: ('grid' | 'carousel') | null; lg?: ('grid' | 'carousel') | null; xl?: ('grid' | 'carousel') | null; '2xl'?: ('grid' | 'carousel') | null } | null;
     limit?: number | null;
     id?: string | null;
     blockName?: string | null;

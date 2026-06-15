@@ -23,6 +23,7 @@
  * every consumer's typecheck gates.
  */
 import { UnknownCollectionSlugError } from '@nordcom/commerce-errors';
+import { BREAKPOINTS } from '../../src/responsive/breakpoints';
 import { allBlockShapes, allCollectionShapes } from './content-shapes';
 
 /** Structural view of a descriptor field as walked by the emitter. */
@@ -36,6 +37,8 @@ type EmitField = {
     options?: Array<{ value: string } | string>;
     fields?: EmitField[];
     blocks?: EmitBlock[];
+    /** The wrapped scalar field for a `responsive` descriptor. */
+    field?: EmitField;
 };
 
 /** Structural view of a Payload/descriptor block definition. */
@@ -85,6 +88,42 @@ const pad = (level: number): string => INDENT.repeat(level);
 const selectUnion = (options: EmitField['options']): string => {
     if (!options || options.length === 0) return 'string';
     return options.map((opt) => `'${typeof opt === 'string' ? opt : opt.value}'`).join(' | ');
+};
+
+/**
+ * The bare TypeScript value type for a scalar field — the inner type a
+ * `responsive` descriptor repeats per breakpoint (no name, no optionality).
+ *
+ * @param field - The wrapped scalar field.
+ * @returns The value type expression (e.g. `('grid' | 'carousel')`, `number`).
+ */
+const scalarValueType = (field: EmitField): string => {
+    switch (field.type) {
+        case 'select':
+            return `(${selectUnion(field.options)})`;
+        case 'number':
+            return 'number';
+        case 'checkbox':
+            return 'boolean';
+        default:
+            return 'string';
+    }
+};
+
+/**
+ * Emits the `{ base: T; sm?: T | null; … }` breakpoint-map type for a responsive
+ * field, keyed by the shared {@link BREAKPOINTS} scale. `base` is required; every
+ * other breakpoint is optional and nullable.
+ *
+ * @param inner - The per-breakpoint value type.
+ * @returns The object type literal.
+ */
+const responsiveObjectType = (inner: string): string => {
+    const props = BREAKPOINTS.map((breakpoint) => {
+        const key = /^[a-z]/.test(breakpoint) ? breakpoint : `'${breakpoint}'`;
+        return breakpoint === 'base' ? `base: ${inner}` : `${key}?: ${inner} | null`;
+    });
+    return `{ ${props.join('; ')} }`;
 };
 
 /** Loose-JSON value union Payload emits for `json` fields. */
@@ -200,6 +239,10 @@ const emitProperty = (field: EmitField, level: number): string => {
         case 'blocks': {
             const union = (field.blocks ?? []).map((b) => b.interfaceName ?? b.slug).join(' | ');
             return req ? `${p}${name}: Array<${union}>;` : `${p}${name}?: Array<${union}> | null;`;
+        }
+        case 'responsive': {
+            const obj = responsiveObjectType(scalarValueType(field.field ?? { type: 'text' }));
+            return req ? `${p}${name}: ${obj};` : `${p}${name}?: ${obj} | null;`;
         }
         default:
             return `${p}${name}${opt}: unknown;`;

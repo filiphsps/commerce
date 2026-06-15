@@ -11,6 +11,7 @@ import {
     localized,
     numberField,
     required,
+    responsiveField,
     selectField,
     textareaField,
     textField,
@@ -129,13 +130,17 @@ const bannerFields: FieldDescriptor[] = [
 const collectionFields: FieldDescriptor[] = [
     required(textField({ name: 'handle' })),
     localized(textField({ name: 'title' })),
-    selectField({
+    responsiveField({
         name: 'layout',
-        defaultValue: 'grid',
-        options: [
-            { label: 'Grid', value: 'grid' },
-            { label: 'Carousel', value: 'carousel' },
-        ],
+        label: 'Layout',
+        field: selectField({
+            name: 'layout',
+            options: [
+                { label: 'Grid', value: 'grid' },
+                { label: 'Carousel', value: 'carousel' },
+            ],
+        }),
+        defaultValue: { base: 'carousel', md: 'grid' },
     }),
     numberField({ name: 'limit', defaultValue: 8 }),
 ];

@@ -17,8 +17,9 @@ export async function CollectionBlock({ block, context }: { block: CollectionBlo
         limit: block.limit,
     });
     if (!collection) return null;
+    const layout = typeof block.layout === 'string' ? block.layout : (block.layout?.base ?? 'grid');
     return (
-        <section className={`cms-collection cms-collection--${block.layout}`}>
+        <section className={`cms-collection cms-collection--${layout}`}>
             {block.title ? <h2>{block.title}</h2> : <h2>{collection.title}</h2>}
             <ul>
                 {collection.products.map((p) => (
