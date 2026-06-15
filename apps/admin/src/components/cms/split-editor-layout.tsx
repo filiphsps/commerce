@@ -70,7 +70,7 @@ export function SplitEditorLayout({ children, preview }: SplitEditorLayoutProps)
                 ))}
             </div>
 
-            <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+            <div className="grid min-h-0 min-w-0 flex-1 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
                 {/* Fields — own scroll. Hidden on mobile while previewing; always shown on lg+. */}
                 <div
                     data-testid="editor-pane-fields"

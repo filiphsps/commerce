@@ -124,7 +124,12 @@ export function ShellRoot({ children, subnav, inspector, header, iconRailGroups 
     }, []);
 
     return (
-        <div className="grid h-svh grid-rows-[56px_1fr] overflow-hidden">
+        // `grid-cols-[minmax(0,1fr)]` caps the single column at the viewport width.
+        // Without it the implicit `auto` column grows to the content's max-content,
+        // so a wide-but-wrappable child (e.g. an unconstrained `flex-wrap` row) can
+        // push <main> past the viewport — clipped by `overflow-hidden`, but still a
+        // real horizontal overflow on phones/foldables.
+        <div className="grid h-svh grid-cols-[minmax(0,1fr)] grid-rows-[56px_1fr] overflow-hidden">
             {header}
             {breakpoint === 'mobile' || breakpoint === 'tablet' ? (
                 <main className="relative min-w-0 overflow-hidden">{children}</main>
