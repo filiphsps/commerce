@@ -60,7 +60,24 @@ async function runMetadataEditor(
     await waitForAutosave(page);
 
     await page.reload();
-    await expect(fieldControl(page, 'descriptionOverride', 'textarea')).toHaveValue(pmDoc(kind));
+    // The stored ProseMirror doc round-trips through the rich-text JSON fallback, which both
+    // PRETTY-PRINTS (`stringifyProseMirrorDoc`) and re-serializes with sorted object keys — so the
+    // textarea never matches the authored string verbatim. Assert structural (key-order-insensitive)
+    // equality on the PARSED documents, polling through the post-reload hydration.
+    const overrideField = fieldControl(page, 'descriptionOverride', 'textarea');
+    await expect(overrideField).toBeVisible({ timeout: 15_000 });
+    await expect
+        .poll(
+            async () => {
+                try {
+                    return JSON.parse(await overrideField.inputValue());
+                } catch {
+                    return null;
+                }
+            },
+            { timeout: 15_000 },
+        )
+        .toEqual(JSON.parse(pmDoc(kind)));
 
     await page.getByRole('button', { name: 'Publish' }).click();
     await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
