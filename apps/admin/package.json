@@ -51,6 +51,7 @@
     "dependencies": {
         "@auth/core": "0.41.2",
         "@floating-ui/react": "0.27.19",
+        "@img/colour": "^1.1.0",
         "@next/third-parties": "16.2.9",
         "@nordcom/commerce-cms": "workspace:*",
         "@nordcom/commerce-db": "workspace:*",
@@ -77,6 +78,7 @@
         "clsx": "2.1.1",
         "cmdk": "^1.1.1",
         "colord": "2.9.3",
+        "detect-libc": "^2.1.2",
         "geist": "1.7.2",
         "jose": "6.2.3",
         "lucide-react": "1.18.0",
@@ -87,6 +89,7 @@
         "react": "19.2.7",
         "react-dom": "19.2.7",
         "react-resizable-panels": "4.11.2",
+        "semver": "^7.8.4",
         "sharp": "0.35.1",
         "sonner": "2.0.7",
         "tailwind-merge": "3.6.0"
