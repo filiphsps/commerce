@@ -179,6 +179,18 @@ export const productCardTokensValidator = v.object({
 });
 
 /**
+ * Cart-line group of {@link resolvedShopThemeValidator}, mirroring `ResolvedShopTheme['cartLine']`
+ * (`lib/theme.ts`). Every knob is a CSS string serialized onto a `--cart-line-*` custom property.
+ */
+export const cartLineTokensValidator = v.object({
+    imageSize: v.string(),
+    imageRadius: v.string(),
+    gap: v.string(),
+    paddingY: v.string(),
+    dividerColor: v.string(),
+});
+
+/**
  * Fully-populated, platform-defaulted theme token map for a single shop, mirroring `ResolvedShopTheme`
  * from `@nordcom/commerce-db`'s `lib/theme.ts` (whose leaf metadata is catalogued in
  * `lib/theme-catalog.ts`) EXACTLY — every group, field, optionality, and value kind. This is the
@@ -198,6 +210,7 @@ export const resolvedShopThemeValidator = v.object({
     spacing: v.object({ blockPadding: v.string(), blockSpacer: v.string() }),
     elevation: v.object({ card: v.string(), cardHover: v.string(), panel: v.string() }),
     productCard: productCardTokensValidator,
+    cartLine: cartLineTokensValidator,
 });
 
 /**

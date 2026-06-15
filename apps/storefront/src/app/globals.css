@@ -441,6 +441,18 @@ html:root {
     --product-card-sale-badge-allow-overlap: false;
 }
 
+/* Cart-line knob base values. Mirror `THEME_DEFAULTS.cartLine` (packages/db `lib/theme.ts`) so a
+ * theme-less shop renders byte-identically; the per-shop `CssVariablesProvider` `:root` (emitted later
+ * in source order) overrides these. The cart line's variant chips reuse the `--product-card-chip-*`
+ * tokens above, so only the chassis knobs live here. */
+:root {
+    --cart-line-image-size: 88px;
+    --cart-line-image-radius: 8px;
+    --cart-line-gap: 1rem;
+    --cart-line-padding-y: 1rem;
+    --cart-line-divider-color: #ece6d4;
+}
+
 /* Semantic token layer (P3-3 of .specs/2026-05-28-storefront-theming/).
  *
  * A thin alias layer over the platform color/shadow tokens above, giving consumers stable semantic

@@ -17,11 +17,21 @@ const DEFAULT_LAYOUT: CollectionLayout = { base: 'carousel', md: 'grid' };
  * (carousel on phones, grid on larger screens) so existing shops gain the mobile
  * carousel automatically; legacy `'carousel'` stays a carousel at every breakpoint.
  *
+ * When the block instance sets no `layout`, the store-wide default (set in the
+ * Customization hub's Blocks tab) decides — `'grid'`/`'carousel'` applies at every
+ * breakpoint — and only when that is inherited too does the platform
+ * {@link DEFAULT_LAYOUT} apply. A per-instance `layout` always wins over both.
+ *
  * @param raw - The block's stored `layout`.
+ * @param storeDefault - Store-wide default layout (`grid` | `carousel`) for unset blocks.
  * @returns The resolved responsive layout.
  */
-const resolveBlockLayout = (raw: CollectionBlockNode['layout']): CollectionLayout => {
-    if (raw == null) return DEFAULT_LAYOUT;
+const resolveBlockLayout = (raw: CollectionBlockNode['layout'], storeDefault?: string): CollectionLayout => {
+    if (raw == null) {
+        if (storeDefault === 'grid') return { base: 'grid' };
+        if (storeDefault === 'carousel') return { base: 'carousel' };
+        return DEFAULT_LAYOUT;
+    }
     if (typeof raw === 'string') return raw === 'carousel' ? { base: 'carousel' } : DEFAULT_LAYOUT;
     return normalizeResponsiveValue<'grid' | 'carousel'>(raw, 'carousel');
 };
@@ -58,7 +68,11 @@ export const CollectionBlock = ({
     /** Forwarded to the inner CollectionBlock for image priority hints. */
     index?: number;
 }) => {
-    const layout = resolveBlockLayout(block.layout);
+    const storeDefaultLayout = context.config?.blockDefaults?.collection?.defaultLayout;
+    const layout = resolveBlockLayout(
+        block.layout,
+        typeof storeDefaultLayout === 'string' ? storeDefaultLayout : undefined,
+    );
 
     return (
         <section

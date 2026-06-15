@@ -39,8 +39,8 @@ describe('theme-catalog', () => {
     const derivedPaths = THEME_TOKEN_CATALOG.filter((token) => token.derived).map((token) => token.path);
     const accentElementPaths = catalogPaths.filter((path) => path.startsWith(`${ACCENTS_ARRAY_PATH}[]`));
 
-    it('covers exactly 135 rows', () => {
-        expect(THEME_TOKEN_CATALOG.length).toBe(135);
+    it('covers exactly 140 rows', () => {
+        expect(THEME_TOKEN_CATALOG.length).toBe(140);
     });
 
     it('has a unique path per row', () => {

@@ -1,7 +1,7 @@
 import { TypeError } from '@nordcom/commerce-errors';
 import { colord } from 'colord';
 
-import { isQuotedProductCardKey, productCardCustomProperty } from './theme-catalog';
+import { cartLineCustomProperty, isQuotedProductCardKey, productCardCustomProperty } from './theme-catalog';
 
 /**
  * Allowlist of selectable font families, keyed by a stable slug with a human-readable label. This is
@@ -232,6 +232,25 @@ export interface ResolvedProductCardTokens {
 }
 
 /**
+ * Tenant-tunable cart-line knobs. Mirrors the product-card token pattern (a flat map serialized
+ * diff-from-default onto `--cart-line-*` custom properties) so the cart line is themeable from the
+ * same admin theme editor. Variant chips/swatches reuse the product-card option tokens, so the cart
+ * and the card stay one visual system; these knobs cover the cart-line chassis only.
+ */
+export interface ResolvedCartLineTokens {
+    /** → `--cart-line-image-size`. */
+    imageSize: string;
+    /** → `--cart-line-image-radius`. */
+    imageRadius: string;
+    /** → `--cart-line-gap` (image-to-content gap). */
+    gap: string;
+    /** → `--cart-line-padding-y` (vertical density). */
+    paddingY: string;
+    /** → `--cart-line-divider-color`. */
+    dividerColor: string;
+}
+
+/**
  * Fully-populated, platform-defaulted theme token map for a single shop. Every field carries a
  * concrete platform default (sourced from `apps/storefront/src/app/globals.css`) so the storefront
  * serializer (P3-2) never has to know a default — it reads a resolved value for every token. The
@@ -303,6 +322,7 @@ export interface ResolvedShopTheme {
     /** → `--product-card-shadow` / `--product-card-shadow-hover` / `--header-panel-shadow`. */
     elevation: { card: string; cardHover: string; panel: string };
     productCard: ResolvedProductCardTokens;
+    cartLine: ResolvedCartLineTokens;
 }
 
 /**
@@ -476,6 +496,13 @@ export const THEME_DEFAULTS: ResolvedShopTheme = {
         saleBadgeText: '−{n}%',
         saleBadgeMinDiscount: 11,
         saleBadgeAllowOverlap: false,
+    },
+    cartLine: {
+        imageSize: '88px',
+        imageRadius: '8px',
+        gap: '1rem',
+        paddingY: '1rem',
+        dividerColor: '#ece6d4',
     },
 };
 
@@ -701,6 +728,31 @@ const appendProductCardTokens = (pairs: ThemeCssVar[], resolved: ResolvedProduct
 };
 
 /**
+ * Appends a `[cssVar, value]` pair for every cart-line knob whose resolved value differs from the
+ * platform default, mapping each knob to its `--cart-line-*` custom property. None of the cart-line
+ * knobs are logical content, so none are quoted. Values that fail {@link sanitizeCssValue} are skipped.
+ *
+ * @param pairs - The accumulating declaration buffer, mutated in place.
+ * @param resolved - The shop's resolved cart-line token map.
+ * @returns Nothing; `pairs` is mutated in place.
+ */
+const appendCartLineTokens = (pairs: ThemeCssVar[], resolved: ResolvedCartLineTokens): void => {
+    for (const key of Object.keys(THEME_DEFAULTS.cartLine) as (keyof ResolvedCartLineTokens)[]) {
+        const value = resolved[key];
+        if (value === THEME_DEFAULTS.cartLine[key]) {
+            continue;
+        }
+
+        const safe = sanitizeCssValue(value, false);
+        if (safe === null) {
+            continue;
+        }
+
+        pairs.push([cartLineCustomProperty(key), safe]);
+    }
+};
+
+/**
  * Serializes a shop's resolved theme into the ordered list of CSS custom-property declarations the
  * storefront emits, so SSR and the admin live-preview compute the **same** output byte-for-byte. The
  * function is pure and isomorphic (no `server-only`, no I/O); callers resolve the shop and its
@@ -840,6 +892,15 @@ export const serializeThemeToCssVars = (theme: ResolvedShopTheme, branding: Them
             pairs.push(['', '']);
         }
         pairs.push(...productCard);
+    }
+
+    const cartLine: ThemeCssVar[] = [];
+    appendCartLineTokens(cartLine, theme.cartLine);
+    if (cartLine.length > 0) {
+        if (pairs.length > 0) {
+            pairs.push(['', '']);
+        }
+        pairs.push(...cartLine);
     }
 
     return pairs;

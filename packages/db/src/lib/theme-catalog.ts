@@ -1,4 +1,4 @@
-import type { ResolvedProductCardTokens, ResolvedShopTheme } from './theme';
+import type { ResolvedCartLineTokens, ResolvedProductCardTokens, ResolvedShopTheme } from './theme';
 
 /**
  * The kind of value a theme token holds, driving which admin control renders for it. `color` →
@@ -11,7 +11,15 @@ export type ValueKind = 'color' | 'dimension' | 'number' | 'enum' | 'boolean';
  * Top-level catalog grouping, mirroring the structure of {@link ResolvedShopTheme} plus the
  * data-driven `sections` group (whose rows live on `shops.featureFlags`, not on the theme tree).
  */
-export type ThemeGroup = 'colors' | 'typography' | 'radii' | 'spacing' | 'elevation' | 'productCard' | 'sections';
+export type ThemeGroup =
+    | 'colors'
+    | 'typography'
+    | 'radii'
+    | 'spacing'
+    | 'elevation'
+    | 'productCard'
+    | 'cartLine'
+    | 'sections';
 
 /**
  * Fallback widget kind for a theme token's generic form control — the four kinds the editor's
@@ -110,6 +118,14 @@ export const isQuotedProductCardKey = (key: keyof ResolvedProductCardTokens): bo
     PRODUCT_CARD_QUOTED_KEYS.has(key);
 
 /**
+ * Maps a {@link ResolvedCartLineTokens} key to the `--cart-line-*` custom property it serializes to.
+ *
+ * @param key - The resolved cart-line token key.
+ * @returns The CSS custom-property name (including the leading `--`).
+ */
+export const cartLineCustomProperty = (key: keyof ResolvedCartLineTokens): string => `--cart-line-${kebabCase(key)}`;
+
+/**
  * Every valid dotted path into {@link ResolvedShopTheme}, prefixed with the persisted `theme` root.
  * Arrays contribute an indexed `[]` segment (e.g. `theme.colors.accents[].color`) and optional leaves
  * (the derived accent shades) are included via `NonNullable`. Used to type-check that every catalog
@@ -127,8 +143,8 @@ export type ThemeTokenPath = ThemePathsOf<ResolvedShopTheme, 'theme'>;
 
 /**
  * The complete, declaration-ordered token catalog. Every entry mirrors exactly one
- * {@link ResolvedShopTheme} leaf (135 rows total: colors 21, typography 11, radii 4, spacing 2,
- * elevation 3, productCard 94). Structured-group `cssVar`s are hand-authored from the
+ * {@link ResolvedShopTheme} leaf (140 rows total: colors 21, typography 11, radii 4, spacing 2,
+ * elevation 3, productCard 94, cartLine 5). Structured-group `cssVar`s are hand-authored from the
  * `ResolvedShopTheme` JSDoc; `productCard` `cssVar`s are generated via {@link productCardCustomProperty}.
  * Defaults are intentionally absent — deep-get them from `THEME_DEFAULTS` at each `path`.
  */
@@ -1349,6 +1365,48 @@ export const THEME_TOKEN_CATALOG = [
         cssVar: productCardCustomProperty('saleBadgeAllowOverlap'),
         valueKind: 'boolean',
         payloadType: 'checkbox',
+    },
+
+    // ── cartLine ────────────────────────────────────────────────────────────
+    {
+        group: 'cartLine',
+        cluster: 'line',
+        path: 'theme.cartLine.imageSize',
+        cssVar: cartLineCustomProperty('imageSize'),
+        valueKind: 'dimension',
+        payloadType: 'text',
+    },
+    {
+        group: 'cartLine',
+        cluster: 'line',
+        path: 'theme.cartLine.imageRadius',
+        cssVar: cartLineCustomProperty('imageRadius'),
+        valueKind: 'dimension',
+        payloadType: 'text',
+    },
+    {
+        group: 'cartLine',
+        cluster: 'line',
+        path: 'theme.cartLine.gap',
+        cssVar: cartLineCustomProperty('gap'),
+        valueKind: 'dimension',
+        payloadType: 'text',
+    },
+    {
+        group: 'cartLine',
+        cluster: 'line',
+        path: 'theme.cartLine.paddingY',
+        cssVar: cartLineCustomProperty('paddingY'),
+        valueKind: 'dimension',
+        payloadType: 'text',
+    },
+    {
+        group: 'cartLine',
+        cluster: 'line',
+        path: 'theme.cartLine.dividerColor',
+        cssVar: cartLineCustomProperty('dividerColor'),
+        valueKind: 'color',
+        payloadType: 'text',
     },
 ] as const satisfies readonly ThemeTokenMeta[];
 

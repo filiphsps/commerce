@@ -3,6 +3,7 @@ import 'server-only';
 import { shopsEditor } from '@nordcom/commerce-cms/editor/manifests';
 import { EditorEditPage } from '@nordcom/commerce-cms/editor/ui';
 import type { Metadata, Route } from 'next';
+import { BlocksTab } from '@/components/customization/blocks-tab';
 import { ComponentsTab } from '@/components/customization/components-tab';
 import { CustomizationShell } from '@/components/customization/customization-shell';
 import { PreviewBridge } from '@/components/theme-editor/preview-bridge';
@@ -51,6 +52,7 @@ export default async function CustomizationPage({ params, searchParams }: Props)
                     tabs={[
                         { slug: 'theme', label: 'Theme', content: <ThemeEditor /> },
                         { slug: 'components', label: 'Components', content: <ComponentsTab /> },
+                        { slug: 'blocks', label: 'Blocks', content: <BlocksTab /> },
                     ]}
                 />
             }

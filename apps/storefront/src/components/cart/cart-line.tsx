@@ -5,7 +5,6 @@ import { useCartActions, useCartStatus } from '@nordcom/cart-react';
 import { ImageOff as ImageOffIcon, Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/actionable/button';
-import { Card } from '@/components/layout/card';
 import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
@@ -118,22 +117,22 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const handle = merch.productHandle;
 
     return (
-        <Card
+        <div
             data-cart-line={line.id}
             className={cn(
-                'relative flex items-start gap-[var(--block-spacer-large)] shadow',
+                'relative flex items-start gap-(--cart-line-gap) border-(--cart-line-divider-color) border-0 border-b border-solid py-(--cart-line-padding-y) last:border-b-0',
                 !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none',
             )}
         >
             <span data-line-quantity={quantity} className="sr-only" aria-live="polite">
                 {quantity}
             </span>
-            <Card
+            <div
                 data-testid="cart-line-image"
-                className="flex aspect-square w-20 shrink-0 items-center justify-center self-start overflow-hidden bg-(--surface-0) p-2 shadow md:w-28"
+                className="flex size-(--cart-line-image-size) shrink-0 items-center justify-center self-start overflow-hidden rounded-[var(--cart-line-image-radius)] border border-(--border-default) border-solid bg-(--surface-0) p-2"
             >
                 {image}
-            </Card>
+            </div>
 
             <div className="flex w-full min-w-0 flex-col items-start gap-[var(--block-spacer-large)] md:flex-row">
                 <header className="flex h-full w-full min-w-0 flex-1 flex-col items-start justify-between gap-1 md:py-2">
@@ -239,7 +238,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                     </div>
                 </section>
             </div>
-        </Card>
+        </div>
     );
 };
 
