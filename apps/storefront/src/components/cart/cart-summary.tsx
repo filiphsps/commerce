@@ -193,12 +193,18 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                                                 return (
                                                     <div
-                                                        className="flex items-center justify-between"
+                                                        className="flex items-center justify-between gap-2"
                                                         key={`${line.id}-${discount.discountedAmount.amount}`}
                                                     >
-                                                        <Label className={SUMMARY_LABEL_STYLES}>{title}</Label>
+                                                        <Label className={cn(SUMMARY_LABEL_STYLES, 'min-w-0 truncate')}>
+                                                            {title}
+                                                        </Label>
                                                         <Price
-                                                            className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
+                                                            className={cn(
+                                                                PRICE_STYLES,
+                                                                PRICE_DISCOUNT_STYLES,
+                                                                'shrink-0 whitespace-nowrap',
+                                                            )}
                                                             data={{
                                                                 currencyCode: currencyCode,
                                                                 amount: discount.discountedAmount.amount,

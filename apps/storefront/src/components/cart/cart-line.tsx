@@ -2,7 +2,7 @@
 
 import type { CartLine as CoreCartLine } from '@nordcom/cart-core';
 import { useCartActions, useCartStatus } from '@nordcom/cart-react';
-import { Tag as TagIcon, X as XIcon } from 'lucide-react';
+import { ImageOff as ImageOffIcon, Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/actionable/button';
 import { Card } from '@/components/layout/card';
@@ -71,15 +71,17 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             className="h-full w-full object-contain object-center"
             src={merch.image.url}
             alt={merch.image.altText || merch.variantTitle}
-            width={85}
-            height={85}
-            sizes="(max-width: 920px) 65px, 175px"
+            width={160}
+            height={160}
+            sizes="(max-width: 920px) 80px, 112px"
             priority={false}
             loading="lazy"
             decoding="async"
             draggable={false}
         />
-    ) : null;
+    ) : (
+        <ImageOffIcon aria-hidden="true" className="text-(color:var(--text-muted)) h-1/3 w-1/3 stroke-1" />
+    );
 
     const pricing = (
         <>
@@ -119,32 +121,38 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         <Card
             data-cart-line={line.id}
             className={cn(
-                'relative flex gap-[var(--block-spacer-large)] shadow',
+                'relative flex items-start gap-[var(--block-spacer-large)] shadow',
                 !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none',
             )}
         >
             <span data-line-quantity={quantity} className="sr-only" aria-live="polite">
                 {quantity}
             </span>
-            <Card className="h-full min-h-32 w-auto overflow-hidden bg-(--surface-0) p-2 shadow">{image}</Card>
+            <Card
+                data-testid="cart-line-image"
+                className="flex aspect-square w-20 shrink-0 items-center justify-center self-start overflow-hidden bg-(--surface-0) p-2 shadow md:w-28"
+            >
+                {image}
+            </Card>
 
-            <div className="flex w-full flex-col items-start gap-[var(--block-spacer-large)] md:flex-row">
-                <header className="flex h-full w-full flex-col items-start justify-between gap-1 md:py-2">
-                    <div>
+            <div className="flex w-full min-w-0 flex-col items-start gap-[var(--block-spacer-large)] md:flex-row">
+                <header className="flex h-full w-full min-w-0 flex-1 flex-col items-start justify-between gap-1 md:py-2">
+                    <div className="w-full min-w-0">
                         <Link
                             href={`/products/${handle}`}
                             prefetch={false}
-                            className="font-bold text-lg leading-none transition-colors hover:text-primary focus-visible:text-primary"
+                            data-testid="cart-line-title"
+                            className="line-clamp-2 break-words font-bold text-lg leading-tight transition-colors hover:text-primary focus-visible:text-primary"
                         >
-                            <span>{vendor}</span> {title}
+                            {vendor ? <span className="text-(color:var(--text-muted))">{vendor}</span> : null} {title}
                         </Link>
 
                         {realOptions.length > 0 ? (
-                            <div className="mt-1 inline-flex flex-wrap items-center gap-1">
+                            <div className="mt-1 flex w-full min-w-0 flex-wrap items-center gap-1">
                                 {realOptions.map(({ name, value }) => (
                                     <span
                                         key={name}
-                                        className="inline-flex items-center rounded-md border border-(--border-default) border-solid bg-(--surface-2) px-2 py-0.5 font-medium text-xs"
+                                        className="inline-block max-w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-md border border-(--border-default) border-solid bg-(--surface-2) px-2 py-0.5 font-medium text-xs"
                                     >
                                         {name}·{value}
                                     </span>
@@ -185,7 +193,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                     </div>
                 </header>
 
-                <section className="flex h-full w-full flex-col items-end justify-end">
+                <section className="flex w-full shrink-0 flex-col items-end justify-end md:w-56">
                     <div className="absolute inset-auto top-3 right-3">
                         <Button
                             type="button"
@@ -201,7 +209,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                         </Button>
                     </div>
 
-                    <div className="h-12 w-full max-w-none md:w-full md:max-w-56">
+                    <div className="h-12 w-full">
                         <QuantitySelector
                             className="h-full"
                             buttonClassName={cn(quantity > 999 && 'hidden')}
