@@ -141,6 +141,13 @@ const fullTheme = {
         saleBadgeMinDiscount: 11,
         saleBadgeAllowOverlap: false,
     },
+    cartLine: {
+        imageSize: '64px',
+        imageRadius: '8px',
+        gap: '12px',
+        paddingY: '12px',
+        dividerColor: '#ece6d4',
+    },
 };
 
 describe('resolvedShopThemeValidator', () => {
