@@ -64,17 +64,16 @@
         "colord": "2.9.3",
         "convex": "1.39.1"
     },
-    "peerDependencies": {},
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
         "@types/node": "24.12.4",
-        "tsx": "4.22.3",
         "@typescript/native-preview": "7.0.0-dev.20260527.2",
         "concurrently": "10.0.0",
         "glob": "13.0.6",
-        "react": "19.2.6",
+        "react": "19.2.7",
         "rimraf": "6.1.3",
         "server-only": "0.0.1",
+        "tsx": "4.22.3",
         "typescript": "6.0.3",
         "vite": "8.0.14",
         "vitest": "4.1.7"
