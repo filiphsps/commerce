@@ -47,7 +47,13 @@ vi.mock('@nordcom/nordstar', () => ({
     Label: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,
 }));
 
-vi.mock('lucide-react', () => ({ Settings: () => <svg /> }));
+vi.mock('lucide-react', () => ({
+    ChevronRight: () => <svg />,
+    LogOut: () => <svg />,
+    Plus: () => <svg />,
+    Settings: () => <svg />,
+    Store: () => <svg />,
+}));
 
 import { within } from '@testing-library/react';
 import type React from 'react';
@@ -116,13 +122,13 @@ describe('app/page (root Overview)', () => {
         expect(q.getByText('Shop B')).toBeInTheDocument();
     });
 
-    it('fetches shops using the authenticated user id', async () => {
+    it('fetches shops using the authenticated user id and email', async () => {
         mockAuth.mockResolvedValue({ user: mockUser });
         mockGetShopsForUser.mockResolvedValue([]);
 
         await renderRSC(() => Overview());
 
-        expect(mockGetShopsForUser).toHaveBeenCalledWith('u1');
+        expect(mockGetShopsForUser).toHaveBeenCalledWith('u1', 'alice@example.com');
     });
 
     it('exports metadata with title "Your Shops"', async () => {
