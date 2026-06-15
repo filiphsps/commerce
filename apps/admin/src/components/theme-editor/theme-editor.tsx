@@ -21,6 +21,7 @@ const GROUP_LABELS: Record<ThemeGroup, string> = {
     spacing: 'Layout',
     elevation: 'Layout',
     productCard: 'Product Card',
+    cartLine: 'Cart Line',
     sections: 'Sections',
 };
 
