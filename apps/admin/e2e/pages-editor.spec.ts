@@ -71,14 +71,27 @@ async function addBlock(page: Page, path: string, type: string): Promise<void> {
     await page.locator(`[data-testid="blocks-add-${path}"]`).click();
 }
 
+/** The toolbar's autosave cadence (EditorFormToolbar `autosave.interval`). */
+const AUTOSAVE_INTERVAL_MS = 2_000;
+
 /**
- * Waits out one full autosave window plus the round-trip, then confirms the
- * toolbar reported a save (the "Last saved …" status only appears after a
- * successful draft round-trip).
+ * Waits for the interval autosave to QUIESCE — every pending edit round-tripped.
+ *
+ * "Last saved" is sticky: the toolbar sets it on the first tick and never clears
+ * it, so a bare `getByText(/Last saved/)` check races the 2s clock and returns on
+ * an EARLIER tick — before the latest edit (or, on /new/, the create-and-bind) has
+ * been posted. The loop reads live state each tick and exposes no per-edit
+ * completion signal, so poll until "Saving…" stays absent across a full interval:
+ * no tick finding divergence means the form is clean and every edit is durable.
  *
  * @param page - The Playwright page.
  */
 async function waitForAutosave(page: Page): Promise<void> {
+    await expect(async () => {
+        await expect(page.getByText('Saving…')).toBeHidden();
+        await page.waitForTimeout(AUTOSAVE_INTERVAL_MS + 300);
+        await expect(page.getByText('Saving…')).toBeHidden();
+    }).toPass({ timeout: 30_000 });
     await expect(page.getByText(/Last saved/)).toBeVisible({ timeout: 15_000 });
 }
 
