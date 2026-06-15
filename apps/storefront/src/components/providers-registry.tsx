@@ -77,6 +77,7 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
  */
 const ProvidersRegistry = ({
     shop,
+    domain,
     currency = 'USD',
     locale,
     children,
@@ -100,7 +101,7 @@ const ProvidersRegistry = ({
 
                         {toolbars ? (
                             <Suspense fallback={children}>
-                                <LiveChatProvider shop={shop} locale={locale}>
+                                <LiveChatProvider shop={shop} hostname={domain}>
                                     {children}
                                 </LiveChatProvider>
 
