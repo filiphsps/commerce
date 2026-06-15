@@ -81,7 +81,7 @@
     },
     "homepage": "https://github.com/filiphsps/commerce/",
     "dependencies": {
-        "@nordcom/nordstar": "0.0.75"
+        "@nordcom/nordstar": "0.1.0"
     },
     "devDependencies": {
         "@biomejs/biome": "2.5.0",

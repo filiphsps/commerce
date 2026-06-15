@@ -109,8 +109,7 @@ export function ShopifyConnectForm({ value, onChange, onTestResult, verified }: 
                 onChange={(next) => update('privateToken', next)}
             />
 
-            <Details>
-                <summary>Advanced</summary>
+            <Details label="Advanced">
                 <TextField
                     label="Storefront ID (optional)"
                     placeholder="gid://shopify/Shop/…"

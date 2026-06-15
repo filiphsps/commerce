@@ -3,7 +3,8 @@
 import { FONT_FAMILIES } from '@nordcom/commerce-db/lib/theme';
 import type { ThemeTokenMeta, ValueKind } from '@nordcom/commerce-db/lib/theme-catalog';
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select } from '@nordcom/nordstar';
+
 import { ColorControl } from './controls/color-control';
 import { DimensionControl } from './controls/dimension-control';
 import type { Control, ControlProps } from './controls/field-row';
@@ -28,17 +29,17 @@ function FontPreviewControl({ value, onChange, placeholder, id }: ControlProps) 
     const current = typeof value === 'string' ? value : undefined;
 
     return (
-        <Select value={current} onValueChange={(next) => onChange(next)}>
-            <SelectTrigger id={id}>
-                <SelectValue placeholder={placeholder ?? 'Select font…'} />
-            </SelectTrigger>
-            <SelectContent>
+        <Select value={current} onValueChange={(next: string) => onChange(next)}>
+            <Select.Trigger id={id}>
+                <Select.Value placeholder={placeholder ?? 'Select font…'} />
+            </Select.Trigger>
+            <Select.Content>
                 {Object.entries(FONT_FAMILIES).map(([key, label]) => (
-                    <SelectItem key={key} value={key} style={{ fontFamily: label }}>
+                    <Select.Item key={key} value={key} style={{ fontFamily: label }}>
                         {label}
-                    </SelectItem>
+                    </Select.Item>
                 ))}
-            </SelectContent>
+            </Select.Content>
         </Select>
     );
 }

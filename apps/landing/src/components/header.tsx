@@ -6,7 +6,7 @@ import logo from '@/static/logo.svg';
 import { getAdminHostname } from '@/utils/domains';
 import { cn } from '@/utils/tailwind';
 
-export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;
+export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color' | 'as'>;
 /**
  * Renders the site navigation header with the Nordcom Commerce logo, nav links, and an Admin portal CTA.
  *

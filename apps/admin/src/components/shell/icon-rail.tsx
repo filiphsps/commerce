@@ -1,11 +1,11 @@
 'use client';
 
+import { Tooltip } from '@nordcom/nordstar';
 import type { Route } from 'next';
 import type { ReactNode } from 'react';
 
 import { NavItem } from '@/components/ui/nav-item';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export type IconRailItem = {
     href: Route;
@@ -28,7 +28,7 @@ export type IconRailProps = {
  */
 export function IconRail({ items, expanded }: IconRailProps) {
     return (
-        <TooltipProvider delayDuration={200}>
+        <Tooltip.Provider delayDuration={200}>
             <ScrollArea className="h-full">
                 <nav className="flex w-full flex-col gap-1 p-2">
                     {items.map((item) => {
@@ -46,15 +46,15 @@ export function IconRail({ items, expanded }: IconRailProps) {
                         if (expanded) return <div key={item.href}>{inner}</div>;
                         return (
                             <Tooltip key={item.href}>
-                                <TooltipTrigger asChild>
+                                <Tooltip.Trigger asChild>
                                     <div>{inner}</div>
-                                </TooltipTrigger>
-                                <TooltipContent side="right">{item.label}</TooltipContent>
+                                </Tooltip.Trigger>
+                                <Tooltip.Content side="right">{item.label}</Tooltip.Content>
                             </Tooltip>
                         );
                     })}
                 </nav>
             </ScrollArea>
-        </TooltipProvider>
+        </Tooltip.Provider>
     );
 }

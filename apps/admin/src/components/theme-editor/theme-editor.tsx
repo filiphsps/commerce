@@ -1,10 +1,10 @@
 'use client';
 
 import { deriveCatalog, type ThemeGroup, type ThemeTokenMeta } from '@nordcom/commerce-db/lib/theme-catalog';
+import { Accordion } from '@nordcom/nordstar';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/utils/tailwind';
 import { AccentRepeater } from './accent-repeater';
 import { isAccentRepeaterToken } from './control-registry';
@@ -96,9 +96,9 @@ export function ThemeEditor() {
                     className="flex flex-col"
                 >
                     {sections.map((section) => (
-                        <AccordionItem key={section.label} value={section.label}>
-                            <AccordionTrigger>{section.label}</AccordionTrigger>
-                            <AccordionContent className="flex flex-col gap-0.5">
+                        <Accordion.Item key={section.label} value={section.label}>
+                            <Accordion.Trigger>{section.label}</Accordion.Trigger>
+                            <Accordion.Content className="flex flex-col gap-0.5">
                                 {section.clusters.map((entry) => (
                                     <ClusterNavButton
                                         key={entry.id}
@@ -107,8 +107,8 @@ export function ThemeEditor() {
                                         onSelect={() => selectCluster(entry.id)}
                                     />
                                 ))}
-                            </AccordionContent>
-                        </AccordionItem>
+                            </Accordion.Content>
+                        </Accordion.Item>
                     ))}
                 </Accordion>
             </nav>
@@ -203,14 +203,14 @@ function ClusterPanel({ entry }: { entry: ClusterEntry }) {
 
             {legacy.length > 0 ? (
                 <Accordion type="single" collapsible className="mt-2 border-border border-t">
-                    <AccordionItem value="advanced">
-                        <AccordionTrigger>Advanced ({legacy.length} legacy)</AccordionTrigger>
-                        <AccordionContent className="flex flex-col divide-y divide-border">
+                    <Accordion.Item value="advanced">
+                        <Accordion.Trigger>Advanced ({legacy.length} legacy)</Accordion.Trigger>
+                        <Accordion.Content className="flex flex-col divide-y divide-border">
                             {legacy.map((token) => (
                                 <TokenControl key={token.path} token={token} />
                             ))}
-                        </AccordionContent>
-                    </AccordionItem>
+                        </Accordion.Content>
+                    </Accordion.Item>
                 </Accordion>
             ) : null}
         </section>

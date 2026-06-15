@@ -1,8 +1,7 @@
 'use client';
 
+import { Kbd } from '@nordcom/nordstar';
 import { Search } from 'lucide-react';
-
-import { Kbd } from '@/components/ui/kbd';
 
 /**
  * Search button in the shell header that opens the CommandPalette by dispatching a synthetic ⌘K keyboard event.

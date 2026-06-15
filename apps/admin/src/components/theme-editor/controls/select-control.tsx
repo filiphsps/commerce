@@ -1,4 +1,5 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select } from '@nordcom/nordstar';
+
 import type { ControlProps } from './field-row';
 
 /**
@@ -21,17 +22,17 @@ export function SelectControl({ token, value, onChange, placeholder, id }: Contr
     const current = typeof value === 'string' ? value : undefined;
 
     return (
-        <Select value={current} onValueChange={(next) => onChange(next)} disabled={readOnly}>
-            <SelectTrigger id={id}>
-                <SelectValue placeholder={placeholder ?? 'Select…'} />
-            </SelectTrigger>
-            <SelectContent>
+        <Select value={current} onValueChange={(next: string) => onChange(next)} disabled={readOnly}>
+            <Select.Trigger id={id}>
+                <Select.Value placeholder={placeholder ?? 'Select…'} />
+            </Select.Trigger>
+            <Select.Content>
                 {options.map((option) => (
-                    <SelectItem key={option} value={option}>
+                    <Select.Item key={option} value={option}>
                         {option}
-                    </SelectItem>
+                    </Select.Item>
                 ))}
-            </SelectContent>
+            </Select.Content>
         </Select>
     );
 }

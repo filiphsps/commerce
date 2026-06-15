@@ -84,7 +84,7 @@ export function BulkActions({ deleteAction, publishAction }: BulkActionsProps) {
                         as="button"
                         type="button"
                         variant="solid"
-                        color="danger"
+                        className="border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         disabled={disabled}
                         onClick={handleDelete}
                     >

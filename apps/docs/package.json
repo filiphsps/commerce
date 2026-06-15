@@ -36,7 +36,7 @@
         "@nordcom/commerce-marketing-common": "workspace:*",
         "@nordcom/commerce-shopify-graphql": "workspace:*",
         "@nordcom/commerce-shopify-html": "workspace:*",
-        "@nordcom/nordstar": "0.0.75",
+        "@nordcom/nordstar": "0.1.0",
         "@vercel/analytics": "2.0.1",
         "fumadocs-core": "16.10.2",
         "fumadocs-mdx": "15.0.12",
