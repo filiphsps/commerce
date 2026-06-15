@@ -27,7 +27,7 @@ const ERROR_CODES = {
     },
     'unknown-shop': {
         code: 404,
-        title: 'Unknown or Shop',
+        title: 'Unknown Shop',
         description:
             "We're sorry, but the shop you're trying to access appears to be unavailable at this time. This could be due to an invalid shop identifier or a temporary technical issue.",
     },
