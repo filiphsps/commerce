@@ -1,4 +1,3 @@
-import { Card } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
@@ -9,10 +8,14 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * Auth route-group layout. The login and logout screens own their full-viewport chrome via
+ * {@link AuthShell}, so this layer only contributes the shared title template and passes children
+ * through untouched — wrapping them in a constrained card here would double up the chrome.
+ *
+ * @param props.children - The auth screen subtree.
+ * @returns The children, unwrapped.
+ */
 export default async function AuthLayout({ children }: { children: ReactNode }) {
-    return (
-        <div className="flex h-full min-h-full w-full items-center justify-center">
-            <Card className="md:w-1/2 md:max-w-lg">{children}</Card>
-        </div>
-    );
+    return <>{children}</>;
 }
