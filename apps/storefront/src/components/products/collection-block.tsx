@@ -1,5 +1,12 @@
 import 'server-only';
 
+import {
+    BREAKPOINTS,
+    type Breakpoint,
+    type ResponsiveValue,
+    resolveResponsiveValue,
+    responsiveClassName,
+} from '@nordcom/commerce-cms/responsive';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { ComponentPropsWithoutRef, ComponentType, ElementType, ReactNode } from 'react';
 import { Suspense } from 'react';
@@ -26,6 +33,64 @@ type CardSkeletonComponent = ComponentType<{ className?: string }>;
 
 const DefaultCardSkeleton: CardSkeletonComponent = () => <ProductCard.skeleton layout="vertical" chrome="boxed" />;
 
+/** A single render mode for one breakpoint: a wrapping grid or a horizontal scroll rail. */
+export type CollectionLayoutMode = 'grid' | 'carousel';
+
+/** A per-breakpoint collection layout — e.g. `{ base: 'carousel', md: 'grid' }`. */
+export type CollectionLayout = ResponsiveValue<CollectionLayoutMode>;
+
+const RAIL_BASE = 'grid w-full gap-2 content-visibility-auto contain-intrinsic-size-[auto_100%]';
+
+/**
+ * Per-breakpoint, per-mode lookup of the `rail-grid` / `rail-carousel` utilities
+ * (defined in `globals.css`). One static literal per cell so Tailwind's scanner
+ * emits every variant; the rest is data-driven through {@link responsiveClassName}.
+ */
+const RAIL_CLASS_TABLE: Record<Breakpoint, Record<CollectionLayoutMode, string>> = {
+    base: { grid: 'rail-grid', carousel: 'rail-carousel' },
+    sm: { grid: 'sm:rail-grid', carousel: 'sm:rail-carousel' },
+    md: { grid: 'md:rail-grid', carousel: 'md:rail-carousel' },
+    lg: { grid: 'lg:rail-grid', carousel: 'lg:rail-carousel' },
+    xl: { grid: 'xl:rail-grid', carousel: 'xl:rail-carousel' },
+    '2xl': { grid: '2xl:rail-grid', carousel: '2xl:rail-carousel' },
+};
+
+/** Breakpoints at or above `md` — the fine-pointer surfaces where scroll arrows are useful. */
+const DESKTOP_BREAKPOINTS: readonly Breakpoint[] = ['md', 'lg', 'xl', '2xl'];
+
+/**
+ * Resolves the layout, preferring an explicit `layout` and falling back to the
+ * legacy `isHorizontal` boolean (carousel at every breakpoint when `true`, grid
+ * when `false`/omitted).
+ *
+ * @param layout - Explicit per-breakpoint layout, when provided.
+ * @param isHorizontal - Legacy single-axis flag used when `layout` is absent.
+ * @returns The resolved responsive layout.
+ */
+const resolveLayout = (layout: CollectionLayout | undefined, isHorizontal: boolean | undefined): CollectionLayout =>
+    layout ?? { base: isHorizontal ? 'carousel' : 'grid' };
+
+/**
+ * Builds the rail container className for a resolved layout: the shared base plus
+ * one `rail-*` utility per defined breakpoint.
+ *
+ * @param layout - The resolved responsive layout.
+ * @param className - Extra classes appended last.
+ * @returns The merged className.
+ */
+const railClassName = (layout: CollectionLayout, className?: string): string | undefined =>
+    cn(RAIL_BASE, responsiveClassName(layout, RAIL_CLASS_TABLE), className);
+
+/**
+ * Whether the layout is a carousel at any breakpoint (so the element is an
+ * addressable scroll rail).
+ *
+ * @param layout - The resolved responsive layout.
+ * @returns `true` when a carousel renders at any breakpoint.
+ */
+const hasCarousel = (layout: CollectionLayout): boolean =>
+    BREAKPOINTS.some((breakpoint) => resolveResponsiveValue(layout, breakpoint) === 'carousel');
+
 export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
     as?: ComponentGeneric;
     children?: ReactNode;
@@ -37,6 +102,7 @@ export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
     limit?: number;
     filters?: CollectionFilters;
     isHorizontal?: boolean;
+    layout?: CollectionLayout;
     showViewAll?: boolean;
     priority?: boolean;
 
@@ -59,7 +125,8 @@ export type CollectionBlockProps<ComponentGeneric extends ElementType> = Collect
  * @param props.handle - Collection handle to fetch; when omitted only `children` are rendered.
  * @param props.limit - Maximum number of products to fetch.
  * @param props.filters - Additional collection query filters.
- * @param props.isHorizontal - When `true`, lays out as a horizontally scrollable rail.
+ * @param props.isHorizontal - Legacy flag: lays out as a horizontally scrollable rail on both breakpoints when `true`. Superseded by `layout`.
+ * @param props.layout - Per-breakpoint layout (`{ mobile, desktop }`); each breakpoint renders a grid or a horizontal rail independently.
  * @param props.showViewAll - When `true`, appends a view-all tile at the end of the grid.
  * @param props.priority - Passed to the first two product cards for eager image loading.
  * @param props.bare - When `true`, renders cards without a wrapper element.
@@ -79,6 +146,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     limit,
     filters = undefined,
     isHorizontal,
+    layout,
     showViewAll = true,
     priority,
 
@@ -116,6 +184,12 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     }
 
     const railId = handle ? `rail-${handle}` : 'rail';
+    const resolvedLayout = resolveLayout(layout, isHorizontal);
+    // Arrows are a fine-pointer affordance and self-hide on coarse pointers, so they only matter when
+    // a carousel renders at a desktop (`md`+) breakpoint; smaller carousels use native swipe.
+    const showArrows = DESKTOP_BREAKPOINTS.some(
+        (breakpoint) => resolveResponsiveValue(resolvedLayout, breakpoint) === 'carousel',
+    );
 
     return (
         // `w-full min-w-0` pins this wrapper to the container width. Without it, a parent that
@@ -123,18 +197,11 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         // this div to content size: the grid layout then collapses to a single column (vertical list on
         // mobile) and the horizontal rail blows past the viewport instead of scroll-containing.
         <div className="relative w-full min-w-0">
-            {isHorizontal ? <CollectionBlockArrows railSelector={`[data-rail='${railId}']`} /> : null}
+            {showArrows ? <CollectionBlockArrows railSelector={`[data-rail='${railId}']`} /> : null}
             <Tag
                 {...props}
-                data-rail={isHorizontal ? railId : undefined}
-                className={cn(
-                    'contain-intrinsic-size-[auto_100%] grid w-full snap-x snap-mandatory gap-2 content-visibility-auto',
-                    !isHorizontal &&
-                        'justify-(--product-card-grid-align) grid-cols-[repeat(auto-fill,minmax(var(--product-card-min-width),var(--product-card-max-width)))]',
-                    isHorizontal &&
-                        'overflow-x-shadow -my-2 scroll-px-(--block-padding) auto-cols-[var(--product-card-max-width)] grid-flow-col grid-cols-[var(--product-card-max-width)] grid-rows-1 overscroll-x-auto py-2',
-                    className,
-                )}
+                data-rail={hasCarousel(resolvedLayout) ? railId : undefined}
+                className={railClassName(resolvedLayout, className)}
             >
                 {children}
                 {productCards}
@@ -150,7 +217,8 @@ CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
  * Grid skeleton for a collection block, rendering `length` card skeleton placeholders.
  *
  * @param props.length - Number of skeleton cards to render; defaults to 7.
- * @param props.isHorizontal - Applies horizontal rail layout classes when `true`.
+ * @param props.isHorizontal - Legacy flag: horizontal rail placeholder on both breakpoints when `true`. Superseded by `layout`.
+ * @param props.layout - Per-breakpoint layout matching the live rail, so the placeholder reserves the same footprint.
  * @param props.bare - When `true`, renders only the skeleton cards without a wrapper.
  * @param props.className - Additional CSS class names for the wrapper element.
  * @param props.cardSkeleton - Custom skeleton card component; defaults to `DefaultCardSkeleton`.
@@ -158,6 +226,7 @@ CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
  */
 CollectionBlock.skeleton = ({
     isHorizontal = false,
+    layout,
     bare = false,
     length = 7,
     className,
@@ -165,6 +234,7 @@ CollectionBlock.skeleton = ({
 }: {
     length?: number;
     isHorizontal?: boolean;
+    layout?: CollectionLayout;
     bare?: boolean;
     className?: string;
     cardSkeleton?: CardSkeletonComponent;
@@ -176,20 +246,7 @@ CollectionBlock.skeleton = ({
         return <>{cards}</>;
     }
 
-    return (
-        <div
-            className={cn(
-                'grid w-full gap-2',
-                !isHorizontal &&
-                    'justify-(--product-card-grid-align) grid-cols-[repeat(auto-fill,minmax(var(--product-card-min-width),var(--product-card-max-width)))]',
-                isHorizontal &&
-                    '-mr-8 auto-cols-[var(--product-card-max-width)] grid-flow-col grid-cols-[var(--product-card-max-width)] grid-rows-1 overflow-x-clip overscroll-none',
-                className,
-            )}
-        >
-            {cards}
-        </div>
-    );
+    return <div className={railClassName(resolveLayout(layout, isHorizontal), className)}>{cards}</div>;
 };
 
 export default CollectionBlock;
