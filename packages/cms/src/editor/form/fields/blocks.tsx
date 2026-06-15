@@ -275,11 +275,28 @@ export function BlocksField({ field, path, registry }: FieldRendererProps<Blocks
                             </div>
                         </div>
                         {descriptor ? (
-                            <RenderFields
-                                registry={registry}
-                                fields={descriptor.fields}
-                                parentPath={`${path}.${index}`}
-                            />
+                            <>
+                                <RenderFields
+                                    registry={registry}
+                                    fields={descriptor.fields}
+                                    parentPath={`${path}.${index}`}
+                                />
+                                {descriptor.settings && descriptor.settings.length > 0 ? (
+                                    <fieldset
+                                        data-testid={`blocks-settings-${path}-${index}`}
+                                        className="mt-2 flex min-w-0 flex-col gap-3 rounded-lg border border-border border-dashed bg-card/20 p-3"
+                                    >
+                                        <legend className="px-1.5 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
+                                            Overrides
+                                        </legend>
+                                        <RenderFields
+                                            registry={registry}
+                                            fields={descriptor.settings}
+                                            parentPath={`${path}.${index}`}
+                                        />
+                                    </fieldset>
+                                ) : null}
+                            </>
                         ) : (
                             <div data-testid={`blocks-unknown-${path}-${index}`} data-block-type={blockType} />
                         )}
