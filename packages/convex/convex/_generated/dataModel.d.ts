@@ -1153,6 +1153,166 @@ export type DataModel = {
         };
       };
       domain: string;
+      extensions?: {
+        blocks?: { available?: Array<string> };
+        chrome?: { order?: Array<string> };
+        productCard?: Record<
+          string,
+          {
+            chrome?: string;
+            ctaPlacement?: string;
+            layout?: string;
+            pickerPresentation?: string;
+          }
+        >;
+        sections?: Record<string, boolean>;
+        theme?: {
+          colors?: {
+            accentPrimaryDark?: string;
+            accentPrimaryLight?: string;
+            accentSecondaryDark?: string;
+            accentSecondaryLight?: string;
+            accents?: Array<{
+              color: string;
+              foreground: string;
+              type: "primary" | "secondary";
+            }>;
+            background?: string;
+            border?: { default?: string; strong?: string };
+            focusRing?: string;
+            foreground?: string;
+            state?: {
+              danger?: string;
+              info?: string;
+              sale?: string;
+              success?: string;
+            };
+            surface?: { base?: string; raised?: string; sunken?: string };
+            text?: { default?: string; muted?: string };
+          };
+          elevation?: { card?: string; cardHover?: string; panel?: string };
+          productCard?: {
+            aspectHorizontal?: string;
+            aspectHorizontalSquare?: string;
+            aspectMicro?: string;
+            aspectVertical?: string;
+            bg?: string;
+            borderColor?: string;
+            borderWidth?: string;
+            chipActiveBg?: string;
+            chipActiveColor?: string;
+            chipBg?: string;
+            chipBorder?: string;
+            chipColor?: string;
+            chipPaddingX?: string;
+            chipPaddingY?: string;
+            compareColor?: string;
+            ctaBg?: string;
+            ctaColor?: string;
+            ctaHeight?: string;
+            ctaInlineStyle?: string;
+            ctaPaddingY?: string;
+            ctaPillIcon?: string;
+            ctaPillLabel?: string;
+            ctaPillPosition?: string;
+            ctaPillReveal?: string;
+            ctaPlacement?: string;
+            ctaRadius?: string;
+            eyebrowTracking?: string;
+            fastPathDot?: string;
+            fastPathSingleVariant?: string;
+            gap?: string;
+            gridAlign?: string;
+            imageFit?: string;
+            imageHoverSwap?: string;
+            imagePadding?: string;
+            imageRadius?: string;
+            imageSizes?: string;
+            maxWidth?: string;
+            minWidth?: string;
+            moreBg?: string;
+            moreColor?: string;
+            moreMinSize?: string;
+            moreSize?: string;
+            moreWeight?: number;
+            motionBase?: string;
+            motionEase?: string;
+            motionFast?: string;
+            motionHoverDuration?: string;
+            motionHoverEase?: string;
+            motionImageSwapDuration?: string;
+            motionOverlayInDuration?: string;
+            motionOverlayInEase?: string;
+            motionPickerIn?: string;
+            motionPickerOut?: string;
+            oosImageSaturate?: number;
+            oosOpacity?: number;
+            overlayBg?: string;
+            overlayBorderColor?: string;
+            overlayMaxHeight?: string;
+            overlayPadding?: string;
+            overlayRadius?: string;
+            overlayShadow?: string;
+            overlayWidth?: string;
+            padding?: string;
+            priceColor?: string;
+            priceSize?: string;
+            priceWeight?: number;
+            quickAddPresentation?: string;
+            radius?: string;
+            saleBadgeAllowOverlap?: boolean;
+            saleBadgeMinDiscount?: number;
+            saleBadgePosition?: string;
+            saleBadgeStyle?: string;
+            saleBadgeText?: string;
+            saleCurrentColor?: string;
+            saleShowSavingsLine?: string;
+            saleStrikeAngle?: string;
+            saleStrikeColor?: string;
+            saleStrikeExtend?: string;
+            saleStyle?: string;
+            searchImageWidth?: string;
+            shadow?: string;
+            shadowHover?: string;
+            swatchGap?: string;
+            swatchHitPadding?: string;
+            swatchRingColor?: string;
+            swatchSize?: string;
+            titleColor?: string;
+            titleLineClamp?: number;
+            titleSize?: string;
+            titleWeight?: number;
+            urgencyColor?: string;
+            urgencyThreshold?: number;
+            vendorColor?: string;
+            vendorSize?: string;
+          };
+          radii?: {
+            block?: string;
+            blockLarge?: string;
+            blockSmall?: string;
+            blockTiny?: string;
+          };
+          spacing?: { blockPadding?: string; blockSpacer?: string };
+          typography?: {
+            fontFamily?: string;
+            fontWeights?: {
+              bold?: number;
+              medium?: number;
+              normal?: number;
+              semibold?: number;
+            };
+            headingFamily?: string;
+            scale?: {
+              base?: string;
+              lg?: string;
+              sm?: string;
+              xl?: string;
+              xs?: string;
+            };
+          };
+        };
+      };
       i18n?: { defaultLocale: string };
       icons?: {
         favicon?: { alt: string; height: number; src: string; width: number };
@@ -1341,6 +1501,161 @@ export type DataModel = {
       | "design.header.logo.src"
       | "design.header.logo.width"
       | "domain"
+      | "extensions"
+      | "extensions.blocks"
+      | "extensions.blocks.available"
+      | "extensions.chrome"
+      | "extensions.chrome.order"
+      | "extensions.productCard"
+      | `extensions.productCard.${string}`
+      | "extensions.sections"
+      | `extensions.sections.${string}`
+      | "extensions.theme"
+      | "extensions.theme.colors"
+      | "extensions.theme.colors.accentPrimaryDark"
+      | "extensions.theme.colors.accentPrimaryLight"
+      | "extensions.theme.colors.accents"
+      | "extensions.theme.colors.accentSecondaryDark"
+      | "extensions.theme.colors.accentSecondaryLight"
+      | "extensions.theme.colors.background"
+      | "extensions.theme.colors.border"
+      | "extensions.theme.colors.border.default"
+      | "extensions.theme.colors.border.strong"
+      | "extensions.theme.colors.focusRing"
+      | "extensions.theme.colors.foreground"
+      | "extensions.theme.colors.state"
+      | "extensions.theme.colors.state.danger"
+      | "extensions.theme.colors.state.info"
+      | "extensions.theme.colors.state.sale"
+      | "extensions.theme.colors.state.success"
+      | "extensions.theme.colors.surface"
+      | "extensions.theme.colors.surface.base"
+      | "extensions.theme.colors.surface.raised"
+      | "extensions.theme.colors.surface.sunken"
+      | "extensions.theme.colors.text"
+      | "extensions.theme.colors.text.default"
+      | "extensions.theme.colors.text.muted"
+      | "extensions.theme.elevation"
+      | "extensions.theme.elevation.card"
+      | "extensions.theme.elevation.cardHover"
+      | "extensions.theme.elevation.panel"
+      | "extensions.theme.productCard"
+      | "extensions.theme.productCard.aspectHorizontal"
+      | "extensions.theme.productCard.aspectHorizontalSquare"
+      | "extensions.theme.productCard.aspectMicro"
+      | "extensions.theme.productCard.aspectVertical"
+      | "extensions.theme.productCard.bg"
+      | "extensions.theme.productCard.borderColor"
+      | "extensions.theme.productCard.borderWidth"
+      | "extensions.theme.productCard.chipActiveBg"
+      | "extensions.theme.productCard.chipActiveColor"
+      | "extensions.theme.productCard.chipBg"
+      | "extensions.theme.productCard.chipBorder"
+      | "extensions.theme.productCard.chipColor"
+      | "extensions.theme.productCard.chipPaddingX"
+      | "extensions.theme.productCard.chipPaddingY"
+      | "extensions.theme.productCard.compareColor"
+      | "extensions.theme.productCard.ctaBg"
+      | "extensions.theme.productCard.ctaColor"
+      | "extensions.theme.productCard.ctaHeight"
+      | "extensions.theme.productCard.ctaInlineStyle"
+      | "extensions.theme.productCard.ctaPaddingY"
+      | "extensions.theme.productCard.ctaPillIcon"
+      | "extensions.theme.productCard.ctaPillLabel"
+      | "extensions.theme.productCard.ctaPillPosition"
+      | "extensions.theme.productCard.ctaPillReveal"
+      | "extensions.theme.productCard.ctaPlacement"
+      | "extensions.theme.productCard.ctaRadius"
+      | "extensions.theme.productCard.eyebrowTracking"
+      | "extensions.theme.productCard.fastPathDot"
+      | "extensions.theme.productCard.fastPathSingleVariant"
+      | "extensions.theme.productCard.gap"
+      | "extensions.theme.productCard.gridAlign"
+      | "extensions.theme.productCard.imageFit"
+      | "extensions.theme.productCard.imageHoverSwap"
+      | "extensions.theme.productCard.imagePadding"
+      | "extensions.theme.productCard.imageRadius"
+      | "extensions.theme.productCard.imageSizes"
+      | "extensions.theme.productCard.maxWidth"
+      | "extensions.theme.productCard.minWidth"
+      | "extensions.theme.productCard.moreBg"
+      | "extensions.theme.productCard.moreColor"
+      | "extensions.theme.productCard.moreMinSize"
+      | "extensions.theme.productCard.moreSize"
+      | "extensions.theme.productCard.moreWeight"
+      | "extensions.theme.productCard.motionBase"
+      | "extensions.theme.productCard.motionEase"
+      | "extensions.theme.productCard.motionFast"
+      | "extensions.theme.productCard.motionHoverDuration"
+      | "extensions.theme.productCard.motionHoverEase"
+      | "extensions.theme.productCard.motionImageSwapDuration"
+      | "extensions.theme.productCard.motionOverlayInDuration"
+      | "extensions.theme.productCard.motionOverlayInEase"
+      | "extensions.theme.productCard.motionPickerIn"
+      | "extensions.theme.productCard.motionPickerOut"
+      | "extensions.theme.productCard.oosImageSaturate"
+      | "extensions.theme.productCard.oosOpacity"
+      | "extensions.theme.productCard.overlayBg"
+      | "extensions.theme.productCard.overlayBorderColor"
+      | "extensions.theme.productCard.overlayMaxHeight"
+      | "extensions.theme.productCard.overlayPadding"
+      | "extensions.theme.productCard.overlayRadius"
+      | "extensions.theme.productCard.overlayShadow"
+      | "extensions.theme.productCard.overlayWidth"
+      | "extensions.theme.productCard.padding"
+      | "extensions.theme.productCard.priceColor"
+      | "extensions.theme.productCard.priceSize"
+      | "extensions.theme.productCard.priceWeight"
+      | "extensions.theme.productCard.quickAddPresentation"
+      | "extensions.theme.productCard.radius"
+      | "extensions.theme.productCard.saleBadgeAllowOverlap"
+      | "extensions.theme.productCard.saleBadgeMinDiscount"
+      | "extensions.theme.productCard.saleBadgePosition"
+      | "extensions.theme.productCard.saleBadgeStyle"
+      | "extensions.theme.productCard.saleBadgeText"
+      | "extensions.theme.productCard.saleCurrentColor"
+      | "extensions.theme.productCard.saleShowSavingsLine"
+      | "extensions.theme.productCard.saleStrikeAngle"
+      | "extensions.theme.productCard.saleStrikeColor"
+      | "extensions.theme.productCard.saleStrikeExtend"
+      | "extensions.theme.productCard.saleStyle"
+      | "extensions.theme.productCard.searchImageWidth"
+      | "extensions.theme.productCard.shadow"
+      | "extensions.theme.productCard.shadowHover"
+      | "extensions.theme.productCard.swatchGap"
+      | "extensions.theme.productCard.swatchHitPadding"
+      | "extensions.theme.productCard.swatchRingColor"
+      | "extensions.theme.productCard.swatchSize"
+      | "extensions.theme.productCard.titleColor"
+      | "extensions.theme.productCard.titleLineClamp"
+      | "extensions.theme.productCard.titleSize"
+      | "extensions.theme.productCard.titleWeight"
+      | "extensions.theme.productCard.urgencyColor"
+      | "extensions.theme.productCard.urgencyThreshold"
+      | "extensions.theme.productCard.vendorColor"
+      | "extensions.theme.productCard.vendorSize"
+      | "extensions.theme.radii"
+      | "extensions.theme.radii.block"
+      | "extensions.theme.radii.blockLarge"
+      | "extensions.theme.radii.blockSmall"
+      | "extensions.theme.radii.blockTiny"
+      | "extensions.theme.spacing"
+      | "extensions.theme.spacing.blockPadding"
+      | "extensions.theme.spacing.blockSpacer"
+      | "extensions.theme.typography"
+      | "extensions.theme.typography.fontFamily"
+      | "extensions.theme.typography.fontWeights"
+      | "extensions.theme.typography.fontWeights.bold"
+      | "extensions.theme.typography.fontWeights.medium"
+      | "extensions.theme.typography.fontWeights.normal"
+      | "extensions.theme.typography.fontWeights.semibold"
+      | "extensions.theme.typography.headingFamily"
+      | "extensions.theme.typography.scale"
+      | "extensions.theme.typography.scale.base"
+      | "extensions.theme.typography.scale.lg"
+      | "extensions.theme.typography.scale.sm"
+      | "extensions.theme.typography.scale.xl"
+      | "extensions.theme.typography.scale.xs"
       | "i18n"
       | "i18n.defaultLocale"
       | "icons"
