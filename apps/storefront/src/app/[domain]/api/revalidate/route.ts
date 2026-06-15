@@ -1,4 +1,5 @@
 import { Error as CommerceError } from '@nordcom/commerce-errors';
+import { isDevelopment } from '@nordcom/commerce-utils';
 import { trace } from '@opentelemetry/api';
 import { parseShopifyWebhook, verifyShopifyHmac } from '@tagtree/shopify';
 import { type NextRequest, NextResponse } from 'next/server';
@@ -48,15 +49,15 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
     if (headerHmac) {
         const secret = process.env.SHOPIFY_WEBHOOK_SECRET;
         if (!secret) {
-            if (process.env.NODE_ENV !== 'development') {
+            if (!isDevelopment()) {
                 return NextResponse.json(
                     { status: 503, error: 'SHOPIFY_WEBHOOK_SECRET is not configured' },
                     { status: 503, headers: noStoreHeaders },
                 );
             }
-            // Dev-only diagnostic: code flow only reaches here when NODE_ENV === 'development'
-            // (the branch above returns 503 in all other environments), so this warn is
-            // intentionally exempt from the no-console policy.
+            // Dev-only diagnostic: code flow only reaches here in local development (the branch
+            // above returns 503 in all other environments), so this warn is intentionally exempt
+            // from the no-console policy.
             console.warn(
                 '[revalidate] SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation. This is permitted in dev only.',
             );

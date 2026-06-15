@@ -1,3 +1,4 @@
+import { isProduction } from '@nordcom/commerce-utils';
 import type { Product, ProductVariant } from '@/api/product';
 import { unsafe_cast } from '@/utils/unsafe-cast';
 
@@ -22,7 +23,7 @@ export const firstAvailableVariant = (product?: Product | null): ProductVariant 
               unsafe_cast<ProductVariant[]>(product.variants)) || [];
 
     if (variants.length <= 0) {
-        if (process.env.NODE_ENV !== 'production') {
+        if (!isProduction()) {
             console.warn('[firstAvailableVariant] product has no variants', product?.handle);
         }
         return undefined;

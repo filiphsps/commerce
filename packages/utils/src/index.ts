@@ -12,3 +12,4 @@ export {
     shopFromHost,
     stripPort,
 } from './hostname';
+export { isDevelopment, isProduction } from './runtime-env';

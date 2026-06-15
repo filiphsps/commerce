@@ -1,5 +1,6 @@
 'use client';
 
+import { isProduction } from '@nordcom/commerce-utils';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
@@ -96,7 +97,7 @@ const InnerRoot = ({
 const Root = (props: ProductOptionsRootProps) => {
     const parent = useMaybeProductOptions();
     if (parent) {
-        if (process.env.NODE_ENV !== 'production') {
+        if (!isProduction()) {
             const dropped: string[] = [];
             if (props.onChange) dropped.push('onChange');
             if (props.renderers) dropped.push('renderers');

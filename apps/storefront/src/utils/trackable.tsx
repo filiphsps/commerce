@@ -3,6 +3,7 @@
 import { useMaybeCart } from '@nordcom/cart-react';
 import type { Nullable, OnlineShop, ShopifyCommerceProvider } from '@nordcom/commerce-db';
 import { MissingContextProviderError, TodoError } from '@nordcom/commerce-errors';
+import { isDevelopment } from '@nordcom/commerce-utils';
 import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 // Only the lightweight context hooks are imported statically. The analytics send path
 // (`sendShopifyAnalytics` + `getClientBrowserParameters` and friends) is the heavy part of
@@ -330,7 +331,7 @@ const handleEvent = async (
     }
 
     // Don't actually send events in development.
-    if (BuildConfig.environment === 'development') {
+    if (isDevelopment()) {
         return;
     }
 

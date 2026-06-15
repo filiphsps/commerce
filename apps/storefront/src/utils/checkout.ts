@@ -1,6 +1,7 @@
 import type { CartLine, Money } from '@nordcom/cart-core';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidCartError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
+import { isProduction } from '@nordcom/commerce-utils';
 import { trace } from '@opentelemetry/api';
 
 import type { Locale } from '@/utils/locale';
@@ -51,7 +52,7 @@ export const getCrossDomainLinkerParameter = (checkoutOrigin: string) => {
 
         // Dev-only diagnostic: helps identify GA4 cross-domain linker misconfiguration.
         // Absent _gl is non-fatal — checkout proceeds without the linker parameter.
-        if (process.env.NODE_ENV !== 'production') {
+        if (!isProduction()) {
             console.warn(
                 `Could not find _gl input in checkout form with action "${formNode.action}" — proceeding without cross-domain linker.`,
             );

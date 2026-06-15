@@ -3,6 +3,7 @@
 import { resolveLink } from '@nordcom/commerce-cms/api';
 import { HEADER_VARIANTS, type HeaderVariant } from '@nordcom/commerce-cms/fields';
 import type { Header, Media } from '@nordcom/commerce-cms/types';
+import { isProduction } from '@nordcom/commerce-utils';
 import { ChevronDown as ChevronDownIcon, ChevronRight as ChevronRightIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -289,7 +290,7 @@ const warnedUnknownVariants = new Set<string>();
  */
 const resolveVariant = (raw: unknown): Variant => {
     if (typeof raw === 'string' && KNOWN_VARIANTS.has(raw as Variant)) return raw as Variant;
-    if (raw != null && process.env.NODE_ENV !== 'production') {
+    if (raw != null && !isProduction()) {
         const key = String(raw);
         if (!warnedUnknownVariants.has(key)) {
             warnedUnknownVariants.add(key);

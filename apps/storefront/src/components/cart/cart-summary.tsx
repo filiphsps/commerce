@@ -9,6 +9,7 @@ import {
     useCartStatus,
 } from '@nordcom/cart-react';
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { isDevelopment } from '@nordcom/commerce-utils';
 import { ChevronRight as ChevronRightIcon, Lock as LockIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/actionable/button';
@@ -18,7 +19,6 @@ import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
-import { BuildConfig } from '@/utils/build-config';
 import { type CurrencyCode, getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
@@ -253,7 +253,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 </div>
             </section>
 
-            {BuildConfig.environment === 'development' ? (
+            {isDevelopment() ? (
                 <section className={cn(SECTION_STYLES, 'gap-2 empty:hidden')}>
                     {(lines as CartLine[]).map((line) => {
                         const discountLineElements = (line.discountAllocations ?? [])

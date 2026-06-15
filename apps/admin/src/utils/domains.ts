@@ -1,3 +1,5 @@
+import { isProduction } from '@nordcom/commerce-utils';
+
 // Resolves the hostnames used by the admin dashboard and the marketing/landing site.
 // Both are configured via env vars and fall back to the portless dev hostnames
 // (admin.localhost, landing.localhost), so the app still boots when the vars are
@@ -9,7 +11,7 @@
 // instead — Vercel deploys will surface the warning in build logs and a
 // misconfigured prod still fails predictably (the resulting `localhost` host
 // makes any OAuth callback obviously broken).
-const isProductionRuntime = process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV !== 'preview';
+const isProductionRuntime = isProduction();
 const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 
 /**
