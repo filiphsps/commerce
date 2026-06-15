@@ -76,7 +76,15 @@ const config = {
         typedEnv: true,
     },
     images: {
-        unoptimized: true, // FIXME: We should optimize images.
+        // Custom loader (not Vercel's optimizer): Next emits a `srcset` of `?width=`-parameterized
+        // URLs that Shopify's CDN resizes, so each <Image> fetches a source sized to its rendered box
+        // instead of the full 4096² original. `unoptimized` bypassed this entirely and decoded ~1GB of
+        // full-resolution imagery across a product gallery, Jetsam-killing iOS Safari tabs.
+        loader: 'custom',
+        loaderFile: './src/utils/image-loader.ts',
+        // Cap the largest emitted srcset candidate so a `sizes`-less / 100vw image can't pull a 4K
+        // source; gallery/cards all decode well under the mobile per-tab memory ceiling.
+        deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1600, 2048],
         dangerouslyAllowSVG: true,
         //path: 'https://cloudflare-image.nordcom.workers.dev',
         minimumCacheTTL: 60,

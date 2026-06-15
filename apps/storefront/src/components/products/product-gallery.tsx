@@ -37,8 +37,10 @@ export type ProductGalleryProps = {
  * `focus-ring` utility, so a theme-less shop renders sensibly and a tenant theme recolors the set.
  * The primary image cross-fades on selection via a `motion-safe` CSS opacity transition keyed off its
  * load state — no JS timer — so reduced-motion users get an instant swap. Selecting a thumbnail
- * promotes it to the primary slot; activating the primary image opens a full-screen lightbox. Imagery
- * is unoptimized (P2-1 is off), so no blur placeholder is wired despite `thumbhash` being fetched.
+ * promotes it to the primary slot; activating the primary image opens a full-screen lightbox. The
+ * custom Shopify image loader sizes each request to its rendered box via `srcset`; no blur placeholder
+ * is wired despite `thumbhash` being fetched. On mobile the gallery stacks (primary image, then a
+ * horizontal-scroll thumbnail strip); md+ pins it sticky with a thumbnail grid.
  *
  * @param props.initialImageId - ID of the image to show first; falls back to the first image when absent or unmatched.
  * @param props.images - Array of Shopify images to display; returns `null` when empty.
@@ -93,10 +95,10 @@ const ProductGallery = ({
 
     return (
         <section draggable={false} className={cn(className)} {...props}>
-            <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-3">
+            <div className="flex w-full min-w-0 flex-col gap-2 overflow-clip md:sticky md:top-36 lg:gap-3">
                 <div
                     className={cn(
-                        'relative flex h-1/4 w-full grow items-center justify-center overflow-hidden rounded-lg border border-(--border-default) border-solid bg-(--surface-2) p-2 md:h-full md:p-3',
+                        'relative flex w-full grow items-center justify-center overflow-hidden rounded-lg border border-(--border-default) border-solid bg-(--surface-2) p-2 md:h-full md:p-3',
                         padding && 'p-4 py-6 md:p-8',
                     )}
                     {...loadingProps}
@@ -115,7 +117,7 @@ const ProductGallery = ({
                             title={image.altText ?? undefined}
                             width={image.width ?? 500}
                             height={image.height ?? 500}
-                            sizes="(max-width: 920px) 75vw, 500px"
+                            sizes="(max-width: 920px) 100vw, 500px"
                             priority
                             decoding="async"
                             onLoad={() => setLoaded(true)}
@@ -147,7 +149,7 @@ const ProductGallery = ({
                 </div>
 
                 {images.length > 1 ? (
-                    <aside className="flex grid-cols-4 grid-rows-[1fr] flex-col gap-2 overflow-hidden md:grid md:h-40">
+                    <aside className="-mx-1 flex flex-row gap-2 overflow-x-auto px-1 md:mx-0 md:grid md:h-40 md:grid-cols-4 md:grid-rows-[1fr] md:overflow-hidden md:px-0">
                         {images
                             .filter(({ id }) => image.id !== id)
                             .map((thumbnail, index) => {
@@ -157,7 +159,7 @@ const ProductGallery = ({
                                         key={thumbnail.id ?? thumbnail.url}
                                         aria-label={t('view-image', index + 1)}
                                         onClick={() => setImage(thumbnail)}
-                                        className="focus-ring hover:border-(color:var(--accent)) flex appearance-none items-center justify-center rounded-lg border-(--border-default) border-2 border-solid bg-(--surface-2) p-1 motion-safe:transition-colors md:aspect-4/3 md:size-32 md:p-4"
+                                        className="focus-ring hover:border-(color:var(--accent)) flex size-16 shrink-0 appearance-none items-center justify-center rounded-lg border-(--border-default) border-2 border-solid bg-(--surface-2) p-1 motion-safe:transition-colors md:aspect-4/3 md:size-32 md:p-4"
                                     >
                                         <Image
                                             className="h-14 w-14 object-contain object-center md:aspect-4/3 md:size-full"
