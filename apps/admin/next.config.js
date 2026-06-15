@@ -33,6 +33,12 @@ if (ADMIN_DOMAIN) {
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx'],
+    // Next's dev-server lock is keyed by `<distDir>/lock`, so two `next dev`
+    // processes for this app collide unless they target different dist dirs. The
+    // e2e harness sets `E2E_DIST_DIR` (see playwright.config.ts, local branch
+    // only) so its server can run alongside a developer's `pnpm dev`. CI's
+    // `next start` leaves it unset and serves the default `.next` prod build.
+    distDir: process.env.E2E_DIST_DIR || '.next',
     allowedDevOrigins: ['admin.localhost', 'localhost'],
     poweredByHeader: false,
     generateEtags: true,

@@ -11,6 +11,8 @@ junit.xml
 
 # next.js
 .next
+# Isolated dist dir the local e2e harness builds into (see playwright.config.ts).
+.next-e2e
 next.lock/
 out/
 dist/
