@@ -26,6 +26,8 @@ export const CONVEX_ACTIVE_SHOP_CLAIM = 'activeShop';
 interface ConvexSigningKey {
     privateKey: CryptoKey;
     kid: string;
+    /** The public RSA members only (`kty`/`n`/`e`) — what the JWKS endpoint serves. */
+    publicJwk: JWK;
 }
 
 /**
@@ -62,7 +64,7 @@ async function loadSigningKey(env: NodeJS.ProcessEnv): Promise<ConvexSigningKey 
     const fullJwk = await exportJWK(privateKey);
     const publicJwk: JWK = { kty: fullJwk.kty, n: fullJwk.n, e: fullJwk.e };
     const kid = await calculateJwkThumbprint(publicJwk);
-    return { privateKey, kid };
+    return { privateKey, kid, publicJwk };
 }
 
 /**
@@ -76,6 +78,33 @@ async function loadSigningKey(env: NodeJS.ProcessEnv): Promise<ConvexSigningKey 
  */
 export function isOperatorTokenMintingConfigured(env: NodeJS.ProcessEnv = process.env): boolean {
     return Boolean(env.CONVEX_AUTH_ISSUER?.trim() && env.CONVEX_AUTH_APPLICATION_ID?.trim() && readPrivateKeyPem(env));
+}
+
+/**
+ * Derives the public JWKS the Convex deployment's `customJwt` provider fetches to verify
+ * admin-minted operator tokens. The Convex deployment points `CONVEX_AUTH_JWKS_URL` at the admin
+ * origin's `/.well-known/jwks.json` (the issuer-default URL), so the admin app MUST serve this
+ * document or every identity-scoped read fails closed (`getUserIdentity()` returns `null`). Members
+ * are public-only (`kty`/`n`/`e` plus `kid`/`alg`/`use`) and the `kid` matches the binding
+ * {@link mintConvexOperatorToken} stamps, so a fetched key always maps to a minted token. Mirrors
+ * the storefront's `getConvexAuthJwks` (one shared signing key, one JWKS shape).
+ *
+ * @param env - Environment to read the signing key from; defaults to `process.env`.
+ * @returns The JWKS document, or `null` when no signing key is configured (the deployment then has
+ *   no key source and fails closed on the Convex side).
+ */
+export async function getConvexAuthJwks(env: NodeJS.ProcessEnv = process.env): Promise<{ keys: JWK[] } | null> {
+    try {
+        const signingKey = await loadSigningKey(env);
+        if (!signingKey) return null;
+
+        return {
+            keys: [{ ...signingKey.publicJwk, alg: 'RS256', use: 'sig', kid: signingKey.kid }],
+        };
+    } catch (error) {
+        console.warn('convex-token: failed to derive the public JWKS', error);
+        return null;
+    }
 }
 
 /**
