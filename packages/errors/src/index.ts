@@ -129,6 +129,31 @@ export class Error<T = unknown> extends BuiltinError {
 
         return false;
     }
+
+    /**
+     * Type guard for {@link TodoError}, the placeholder thrown from not-yet-implemented code paths.
+     *
+     * @param error - Any value; matches a {@link TodoError} instance or any object carrying the `GENERIC_TODO` code, so serialized or cross-realm errors that fail `instanceof` are still recognized. Rejects primitives, `null`, and `undefined`.
+     * @returns `true` when the error represents an unimplemented-code-path condition.
+     * @example
+     * ```ts
+     * try { await adapter.deleteUser(id); } catch (e) {
+     *     if (Error.isTodo(e)) { return; } // surface stays graceful for unimplemented seams
+     *     throw e;
+     * }
+     * ```
+     */
+    public static isTodo(error: Error | unknown): boolean {
+        if (typeof error !== 'object' || error === null) {
+            return false;
+        }
+
+        if (error instanceof TodoError) {
+            return true;
+        }
+
+        return 'code' in error && error.code === GenericErrorKind.GENERIC_TODO;
+    }
 }
 
 /**

@@ -1,3 +1,4 @@
+import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { getFunctionName } from 'convex/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -397,9 +398,9 @@ describe('Shop.findOneAndUpdate (Convex-backed)', () => {
     });
 
     it('throws TodoError for an unsupported filter shape', async () => {
-        await expect(Shop.findOneAndUpdate({ domain: 'acme.test' }, { name: 'X' })).rejects.toMatchObject({
-            name: 'TodoError',
-        });
+        await expect(Shop.findOneAndUpdate({ domain: 'acme.test' }, { name: 'X' })).rejects.toSatisfy(
+            CommerceError.isTodo,
+        );
         expect(mutationMock).not.toHaveBeenCalled();
     });
 });

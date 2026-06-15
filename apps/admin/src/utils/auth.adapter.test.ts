@@ -1,7 +1,7 @@
 import type { Adapter } from '@auth/core/adapters';
 
 import { User } from '@nordcom/commerce-db';
-import { NotFoundError, TodoError } from '@nordcom/commerce-errors';
+import { Error as CommerceError, NotFoundError } from '@nordcom/commerce-errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
@@ -110,28 +110,28 @@ describe('utils', () => {
                 const createSpy = vi.spyOn(User, 'create');
                 await expect(
                     adapter.updateUser?.({ id: '123', email: 'a@b.c', emailVerified: null } as any),
-                ).rejects.toBeInstanceOf(TodoError);
+                ).rejects.toSatisfy(CommerceError.isTodo);
                 expect(createSpy).not.toHaveBeenCalled();
             });
 
             it('deleteUser throws TodoError', async () => {
-                await expect(adapter.deleteUser?.('123')).rejects.toBeInstanceOf(TodoError);
+                await expect(adapter.deleteUser?.('123')).rejects.toSatisfy(CommerceError.isTodo);
             });
 
             it('updateSession throws TodoError', async () => {
                 await expect(
                     adapter.updateSession?.({ sessionToken: 'tok', userId: '123', expires: new Date(0) }),
-                ).rejects.toBeInstanceOf(TodoError);
+                ).rejects.toSatisfy(CommerceError.isTodo);
             });
 
             it('deleteSession throws TodoError', async () => {
-                await expect(adapter.deleteSession?.('tok')).rejects.toBeInstanceOf(TodoError);
+                await expect(adapter.deleteSession?.('tok')).rejects.toSatisfy(CommerceError.isTodo);
             });
 
             it('unlinkAccount throws TodoError', async () => {
                 await expect(
                     adapter.unlinkAccount?.({ provider: 'google', providerAccountId: '456' }),
-                ).rejects.toBeInstanceOf(TodoError);
+                ).rejects.toSatisfy(CommerceError.isTodo);
             });
         });
     });

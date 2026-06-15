@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
     ApiErrorKind,
+    Error as CommerceError,
     DomainVerificationError,
     DuplicatePredicateRegistrationError,
     DuplicateWorkspaceSlugError,
@@ -21,7 +22,9 @@ import {
     MissingTypeDocOutputError,
     MissingUploadFileError,
     NoLocaleResolvableError,
+    NotFoundError,
     ShopMisconfigurationError,
+    TodoError,
     UnknownCollectionSlugError,
     UnknownShopDomainError,
     UnknownShopIdError,
@@ -385,5 +388,22 @@ describe('DomainVerificationError', () => {
     it('is resolvable from its code', () => {
         const resolved = getErrorFromCode(ApiErrorKind.API_DOMAIN_VERIFICATION_FAILED);
         expect(resolved).toBe(DomainVerificationError);
+    });
+});
+
+describe('Error.isTodo', () => {
+    it('matches a TodoError instance', () => {
+        expect(CommerceError.isTodo(new TodoError())).toBe(true);
+    });
+    it('matches any object carrying the GENERIC_TODO code', () => {
+        expect(CommerceError.isTodo({ code: GenericErrorKind.GENERIC_TODO })).toBe(true);
+    });
+    it('rejects a different error kind', () => {
+        expect(CommerceError.isTodo(new NotFoundError())).toBe(false);
+    });
+    it('rejects primitives, null, and undefined', () => {
+        expect(CommerceError.isTodo(undefined)).toBe(false);
+        expect(CommerceError.isTodo(null)).toBe(false);
+        expect(CommerceError.isTodo('GENERIC_TODO')).toBe(false);
     });
 });
