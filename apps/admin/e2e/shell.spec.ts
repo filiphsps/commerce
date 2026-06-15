@@ -19,8 +19,15 @@ test.describe('Admin shell', () => {
 
     test('command palette opens on ⌘K', async ({ page }) => {
         await page.goto(`/${DOMAIN}/`);
-        await page.keyboard.press('Meta+k');
-        await expect(page.getByPlaceholder(/Type a command/i)).toBeVisible();
+        // The palette's ⌘K handler attaches on hydration (a window keydown listener).
+        // Unlike a button click, a one-shot global keypress has nothing to auto-wait
+        // on, so a press fired before the listener is live is simply lost — flaky on
+        // the slower CI runner. Retry the press until the shortcut registers; each
+        // attempt re-checks for the open palette (toggles converge on open).
+        await expect(async () => {
+            await page.keyboard.press('Meta+k');
+            await expect(page.getByPlaceholder(/Type a command/i)).toBeVisible({ timeout: 2_000 });
+        }).toPass({ timeout: 15_000 });
     });
 
     test('mobile drawer opens', async ({ page }) => {
