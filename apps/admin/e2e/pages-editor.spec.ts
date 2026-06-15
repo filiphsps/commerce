@@ -203,5 +203,9 @@ test('a draft with the required title empty autosaves, but publish fails closed 
     // crashing the page.
     await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/(?!new/)[^/]+/\\?locale=`));
     await page.getByRole('button', { name: 'Publish' }).click();
-    await expect(page.getByTestId('editor-toolbar-error')).toContainText(/required field/i);
+    // Fails CLOSED: the publish surfaces an error inline in the toolbar instead of crashing the page.
+    // The required-field validation is server-side (Convex throws), and Next REDACTS thrown
+    // server-action messages in production builds (`pnpm start`, as CI runs) — so assert the error
+    // node appears, not the dev-only "required field" text the prod build never exposes.
+    await expect(page.getByTestId('editor-toolbar-error')).toBeVisible();
 });
