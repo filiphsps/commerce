@@ -107,6 +107,23 @@ const config = {
 
     // TODO: handle all redirects at the edge.
     skipTrailingSlashRedirect: false,
+
+    async redirects() {
+        return [
+            {
+                // `/[domain]/settings/general/` is the all-roles alias for the shop editor — general
+                // shop config (name, locale, basics) is authored there. Aliasing at the routing layer
+                // issues a clean 307 BEFORE the page renders. An in-component `redirect()` from the
+                // page degrades to a 1s `<meta http-equiv="refresh">` under the already-streamed
+                // dashboard shell; that soft refresh chains into the shop editor's own locale-coercion
+                // redirect (general → shop → shop?locale) and strands soft navigations on `/general/`,
+                // which is what made the route inaccessible.
+                source: '/:domain/settings/general',
+                destination: '/:domain/settings/shop/',
+                permanent: false,
+            },
+        ];
+    },
 };
 
 /**
