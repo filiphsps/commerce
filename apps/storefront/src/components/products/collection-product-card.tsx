@@ -1,8 +1,8 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { productCardSurfaceForShop } from '@/api/extensions';
 import type { Product } from '@/api/product';
-import { SURFACE_PRESETS } from '@/components/product-card/presets';
 import ProductCard from '@/components/product-card/product-card';
 import type { Locale } from '@/utils/locale';
 
@@ -15,9 +15,11 @@ export type CollectionProductCardProps = {
 };
 
 /**
- * Renders a product card preconfigured with the `collection` surface preset.
+ * Renders a product card for the `collection` surface, resolving its configuration through the
+ * store-default cascade (`extensions.productCard.collection` over the surface preset). A shop with
+ * no override renders byte-identically to the preset.
  *
- * @param props.shop - Shop record forwarded to the product card.
+ * @param props.shop - Shop record; also the store-default source.
  * @param props.locale - Locale forwarded to the product card.
  * @param props.data - Product to display.
  * @param props.priority - When `true`, loads the card image eagerly.
@@ -25,7 +27,7 @@ export type CollectionProductCardProps = {
  * @returns The `ProductCard` element.
  */
 const CollectionProductCard = async (props: CollectionProductCardProps) => (
-    <ProductCard {...SURFACE_PRESETS.collection} {...props} />
+    <ProductCard {...productCardSurfaceForShop(props.shop, 'collection')} {...props} />
 );
 
 CollectionProductCard.displayName = 'Nordcom.Products.CollectionProductCard';

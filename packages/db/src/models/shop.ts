@@ -1,4 +1,5 @@
 import type { BaseDocument } from '../db';
+import type { ShopExtensionManifest } from '../lib/extensions';
 import type { AccentToken, ShopThemeTokens } from '../lib/theme';
 import type { FeatureFlagBase } from './feature-flag';
 import type { LegacyObjectIdRef } from './query-types';
@@ -173,6 +174,14 @@ export interface ShopBase extends BaseDocument {
      * logo + accents surface is untouched.
      */
     theme?: ShopThemeTokens;
+
+    /**
+     * Optional per-tenant extension manifest — store-wide default configuration for storefront
+     * blocks and components (product-card variants, section visibility, block availability, theme).
+     * Absent on every existing shop; absence resolves byte-identically to today's render via
+     * `resolveExtensions`. The authored, editable source behind the admin Customization hub.
+     */
+    extensions?: ShopExtensionManifest;
 
     icons?: {
         favicon?: {

@@ -1,3 +1,4 @@
+import type { ResolvedExtensions } from '@nordcom/commerce-cms/extensions';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 
@@ -22,6 +23,12 @@ export type BlockContext = {
      * normal visitor's HTML carries zero preview footprint.
      */
     preview?: boolean;
+    /**
+     * Resolved per-shop extension config (the store-default cascade source). Carries the resolved
+     * theme, chrome, section visibility, block availability, and per-surface product-card variant
+     * selections. Absent → blocks fall back to platform defaults exactly as before.
+     */
+    config?: ResolvedExtensions;
     /**
      * Dotted form-state path of the blocks array these nodes render from
      * (`'blocks'`), used to build `data-cms-field` paths in preview. Only set on

@@ -1,5 +1,6 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { isDraftModeEnabled } from '@/api/_draft';
+import { ResolvedExtensionsApi } from '@/api/extensions';
 import { PageApi } from '@/api/page';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
@@ -40,7 +41,11 @@ export const CMSContent = async ({ shop, locale, handle }: CMSContentProps) => {
     // optimistic patches by.
     const preview = await isDraftModeEnabled();
 
-    return <Blocks blocks={page.blocks as BlockNode[]} context={{ shop, locale, preview, path: 'blocks' }} />;
+    // Resolve the per-shop extension config once and thread it down through the dispatcher so every
+    // block reads its store-wide defaults from one resolved source (absent manifest → today's render).
+    const config = ResolvedExtensionsApi({ shop });
+
+    return <Blocks blocks={page.blocks as BlockNode[]} context={{ shop, locale, preview, path: 'blocks', config }} />;
 };
 
 /**
