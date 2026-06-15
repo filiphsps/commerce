@@ -1,9 +1,5 @@
-import { cn } from '@/utils/tailwind';
+import { Input } from '@/components/ui/input';
 import type { ControlProps } from './field-row';
-
-/** Shared numeric-input styling, matching the dimension control. */
-const INPUT_CLASS =
-    'flex h-9 w-full rounded-md border-2 border-border bg-background px-3 py-1 font-mono text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50';
 
 /**
  * Numeric control for `number` tokens (font weights, line clamp, opacities,
@@ -20,7 +16,7 @@ const INPUT_CLASS =
  */
 export function NumberControl({ token, value, onChange, placeholder, id }: ControlProps) {
     return (
-        <input
+        <Input
             id={id}
             type="number"
             inputMode="decimal"
@@ -33,7 +29,7 @@ export function NumberControl({ token, value, onChange, placeholder, id }: Contr
                 const raw = event.target.value;
                 onChange(raw === '' ? undefined : Number(raw));
             }}
-            className={cn(INPUT_CLASS)}
+            className="font-mono"
         />
     );
 }

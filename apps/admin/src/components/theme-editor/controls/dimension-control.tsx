@@ -1,9 +1,5 @@
-import { cn } from '@/utils/tailwind';
+import { Input } from '@/components/ui/input';
 import type { ControlProps } from './field-row';
-
-/** Shared text-input styling, matching the color field's text input. */
-const INPUT_CLASS =
-    'flex h-9 w-full rounded-md border-2 border-border bg-background px-3 py-1 font-mono text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50';
 
 /**
  * Free-text dimension control for any CSS string token (rem/px/%/aspect like
@@ -20,14 +16,14 @@ const INPUT_CLASS =
  */
 export function DimensionControl({ value, onChange, placeholder, id }: ControlProps) {
     return (
-        <input
+        <Input
             id={id}
             type="text"
             spellCheck={false}
             value={typeof value === 'string' ? value : ''}
             placeholder={placeholder}
             onChange={(event) => onChange(event.target.value)}
-            className={cn(INPUT_CLASS)}
+            className="font-mono"
         />
     );
 }

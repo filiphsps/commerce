@@ -3,6 +3,7 @@
 import { colord } from 'colord';
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
 
+import { Input } from '@/components/ui/input';
 import { cn } from '@/utils/tailwind';
 
 /**
@@ -69,7 +70,7 @@ export const ColorField = forwardRef<HTMLInputElement, ColorFieldProps>(
                         />
                     )}
                 </span>
-                <input
+                <Input
                     ref={ref}
                     type="text"
                     id={id}
@@ -77,9 +78,7 @@ export const ColorField = forwardRef<HTMLInputElement, ColorFieldProps>(
                     disabled={disabled}
                     spellCheck={false}
                     onChange={(event) => onChange?.(event.target.value)}
-                    className={cn(
-                        'flex h-9 w-full rounded-md border-2 border-border bg-background px-3 py-1 font-mono text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50',
-                    )}
+                    className="font-mono"
                     {...props}
                 />
             </div>
