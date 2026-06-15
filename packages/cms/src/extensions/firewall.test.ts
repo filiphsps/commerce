@@ -17,7 +17,7 @@ const FORBIDDEN_IMPORT_PATTERNS: ReadonlyArray<readonly [label: string, pattern:
     ['storefront @/ alias', /\bfrom\s+['"]@\/[^'"]*['"]/],
 ];
 
-const CMS_SAFE_MODULES = ['./manifest.ts', './resolve.ts', './index.ts'] as const;
+const CMS_SAFE_MODULES = ['./manifest.ts', './resolve.ts', './index.ts', './component-settings.ts'] as const;
 
 describe('extension-manifest firewall', () => {
     for (const relativePath of CMS_SAFE_MODULES) {
