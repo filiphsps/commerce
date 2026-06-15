@@ -1,24 +1,27 @@
 import { expect, test } from '@playwright/test';
 
-const COLLECTION_URL = '/en-US/products/';
+import { gotoCollectionWithProducts } from './fixtures/storefront';
 
+/**
+ * Product card pricing against the seeded mock.shop tenant. Every card renders a price; an on-sale
+ * card additionally renders a struck compare-at price and the `data-on-sale` marker. The mock.shop
+ * catalog carries no compare-at pricing, so the on-sale branch is asserted only when such a card
+ * exists (it is exercised exhaustively by the unit suite); the regular-price render is always checked.
+ */
 test.describe('Product card sale state', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.route('**/favicon.png', (r) => r.fulfill({ status: 200, body: '' }));
-        await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
+    test('every card renders a price', async ({ page }) => {
+        const card = await gotoCollectionWithProducts(page);
+        await expect(card.getByText(/\$|kr|€|CA\$/).first()).toBeVisible({ timeout: 15_000 });
     });
 
-    test.skip('on-sale card renders the data attribute and a compare-price', async ({ page }) => {
-        await page.goto(COLLECTION_URL);
+    test('an on-sale card renders a compare-at price when present', async ({ page }) => {
+        await gotoCollectionWithProducts(page);
         const onSale = page.locator('[data-testid="product-card-root"][data-on-sale]');
         if ((await onSale.count()) === 0) {
-            test.skip(true, 'No on-sale products in seed data');
+            test.skip(true, 'mock.shop catalog has no on-sale (compare-at) products');
         }
-        const priceBlock = onSale.first().locator('[data-on-sale]');
-        await expect(priceBlock.first()).toBeVisible();
-        // Compare price renders as a second tabular-nums span; assert two price-like nodes within the block.
-        const prices = priceBlock.first().locator('span');
-        const count = await prices.count();
-        expect(count).toBeGreaterThanOrEqual(2);
+        // The block renders the active price and the struck compare-at price as two price nodes.
+        const prices = onSale.first().locator('[data-on-sale] span');
+        expect(await prices.count()).toBeGreaterThanOrEqual(2);
     });
 });

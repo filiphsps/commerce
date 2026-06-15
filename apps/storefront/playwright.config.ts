@@ -39,7 +39,20 @@ export default defineConfig({
     use: {
         baseURL: 'http://localhost:1337',
         ignoreHTTPSErrors: true,
-        storageState: { cookies: LOCALE_COOKIES, origins: [] },
+        storageState: {
+            cookies: LOCALE_COOKIES,
+            // Pre-dismiss the geo-redirect banner. It renders only after a client IP-geolocation
+            // lookup resolves a country different from the active locale's — absent in CI (no external
+            // network) but present locally, where its sticky bottom bar overlaps bottom-anchored cart
+            // controls (Remove / Checkout) and blocks their click actionability. Seeding the dismissal
+            // key keeps it hidden so tests exercise the real controls, not the banner.
+            origins: [
+                {
+                    origin: 'http://localhost:1337',
+                    localStorage: [{ name: 'geo-redirect-banner-dismissed', value: String(Math.floor(Date.now())) }],
+                },
+            ],
+        },
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
@@ -61,5 +74,9 @@ export default defineConfig({
         timeout: 240_000,
         stdout: 'pipe',
         stderr: 'pipe',
+        // Isolate the local dev server's distDir so the e2e `next dev` can run
+        // concurrently with a developer's `pnpm dev` (Next's dev lock is keyed
+        // by distDir). CI builds + serves the default `.next`, so leave it unset.
+        ...(process.env.CI ? {} : { env: { ...process.env, E2E_DIST_DIR: '.next-e2e' } }),
     },
 });

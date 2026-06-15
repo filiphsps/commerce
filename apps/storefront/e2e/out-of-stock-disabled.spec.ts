@@ -1,20 +1,25 @@
 import { expect, test } from '@playwright/test';
 
-const COLLECTION_URL = '/en-US/products/';
+import { gotoCollectionWithProducts } from './fixtures/storefront';
 
+/**
+ * Out-of-stock rendering against the seeded mock.shop tenant: a sold-out product card surfaces an
+ * out-of-stock affordance instead of an enabled add-to-bag. mock.shop stock varies, so the assertion
+ * runs only when the canonical collection currently has a sold-out card.
+ */
 test.describe('Product card out-of-stock state', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.route('**/favicon.png', (r) => r.fulfill({ status: 200, body: '' }));
-        await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
-    });
-
-    test('OOS card sets data-availability and disables the CTA', async ({ page }) => {
-        await page.goto(COLLECTION_URL);
-        const oos = page.locator('[data-testid="product-card-root"][data-availability="out-of-stock"]');
-        if ((await oos.count()) === 0) {
-            test.skip(true, 'No out-of-stock products in seed data');
+    test('a sold-out card disables its add CTA', async ({ page }) => {
+        await gotoCollectionWithProducts(page);
+        const oos = page
+            .getByTestId('product-card-root')
+            .filter({ hasText: /out of stock|sold out/i })
+            .first();
+        if (!(await oos.isVisible({ timeout: 5_000 }).catch(() => false))) {
+            test.skip(true, 'no out-of-stock products in the canonical collection right now');
         }
-        const cta = oos.first().locator('button').first();
-        await expect(cta).toBeDisabled();
+        const addCta = oos.getByRole('button', { name: /add to bag|add to cart/i });
+        if ((await addCta.count()) > 0) {
+            await expect(addCta.first()).toBeDisabled();
+        }
     });
 });

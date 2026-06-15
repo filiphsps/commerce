@@ -1,24 +1,19 @@
 import { expect, test } from '@playwright/test';
 
-const COLLECTION_URL = '/en-US/products/';
+import { gotoCollectionWithProducts } from './fixtures/storefront';
 
+/**
+ * Single-buyable fast path: a product with a single purchasable variant exposes a direct "Add to bag"
+ * quick-add on its collection card (rather than a "Choose options" picker), so the shopper can add
+ * without opening the variant UI.
+ */
 test.describe('Product card single-buyable fast-path', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.route('**/favicon.png', (r) => r.fulfill({ status: 200, body: '' }));
-        await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
-    });
-
-    test.skip('single-buyable card shows the fast-path indicator on +', async ({ page }) => {
-        await page.goto(COLLECTION_URL);
-        const fastPath = page.locator('[data-testid="product-card-root"] [data-fast-path]');
-        if (
-            !(await fastPath
-                .first()
-                .isVisible({ timeout: 10_000 })
-                .catch(() => false))
-        ) {
-            test.skip(true, 'No single-buyable products in seed data');
-        }
-        await expect(fastPath.first()).toBeVisible();
+    test('a single-buyable card shows a direct add-to-bag CTA', async ({ page }) => {
+        await gotoCollectionWithProducts(page);
+        const fastPathCta = page
+            .getByTestId('product-card-root')
+            .first()
+            .getByRole('button', { name: /add to bag/i });
+        await expect(fastPathCta.first()).toBeVisible({ timeout: 30_000 });
     });
 });

@@ -1,30 +1,34 @@
 import { expect, test } from '@playwright/test';
 
-const COLLECTION_URL = '/en-US/products/';
+import { gotoCollectionWithProducts } from './fixtures/storefront';
 
+/**
+ * The product card's swatch image swap against the seeded mock.shop tenant: hovering/activating a
+ * swatch swaps the card's primary image without navigating away from the collection.
+ */
 test.describe('Product card swatch swap', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.route('**/favicon.png', (r) => r.fulfill({ status: 200, body: '' }));
-        await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
-    });
+    test('activating a swatch swaps the image without navigating', async ({ page }) => {
+        await gotoCollectionWithProducts(page);
+        const card = page
+            .getByTestId('product-card-root')
+            .filter({ has: page.getByTestId('product-card-image-swap') })
+            .first();
+        await expect(card).toBeVisible({ timeout: 30_000 });
 
-    test.skip('clicking a swatch swaps the image src without navigating', async ({ page }) => {
-        await page.goto(COLLECTION_URL);
-        const url = page.url();
-        const card = page.getByTestId('product-card-root').first();
-        if (!(await card.isVisible({ timeout: 30_000 }).catch(() => false))) {
-            test.skip(true, 'No products available');
-        }
         const img = card.locator('img').first();
-        const initialSrc = await img.getAttribute('src');
-        const swatches = card.locator('[data-option-value] button');
+        await expect(img).toBeVisible();
+        const before = await img.getAttribute('src');
+        const url = page.url();
+
+        const swatches = card.getByTestId('product-card-image-swap');
         if ((await swatches.count()) < 2) {
-            test.skip(true, 'No swatches with multiple values on the first card');
+            test.skip(true, 'first swatch-bearing card exposes fewer than two swatches');
         }
+        await swatches.nth(1).hover();
         await swatches.nth(1).click();
-        await page.waitForTimeout(200);
-        const newSrc = await img.getAttribute('src');
-        expect(newSrc).not.toBe(initialSrc);
+        await expect(async () => {
+            expect(await img.getAttribute('src')).not.toBe(before);
+        }).toPass({ timeout: 5_000 });
         expect(page.url()).toBe(url);
     });
 });

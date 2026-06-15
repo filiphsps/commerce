@@ -1,126 +1,58 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('Cart — server-side + predictive', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.route('**/favicon.png', (r) => r.fulfill({ status: 200, body: '' }));
-        await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
-    });
+import { addToCartFromPdp, dismissGeoBanner, LOCALE } from './fixtures/storefront';
 
-    test.skip('optimistic add: badge increments within 100ms', async ({ page }) => {
-        await page.goto('/en-US/products/');
-        const badgeBefore = await page.locator('[data-cart-count]').first().textContent();
-        await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
-        // The optimistic update is synchronous in React; the network roundtrip happens after.
-        await expect(page.locator('[data-cart-count]').first()).not.toHaveText(badgeBefore ?? '');
-    });
+/**
+ * Cart flow against the seeded mock.shop tenant (mock.shop supports cart mutations). Adding from the
+ * PDP increments the optimistic header badge; the cart page then shows the line, the cost summary, and
+ * a checkout affordance; the line's quantity stepper and remove control mutate the cart.
+ *
+ * Serial: each test re-adds its own line, so they don't depend on a shared cart state.
+ */
+test.describe.configure({ mode: 'serial' });
 
-    test.skip('optimistic stepper in cart drawer', async ({ page }) => {
-        await page.goto('/en-US/products/');
-        await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
-        await page.goto('/en-US/cart/');
-        const qtyBefore = parseInt((await page.locator('[data-line-quantity]').first().textContent()) ?? '1', 10);
-        await page.locator('button[aria-label*="ncrease"], button:has-text("+")').first().click();
-        await expect(page.locator('[data-line-quantity]').first()).toHaveText(String(qtyBefore + 1));
-    });
+const cartPath = `/${LOCALE}/cart/`;
 
-    test.skip('discount apply: cost fades then settles', async ({ page }) => {
-        await page.goto('/en-US/cart/');
-        const codeInput = page.locator('input[name="code"], input[name="discount"]').first();
-        if (await codeInput.isVisible().catch(() => false)) {
-            await codeInput.fill('TESTCODE');
-            await page.locator('button:has-text("Apply"), button[type="submit"]').last().click();
-            // No assertion on success — TESTCODE likely invalid; just verify no crash
-            await expect(page.locator('[data-display="cost"], .cart-summary')).toBeVisible();
-        }
-    });
+// The optimistic header-badge increment is asserted inside `addToCartFromPdp` (which every test here
+// awaits), so a dedicated badge test would be redundant — and racy, since Add to Cart hands off to the
+// cart page where the freshly-loaded badge briefly reads zero before the cart count hydrates.
 
-    test.skip('cross-tab sync via BroadcastChannel', async ({ browser }) => {
-        const ctx = await browser.newContext();
-        const tabA = await ctx.newPage();
-        const tabB = await ctx.newPage();
-        await tabA.goto('/en-US/products/');
-        await tabB.goto('/en-US/');
-        const beforeB = await tabB.locator('[data-cart-count]').first().textContent();
-        await tabA.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
-        await tabB.waitForTimeout(1500);
-        const afterB = await tabB.locator('[data-cart-count]').first().textContent();
-        expect(afterB).not.toBe(beforeB);
-        await ctx.close();
-    });
+test('the cart page shows the line, a cost summary, and a checkout affordance', async ({ page }) => {
+    await addToCartFromPdp(page);
+    await page.goto(cartPath, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('[data-cart-line]').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('[data-display="cost"]').first()).toBeVisible();
+    await expect(
+        page
+            .getByRole('button', { name: /checkout/i })
+            .or(page.getByRole('link', { name: /checkout/i }))
+            .first(),
+    ).toBeVisible();
+});
 
-    test.skip('cart-expired recovery clears cookie and creates new', async ({ page, context }) => {
-        await page.goto('/en-US/products/');
-        await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
-        // Wipe the cookie
-        await context.clearCookies({ name: 'nordcom-cart' });
-        // Add again — should NOT toast an error; should create a new cart silently
-        await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
-        await expect(page.locator('[data-sonner-toast][data-type="error"]')).toHaveCount(0);
-    });
+test("the line's quantity stepper increases the quantity", async ({ page }) => {
+    await addToCartFromPdp(page);
+    await page.goto(cartPath, { waitUntil: 'domcontentloaded' });
+    // The sticky geo banner can overlay bottom-anchored line controls; clear it (no-op when absent).
+    await dismissGeoBanner(page);
+    const line = page.locator('[data-cart-line]').first();
+    const quantity = line.locator('[data-line-quantity]').first();
+    await expect(quantity).toHaveText('1', { timeout: 30_000 });
+    await line.getByTestId('quantity-increase').click();
+    await expect(quantity).toHaveText('2', { timeout: 15_000 });
+});
 
-    test.skip('PDP renders without uncaught errors for a known product', async ({ page }) => {
-        const errors: string[] = [];
-        page.on('pageerror', (e) => errors.push(String(e)));
-        await page.goto('/en-US/products/mock-shop-product-1/');
-        await expect(page.locator('h1, [data-display="title"]').first()).toBeVisible({ timeout: 30000 });
-        expect(errors).toEqual([]);
-    });
-
-    test.skip('no-JS add: form submits without JavaScript', async ({ browser }) => {
-        const ctx = await browser.newContext({ javaScriptEnabled: false });
-        const page = await ctx.newPage();
-        await page.goto('/en-US/products/');
-        const form = page.locator('article[data-layout] form').first();
-        await form.evaluate((f: HTMLFormElement) => f.submit());
-        await page.waitForLoadState('domcontentloaded');
-        // After reload, the cart should have the line — visible via cart drawer route
-        await page.goto('/en-US/cart/');
-        await expect(page.locator('[data-cart-line], .cart-line').first()).toBeVisible();
-        await ctx.close();
-    });
-
-    test.skip('cart page hydrates without mismatch when cart cookie has items (regression)', async ({ page }) => {
-        await page.goto('/en-US/products/');
-        await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
-        await expect(page.locator('[data-cart-count]').first()).not.toHaveText('');
-
-        const hydrationErrors: string[] = [];
-        const collect = (text: string) => {
-            if (/hydrat|did not match|server rendered/i.test(text)) hydrationErrors.push(text);
-        };
-        page.on('pageerror', (e) => collect(String(e.message)));
-        page.on('console', (msg) => {
-            if (msg.type() === 'error') collect(msg.text());
-        });
-
-        await page.goto('/en-US/cart/');
-        await expect(page.locator('[data-display="cost"], .cart-summary').first()).toBeVisible();
-        await expect(page.locator('[data-cart-line], .cart-line').first()).toBeVisible();
-
-        expect(hydrationErrors).toEqual([]);
-    });
-
-    test.skip('userError revert: optimistic add reverts when server rejects', async ({ page }) => {
-        await page.goto('/en-US/products/');
-        // Stub the Storefront API to return userErrors for cartLinesAdd
-        await page.route('**/api/**/graphql.json', async (route) => {
-            const post = route.request().postData();
-            if (post?.includes('cartLinesAdd')) {
-                return route.fulfill({
-                    status: 200,
-                    contentType: 'application/json',
-                    body: JSON.stringify({
-                        data: { cartLinesAdd: { cart: null, userErrors: [{ message: 'Sold out' }] } },
-                    }),
-                });
-            }
-            return route.continue();
-        });
-        const badgeBefore = await page.locator('[data-cart-count]').first().textContent();
-        await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
-        await page.waitForTimeout(1500);
-        const badgeAfter = await page.locator('[data-cart-count]').first().textContent();
-        expect(badgeAfter).toBe(badgeBefore); // reverted
-        await expect(page.locator('[data-sonner-toast]')).toContainText(/sold out/i);
-    });
+test('clearing the cart empties it', async ({ page }) => {
+    await addToCartFromPdp(page);
+    await page.goto(cartPath, { waitUntil: 'domcontentloaded' });
+    await dismissGeoBanner(page);
+    const line = page.locator('[data-cart-line]').first();
+    // Wait for the cart to settle (quantity rendered) before mutating it.
+    await expect(line.locator('[data-line-quantity]').first()).toHaveText('1', { timeout: 30_000 });
+    // The cart-level "Clear cart" control empties every line — a single, stable affordance, unlike the
+    // per-line Remove button which is absolutely positioned and toggles pointer-events with cart status.
+    const clear = page.getByRole('button', { name: /clear cart/i });
+    await expect(clear).toBeEnabled({ timeout: 15_000 });
+    await clear.click();
+    await expect(page.locator('[data-cart-line]')).toHaveCount(0, { timeout: 15_000 });
 });
