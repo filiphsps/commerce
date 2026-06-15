@@ -30,6 +30,7 @@
                 <div class="page-title">Customization</div>
             </div>
             <div class="header-actions">
+                <span class="chip instance" title="Settings this store overrides from platform defaults"><span class="tick"></span>4 overrides</span>
                 <div class="autosave"><span class="pulse"></span> Saved · just now</div>
                 <button class="btn ghost">Discard</button>
                 <button class="btn">Save draft</button>
@@ -43,6 +44,13 @@
                     <span>⌕</span>
                     <input id="search" placeholder="Search all settings…" />
                     <span class="kbd">/</span>
+                </div>
+                <div class="legend">
+                    <span class="legend-lbl">Source</span>
+                    <span class="chip platform"><span class="tick"></span>Platform</span>
+                    <span class="chip store"><span class="tick"></span>Store</span>
+                    <span class="chip surface"><span class="tick"></span>Surface</span>
+                    <span class="chip instance"><span class="tick"></span>Instance</span>
                 </div>
             </div>
 
@@ -67,7 +75,10 @@
                                 <div class="sub">Rendered across collection grids, search results, and recommendation rails.</div>
                             </div>
                         </div>
-                        <div class="path">productCard</div>
+                        <div style="display:flex;align-items:center;gap:12px">
+                            <button class="btn ghost sm">Reset section</button>
+                            <div class="path">productCard</div>
+                        </div>
                     </div>
 
                     <!-- surface keys -->

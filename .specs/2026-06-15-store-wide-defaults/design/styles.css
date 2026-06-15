@@ -50,6 +50,7 @@ body {
 
 a { color: inherit; }
 ::selection { background: var(--primary-soft); }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; border-radius: 6px; }
 
 /* ---------- App shell ---------- */
 .shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
@@ -137,6 +138,11 @@ a { color: inherit; }
 .search input { background: transparent; border: none; outline: none; color: var(--fg); font: inherit; font-size: 13.5px; width: 100%; }
 .search input::placeholder { color: var(--faint-fg); }
 .search .kbd { font-family: var(--mono); font-size: 10.5px; color: var(--faint-fg); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+
+/* source legend (explains the tier chips reused everywhere) */
+.legend { margin-left: auto; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.legend-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--faint-fg); font-weight: 700; }
+.legend .chip { font-size: 10px; padding: 2px 8px 2px 6px; }
 
 /* ---------- Tablist (matches theme-editor) ---------- */
 .tablist { display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 22px; }

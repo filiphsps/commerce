@@ -16,6 +16,8 @@ export type DocumentFormBodyProps = {
      * state — per field, not all-or-nothing.
      */
     initialState?: FormState;
+    /** Class names forwarded to the underlying `<form>` element. */
+    className?: string;
     children: ReactNode;
 };
 
@@ -30,11 +32,12 @@ export type DocumentFormBodyProps = {
  *
  * @param props.action - Server action invoked on explicit form submit.
  * @param props.initialState - Latest FormState from the server; merged under the reducer gate.
+ * @param props.className - Class names forwarded to the underlying `<form>` element.
  * @param props.children - Field components rendered inside the native form context.
  */
-export function DocumentFormBody({ action, initialState, children }: DocumentFormBodyProps) {
+export function DocumentFormBody({ action, initialState, className, children }: DocumentFormBodyProps) {
     return (
-        <Form action={action} initialState={initialState} isDocumentForm>
+        <Form action={action} initialState={initialState} isDocumentForm className={className}>
             <FieldWidgetsProvider register={registerAdminFieldWidgets}>{children}</FieldWidgetsProvider>
         </Form>
     );

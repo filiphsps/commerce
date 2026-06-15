@@ -26,6 +26,13 @@ export type FormProps = {
      * no behavior from it yet.
      */
     isDocumentForm?: boolean;
+    /**
+     * Class names applied to the rendered `<form>` element. Lets a document
+     * surface make the form its own layout container (e.g. a full-height flex
+     * column whose body scrolls and whose footer stays pinned) without wrapping
+     * the form in an extra element that would break the submit boundary.
+     */
+    className?: string;
     children: ReactNode;
 };
 
@@ -58,10 +65,11 @@ function buildFormData(state: FormState, overrides?: Record<string, unknown>): F
  *
  * @param props.action - Server action invoked on submit with the serialized form.
  * @param props.initialState - Server-built field state; re-merged under the gate on change.
+ * @param props.className - Class names applied to the rendered `<form>` element.
  * @param props.children - Field components rendered inside the form context.
  * @returns The form element wrapping the provider chain.
  */
-export function Form({ action, initialState, children }: FormProps) {
+export function Form({ action, initialState, className, children }: FormProps) {
     const [fields, dispatch] = useReducer(formReducer, initialState ?? {});
 
     // Latest field snapshot for reference-stable helpers (autosave timers,
@@ -103,7 +111,9 @@ export function Form({ action, initialState, children }: FormProps) {
     return (
         <FormContext.Provider value={formValue}>
             <FieldsContext.Provider value={fieldsValue}>
-                <form onSubmit={onSubmit}>{children}</form>
+                <form onSubmit={onSubmit} className={className}>
+                    {children}
+                </form>
             </FieldsContext.Provider>
         </FormContext.Provider>
     );
