@@ -96,6 +96,7 @@ describe('shopValidator', () => {
                 sections: { 'info-bar': false },
                 blocks: { available: ['banner', 'rich-text'] },
                 productCard: { search: { layout: 'horizontal' } },
+                blockDefaults: { collection: { defaultLayout: 'grid' } },
             },
         };
         expect(validate(shopValidator, withExtensions)).toBe(true);

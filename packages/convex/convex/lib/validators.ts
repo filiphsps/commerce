@@ -278,6 +278,7 @@ export const shopExtensionManifestValidator = v.object({
     sections: v.optional(v.record(v.string(), v.boolean())),
     blocks: v.optional(v.object({ available: v.optional(v.array(v.string())) })),
     productCard: v.optional(v.record(v.string(), productCardVariantSelectionValidator)),
+    blockDefaults: v.optional(v.record(v.string(), v.record(v.string(), v.union(v.string(), v.number(), v.boolean())))),
 });
 
 /**

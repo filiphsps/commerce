@@ -87,4 +87,11 @@ export interface ShopExtensionManifest {
      * Absent → every surface resolves to its current preset.
      */
     productCard?: Record<string, ProductCardVariantSelection>;
+    /**
+     * Store-wide default settings per block type, keyed by block slug (e.g. `collection`). Each value
+     * is a flat map of the block's `settings` descriptor values; a block component reads its slug's
+     * entry as the store default and a per-instance block field still overrides it. Absent → every
+     * block uses its platform defaults.
+     */
+    blockDefaults?: Record<string, Record<string, unknown>>;
 }

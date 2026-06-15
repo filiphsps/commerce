@@ -53,6 +53,10 @@ describe('resolveExtensions', () => {
             expect(resolveExtensions({ shop: bareShop }).productCard).toEqual({});
         });
 
+        it('resolves no block default overrides', () => {
+            expect(resolveExtensions({ shop: bareShop }).blockDefaults).toEqual({});
+        });
+
         it('matches the current ShopLayout chrome when an injected section predicate hides a slot', () => {
             const isSectionVisible = (id: string) => id !== 'header';
             expect(resolveExtensions({ shop: bareShop, isSectionVisible }).chrome).toEqual(
@@ -116,6 +120,15 @@ describe('resolveExtensions', () => {
             expect(productCard.search).toEqual({ layout: 'horizontal', ctaPlacement: 'inline-button' });
             // A copy, never an alias of the manifest input.
             expect(productCard.search).not.toBe(selection);
+        });
+
+        it('normalizes block defaults into fresh copies', () => {
+            const settings = { defaultLayout: 'grid' };
+            const manifest: ShopExtensionManifest = { blockDefaults: { collection: settings } };
+            const { blockDefaults } = resolveExtensions({ shop: bareShop, manifest });
+            expect(blockDefaults.collection).toEqual({ defaultLayout: 'grid' });
+            // A copy, never an alias of the manifest input.
+            expect(blockDefaults.collection).not.toBe(settings);
         });
     });
 

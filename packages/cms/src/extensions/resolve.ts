@@ -58,6 +58,12 @@ export type ResolvedExtensions = {
      * resolver cannot import those `server-only` storefront modules without breaking the firewall.
      */
     productCard: Record<string, ProductCardVariantSelection>;
+    /**
+     * Normalized store-wide block default settings keyed by block slug. A block component reads its
+     * slug's entry as the store default for its `settings` descriptors; an absent entry → platform
+     * defaults. Empty when the manifest carries no block defaults.
+     */
+    blockDefaults: Record<string, Record<string, unknown>>;
 };
 
 /**
@@ -81,6 +87,8 @@ export type ResolvedExtensions = {
  *   dropped gracefully, matching `isBlockType`'s forward-compatible degradation); absent → all types.
  * - **productCard** — selections are normalized (shallow-copied) and surfaced for the storefront to
  *   feed into its `server-only` surface/variant resolvers at the render boundary.
+ * - **blockDefaults** — per-block-slug setting maps are normalized (shallow-copied) and surfaced for
+ *   block components to read as their store default; absent → platform defaults.
  *
  * NOTE — deferred third-party code sandbox. This resolver composes *declarative data* only; it executes
  * no extension code and loads no remote assets. The future capability to load and run untrusted
@@ -150,11 +158,19 @@ export function resolveExtensions(input: ResolveExtensionsInput): ResolvedExtens
         }
     }
 
+    const blockDefaults: Record<string, Record<string, unknown>> = {};
+    if (manifest?.blockDefaults) {
+        for (const [slug, settings] of Object.entries(manifest.blockDefaults)) {
+            blockDefaults[slug] = { ...settings };
+        }
+    }
+
     return {
         theme,
         chrome,
         isSectionEnabled,
         blocks: { available, isAvailable: isBlockAvailable },
         productCard,
+        blockDefaults,
     };
 }
