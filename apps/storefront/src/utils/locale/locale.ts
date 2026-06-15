@@ -209,6 +209,24 @@ export const isSizeOption = (name: string): boolean =>
         'storlek', // Swedish, Norwegian, Danish.
     ].includes(name.toLowerCase());
 
+/**
+ * Checks if the option name is a color option.
+ * @param name - The name of the option.
+ * @returns `true` if the option is a color option, otherwise `false`.
+ */
+export const isColorOption = (name: string): boolean =>
+    [
+        'color', // American English.
+        'colour', // British English.
+        'color/colour',
+        'couleur', // French.
+        'color (es)', // (defensive)
+        'farbe', // German.
+        'färg', // Swedish.
+        'farge', // Norwegian.
+        'farve', // Danish.
+    ].includes(name.toLowerCase());
+
 type CapitalizeOptions = {
     everyWord?: boolean;
     lowerCase?: boolean;

@@ -10,7 +10,7 @@ import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
-import { getTranslations, type LocaleDictionary } from '@/utils/locale';
+import { getTranslations, isColorOption, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
@@ -87,7 +87,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         <>
             {discount > 0.1 ? (
                 <Price
-                    className="font-medium text-base text-(color:var(--text-muted)) leading-tight line-through"
+                    className="text-(color:var(--text-muted)) font-medium text-base leading-tight line-through"
                     data={{
                         amount: (
                             safeParseFloat(0, merch.compareAtUnitPrice?.amount, merch.unitPrice.amount) * line.quantity
@@ -100,7 +100,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             <Price
                 className={cn(
                     'font-bold text-xl leading-tight',
-                    discount > 0.1 && 'font-extrabold text-(color:var(--state-sale)) text-xl',
+                    discount > 0.1 && 'text-(color:var(--state-sale)) font-extrabold text-xl',
                 )}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 data={line.cost.total as any}
@@ -150,11 +150,23 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                         {realOptions.length > 0 ? (
                             <div className="mt-1 flex w-full min-w-0 flex-wrap items-center gap-1">
                                 {realOptions.map(({ name, value }) => (
+                                    // Read-only indicators that reuse the product-card chip token system, so the
+                                    // cart and the card speak one visual language. Color options carry a swatch dot
+                                    // (the cart line has no swatch metadata, so an unrecognized CSS color name just
+                                    // leaves the bordered dot unfilled rather than guessing).
                                     <span
                                         key={name}
-                                        className="inline-block max-w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-md border border-(--border-default) border-solid bg-(--surface-2) px-2 py-0.5 font-medium text-xs"
+                                        aria-disabled={true}
+                                        className="text-(color:var(--product-card-chip-color)) inline-flex max-w-full items-center gap-1.5 overflow-hidden whitespace-nowrap rounded-md border border-(--product-card-chip-border) border-solid bg-(--product-card-chip-bg) px-2 py-1 font-semibold text-xs leading-none"
                                     >
-                                        {name}·{value}
+                                        {isColorOption(name) ? (
+                                            <span
+                                                aria-hidden={true}
+                                                className="size-3 shrink-0 rounded-full border border-(--product-card-border-color) border-solid"
+                                                style={{ backgroundColor: value }}
+                                            />
+                                        ) : null}
+                                        <span className="overflow-hidden text-ellipsis">{value}</span>
                                     </span>
                                 ))}
                             </div>
@@ -174,7 +186,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                     {line.discountAllocations.map((discount, index) => (
                                         <div
                                             key={`${line.id}-discount-${index}`}
-                                            className="flex items-center justify-center gap-1 font-medium text-(color:var(--text-muted)) text-xs leading-none"
+                                            className="text-(color:var(--text-muted)) flex items-center justify-center gap-1 font-medium text-xs leading-none"
                                         >
                                             <TagIcon className="stroke-1 text-inherit" />
                                             <Label>
@@ -233,7 +245,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
 CartLine.skeleton = () => (
     <section
-        className="flex w-full flex-nowrap gap-2 border-0 border-(--border-default) border-b-2 border-solid pb-2"
+        className="flex w-full flex-nowrap gap-2 border-(--border-default) border-0 border-b-2 border-solid pb-2"
         data-skeleton
     ></section>
 );
