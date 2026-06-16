@@ -61,9 +61,24 @@ Guiding principles (from the task + repo design system):
 - Gate: pinned both tokens and asserted AA (~6.1:1).
 - Verified: biome clean, typecheck clean, gate 22/22.
 
+### 5 — QuantitySelector: disable increase at the max-quantity bound
+
+- The decrease button disabled at the lower bound, but the increase button never disabled at the
+  shop's `maxQuantity` — clicking it at the ceiling silently no-opped (the clamp swallowed it) with no
+  visual or assistive-tech signal. Asymmetric, confusing UX.
+- Added `increaseDisabled = disabled || quantity >= maxQuantity`, wired to the button's `disabled` /
+  `aria-disabled` and its interaction styles, mirroring the decrease-at-min behavior.
+- Added a unit test (increase disabled at value === maxQuantity, decrease still enabled).
+- Note: also tried `role="group"`/`aria-label` on the stepper wrapper, but biome's `useSemanticElements`
+  requires `<fieldset>` for that role, which conflicts with the div-typed prop spread + flex layout —
+  deferred; the per-button `aria-label`s already name each control.
+- Verified: biome clean, typecheck clean, quantity-selector 9/9.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
+- Stepper grouping: revisit as a properly-styled `<fieldset>` (reset margin/min-width, div→fieldset
+  prop type) so the three controls share one accessible group name.
 - Cross-engine/responsive validation (Safari + Chromium) of header mega-menu, gallery lightbox,
   rail carousel per the overhaul spec root-causes — needs a running storefront + browser.
 - Verify responsive + Safari/Chromium behavior of interactive components (header mega-menu, product
