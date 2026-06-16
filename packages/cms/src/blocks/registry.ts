@@ -7,6 +7,7 @@ import {
     codeField,
     condition,
     type FieldDescriptor,
+    groupField,
     jsonField,
     localized,
     numberField,
@@ -160,6 +161,58 @@ const collectionFields: FieldDescriptor[] = [
         options: [
             { label: 'Light', value: 'light' },
             { label: 'Dark', value: 'dark' },
+        ],
+    }),
+    groupField({
+        name: 'productCard',
+        label: 'Card overrides',
+        fields: [
+            overridable(
+                selectField({
+                    name: 'layout',
+                    label: 'Card layout',
+                    options: [
+                        { label: 'Vertical', value: 'vertical' },
+                        { label: 'Horizontal', value: 'horizontal' },
+                    ],
+                }),
+                { inheritedSourceLabel: 'Collection default' },
+            ),
+            overridable(
+                selectField({
+                    name: 'chrome',
+                    label: 'Chrome',
+                    options: [
+                        { label: 'Boxed', value: 'boxed' },
+                        { label: 'Frameless', value: 'frameless' },
+                    ],
+                }),
+                { inheritedSourceLabel: 'Collection default' },
+            ),
+            overridable(
+                selectField({
+                    name: 'ctaPlacement',
+                    label: 'CTA placement',
+                    options: [
+                        { label: 'Float pill', value: 'float-pill' },
+                        { label: 'Inline button', value: 'inline-button' },
+                    ],
+                }),
+                { inheritedSourceLabel: 'Collection default' },
+            ),
+            overridable(
+                selectField({
+                    name: 'pickerPresentation',
+                    label: 'Variant picker',
+                    options: [
+                        { label: 'Auto', value: 'auto' },
+                        { label: 'Float', value: 'float' },
+                        { label: 'Sheet', value: 'sheet' },
+                        { label: 'Inline', value: 'inline' },
+                    ],
+                }),
+                { inheritedSourceLabel: 'Collection default' },
+            ),
         ],
     }),
 ];
