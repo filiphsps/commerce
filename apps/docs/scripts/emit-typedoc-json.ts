@@ -151,7 +151,7 @@ function resolveAny(root: string, value: ExportsValue): string | undefined {
         return undefined;
     }
     if (typeof value === 'object' && value !== null) {
-        for (const cond of ['types', 'source', 'import', 'default', 'require']) {
+        for (const cond of ['source', 'types', 'import', 'default', 'require']) {
             if (cond in value) {
                 const r = resolveAny(root, value[cond] ?? null);
                 if (r) return r;
