@@ -26,6 +26,7 @@ const fullTheme = {
         border: { default: '#ece6d4', strong: '#d8d8d8' },
         state: { sale: '#b51200', danger: '#a53d3a', success: '#3b9e2e', info: '#6dc0d5' },
         focusRing: 'var(--accent)',
+        sectionDark: '#051821',
     },
     typography: {
         fontFamily: 'public-sans',
@@ -57,6 +58,7 @@ const fullTheme = {
         minWidth: '200px',
         maxWidth: '240px',
         gridAlign: 'start',
+        railEdgeStyle: 'fade',
         searchImageWidth: '72px',
         imageRadius: '8px',
         imagePadding: '12px',
