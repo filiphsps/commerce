@@ -5,9 +5,13 @@ import { dirname, resolve } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 
+import { ConvexHttpClient } from 'convex/browser';
+import { makeFunctionReference } from 'convex/server';
 import { ConvexError } from 'convex/values';
 
 import { resolveConvexProjectDir } from './start';
+
+type ProcessEnv = Omit<NodeJS.ProcessEnv, 'NODE_ENV'>;
 
 const requireFromHere = createRequire(import.meta.url);
 
@@ -45,11 +49,7 @@ export const DEV_LOCAL = {
  * @param env - Source environment (injectable for unit tests).
  * @returns The child-process environment.
  */
-export function convexLocalCliEnv(
-    url: string,
-    adminKey: string,
-    env: NodeJS.ProcessEnv = process.env,
-): NodeJS.ProcessEnv {
+export function convexLocalCliEnv(url: string, adminKey: string, env: ProcessEnv = process.env): ProcessEnv {
     return {
         ...env,
         CONVEX_SELF_HOSTED_URL: url,
@@ -143,7 +143,7 @@ export async function waitForAdminKeyMarker(
  * @param env - Environment to read overrides from; defaults to `process.env`.
  * @returns The issuer, application id, and JWKS URL to seed on the backend deployment.
  */
-export function resolveBackendAuthEnv(env: NodeJS.ProcessEnv = process.env): {
+export function resolveBackendAuthEnv(env: ProcessEnv = process.env): {
     issuer: string;
     applicationId: string;
     jwksUrl: string;
@@ -155,13 +155,82 @@ export function resolveBackendAuthEnv(env: NodeJS.ProcessEnv = process.env): {
     };
 }
 
+/** Primary domain of the canonical seed tenant — the probe key for "is this deployment already seeded?". */
+export const CANONICAL_SEED_DOMAIN = 'nordcom-demo-shop.com';
+
+/** Server-tier `db/shops:byDomain` reference, resolved by name so this module never imports the convex `api`. */
+const shopByDomainRef = makeFunctionReference<'query'>('db/shops:byDomain');
+
+/**
+ * Probes whether the canonical tenant is already present on a running deployment — the fast-path gate
+ * for a restored, pre-seeded state directory (the CI bootstrap-cache reuse). Resolves through the
+ * server-tier `db/shops:byDomain` seam, so it doubles as a "functions are pushed AND data is seeded"
+ * check: a fresh backend whose modules never pushed throws (the query 404s) and reports unseeded.
+ *
+ * @param url - Local deployment URL.
+ * @param serverSecret - The server-tier secret admitting the privileged query.
+ * @returns `true` when the canonical shop resolves; `false` on any error (functions absent, shop
+ *   missing, backend not answering) so the caller falls back to the full push + seed.
+ */
+export async function isCanonicalSeeded(url: string, serverSecret: string): Promise<boolean> {
+    try {
+        const client = new ConvexHttpClient(url);
+        const shop = await client.query(shopByDomainRef, { serverSecret, domain: CANONICAL_SEED_DOMAIN });
+        return shop != null;
+    } catch {
+        // Functions not pushed (query 404s), backend not answering, or any transport error → not seeded.
+        return false;
+    }
+}
+
+/**
+ * Runs `fn`, retrying on a thrown error with linear backoff. Hardens the transient failures the local
+ * Convex push exhibits under load — the backend's `wait_for_schema` endpoint intermittently answers
+ * `500 InternalServerError` while a fresh deployment settles, which the CLI surfaces as a non-zero exit
+ * even though an immediate re-push succeeds.
+ *
+ * @param fn - The (possibly synchronous) operation to attempt.
+ * @param opts.attempts - Total attempts before giving up (default 3).
+ * @param opts.baseDelayMs - Backoff base; attempt N waits `baseDelayMs * N` (default 1000).
+ * @param opts.label - Human label for the retry log line.
+ * @returns The operation's result on the first success.
+ * @throws The last error when every attempt fails.
+ */
+export async function withRetry<T>(
+    fn: () => T,
+    {
+        attempts = 3,
+        baseDelayMs = 1_000,
+        label = 'operation',
+    }: { attempts?: number; baseDelayMs?: number; label?: string } = {},
+): Promise<T> {
+    let lastErr: unknown;
+    for (let attempt = 1; attempt <= attempts; attempt++) {
+        try {
+            return fn();
+        } catch (err) {
+            lastErr = err;
+            if (attempt < attempts) {
+                const delayMs = baseDelayMs * attempt;
+                console.warn(
+                    `[test-convex] ${label} failed (attempt ${attempt}/${attempts}); retrying in ${delayMs}ms`,
+                );
+                await sleep(delayMs);
+            }
+        }
+    }
+    throw lastErr;
+}
+
 /**
  * Idempotently ensures the local-first dev backend is up, configured, and seeded:
  *   1. If `/instance_name` is already healthy, skip the boot.
  *   2. Otherwise spawn the `test-convex start` daemon DETACHED (the CLI blocks, so `pnpm dev` cannot
  *      run it foreground) and poll until healthy.
  *   3. Read the admin key marker, set the server secret + auth placeholders on the backend.
- *   4. Run the canonical seed (idempotent — a no-op when the shop already exists).
+ *   4. Push the functions (with retry — this bakes the per-run auth env, so it always runs).
+ *   5. Skip the canonical seed when the tenant already resolves (a restored, pre-seeded state dir — the
+ *      CI bootstrap cache); otherwise run it (idempotent — a no-op when the shop already exists).
  *
  * @param opts.timeoutMs - Health-poll budget (default 120s; covers a first-run binary download).
  * @returns The backend URL once it is healthy and seeded.
@@ -202,15 +271,26 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
     convexEnvSet(url, adminKey, 'CONVEX_AUTH_APPLICATION_ID', backendAuth.applicationId);
     convexEnvSet(url, adminKey, 'CONVEX_AUTH_JWKS_URL', backendAuth.jwksUrl);
 
-    // Deploy the functions now that the auth env exists — the daemon's continuous push failed before
-    // the env was set and does not retry on an env change, so without this the seed's queries 404.
-    convexDevOnce(url, adminKey);
+    // Always push, even when reusing a cached state dir: auth.config.ts captures CONVEX_AUTH_* only at
+    // push time (admin e2e overrides the issuer/JWKS per run), and the daemon's own continuous push
+    // failed before the env was set and does not retry on an env change. Retried because the backend's
+    // wait_for_schema endpoint intermittently 500s while a deployment settles; cheap when the restored
+    // state already carries the matching modules. This is the flaky-but-necessary step the seed is not.
+    await withRetry(() => convexDevOnce(url, adminKey), { label: 'convex dev --once (function push)' });
 
-    // Seed via the live runner; it reads CONVEX_SERVER_SECRET (server-tier) and the self-hosted
-    // admin key for the CMS imports. Set both on this process before dispatching.
+    // Skip the (expensive) canonical seed when the tenant already resolves — a restored, pre-seeded
+    // state dir (the CI bootstrap-cache reuse) needs no rebuild, and the re-push above preserves its
+    // data. The probe resolves through the same server-tier seam the seed targets, so an empty/partial
+    // cache reports unseeded and falls through to the full seed. The live runner reads
+    // CONVEX_SERVER_SECRET (server-tier) and the self-hosted admin key for the CMS imports.
     process.env.CONVEX_SERVER_SECRET = serverSecret;
     process.env.CONVEX_SELF_HOSTED_URL = url;
     process.env.CONVEX_SELF_HOSTED_ADMIN_KEY = adminKey;
+    if (await isCanonicalSeeded(url, serverSecret)) {
+        console.info('[test-convex] canonical tenant already present; reusing seeded data (skipping seed)');
+        return url;
+    }
+
     const { seedCanonical } = await import('./seed/canonical');
     await seedCanonical(url);
 

@@ -3,14 +3,19 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 
+import { ConvexHttpClient } from 'convex/browser';
+import { ConvexError } from 'convex/values';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+    CANONICAL_SEED_DOMAIN,
     convexLocalCliEnv,
     DEV_LOCAL,
     isBackendHealthy,
+    isCanonicalSeeded,
     resolveBackendAuthEnv,
     waitForAdminKeyMarker,
+    withRetry,
 } from './dev-local';
 
 afterEach(() => vi.restoreAllMocks());
@@ -74,6 +79,56 @@ describe('resolveBackendAuthEnv', () => {
     it('treats a blank override as unset and falls back', () => {
         const resolved = resolveBackendAuthEnv({ CONVEX_AUTH_ISSUER: '   ' });
         expect(resolved.issuer).toBe(DEV_LOCAL.auth.issuer);
+    });
+});
+
+describe('withRetry', () => {
+    it('returns the first successful result without retrying', async () => {
+        const fn = vi.fn(() => 'ok');
+        expect(await withRetry(fn, { baseDelayMs: 1 })).toBe('ok');
+        expect(fn).toHaveBeenCalledTimes(1);
+    });
+
+    it('retries a transient failure and resolves once it succeeds', async () => {
+        let calls = 0;
+        const fn = vi.fn(() => {
+            calls += 1;
+            if (calls < 3) throw new ConvexError('wait_for_schema 500');
+            return 'pushed';
+        });
+        expect(await withRetry(fn, { attempts: 3, baseDelayMs: 1 })).toBe('pushed');
+        expect(fn).toHaveBeenCalledTimes(3);
+    });
+
+    it('rethrows the last error after exhausting every attempt', async () => {
+        const fn = vi.fn(() => {
+            throw new ConvexError('persistent push failure');
+        });
+        await expect(withRetry(fn, { attempts: 2, baseDelayMs: 1 })).rejects.toThrow('persistent push failure');
+        expect(fn).toHaveBeenCalledTimes(2);
+    });
+});
+
+describe('isCanonicalSeeded', () => {
+    it('is true when the canonical shop resolves through the server-tier query', async () => {
+        const query = vi
+            .spyOn(ConvexHttpClient.prototype, 'query')
+            .mockResolvedValue({ shop: { _id: 'shop_1' }, flags: [] });
+        expect(await isCanonicalSeeded('http://127.0.0.1:3210', 'secret')).toBe(true);
+        expect(query).toHaveBeenCalledWith(expect.anything(), {
+            serverSecret: 'secret',
+            domain: CANONICAL_SEED_DOMAIN,
+        });
+    });
+
+    it('is false when no shop claims the canonical domain (unseeded deployment)', async () => {
+        vi.spyOn(ConvexHttpClient.prototype, 'query').mockResolvedValue(null);
+        expect(await isCanonicalSeeded('http://127.0.0.1:3210', 'secret')).toBe(false);
+    });
+
+    it('is false when the query throws (functions not pushed / backend unreachable)', async () => {
+        vi.spyOn(ConvexHttpClient.prototype, 'query').mockRejectedValue(new ConvexError('module not found'));
+        expect(await isCanonicalSeeded('http://127.0.0.1:3210', 'secret')).toBe(false);
     });
 });
 
