@@ -85,8 +85,22 @@ Guiding principles (from the task + repo design system):
   marked the decorative ellipsis `aria-hidden`.
 - Verified: biome clean, typecheck clean, pagination 5/5.
 
+### 7 — Filter values: deselectable LIST facets + a11y selected state
+
+- The `FilterValues` LIST branch always linked a value to *setting* itself, so a selected facet could
+  never be toggled off, and it mutated the shared `searchParams` object inside the render map. No
+  selected-state was exposed to assistive tech.
+- Rewrote LIST: each value builds its href from a fresh params copy — active values link to clearing
+  themselves (deselect), inactive values swap the selection. Marked the active value `aria-current` /
+  `data-active`, and collapsed the swatch `h-3 w-3` → `size-3`.
+- Added tests for the set / toggle-off / swap href paths. (BOOLEAN/PRICE_RANGE remain stubs — those
+  facets are unimplemented and not yet wired into any page; full faceting is a separate slice.)
+- Verified: biome clean, typecheck clean, filter-values 9/9.
+
 #### Candidate slices for future iterations (audit backlog)
 
+- Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
+  /products, collections, and search as the shared faceted aside (per the overhaul spec).
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
 - Stepper grouping: revisit as a properly-styled `<fieldset>` (reset margin/min-width, div→fieldset
   prop type) so the three controls share one accessible group name.
