@@ -95,6 +95,20 @@ export class AggregatorEngine {
         return replies.filter((r) => r != null);
     }
 
+    /**
+     * Forward an arbitrary request to every backend that handles `routeUri`,
+     * returning the raw (non-null) replies. Used for document-shaped ops
+     * (documentSymbol) and item-shaped ops (call hierarchy) that don't fit the
+     * position-based shape.
+     */
+    async forward(method: string, routeUri: string, params: Record<string, unknown>): Promise<unknown[]> {
+        const path = uriToPath(routeUri);
+        const backends = this.#registry.backendsFor(path);
+        for (const b of backends) b.open(path);
+        const replies = await Promise.all(backends.map((b) => b.request(method, params).catch(() => null)));
+        return replies.filter((r) => r != null);
+    }
+
     /** Aggregate `workspace/symbol` across ALL backends, seeding TS projects first. */
     async workspaceSymbol(query: string, opts: { definitionsOnly?: boolean } = {}): Promise<SymbolResult[]> {
         // Seed: open the definition-likely files so lazy TS projects load.

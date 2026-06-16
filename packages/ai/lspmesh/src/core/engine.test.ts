@@ -56,4 +56,11 @@ describe('AggregatorEngine', () => {
         });
         expect(replies).toHaveLength(1);
     });
+
+    it('forward routes a document-shaped request by uri', async () => {
+        engine = new AggregatorEngine(config);
+        await engine.init();
+        const replies = await engine.forward('workspace/symbol', 'file:///fixture/a.ts', { query: 'Foo' });
+        expect(replies).toHaveLength(1);
+    });
 });
