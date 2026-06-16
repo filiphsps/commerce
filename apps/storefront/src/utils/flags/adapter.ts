@@ -2,7 +2,11 @@ import 'server-only';
 
 import { randomUUID } from 'node:crypto';
 
-import { MissingRequestContextError } from '@nordcom/commerce-errors';
+import {
+    InvalidShopifyCustomerAccountsApiConfiguration,
+    MissingRequestContextError,
+    UnknownCommerceProviderError,
+} from '@nordcom/commerce-errors';
 import type { Adapter } from 'flags';
 import { dedupe } from 'flags/next';
 
@@ -17,7 +21,20 @@ const identify = dedupe(
     async ({ headers, cookies }: { headers: Headers; cookies: { get(n: string): { value: string } | undefined } }) => {
         const ctx = await getRequestContext();
         if (!ctx) throw new MissingRequestContextError();
-        const session = await getAuthSession(ctx.shop);
+        // A tenant without customer-accounts config (e.g. the mock.shop demo) has no authenticated
+        // customer — flags must still evaluate for the anonymous visitor rather than letting the
+        // unconfigured-auth throw bubble up and crash any RSC that awaits a flag in its render path.
+        let session: Awaited<ReturnType<typeof getAuthSession>> = null;
+        try {
+            session = await getAuthSession(ctx.shop);
+        } catch (error) {
+            if (
+                !(error instanceof InvalidShopifyCustomerAccountsApiConfiguration) &&
+                !(error instanceof UnknownCommerceProviderError)
+            ) {
+                throw error;
+            }
+        }
         const user = await mapSessionToUser(session);
         const visitorId =
             cookies.get('nordcom-visitor-id')?.value ?? headers.get('x-nordcom-visitor-id') ?? randomUUID();
