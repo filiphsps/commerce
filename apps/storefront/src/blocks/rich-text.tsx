@@ -32,12 +32,12 @@ export const RichTextBlock = ({
                 data-variant="collapsible"
                 open={!block.collapsedByDefault}
                 className={cn(
-                    'group w-full select-none appearance-none rounded-lg border-2 border-gray-300 border-solid bg-gray-100 py-3 transition-all duration-150',
+                    'group w-full select-none appearance-none rounded-lg border-(--border-default) border-2 border-solid bg-(--surface-1) py-3 transition-all duration-150',
                 )}
             >
                 <summary
                     className={cn(
-                        'flex cursor-pointer appearance-none items-center justify-start gap-2 border-0 border-gray-300 border-solid px-2 transition-all duration-150 group-open:mb-3 group-open:border-b-2 group-open:pb-3',
+                        'flex cursor-pointer appearance-none items-center justify-start gap-2 border-(--border-default) border-0 border-solid px-2 transition-all duration-150 group-open:mb-3 group-open:border-b-2 group-open:pb-3',
                     )}
                 >
                     <div className="flex h-8 w-12 items-center justify-center">
@@ -82,7 +82,7 @@ const RichTextBlockSkeleton = ({ block }: { block: RichTextBlockNode }): JSX.Ele
                 data-variant="collapsible"
                 data-skeleton-variant="rich-text"
                 className={cn(
-                    'group w-full select-none appearance-none rounded-lg border-2 border-gray-300 border-solid bg-gray-100 py-3',
+                    'group w-full select-none appearance-none rounded-lg border-(--border-default) border-2 border-solid bg-(--surface-1) py-3',
                 )}
             >
                 <div className="flex items-center justify-start gap-2 px-2 pb-3">
