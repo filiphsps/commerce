@@ -338,7 +338,17 @@ Linked the project to the **existing** Clerk app **"Nordcom Commerce"** (user's 
    `ensureCurrentUser` and server-side mirror checks must tolerate it.
 5. **Convex schema drop** — `sessions`/`identities` removal is a migration; confirm no
    residual readers before deleting (grep + LSP find_references).
-6. **Convex `_generated` hand-edits** — offline codegen is unavailable in the worktree, so
+7. **Migration test-debt to clear before the final gate (Task 9.4):**
+   - **Editor-gate tests** (`apps/admin/src/components/cms/.../header-editor-gate.test.tsx`,
+     `pages-editor-gate.test.tsx`) — 9 fail with `FORGED_IDENTITY`: their fixtures still mint a
+     NextAuth-`CONVEX_AUTH_ISSUER` identity, but the operator path now validates
+     `CLERK_FRONTEND_API_URL` (Task 2.2). Update the fixtures to a Clerk-issuer identity (+ seed
+     `clerkUserId`/`orgMemberships` like the other sibling tests already do).
+   - **`cms/prosemirror.ts`** rich-text sync calls `resolveActiveAdminShopId(ctx)` with no
+     `shopDomain` (the websocket sync transport carries no selector) → multi-shop operators hit
+     `AMBIGUOUS_SHOP_MEMBERSHIP` on rich-text. Single-shop works. Follow-up: thread the routed
+     shop into the prosemirror permission callbacks.
+8. **Convex `_generated` hand-edits** — offline codegen is unavailable in the worktree, so
    `packages/convex/convex/_generated/dataModel.d.ts` is hand-synced as the schema evolves
    (Tasks 1.1–1.4, 3.x). **Deploy checklist:** run real `convex codegen` against the
    deployment before/at deploy and confirm `_generated/` matches the live schema (no drift).
