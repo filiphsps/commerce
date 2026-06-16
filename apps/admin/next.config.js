@@ -4,6 +4,7 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { resolveBuildEnv } from '@nordcom/commerce-utils/env';
+import { withBuildNotifier } from 'next-build-notifier/config';
 
 const { isDev, environment, gitSHA } = resolveBuildEnv(process.env);
 
@@ -33,6 +34,7 @@ if (ADMIN_DOMAIN) {
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx'],
+    transpilePackages: ['next-build-notifier'],
     // Next's dev-server lock is keyed by `<distDir>/lock`, so two `next dev`
     // processes for this app collide unless they target different dist dirs. The
     // e2e harness sets `E2E_DIST_DIR` (see playwright.config.ts, local branch
@@ -141,4 +143,4 @@ const wrapConfig = (config) => {
     return config;
 };
 
-export default wrapConfig(config);
+export default wrapConfig(withBuildNotifier(config));
