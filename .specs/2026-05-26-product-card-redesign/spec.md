@@ -12,7 +12,7 @@ Replace the current product-card system with a token-driven, registry-extensible
 
 ## Problem
 
-Symptoms confirmed in production (`https://beta.pouched.de`) and root-caused in the codebase:
+Symptoms confirmed in production (`https://demo.nordcom.store`) and root-caused in the codebase:
 
 1. **Search renders 0 product cards despite "3 PRODUCTS" label.** `apps/storefront/src/api/shopify/search.ts:15-77` defines a `searchProducts` query that omits the `variants` field. `apps/storefront/src/components/products/search-product-card.tsx:26-28` short-circuits to `null` when `data.variants.edges[0]?.node` is missing. Every search result returns null. The `unsafe_cast<Product>(item.node)` at `search.ts:118` masks the missing field at type level.
 2. **`+N` overflow chip data-source mismatch.** `apps/storefront/src/components/product-options/primitives/more.tsx:15` computes overflow as `Math.max(0, group.values.length - 4)`. `apps/storefront/src/components/product-options/primitives/group.tsx:18-34` separately runs a `useEffect` that reads `--inline-limit` from `getComputedStyle`, recomputes overflow, and **directly mutates** the More element's `textContent` via `rowEl.parentElement?.querySelector('[data-option-more]')`. When size row and color row are siblings, both Group `useEffect`s mutate the same first-matched More element. Last-writer-wins. The displayed `+N` no longer reflects either group's data.
@@ -1635,8 +1635,8 @@ Branch-coverage ≥ 50% on `apps/storefront/src` (existing project gate, enforce
 
 Before declaring done:
 
-1. **Production reproduction site visited.** Open `https://beta.pouched.de/en-US/search/?q=t-shirt` — confirm cards now render (current bug).
-2. **Open `https://beta.pouched.de/en-US/products/men-t-shirt/`** — confirm:
+1. **Production reproduction site visited.** Open `https://demo.nordcom.store/en-US/search/?q=t-shirt` — confirm cards now render (current bug).
+2. **Open `https://demo.nordcom.store/en-US/products/men-t-shirt/`** — confirm:
    - No `+0` chip leak.
    - No text-strikethrough on size pills (no pills at all on base card).
    - Recommendations rail arrows visible; rail doesn't clip past viewport.

@@ -14,7 +14,7 @@ npx lspmesh mcp   # MCP server over stdio
 ```
 
 See the full docs at
-<https://filiphsps.github.io/commerce/packages/ai/lspmesh/overview/>.
+<https://nordcom.store/docs/packages/ai/lspmesh/overview/>.
 
 ## License
 

@@ -967,10 +967,10 @@ Each package mirrors tagtree:
 - `package.json` with `exports` map for `.`, `./contract-tests` (cart-core), `./mock-adapter` (cart-core), `./testing` (cart-shopify), `./devtools` (cart-react).
 - `tsconfig.json` extending root with `noUncheckedIndexedAccess: true` per project convention.
 - `package.json` `homepage` field pointed at the GitHub Pages docs site per package:
-  - `@nordcom/cart-core` → `https://filiphsps.github.io/commerce/cart/core/`
-  - `@nordcom/cart-react` → `https://filiphsps.github.io/commerce/cart/react/`
-  - `@nordcom/cart-next` → `https://filiphsps.github.io/commerce/cart/next/`
-  - `@nordcom/cart-shopify` → `https://filiphsps.github.io/commerce/cart/shopify/`
+  - `@nordcom/cart-core` → `https://nordcom.store/docs/cart/core/`
+  - `@nordcom/cart-react` → `https://nordcom.store/docs/cart/react/`
+  - `@nordcom/cart-next` → `https://nordcom.store/docs/cart/next/`
+  - `@nordcom/cart-shopify` → `https://nordcom.store/docs/cart/shopify/`
   Replaces tagtree's pattern of pointing at `https://github.com/filiphsps/commerce/tree/master/packages/.../#readme`. The Pages site path matches `packages/cart/<sub>/` mounted under `/cart/<sub>/`.
 
 ## Testing strategy

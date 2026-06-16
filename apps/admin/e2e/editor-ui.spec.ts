@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 // Use the seeded shop domain. Defaults to the local development shop.
 // CI/staging should set `E2E_SHOP_DOMAIN` to a domain present in the
 // target database.
-const SHOP_DOMAIN = process.env.E2E_SHOP_DOMAIN ?? 'beta.pouched.de';
+const SHOP_DOMAIN = process.env.E2E_SHOP_DOMAIN ?? 'demo.nordcom.store';
 
 /**
  * These tests rely on:

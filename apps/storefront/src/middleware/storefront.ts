@@ -44,7 +44,7 @@ async function resolveDevShopDomain(): Promise<string> {
                 'error.message': (err as { message?: string }).message ?? String(err),
             });
         }
-        return 'beta.pouched.de';
+        return 'demo.nordcom.store';
     })();
     return cachedDevShopDomain;
 }

@@ -7,7 +7,7 @@ export const config = {
         // this proxy stays a thin Clerk-context shim — it does NOT rewrite per tenant like the storefront.
         //
         // CRITICAL: the admin's tenant routes are `/[domain]/…` where the domain CONTAINS DOTS
-        // (`/beta.pouched.de`). The common Clerk matcher excludes ANY path segment with a `.` (assuming a
+        // (`/demo.nordcom.store`). The common Clerk matcher excludes ANY path segment with a `.` (assuming a
         // static file), which skipped the middleware on every tenant route — so `auth()` threw "Clerk
         // can't detect usage of clerkMiddleware()". Exclude only KNOWN static EXTENSIONS instead: that
         // keeps `/favicon.ico` and friends out while letting `.de`/`.com`/… tenant paths through.

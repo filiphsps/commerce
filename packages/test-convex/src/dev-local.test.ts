@@ -144,11 +144,11 @@ describe('resolveClerkBackendEnv', () => {
     it('surfaces the Clerk Frontend API URLs (dev + prod) + webhook secret for the admin e2e operator-auth wiring', () => {
         const resolved = resolveClerkBackendEnv({
             CLERK_FRONTEND_API_URL: 'https://internal-roughy-49.clerk.accounts.dev',
-            CLERK_FRONTEND_API_URL_PROD: 'https://clerk.shops.pouched.de',
+            CLERK_FRONTEND_API_URL_PROD: 'https://clerk.nordcom.store',
             CLERK_WEBHOOK_SIGNING_SECRET: 'whsec_test',
         });
         expect(resolved.frontendApiUrl).toBe('https://internal-roughy-49.clerk.accounts.dev');
-        expect(resolved.frontendApiUrlProd).toBe('https://clerk.shops.pouched.de');
+        expect(resolved.frontendApiUrlProd).toBe('https://clerk.nordcom.store');
         expect(resolved.webhookSigningSecret).toBe('whsec_test');
     });
 

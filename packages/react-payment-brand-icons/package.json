@@ -76,7 +76,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://filiphsps.github.io/commerce/packages/ui/react-payment-brand-icons/icons/",
+    "homepage": "https://nordcom.store/docs/packages/ui/react-payment-brand-icons/icons/",
     "peerDependencies": {
         "react": ">=18",
         "react-dom": ">=18"

@@ -1,618 +1,618 @@
 name: CI
 
 on:
-    pull_request:
-    push:
-        branches:
-            - master
-            - staging
-            - "dev/*"
-            - "fix/*"
-        paths-ignore:
-            - "**.md"
-            - "**.txt"
-            - "LICENSE"
+  pull_request:
+  push:
+    branches:
+      - master
+      - staging
+      - "dev/*"
+      - "fix/*"
+    paths-ignore:
+      - "**.md"
+      - "**.txt"
+      - "LICENSE"
 
 concurrency:
-    group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
-    cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 
 env:
-    CI: true
-    # Convex local-backend binary tag. Unlike the convex npm CLI, this is fetched remotely from
-    # version.convex.dev (NOT pinned by pnpm-lock.yaml), so pin + bump it explicitly here. It also
-    # keys the backend-binary cache, so a bump invalidates stale binaries instead of silently
-    # re-downloading on every run.
-    CONVEX_LOCAL_BACKEND_VERSION: precompiled-2026-05-27-e85ff37
-    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-    TURBO_REMOTE_CACHE_TIMEOUT: 120
-    SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
-    SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
-    AUTH_SECRET: "development-secret"
-    AUTH_TRUST_HOST: "true"
-    EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
-    ADMIN_DOMAIN: ${{ vars.ADMIN_DOMAIN }}
-    SERVICE_DOMAIN: ${{ vars.SERVICE_DOMAIN }}
-    LANDING_DOMAIN: ${{ vars.LANDING_DOMAIN }}
-    PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-    STOREFRONT_PREVIEW_SECRET: "development-secret"
-    VERCEL_AUTOMATION_BYPASS_SECRET: "development-secret"
-    NEXT_PUBLIC_DOCS_BASE_PATH: "/commerce"
-    NEXT_PUBLIC_DOCS_CANONICAL_URL: "https://filiphsps.github.io/commerce"
+  CI: true
+  # Convex local-backend binary tag. Unlike the convex npm CLI, this is fetched remotely from
+  # version.convex.dev (NOT pinned by pnpm-lock.yaml), so pin + bump it explicitly here. It also
+  # keys the backend-binary cache, so a bump invalidates stale binaries instead of silently
+  # re-downloading on every run.
+  CONVEX_LOCAL_BACKEND_VERSION: precompiled-2026-05-27-e85ff37
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_REMOTE_CACHE_TIMEOUT: 120
+  SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
+  SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
+  AUTH_SECRET: "development-secret"
+  AUTH_TRUST_HOST: "true"
+  EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
+  ADMIN_DOMAIN: ${{ vars.ADMIN_DOMAIN }}
+  SERVICE_DOMAIN: ${{ vars.SERVICE_DOMAIN }}
+  LANDING_DOMAIN: ${{ vars.LANDING_DOMAIN }}
+  PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+  STOREFRONT_PREVIEW_SECRET: "development-secret"
+  VERCEL_AUTOMATION_BYPASS_SECRET: "development-secret"
+  NEXT_PUBLIC_DOCS_BASE_PATH: "/commerce"
+  NEXT_PUBLIC_DOCS_CANONICAL_URL: "https://nordcom.store/docs"
 
 jobs:
-    lint:
-        name: 📋 Lint
-        timeout-minutes: 10
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+  lint:
+    name: 📋 Lint
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            - name: 🚀 Bootstrap
-              id: bootstrap
-              uses: ./.github/common/bootstrap
-              with:
-                  turbo-cache: "false"
+      - name: 🚀 Bootstrap
+        id: bootstrap
+        uses: ./.github/common/bootstrap
+        with:
+          turbo-cache: "false"
 
-            - name: 📋 Lint
-              run: pnpm run lint
+      - name: 📋 Lint
+        run: pnpm run lint
 
-            - name: 💾 Save bootstrap caches
-              if: always()
-              uses: ./.github/common/bootstrap-save
-              with:
-                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  save-node-modules: 'true'
+      - name: 💾 Save bootstrap caches
+        if: always()
+        uses: ./.github/common/bootstrap-save
+        with:
+          node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+          save-node-modules: "true"
 
-    typecheck:
-        name: ✅ Typecheck
-        timeout-minutes: 15
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
-              with:
-                  # turbo --affected diffs against the merge base, so it needs full history.
-                  fetch-depth: 0
+  typecheck:
+    name: ✅ Typecheck
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
+        with:
+          # turbo --affected diffs against the merge base, so it needs full history.
+          fetch-depth: 0
 
-            - name: 🚀 Bootstrap
-              id: bootstrap
-              uses: ./.github/common/bootstrap
+      - name: 🚀 Bootstrap
+        id: bootstrap
+        uses: ./.github/common/bootstrap
 
-            - name: 🧬 CMS codegen drift gate
-              run: pnpm cms:gen:check
+      - name: 🧬 CMS codegen drift gate
+        run: pnpm cms:gen:check
 
-            - name: 🔌 lspmesh plugin version drift gate
-              run: pnpm plugins:sync:check
+      - name: 🔌 lspmesh plugin version drift gate
+        run: pnpm plugins:sync:check
 
-            - name: ✨ Generate
-              run: pnpm run generate
+      - name: ✨ Generate
+        run: pnpm run generate
 
-            - name: 🔨 Build Packages
-              run: pnpm run build:packages
+      - name: 🔨 Build Packages
+        run: pnpm run build:packages
 
-            - name: ✅ Typecheck
-              # On PRs, typecheck only packages changed (or downstream of a change); pushes to
-              # master/staging/dev run the full set to seed the turbo cache for the next PR diff.
-              env:
-                  TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
-                  TURBO_SCM_HEAD: ${{ github.event_name == 'pull_request' && github.sha || '' }}
-              run: |
-                  if [ "${{ github.event_name }}" = "pull_request" ]; then
-                      pnpm run typecheck --affected
-                  else
-                      pnpm run typecheck
-                  fi
-
-            - name: 💾 Save bootstrap caches
-              if: always()
-              uses: ./.github/common/bootstrap-save
-              with:
-                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-
-    test:
-        name: 🧪 Test
-        timeout-minutes: 15
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
-
-            - name: 🚀 Bootstrap
-              id: bootstrap
-              uses: ./.github/common/bootstrap
-
-            - name: ✨ Generate
-              run: pnpm run generate
-
-            - name: 🔨 Build Packages
-              run: pnpm run build:packages
-
-            - name: 🧪 Test
-              run: pnpm run test
-
-            - name: 🦺 Report Coverage to GitHub
-              if: ${{ !cancelled() && hashFiles('coverage/coverage-summary.json') != '' }}
-              uses: davelosert/vitest-coverage-report-action@v2.12
-
-            - name: 🦺 Codecov Coverage Reports
-              if: ${{ !cancelled() && hashFiles('coverage/coverage-final.json') != '' }}
-              uses: codecov/codecov-action@v6
-              with:
-                  files: ./coverage/coverage-final.json
-                  flags: unit
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-            - name: 🦺 Codecov Test Results
-              if: ${{ !cancelled() && hashFiles('apps/*/junit.xml', 'packages/*/junit.xml', 'packages/*/*/junit.xml') != '' }}
-              uses: codecov/codecov-action@v6
-              with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  files: ./apps/*/junit.xml,./packages/*/junit.xml,./packages/*/*/junit.xml
-                  report_type: test_results
-                  flags: unit
-
-            - name: 💾 Save bootstrap caches
-              if: always()
-              uses: ./.github/common/bootstrap-save
-              with:
-                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-                  save-turbo: 'true'
-
-    build:
-        name: 🔨 Build
-        timeout-minutes: 25
-        runs-on: ubuntu-latest
-        # Bake the local Convex URL + Clerk dev-instance key into the storefront/admin bundles
-        # (NEXT_PUBLIC_* is inlined at build time) so the e2e job's prebuilt artifacts connect
-        # to the seeded :3210 backend and the admin ClerkProvider initializes correctly.
-        # Required GitHub secrets: CLERK_PUBLISHABLE_KEY_DEV, CLERK_SECRET_KEY_DEV.
+      - name: ✅ Typecheck
+        # On PRs, typecheck only packages changed (or downstream of a change); pushes to
+        # master/staging/dev run the full set to seed the turbo cache for the next PR diff.
         env:
-            NEXT_PUBLIC_CONVEX_URL: http://127.0.0.1:3210
-            # Bake a non-dev build id so the build-notifier engine is active in the prebuilt
-            # e2e bundles (Vercel deploys use VERCEL_DEPLOYMENT_ID, which takes precedence).
-            NEXT_PUBLIC_BUILD_ID: ${{ github.sha }}
-            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY_DEV }}
-            CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_DEV }}
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+          TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
+          TURBO_SCM_HEAD: ${{ github.event_name == 'pull_request' && github.sha || '' }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+              pnpm run typecheck --affected
+          else
+              pnpm run typecheck
+          fi
 
-            - name: 🚀 Bootstrap
-              id: bootstrap
-              uses: ./.github/common/bootstrap
+      - name: 💾 Save bootstrap caches
+        if: always()
+        uses: ./.github/common/bootstrap-save
+        with:
+          node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+          turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
 
-            - name: 💾 Restore Next.js build cache
-              id: cache-nextjs
-              uses: actions/cache/restore@v5
-              with:
-                  path: |
-                      apps/*/.next/cache
-                  key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
-                  restore-keys: |
-                      ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
+  test:
+    name: 🧪 Test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            - name: 🔨 Build All
-              run: pnpm run build
+      - name: 🚀 Bootstrap
+        id: bootstrap
+        uses: ./.github/common/bootstrap
 
-            - name: 🛡️ Assert public bundle is Convex-free
-              run: pnpm tsx ./scripts/assert-no-convex-public-bundle.ts apps/storefront/.next/static
+      - name: ✨ Generate
+        run: pnpm run generate
 
-            - name: 📦 Upload app builds
-              uses: actions/upload-artifact@v7
-              with:
-                  name: app-builds
-                  path: |
-                      apps/*/.next
-                      !apps/*/.next/cache
-                      !apps/*/.next/dev
-                      !apps/*/.next/types
-                      !apps/*/.next/diagnostics
-                      packages/*/dist
-                  retention-days: 1
-                  include-hidden-files: true
+      - name: 🔨 Build Packages
+        run: pnpm run build:packages
 
-            - name: 💾 Save Next.js build cache
-              if: always() && steps.cache-nextjs.outputs.cache-hit != 'true'
-              uses: actions/cache/save@v5
-              with:
-                  path: |
-                      apps/*/.next/cache
-                  key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+      - name: 🧪 Test
+        run: pnpm run test
 
-            - name: 💾 Save bootstrap caches
-              if: always()
-              uses: ./.github/common/bootstrap-save
-              with:
-                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-                  save-turbo: 'true'
+      - name: 🦺 Report Coverage to GitHub
+        if: ${{ !cancelled() && hashFiles('coverage/coverage-summary.json') != '' }}
+        uses: davelosert/vitest-coverage-report-action@v2.12
 
-    convex:
-        name: 🌐 Convex
-        timeout-minutes: 15
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
-
-            - name: 🔎 Detect Convex changes
-              id: changes
-              uses: dorny/paths-filter@v3
-              with:
-                  filters: |
-                      convex:
-                          - 'packages/convex/**'
-                      limits:
-                          - 'packages/convex/**'
-                          - 'packages/test-convex/**'
-
-            - name: 🚀 Bootstrap
-              id: bootstrap
-              uses: ./.github/common/bootstrap
-              with:
-                  turbo-cache: "false"
-
-            - name: 🌐 Deploy Convex to self-hosted backend
-              if: steps.changes.outputs.convex == 'true'
-              env:
-                  CONVEX_AGENT_MODE: anonymous
-              # The push validates every env var auth.config.ts reads against the DEPLOYMENT
-              # env, and a fresh anonymous backend has none set — so the first pass only
-              # provisions the pinned backend binary (its auth-config failure is expected),
-              # then all required vars are seeded onto the ephemeral deployment (`convex env set`
-              # has no --local-backend-version flag, hence the two-pass shape), and the second
-              # pass is the real, validated push.
-              # CONVEX_AUTH_* are storefront-customer-path placeholders (kept per decision #16).
-              # CLERK_FRONTEND_API_URL is the Clerk dev-instance Frontend API URL — the Convex
-              # auth.config.ts `domain` field; without it Convex rejects operator tokens with
-              # NoAuthProvider. CLERK_WEBHOOK_SIGNING_SECRET is the svix signing secret for the
-              # Clerk webhook httpAction.
-              run: |
-                  pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION" || echo "first pass provisions the backend; auth-config env validation fails until the vars are seeded"
-                  pnpm convex:env set CONVEX_AUTH_ISSUER https://ci.localhost.invalid
-                  pnpm convex:env set CONVEX_AUTH_APPLICATION_ID convex
-                  pnpm convex:env set CONVEX_AUTH_JWKS_URL https://ci.localhost.invalid/.well-known/jwks.json
-                  pnpm convex:env set CLERK_FRONTEND_API_URL https://internal-roughy-49.clerk.accounts.dev
-                  pnpm convex:env set CLERK_FRONTEND_API_URL_PROD https://clerk-prod.ci.invalid
-                  pnpm convex:env set CLERK_WEBHOOK_SIGNING_SECRET ${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET_DEV }}
-                  pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION"
-
-            - name: ⏭️ Skip Convex deploy (no packages/convex changes)
-              if: steps.changes.outputs.convex != 'true'
-              run: echo "No packages/convex/** changes detected; skipping the self-hosted Convex deploy."
-
-            # HARNESS-10: the limit-boundary suites boot a REAL ephemeral backend per file (1MiB
-            # shred round-trip, typed scan-ceiling abort, 20-editor autosave OCC, depth-6 header
-            # populate). They are env-gated behind CONVEX_LIMITS_TESTS=1 so the default `pnpm test`
-            # run never pays the boot cost; this job runs them because it already restores the
-            # pinned backend-binary cache. The generous startup timeout covers a cache-miss binary
-            # fetch — the suites' own per-test budgets are documented in packages/test-convex/src/limits.
-            - name: 🧪 Limit-boundary integration tests (real backend)
-              if: steps.changes.outputs.limits == 'true'
-              env:
-                  CONVEX_LIMITS_TESTS: "1"
-                  CONVEX_AGENT_MODE: anonymous
-                  CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
-              run: pnpm --filter @nordcom/commerce-test-convex run test src/limits
-
-            - name: ⏭️ Skip limit-boundary tests (no convex/test-convex changes)
-              if: steps.changes.outputs.limits != 'true'
-              run: echo "No packages/convex/** or packages/test-convex/** changes detected; skipping the limit-boundary suites."
-
-            - name: 💾 Save bootstrap caches
-              if: always()
-              uses: ./.github/common/bootstrap-save
-              with:
-                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  convex-backend-cache-hit: ${{ steps.bootstrap.outputs.convex-backend-cache-hit }}
-                  # The every-PR `integration` job owns the convex-backend cache; this path-gated job
-                  # only downloads the binary when convex changes, so it must not race on the save.
-                  save-convex-backend: 'false'
-
-    integration:
-        name: 🔌 Integration (local Convex)
-        timeout-minutes: 20
-        runs-on: ubuntu-latest
+      - name: 🦺 Codecov Coverage Reports
+        if: ${{ !cancelled() && hashFiles('coverage/coverage-final.json') != '' }}
+        uses: codecov/codecov-action@v6
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unit
         env:
-            CONVEX_AGENT_MODE: anonymous
-            CONVEX_LIMITS_TESTS: "1"
-            CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-            - name: 🚀 Bootstrap
-              id: bootstrap
-              uses: ./.github/common/bootstrap
-              with:
-                  turbo-cache: "false"
+      - name: 🦺 Codecov Test Results
+        if: ${{ !cancelled() && hashFiles('apps/*/junit.xml', 'packages/*/junit.xml', 'packages/*/*/junit.xml') != '' }}
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./apps/*/junit.xml,./packages/*/junit.xml,./packages/*/*/junit.xml
+          report_type: test_results
+          flags: unit
 
-            # The limit-boundary suites each boot their OWN ephemeral backend (and the canonical-seed
-            # suite seeds it through the live runner), so this job needs no pre-booted backend — just
-            # the pinned binary the bootstrap cache restores. Runs on every PR (not path-gated).
-            - name: 🧪 Integration / limit-boundary suites (real backends)
-              run: pnpm --filter @nordcom/commerce-test-convex run test src/limits
+      - name: 💾 Save bootstrap caches
+        if: always()
+        uses: ./.github/common/bootstrap-save
+        with:
+          node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+          turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
+          save-turbo: "true"
 
-            # Produce the seeded-state cache the e2e jobs reuse instead of re-pushing + re-seeding their
-            # own backend. The key pins the backend binary version AND a hash of the Convex functions +
-            # seed fixtures, so any change invalidates it; the master restore-key only matches an
-            # IDENTICAL source+version cache seeded on master (a prefix match), never stale functions.
-            - name: 💾 Restore seeded Convex state
-              id: cache-convex-state
-              uses: actions/cache/restore@v5
-              with:
-                  path: packages/convex/.convex
-                  key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
-                  restore-keys: |
-                      ${{ runner.os }}-convex-state-master-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+  build:
+    name: 🔨 Build
+    timeout-minutes: 25
+    runs-on: ubuntu-latest
+    # Bake the local Convex URL + Clerk dev-instance key into the storefront/admin bundles
+    # (NEXT_PUBLIC_* is inlined at build time) so the e2e job's prebuilt artifacts connect
+    # to the seeded :3210 backend and the admin ClerkProvider initializes correctly.
+    # Required GitHub secrets: CLERK_PUBLISHABLE_KEY_DEV, CLERK_SECRET_KEY_DEV.
+    env:
+      NEXT_PUBLIC_CONVEX_URL: http://127.0.0.1:3210
+      # Bake a non-dev build id so the build-notifier engine is active in the prebuilt
+      # e2e bundles (Vercel deploys use VERCEL_DEPLOYMENT_ID, which takes precedence).
+      NEXT_PUBLIC_BUILD_ID: ${{ github.sha }}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY_DEV }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_DEV }}
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            # The limit suites above run EPHEMERAL backends that wipe the shared packages/convex/.convex
-            # state dir, so this boot+seed MUST run after them. `pnpm convex:local` self-heals: it always
-            # pushes (cheap, bakes auth env) but skips the expensive seed when the tenant already exists,
-            # so a cold cache runs the full canonical seed and a warm one does not. Stop the daemon
-            # and wait for it to release :3210 so the SQLite state is flushed before the save. Skipped
-            # entirely when any cache (exact or the master prefix) already holds this source+version.
-            - name: 🌱 Boot + seed persistent local Convex (produce e2e state cache)
-              id: seed-convex
-              if: steps.cache-convex-state.outputs.cache-matched-key == ''
-              run: |
-                  pnpm convex:local
-                  pnpm convex:local:stop
-                  for _ in $(seq 1 30); do
-                      curl -sf http://127.0.0.1:3210/instance_name >/dev/null 2>&1 || break
-                      sleep 1
-                  done
+      - name: 🚀 Bootstrap
+        id: bootstrap
+        uses: ./.github/common/bootstrap
 
-            # Gated on the seed step SUCCEEDING (not always()) so a failed/partial seed never poisons the
-            # cache — a half-written DB would let the consumer's tenant probe pass yet serve corrupt state.
-            - name: 💾 Save seeded Convex state
-              if: steps.seed-convex.outcome == 'success' && hashFiles('packages/convex/.convex/**') != ''
-              uses: actions/cache/save@v5
-              with:
-                  path: packages/convex/.convex
-                  key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+      - name: 💾 Restore Next.js build cache
+        id: cache-nextjs
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            apps/*/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
 
-            - name: 💾 Save bootstrap caches
-              if: always()
-              uses: ./.github/common/bootstrap-save
-              with:
-                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  convex-backend-cache-hit: ${{ steps.bootstrap.outputs.convex-backend-cache-hit }}
-                  save-convex-backend: 'true'
+      - name: 🔨 Build All
+        run: pnpm run build
 
-    changes:
-        name: 🔎 Detect app changes
-        timeout-minutes: 5
-        runs-on: ubuntu-latest
-        outputs:
-            apps: ${{ steps.apps.outputs.apps }}
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+      - name: 🛡️ Assert public bundle is Convex-free
+        run: pnpm tsx ./scripts/assert-no-convex-public-bundle.ts apps/storefront/.next/static
 
-            - name: 🔎 Filter
-              id: filter
-              uses: dorny/paths-filter@v3
-              with:
-                  filters: |
-                      storefront:
-                          - 'apps/storefront/**'
-                          - 'packages/**'
-                          - 'pnpm-lock.yaml'
-                      admin:
-                          - 'apps/admin/**'
-                          - 'packages/**'
-                          - 'pnpm-lock.yaml'
+      - name: 📦 Upload app builds
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-builds
+          path: |
+            apps/*/.next
+            !apps/*/.next/cache
+            !apps/*/.next/dev
+            !apps/*/.next/types
+            !apps/*/.next/diagnostics
+            packages/*/dist
+          retention-days: 1
+          include-hidden-files: true
 
-            - name: 🧮 Build app matrix
-              id: apps
-              # Non-PR events (master/staging/dev pushes) always run both apps. On PRs, run only the
-              # apps whose own code or any shared package changed (a shared-package change runs both).
-              run: |
-                  if [ "${{ github.event_name }}" != "pull_request" ]; then
-                      echo 'apps=["storefront","admin"]' >> "$GITHUB_OUTPUT"
-                      exit 0
-                  fi
-                  apps=()
-                  [ "${{ steps.filter.outputs.storefront }}" = "true" ] && apps+=('"storefront"')
-                  [ "${{ steps.filter.outputs.admin }}" = "true" ] && apps+=('"admin"')
-                  joined=$(IFS=,; echo "${apps[*]}")
-                  echo "apps=[${joined}]" >> "$GITHUB_OUTPUT"
+      - name: 💾 Save Next.js build cache
+        if: always() && steps.cache-nextjs.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            apps/*/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
 
-    e2e:
-        name: 🎭 E2E
-        needs: [build, changes]
-        if: ${{ needs.changes.outputs.apps != '[]' }}
-        timeout-minutes: 60
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                app: ${{ fromJSON(needs.changes.outputs.apps) }}
+      - name: 💾 Save bootstrap caches
+        if: always()
+        uses: ./.github/common/bootstrap-save
+        with:
+          node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+          turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
+          save-turbo: "true"
+
+  convex:
+    name: 🌐 Convex
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
+
+      - name: 🔎 Detect Convex changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            convex:
+                - 'packages/convex/**'
+            limits:
+                - 'packages/convex/**'
+                - 'packages/test-convex/**'
+
+      - name: 🚀 Bootstrap
+        id: bootstrap
+        uses: ./.github/common/bootstrap
+        with:
+          turbo-cache: "false"
+
+      - name: 🌐 Deploy Convex to self-hosted backend
+        if: steps.changes.outputs.convex == 'true'
         env:
-            NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
-            # Point the app + global-setup seed at the seeded local backend the composite boots.
-            CONVEX_URL: http://127.0.0.1:3210
-            NEXT_PUBLIC_CONVEX_URL: http://127.0.0.1:3210
-            CONVEX_SERVER_SECRET: dev-local-secret
-            CONVEX_AGENT_MODE: anonymous
-            CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
-            # Legacy storefront-customer RS256 auth vars (kept per decision #16; storefront e2e
-            # still exercises the customJwt provider). Blank for admin, which now uses Clerk.
-            CONVEX_AUTH_ISSUER: ${{ matrix.app == 'storefront' && 'http://localhost:1337' || '' }}
-            CONVEX_AUTH_APPLICATION_ID: ${{ matrix.app == 'storefront' && 'convex' || '' }}
-            CONVEX_AUTH_JWKS_URL: ${{ matrix.app == 'storefront' && 'http://localhost:1337/api/auth/convex-jwks' || '' }}
-            # The runtime `/api/version` endpoint (read by `resolveBuildId` per request) must report the
-            # SAME id baked into the client bundle at build time (`NEXT_PUBLIC_BUILD_ID: github.sha`).
-            # Without this, the endpoint here resolves to `'development'`, so the build-notifier engine
-            # sees client(github.sha) ≠ server('development') and reports "update available" on every
-            # page — its fixed overlay then intercepts toolbar clicks (admin) and its auto-reload steals
-            # in-flight navigations (storefront), breaking otherwise-unrelated specs. The banner specs
-            # stub `/api/version` to a deliberately different id, so they still exercise the live path.
-            NEXT_PUBLIC_BUILD_ID: ${{ github.sha }}
-            # Clerk dev-instance keys — admin e2e uses @clerk/testing (clerkSetup + clerk.signIn)
-            # against the Clerk dev instance. NEXT_PUBLIC_ is baked into the build artifact above;
-            # CLERK_SECRET_KEY is needed here for the Backend API calls in global-setup.ts
-            # (ensure test user, ensure org + membership). Both blank for storefront e2e.
-            # CLERK_FRONTEND_API_URL is the Convex auth.config.ts `domain`; without it the
-            # Clerk auth provider is absent and e2e fails with NoAuthProvider on operator tokens.
-            # Required GitHub secrets: CLERK_PUBLISHABLE_KEY_DEV, CLERK_SECRET_KEY_DEV,
-            # CLERK_WEBHOOK_SIGNING_SECRET_DEV.
-            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ matrix.app == 'admin' && secrets.CLERK_PUBLISHABLE_KEY_DEV || '' }}
-            CLERK_SECRET_KEY: ${{ matrix.app == 'admin' && secrets.CLERK_SECRET_KEY_DEV || '' }}
-            CLERK_FRONTEND_API_URL: ${{ matrix.app == 'admin' && 'https://internal-roughy-49.clerk.accounts.dev' || '' }}
-            CLERK_WEBHOOK_SIGNING_SECRET: ${{ matrix.app == 'admin' && secrets.CLERK_WEBHOOK_SIGNING_SECRET_DEV || '' }}
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+          CONVEX_AGENT_MODE: anonymous
+        # The push validates every env var auth.config.ts reads against the DEPLOYMENT
+        # env, and a fresh anonymous backend has none set — so the first pass only
+        # provisions the pinned backend binary (its auth-config failure is expected),
+        # then all required vars are seeded onto the ephemeral deployment (`convex env set`
+        # has no --local-backend-version flag, hence the two-pass shape), and the second
+        # pass is the real, validated push.
+        # CONVEX_AUTH_* are storefront-customer-path placeholders (kept per decision #16).
+        # CLERK_FRONTEND_API_URL is the Clerk dev-instance Frontend API URL — the Convex
+        # auth.config.ts `domain` field; without it Convex rejects operator tokens with
+        # NoAuthProvider. CLERK_WEBHOOK_SIGNING_SECRET is the svix signing secret for the
+        # Clerk webhook httpAction.
+        run: |
+          pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION" || echo "first pass provisions the backend; auth-config env validation fails until the vars are seeded"
+          pnpm convex:env set CONVEX_AUTH_ISSUER https://ci.localhost.invalid
+          pnpm convex:env set CONVEX_AUTH_APPLICATION_ID convex
+          pnpm convex:env set CONVEX_AUTH_JWKS_URL https://ci.localhost.invalid/.well-known/jwks.json
+          pnpm convex:env set CLERK_FRONTEND_API_URL https://internal-roughy-49.clerk.accounts.dev
+          pnpm convex:env set CLERK_FRONTEND_API_URL_PROD https://clerk-prod.ci.invalid
+          pnpm convex:env set CLERK_WEBHOOK_SIGNING_SECRET ${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET_DEV }}
+          pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION"
 
-            - name: 🚀 Bootstrap
-              id: bootstrap
-              uses: ./.github/common/bootstrap
-              with:
-                  turbo-cache: "false"
+      - name: ⏭️ Skip Convex deploy (no packages/convex changes)
+        if: steps.changes.outputs.convex != 'true'
+        run: echo "No packages/convex/** changes detected; skipping the self-hosted Convex deploy."
 
-            - name: 🔑 Generate the storefront customer signing key
-              if: matrix.app == 'storefront'
-              # The storefront mints customer RS256 tokens from CONVEX_AUTH_PRIVATE_KEY and serves the
-              # public half at /api/auth/convex-jwks/. A throwaway per-run keypair is enough — the
-              # backend reads CONVEX_AUTH_JWKS_URL (seeded above) to validate; no key is committed.
-              # Admin no longer needs this: operator tokens are minted by Clerk, not RS256.
-              run: |
-                  {
-                      echo 'CONVEX_AUTH_PRIVATE_KEY<<__OPERATOR_PEM__'
-                      openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 2>/dev/null
-                      echo '__OPERATOR_PEM__'
-                  } >> "$GITHUB_ENV"
+      # HARNESS-10: the limit-boundary suites boot a REAL ephemeral backend per file (1MiB
+      # shred round-trip, typed scan-ceiling abort, 20-editor autosave OCC, depth-6 header
+      # populate). They are env-gated behind CONVEX_LIMITS_TESTS=1 so the default `pnpm test`
+      # run never pays the boot cost; this job runs them because it already restores the
+      # pinned backend-binary cache. The generous startup timeout covers a cache-miss binary
+      # fetch — the suites' own per-test budgets are documented in packages/test-convex/src/limits.
+      - name: 🧪 Limit-boundary integration tests (real backend)
+        if: steps.changes.outputs.limits == 'true'
+        env:
+          CONVEX_LIMITS_TESTS: "1"
+          CONVEX_AGENT_MODE: anonymous
+          CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
+        run: pnpm --filter @nordcom/commerce-test-convex run test src/limits
 
-            # Reuse the seeded database the Integration job cached instead of re-seeding here. Exact key,
-            # then a master prefix fallback — both pin the backend version AND the fn+seed hash, so a
-            # restore only ever brings state matching THIS source. `convex-local` still re-pushes the
-            # functions (cheap, bakes the per-run auth env) but skips the expensive seed on a hit, and
-            # self-heals on a miss (stale/absent cache) by running the full seed — so e2e never
-            # hard-depends on the cache being warm; a hit just skips the database rebuild.
-            - name: 💾 Restore seeded Convex state
-              uses: actions/cache/restore@v5
-              with:
-                  path: packages/convex/.convex
-                  key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
-                  restore-keys: |
-                      ${{ runner.os }}-convex-state-master-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+      - name: ⏭️ Skip limit-boundary tests (no convex/test-convex changes)
+        if: steps.changes.outputs.limits != 'true'
+        run: echo "No packages/convex/** or packages/test-convex/** changes detected; skipping the limit-boundary suites."
 
-            - name: 🌐 Local Convex backend (boot + seed)
-              uses: ./.github/common/convex-local
+      - name: 💾 Save bootstrap caches
+        if: always()
+        uses: ./.github/common/bootstrap-save
+        with:
+          node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+          convex-backend-cache-hit: ${{ steps.bootstrap.outputs.convex-backend-cache-hit }}
+          # The every-PR `integration` job owns the convex-backend cache; this path-gated job
+          # only downloads the binary when convex changes, so it must not race on the save.
+          save-convex-backend: "false"
 
-            - name: 📥 Download app builds
-              uses: actions/download-artifact@v8
-              with:
-                  name: app-builds
-                  path: .
+  integration:
+    name: 🔌 Integration (local Convex)
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    env:
+      CONVEX_AGENT_MODE: anonymous
+      CONVEX_LIMITS_TESTS: "1"
+      CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            - name: 💾 Restore Playwright browsers
-              id: cache-playwright
-              uses: actions/cache/restore@v5
-              with:
-                  path: ~/.cache/ms-playwright
-                  key: ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-
-                      ${{ runner.os }}-playwright-master-
-                      ${{ runner.os }}-playwright-
+      - name: 🚀 Bootstrap
+        id: bootstrap
+        uses: ./.github/common/bootstrap
+        with:
+          turbo-cache: "false"
 
-            - name: 🎭 Install Playwright browsers (cache miss)
-              if: steps.cache-playwright.outputs.cache-hit != 'true'
-              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install --with-deps chromium
+      # The limit-boundary suites each boot their OWN ephemeral backend (and the canonical-seed
+      # suite seeds it through the live runner), so this job needs no pre-booted backend — just
+      # the pinned binary the bootstrap cache restores. Runs on every PR (not path-gated).
+      - name: 🧪 Integration / limit-boundary suites (real backends)
+        run: pnpm --filter @nordcom/commerce-test-convex run test src/limits
 
-            - name: 🎭 Install Playwright system deps (cache hit)
-              if: steps.cache-playwright.outputs.cache-hit == 'true'
-              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install-deps chromium
+      # Produce the seeded-state cache the e2e jobs reuse instead of re-pushing + re-seeding their
+      # own backend. The key pins the backend binary version AND a hash of the Convex functions +
+      # seed fixtures, so any change invalidates it; the master restore-key only matches an
+      # IDENTICAL source+version cache seeded on master (a prefix match), never stale functions.
+      - name: 💾 Restore seeded Convex state
+        id: cache-convex-state
+        uses: actions/cache/restore@v5
+        with:
+          path: packages/convex/.convex
+          key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+          restore-keys: |
+            ${{ runner.os }}-convex-state-master-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
 
-            - name: 🧪 Run E2E Tests
-              run: pnpm test:e2e --filter @nordcom/commerce-${{ matrix.app }}
+      # The limit suites above run EPHEMERAL backends that wipe the shared packages/convex/.convex
+      # state dir, so this boot+seed MUST run after them. `pnpm convex:local` self-heals: it always
+      # pushes (cheap, bakes auth env) but skips the expensive seed when the tenant already exists,
+      # so a cold cache runs the full canonical seed and a warm one does not. Stop the daemon
+      # and wait for it to release :3210 so the SQLite state is flushed before the save. Skipped
+      # entirely when any cache (exact or the master prefix) already holds this source+version.
+      - name: 🌱 Boot + seed persistent local Convex (produce e2e state cache)
+        id: seed-convex
+        if: steps.cache-convex-state.outputs.cache-matched-key == ''
+        run: |
+          pnpm convex:local
+          pnpm convex:local:stop
+          for _ in $(seq 1 30); do
+              curl -sf http://127.0.0.1:3210/instance_name >/dev/null 2>&1 || break
+              sleep 1
+          done
 
-            - name: 🦺 Convert V8 Coverage to Codecov Format
-              if: ${{ !cancelled() }}
-              run: |
-                  pnpm dlx c8@10 report \
-                      --reporter=json \
-                      --reporter=lcov \
-                      --reports-dir=./coverage/e2e \
-                      --src=apps/${{ matrix.app }} \
-                      --include='apps/${{ matrix.app }}/src/**' \
-                      --exclude='**/*.d.ts' \
-                      --exclude='**/*.config.*' \
-                      --exclude='**/.next/**' \
-                      --exclude='apps/*/e2e/**' \
-                  || echo "c8 report exited non-zero (likely no coverage emitted); continuing"
+      # Gated on the seed step SUCCEEDING (not always()) so a failed/partial seed never poisons the
+      # cache — a half-written DB would let the consumer's tenant probe pass yet serve corrupt state.
+      - name: 💾 Save seeded Convex state
+        if: steps.seed-convex.outcome == 'success' && hashFiles('packages/convex/.convex/**') != ''
+        uses: actions/cache/save@v5
+        with:
+          path: packages/convex/.convex
+          key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
 
-            - name: 🦺 Codecov E2E Coverage
-              if: ${{ !cancelled() && hashFiles('coverage/e2e/coverage-final.json') != '' }}
-              uses: codecov/codecov-action@v6
-              with:
-                  files: ./coverage/e2e/coverage-final.json,./coverage/e2e/lcov.info
-                  flags: e2e,e2e-${{ matrix.app }}
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: 💾 Save bootstrap caches
+        if: always()
+        uses: ./.github/common/bootstrap-save
+        with:
+          node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+          convex-backend-cache-hit: ${{ steps.bootstrap.outputs.convex-backend-cache-hit }}
+          save-convex-backend: "true"
 
-            - name: 📦 Upload Report on Failure
-              if: failure()
-              uses: actions/upload-artifact@v7
-              with:
-                  name: playwright-report-${{ matrix.app }}
-                  path: apps/${{ matrix.app }}/playwright-report/
-                  retention-days: 7
+  changes:
+    name: 🔎 Detect app changes
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.apps.outputs.apps }}
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            - name: 💾 Save Playwright browsers
-              if: always() && matrix.app == 'storefront' && steps.cache-playwright.outputs.cache-hit != 'true'
-              uses: actions/cache/save@v5
-              with:
-                  path: ~/.cache/ms-playwright
-                  key: ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: 🔎 Filter
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            storefront:
+                - 'apps/storefront/**'
+                - 'packages/**'
+                - 'pnpm-lock.yaml'
+            admin:
+                - 'apps/admin/**'
+                - 'packages/**'
+                - 'pnpm-lock.yaml'
 
-            - name: 💾 Save bootstrap caches
-              if: always()
-              uses: ./.github/common/bootstrap-save
-              with:
-                  node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+      - name: 🧮 Build app matrix
+        id: apps
+        # Non-PR events (master/staging/dev pushes) always run both apps. On PRs, run only the
+        # apps whose own code or any shared package changed (a shared-package change runs both).
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+              echo 'apps=["storefront","admin"]' >> "$GITHUB_OUTPUT"
+              exit 0
+          fi
+          apps=()
+          [ "${{ steps.filter.outputs.storefront }}" = "true" ] && apps+=('"storefront"')
+          [ "${{ steps.filter.outputs.admin }}" = "true" ] && apps+=('"admin"')
+          joined=$(IFS=,; echo "${apps[*]}")
+          echo "apps=[${joined}]" >> "$GITHUB_OUTPUT"
 
-    cleanup-artifacts:
-        name: 🧹 Cleanup
-        needs: e2e
-        if: always() && needs.e2e.result != 'skipped'
-        timeout-minutes: 5
-        runs-on: ubuntu-latest
-        permissions:
-            actions: write
-        steps:
-            - name: 🧹 Delete `app-builds` artifact
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  REPO: ${{ github.repository }}
-                  RUN_ID: ${{ github.run_id }}
-              run: |
-                  set -euo pipefail
-                  ids=$(gh api "repos/$REPO/actions/runs/$RUN_ID/artifacts" --jq '.artifacts[] | select(.name == "app-builds") | .id')
-                  if [ -z "$ids" ]; then
-                      echo "No app-builds artifact found; nothing to delete."
-                      exit 0
-                  fi
-                  for id in $ids; do
-                      echo "Deleting artifact $id"
-                      gh api -X DELETE "repos/$REPO/actions/artifacts/$id"
-                  done
+  e2e:
+    name: 🎭 E2E
+    needs: [build, changes]
+    if: ${{ needs.changes.outputs.apps != '[]' }}
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(needs.changes.outputs.apps) }}
+    env:
+      NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
+      # Point the app + global-setup seed at the seeded local backend the composite boots.
+      CONVEX_URL: http://127.0.0.1:3210
+      NEXT_PUBLIC_CONVEX_URL: http://127.0.0.1:3210
+      CONVEX_SERVER_SECRET: dev-local-secret
+      CONVEX_AGENT_MODE: anonymous
+      CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
+      # Legacy storefront-customer RS256 auth vars (kept per decision #16; storefront e2e
+      # still exercises the customJwt provider). Blank for admin, which now uses Clerk.
+      CONVEX_AUTH_ISSUER: ${{ matrix.app == 'storefront' && 'http://localhost:1337' || '' }}
+      CONVEX_AUTH_APPLICATION_ID: ${{ matrix.app == 'storefront' && 'convex' || '' }}
+      CONVEX_AUTH_JWKS_URL: ${{ matrix.app == 'storefront' && 'http://localhost:1337/api/auth/convex-jwks' || '' }}
+      # The runtime `/api/version` endpoint (read by `resolveBuildId` per request) must report the
+      # SAME id baked into the client bundle at build time (`NEXT_PUBLIC_BUILD_ID: github.sha`).
+      # Without this, the endpoint here resolves to `'development'`, so the build-notifier engine
+      # sees client(github.sha) ≠ server('development') and reports "update available" on every
+      # page — its fixed overlay then intercepts toolbar clicks (admin) and its auto-reload steals
+      # in-flight navigations (storefront), breaking otherwise-unrelated specs. The banner specs
+      # stub `/api/version` to a deliberately different id, so they still exercise the live path.
+      NEXT_PUBLIC_BUILD_ID: ${{ github.sha }}
+      # Clerk dev-instance keys — admin e2e uses @clerk/testing (clerkSetup + clerk.signIn)
+      # against the Clerk dev instance. NEXT_PUBLIC_ is baked into the build artifact above;
+      # CLERK_SECRET_KEY is needed here for the Backend API calls in global-setup.ts
+      # (ensure test user, ensure org + membership). Both blank for storefront e2e.
+      # CLERK_FRONTEND_API_URL is the Convex auth.config.ts `domain`; without it the
+      # Clerk auth provider is absent and e2e fails with NoAuthProvider on operator tokens.
+      # Required GitHub secrets: CLERK_PUBLISHABLE_KEY_DEV, CLERK_SECRET_KEY_DEV,
+      # CLERK_WEBHOOK_SIGNING_SECRET_DEV.
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ matrix.app == 'admin' && secrets.CLERK_PUBLISHABLE_KEY_DEV || '' }}
+      CLERK_SECRET_KEY: ${{ matrix.app == 'admin' && secrets.CLERK_SECRET_KEY_DEV || '' }}
+      CLERK_FRONTEND_API_URL: ${{ matrix.app == 'admin' && 'https://internal-roughy-49.clerk.accounts.dev' || '' }}
+      CLERK_WEBHOOK_SIGNING_SECRET: ${{ matrix.app == 'admin' && secrets.CLERK_WEBHOOK_SIGNING_SECRET_DEV || '' }}
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-    dispatch:
-        name: 🗣️ Dispatch
-        needs: [lint, typecheck, test, build, convex, integration, e2e]
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        timeout-minutes: 5
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+      - name: 🚀 Bootstrap
+        id: bootstrap
+        uses: ./.github/common/bootstrap
+        with:
+          turbo-cache: "false"
+
+      - name: 🔑 Generate the storefront customer signing key
+        if: matrix.app == 'storefront'
+        # The storefront mints customer RS256 tokens from CONVEX_AUTH_PRIVATE_KEY and serves the
+        # public half at /api/auth/convex-jwks/. A throwaway per-run keypair is enough — the
+        # backend reads CONVEX_AUTH_JWKS_URL (seeded above) to validate; no key is committed.
+        # Admin no longer needs this: operator tokens are minted by Clerk, not RS256.
+        run: |
+          {
+              echo 'CONVEX_AUTH_PRIVATE_KEY<<__OPERATOR_PEM__'
+              openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 2>/dev/null
+              echo '__OPERATOR_PEM__'
+          } >> "$GITHUB_ENV"
+
+      # Reuse the seeded database the Integration job cached instead of re-seeding here. Exact key,
+      # then a master prefix fallback — both pin the backend version AND the fn+seed hash, so a
+      # restore only ever brings state matching THIS source. `convex-local` still re-pushes the
+      # functions (cheap, bakes the per-run auth env) but skips the expensive seed on a hit, and
+      # self-heals on a miss (stale/absent cache) by running the full seed — so e2e never
+      # hard-depends on the cache being warm; a hit just skips the database rebuild.
+      - name: 💾 Restore seeded Convex state
+        uses: actions/cache/restore@v5
+        with:
+          path: packages/convex/.convex
+          key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+          restore-keys: |
+            ${{ runner.os }}-convex-state-master-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+
+      - name: 🌐 Local Convex backend (boot + seed)
+        uses: ./.github/common/convex-local
+
+      - name: 📥 Download app builds
+        uses: actions/download-artifact@v8
+        with:
+          name: app-builds
+          path: .
+
+      - name: 💾 Restore Playwright browsers
+        id: cache-playwright
+        uses: actions/cache/restore@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-
+            ${{ runner.os }}-playwright-master-
+            ${{ runner.os }}-playwright-
+
+      - name: 🎭 Install Playwright browsers (cache miss)
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install --with-deps chromium
+
+      - name: 🎭 Install Playwright system deps (cache hit)
+        if: steps.cache-playwright.outputs.cache-hit == 'true'
+        run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install-deps chromium
+
+      - name: 🧪 Run E2E Tests
+        run: pnpm test:e2e --filter @nordcom/commerce-${{ matrix.app }}
+
+      - name: 🦺 Convert V8 Coverage to Codecov Format
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm dlx c8@10 report \
+              --reporter=json \
+              --reporter=lcov \
+              --reports-dir=./coverage/e2e \
+              --src=apps/${{ matrix.app }} \
+              --include='apps/${{ matrix.app }}/src/**' \
+              --exclude='**/*.d.ts' \
+              --exclude='**/*.config.*' \
+              --exclude='**/.next/**' \
+              --exclude='apps/*/e2e/**' \
+          || echo "c8 report exited non-zero (likely no coverage emitted); continuing"
+
+      - name: 🦺 Codecov E2E Coverage
+        if: ${{ !cancelled() && hashFiles('coverage/e2e/coverage-final.json') != '' }}
+        uses: codecov/codecov-action@v6
+        with:
+          files: ./coverage/e2e/coverage-final.json,./coverage/e2e/lcov.info
+          flags: e2e,e2e-${{ matrix.app }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 📦 Upload Report on Failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ matrix.app }}
+          path: apps/${{ matrix.app }}/playwright-report/
+          retention-days: 7
+
+      - name: 💾 Save Playwright browsers
+        if: always() && matrix.app == 'storefront' && steps.cache-playwright.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: 💾 Save bootstrap caches
+        if: always()
+        uses: ./.github/common/bootstrap-save
+        with:
+          node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+
+  cleanup-artifacts:
+    name: 🧹 Cleanup
+    needs: e2e
+    if: always() && needs.e2e.result != 'skipped'
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: 🧹 Delete `app-builds` artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          ids=$(gh api "repos/$REPO/actions/runs/$RUN_ID/artifacts" --jq '.artifacts[] | select(.name == "app-builds") | .id')
+          if [ -z "$ids" ]; then
+              echo "No app-builds artifact found; nothing to delete."
+              exit 0
+          fi
+          for id in $ids; do
+              echo "Deleting artifact $id"
+              gh api -X DELETE "repos/$REPO/actions/artifacts/$id"
+          done
+
+  dispatch:
+    name: 🗣️ Dispatch
+    needs: [lint, typecheck, test, build, convex, integration, e2e]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6

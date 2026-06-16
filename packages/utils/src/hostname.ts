@@ -185,7 +185,7 @@ export interface ParsedHost {
  *                                                port: 443, isDev: true, tld: 'localhost',
  *                                                app: 'storefront', shop: 'my-shop',
  *                                                segments: ['my-shop','storefront','localhost'] }
- *   `beta.pouched.de.storefront.localhost`   → { …, app: 'storefront', shop: 'beta.pouched.de' }
+ *   `demo.nordcom.store.storefront.localhost`   → { …, app: 'storefront', shop: 'demo.nordcom.store' }
  *   `storefront.localhost`                   → { …, app: 'storefront', shop: null }
  *   `localhost`                              → { …, app: null,         shop: null }
  *   `shop.example.com`                       → { …, isDev: false, tld: null, app: null, shop: null }
@@ -223,8 +223,8 @@ export function parseHost(host: string | null | undefined): ParsedHost | null {
     const tld = lastSegment as DevTld;
     // Dev shape: <shop>.<app>.<tld>. App is the segment immediately before
     // the TLD; shop is everything before `.<app>.<tld>` so that a shop with
-    // a dotted handle in prod (e.g. `beta.pouched.de`) round-trips through
-    // the dev URL `beta.pouched.de.storefront.localhost`.
+    // a dotted handle in prod (e.g. `demo.nordcom.store`) round-trips through
+    // the dev URL `demo.nordcom.store.storefront.localhost`.
     const app: AppName | null =
         segments.length >= 2 ? ((segments[segments.length - 2] ?? null) as AppName | null) : null;
     const shop: ShopHandle | null = segments.length >= 3 ? (segments.slice(0, -2).join('.') as ShopHandle) : null;
@@ -245,7 +245,7 @@ export function parseHost(host: string | null | undefined): ParsedHost | null {
  *
  * Dev TLDs (`.localhost` / `.test`):
  *   `my-shop.storefront.localhost:443`         → `my-shop`
- *   `beta.pouched.de.storefront.localhost`    → `beta.pouched.de`   (dotted slug, mirrors prod)
+ *   `demo.nordcom.store.storefront.localhost`    → `demo.nordcom.store`   (dotted slug, mirrors prod)
  *   `my-shop.tenant.storefront.localhost`      → `my-shop.tenant`     (everything before .app.tld)
  *   `storefront.localhost`                    → ''                  (bare app, no shop)
  *   `localhost`                               → ''                  (bare TLD)

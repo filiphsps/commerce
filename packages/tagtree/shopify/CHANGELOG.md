@@ -13,7 +13,7 @@
 
 ### Patch Changes
 
-- [`29f8582`](https://github.com/filiphsps/commerce/commit/29f85824396ac30bea101697a4ee2b4ac1581b13) Thanks [@filiphsps](https://github.com/filiphsps)! - Add npm version and downloads badges to the package READMEs, and point each `homepage` at its live docs page under `https://filiphsps.github.io/commerce/packages/…`.
+- [`29f8582`](https://github.com/filiphsps/commerce/commit/29f85824396ac30bea101697a4ee2b4ac1581b13) Thanks [@filiphsps](https://github.com/filiphsps)! - Add npm version and downloads badges to the package READMEs, and point each `homepage` at its live docs page under `https://nordcom.store/docs/packages/…`.
 
 - Updated dependencies [[`29f8582`](https://github.com/filiphsps/commerce/commit/29f85824396ac30bea101697a4ee2b4ac1581b13)]:
   - @tagtree/core@0.0.4
@@ -36,7 +36,7 @@
 ### Patch Changes
 
 - [`d28e466`](https://github.com/filiphsps/commerce/commit/d28e466ef3d2548125e5b5e90cd04d35de458da5) Thanks [@filiphsps](https://github.com/filiphsps)! - Point each public package's `homepage` at its hosted docs page on the GH Pages
-  docs site (`https://filiphsps.github.io/commerce/docs/...`) instead of the
+  docs site (`https://nordcom.store/docs/docs/...`) instead of the
   GitHub source tree, so npm and registry consumers land on rendered docs.
 - Updated dependencies [[`d28e466`](https://github.com/filiphsps/commerce/commit/d28e466ef3d2548125e5b5e90cd04d35de458da5)]:
   - @tagtree/core@0.0.2

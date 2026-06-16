@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export const DOCS_DOMAIN = process.env.DOCS_DOMAIN ?? 'https://filiphsps.github.io/commerce/'; // TODO: Remove hard-coded url.
+export const DOCS_DOMAIN = process.env.DOCS_DOMAIN ?? 'https://nordcom.store/docs/'; // TODO: Remove hard-coded url.
 
 /**
  * Proxies the documentation site onto the landing app under `/docs/*`.

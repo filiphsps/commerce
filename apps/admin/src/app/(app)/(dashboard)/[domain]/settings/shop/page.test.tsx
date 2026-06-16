@@ -22,7 +22,7 @@ import ShopSettingsPage from './page';
 describe('ShopSettingsPage', () => {
     it('passes the manifest + runtime + domain-as-id to <EditorEditPage>', async () => {
         const el = await ShopSettingsPage({
-            params: Promise.resolve({ domain: 'beta.pouched.de' }),
+            params: Promise.resolve({ domain: 'demo.nordcom.store' }),
             searchParams: Promise.resolve({}),
         });
 
@@ -32,7 +32,7 @@ describe('ShopSettingsPage', () => {
             manifest: { collection: 'shops' },
             runtime: { __mock: true },
             // Shop is keyed by domain (`singleton-by-domain` manifest), so `id === domain`.
-            params: { domain: 'beta.pouched.de', id: 'beta.pouched.de' },
+            params: { domain: 'demo.nordcom.store', id: 'demo.nordcom.store' },
         });
     });
 
@@ -43,7 +43,7 @@ describe('ShopSettingsPage', () => {
     // infinite reload loop in the admin shell.
     it('forwards searchParams.locale to <EditorEditPage> (prevents redirect loop)', async () => {
         const el = await ShopSettingsPage({
-            params: Promise.resolve({ domain: 'beta.pouched.de' }),
+            params: Promise.resolve({ domain: 'demo.nordcom.store' }),
             searchParams: Promise.resolve({ locale: 'de-DE' }),
         });
 

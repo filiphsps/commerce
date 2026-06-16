@@ -115,7 +115,7 @@ jobs:
                   # auth.config.ts validates BOTH instances, and the webhook handler accepts either
                   # signing secret, so set the *_PROD variants here ADDITIVELY — never overwrite the dev
                   # CLERK_FRONTEND_API_URL / CLERK_WEBHOOK_SIGNING_SECRET that preview depends on.
-                  pnpm convex:env set CLERK_FRONTEND_API_URL_PROD "${{ vars.CLERK_FRONTEND_API_URL_PROD || 'https://clerk.shops.pouched.de' }}"
+                  pnpm convex:env set CLERK_FRONTEND_API_URL_PROD "${{ vars.CLERK_FRONTEND_API_URL_PROD || 'https://clerk.nordcom.store' }}"
                   pnpm convex:env set CLERK_WEBHOOK_SIGNING_SECRET_PROD "${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET_PROD }}"
 
             # `convex deploy --dry-run` validates codegen, bundling and the schema against the LIVE

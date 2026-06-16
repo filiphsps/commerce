@@ -31,11 +31,11 @@ describe('admin proxy', () => {
     it('matcher runs on tenant routes whose domain segment contains dots', async () => {
         const { config } = await import('./proxy');
         const matcher = new RegExp(`^${String(config.matcher[0])}$`);
-        // Regression: a `[\w-]+\.\w+` exclusion treated `/beta.pouched.de` as a static file and skipped
+        // Regression: a `[\w-]+\.\w+` exclusion treated `/demo.nordcom.store` as a static file and skipped
         // clerkMiddleware(), so `auth()` threw "Clerk can't detect usage of clerkMiddleware()". Tenant
         // paths (dotted domains) MUST run the middleware.
-        expect(matcher.test('/beta.pouched.de')).toBe(true);
-        expect(matcher.test('/beta.pouched.de/content/')).toBe(true);
+        expect(matcher.test('/demo.nordcom.store')).toBe(true);
+        expect(matcher.test('/demo.nordcom.store/content/')).toBe(true);
         expect(matcher.test('/')).toBe(true);
     });
 

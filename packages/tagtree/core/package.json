@@ -53,7 +53,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://filiphsps.github.io/commerce/packages/tagtree/core/overview/",
+    "homepage": "https://nordcom.store/docs/packages/tagtree/core/overview/",
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
         "concurrently": "10.0.3",

@@ -70,7 +70,7 @@
         "url": "git+https://github.com/filiphsps/commerce.git",
         "directory": "packages/ai/lspmesh"
     },
-    "homepage": "https://filiphsps.github.io/commerce/packages/ai/lspmesh/overview/",
+    "homepage": "https://nordcom.store/docs/packages/ai/lspmesh/overview/",
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },

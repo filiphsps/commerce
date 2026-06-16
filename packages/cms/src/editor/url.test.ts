@@ -42,7 +42,7 @@ describe('docUrlSegment', () => {
     });
 
     it('returns empty string for singleton-by-domain manifests regardless of id', () => {
-        expect(docUrlSegment(singletonByDomain, 'beta.pouched.de')).toBe('');
+        expect(docUrlSegment(singletonByDomain, 'demo.nordcom.store')).toBe('');
     });
 
     it('returns the id with trailing slash for shared manifests', () => {

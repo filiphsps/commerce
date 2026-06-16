@@ -1,146 +1,146 @@
 name: Docs
 
 on:
-    pull_request:
-        paths:
-            - 'docs/**'
-            - 'apps/*/docs/**'
-            - 'packages/*/docs/**'
-            - 'apps/docs/**'
-            - 'apps/**/src/**'
-            - 'packages/**/src/**'
-            - 'apps/docs/typedoc.config.mjs'
-            - 'apps/docs/tsconfig.typedoc.json'
-            - 'pnpm-lock.yaml'
-            - '.github/workflows/docs.yml'
-    push:
-        branches:
-            - master
-    workflow_dispatch:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "apps/*/docs/**"
+      - "packages/*/docs/**"
+      - "apps/docs/**"
+      - "apps/**/src/**"
+      - "packages/**/src/**"
+      - "apps/docs/typedoc.config.mjs"
+      - "apps/docs/tsconfig.typedoc.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/docs.yml"
+  push:
+    branches:
+      - master
+  workflow_dispatch:
 
 permissions:
-    contents: read
-    pages: write
-    id-token: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-    group: pages-${{ github.ref }}
-    cancel-in-progress: true
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
-    CI: true
-    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-    TURBO_REMOTE_CACHE_TIMEOUT: 120
+  CI: true
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_REMOTE_CACHE_TIMEOUT: 120
 
 jobs:
-    build:
-        name: 🔨 Build Docs
-        runs-on: ubuntu-latest
-        timeout-minutes: 15
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+  build:
+    name: 🔨 Build Docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
+      - name: 🚀 Bootstrap
+        uses: ./.github/common/bootstrap
 
-            - name: 💾 Cache Next.js build
-              uses: actions/cache@v5
-              with:
-                  path: apps/docs/.next/cache
-                  key: ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
-                  restore-keys: |
-                      ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-
+      - name: 💾 Cache Next.js build
+        uses: actions/cache@v5
+        with:
+          path: apps/docs/.next/cache
+          key: ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-
 
-            - name: 🔨 Build Docs
-              run: pnpm --filter @nordcom/commerce-docs build
-              env:
-                  NEXT_PUBLIC_DOCS_BASE_PATH: /commerce
-                  NEXT_PUBLIC_DOCS_CANONICAL_URL: https://filiphsps.github.io/commerce
+      - name: 🔨 Build Docs
+        run: pnpm --filter @nordcom/commerce-docs build
+        env:
+          NEXT_PUBLIC_DOCS_BASE_PATH: /commerce
+          NEXT_PUBLIC_DOCS_CANONICAL_URL: https://nordcom.store/docs
 
-            - name: 📦 Upload built site
-              uses: actions/upload-artifact@v7
-              with:
-                  name: docs-build
-                  path: apps/docs/out
-                  retention-days: 1
+      - name: 📦 Upload built site
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs-build
+          path: apps/docs/out
+          retention-days: 1
 
-            - name: ⚙️ Configure Pages
-              if: github.event_name != 'pull_request'
-              uses: actions/configure-pages@v6
-
-            - name: 📦 Upload Pages Artifact
-              if: github.event_name != 'pull_request'
-              uses: actions/upload-pages-artifact@v5
-              with:
-                  path: apps/docs/out
-
-    e2e:
-        name: 🎭 E2E
-        runs-on: ubuntu-latest
-        timeout-minutes: 60
-        continue-on-error: true
-        if: false
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
-
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
-
-            - name: 💾 Cache Playwright browsers
-              id: playwright-cache
-              uses: actions/cache@v5
-              with:
-                  path: ~/.cache/ms-playwright
-                  key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}-chromium-webkit
-
-            - name: 💾 Cache Next.js build
-              uses: actions/cache@v5
-              with:
-                  path: apps/docs/.next/cache
-                  key: ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
-                  restore-keys: |
-                      ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-
-
-            - name: 🎭 Install Playwright browsers (cache miss)
-              if: steps.playwright-cache.outputs.cache-hit != 'true'
-              run: pnpm --filter @nordcom/commerce-docs exec playwright install --with-deps chromium webkit
-
-            - name: 🎭 Install Playwright system deps (cache hit)
-              if: steps.playwright-cache.outputs.cache-hit == 'true'
-              run: pnpm --filter @nordcom/commerce-docs exec playwright install-deps chromium webkit
-
-            # `serve` cannot host the basePath=/commerce build cleanly; rebuild
-            # without basePath for e2e. Turbo cache absorbs most of the cost.
-            - name: 🔨 Build Docs for e2e (no basePath)
-              run: pnpm --filter @nordcom/commerce-docs build
-              env:
-                  NEXT_PUBLIC_DOCS_CANONICAL_URL: http://localhost:3003
-
-            - name: 🧪 Run Playwright tests against built site
-              working-directory: apps/docs
-              run: pnpm exec playwright test
-
-            - name: 📦 Upload Playwright report
-              if: failure()
-              uses: actions/upload-artifact@v7
-              with:
-                  name: playwright-report
-                  path: apps/docs/playwright-report
-                  retention-days: 7
-
-    deploy:
-        name: 🚀 Deploy to GitHub Pages
-        needs: [build]
+      - name: ⚙️ Configure Pages
         if: github.event_name != 'pull_request'
-        runs-on: ubuntu-latest
-        timeout-minutes: 5
-        environment:
-            name: github-pages
-            url: ${{ steps.deployment.outputs.page_url }}
-        steps:
-            - name: 🚀 Deploy
-              id: deployment
-              uses: actions/deploy-pages@v5
+        uses: actions/configure-pages@v6
+
+      - name: 📦 Upload Pages Artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/docs/out
+
+  e2e:
+    name: 🎭 E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    continue-on-error: true
+    if: false
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
+
+      - name: 🚀 Bootstrap
+        uses: ./.github/common/bootstrap
+
+      - name: 💾 Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}-chromium-webkit
+
+      - name: 💾 Cache Next.js build
+        uses: actions/cache@v5
+        with:
+          path: apps/docs/.next/cache
+          key: ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      - name: 🎭 Install Playwright browsers (cache miss)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @nordcom/commerce-docs exec playwright install --with-deps chromium webkit
+
+      - name: 🎭 Install Playwright system deps (cache hit)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @nordcom/commerce-docs exec playwright install-deps chromium webkit
+
+      # `serve` cannot host the basePath=/commerce build cleanly; rebuild
+      # without basePath for e2e. Turbo cache absorbs most of the cost.
+      - name: 🔨 Build Docs for e2e (no basePath)
+        run: pnpm --filter @nordcom/commerce-docs build
+        env:
+          NEXT_PUBLIC_DOCS_CANONICAL_URL: http://localhost:3003
+
+      - name: 🧪 Run Playwright tests against built site
+        working-directory: apps/docs
+        run: pnpm exec playwright test
+
+      - name: 📦 Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: apps/docs/playwright-report
+          retention-days: 7
+
+  deploy:
+    name: 🚀 Deploy to GitHub Pages
+    needs: [build]
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 🚀 Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

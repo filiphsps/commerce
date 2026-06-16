@@ -243,11 +243,11 @@ describe('shopFromHost', () => {
     });
 
     it('preserves dotted shop slugs (mirrors prod hostname)', () => {
-        expect(shopFromHost('beta.pouched.de.storefront.localhost')).toBe('beta.pouched.de');
+        expect(shopFromHost('demo.nordcom.store.storefront.localhost')).toBe('demo.nordcom.store');
     });
 
     it('preserves dotted shop slugs across .test TLD too', () => {
-        expect(shopFromHost('beta.pouched.de.storefront.test')).toBe('beta.pouched.de');
+        expect(shopFromHost('demo.nordcom.store.storefront.test')).toBe('demo.nordcom.store');
     });
 
     it('trims surrounding whitespace', () => {
@@ -295,7 +295,7 @@ describe('appFromHost', () => {
     });
 
     it('handles dotted shop slugs', () => {
-        expect(appFromHost('beta.pouched.de.storefront.localhost')).toBe('storefront');
+        expect(appFromHost('demo.nordcom.store.storefront.localhost')).toBe('storefront');
     });
 });
 
@@ -358,13 +358,13 @@ describe('parseHost', () => {
     });
 
     it('parses a dev host with a dotted shop slug', () => {
-        expect(parseHost('beta.pouched.de.storefront.localhost')).toEqual({
-            hostname: 'beta.pouched.de.storefront.localhost',
+        expect(parseHost('demo.nordcom.store.storefront.localhost')).toEqual({
+            hostname: 'demo.nordcom.store.storefront.localhost',
             port: null,
             isDev: true,
             tld: 'localhost',
             app: 'storefront',
-            shop: 'beta.pouched.de',
+            shop: 'demo.nordcom.store',
             segments: ['beta', 'pouched', 'de', 'storefront', 'localhost'],
         });
     });

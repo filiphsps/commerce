@@ -1904,9 +1904,9 @@ Flow-hardening folded into the restyle (the "continue" items):
 
 **8. Critical runtime bug — nordstar `Input` swallows controlled `onChange`**
 
-Reported in use: a valid domain (`beta.pouched.de`) stuck at "Enter a full hostname, e.g. shop.acme.com." and could not be connected.
+Reported in use: a valid domain (`demo.nordcom.store`) stuck at "Enter a full hostname, e.g. shop.acme.com." and could not be connected.
 
-Reproduced bottom-up: the deployment query (`db/shops:byDomain`) returns `null` for `beta.pouched.de` → genuinely available, and the seam → `isNotFound` path returns `{ available: true }` correctly. So the block was client-side. Reading the built `@nordcom/nordstar-input` source revealed the cause: `Input` spreads `{...props}` and then sets **its own** `onChange` afterward —
+Reproduced bottom-up: the deployment query (`db/shops:byDomain`) returns `null` for `demo.nordcom.store` → genuinely available, and the seam → `isNotFound` path returns `{ available: true }` correctly. So the block was client-side. Reading the built `@nordcom/nordstar-input` source revealed the cause: `Input` spreads `{...props}` and then sets **its own** `onChange` afterward —
 
 ```js
 jsx(Tag, { ...props, /* … */ onChange: (e) => setContents(e.target.value), value: contents })

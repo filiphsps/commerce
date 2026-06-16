@@ -49,7 +49,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://filiphsps.github.io/commerce/packages/tagtree/shopify/overview/",
+    "homepage": "https://nordcom.store/docs/packages/tagtree/shopify/overview/",
     "dependencies": {
         "@tagtree/core": "workspace:*"
     },

@@ -110,7 +110,7 @@ git commit -m "chore(cart): scaffold packages/cart/* workspace entries."
     },
     "keywords": ["cart", "ecommerce", "headless"],
     "bugs": { "url": "https://github.com/filiphsps/commerce/issues" },
-    "homepage": "https://filiphsps.github.io/commerce/cart/core/",
+    "homepage": "https://nordcom.store/docs/cart/core/",
     "dependencies": {},
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
@@ -314,7 +314,7 @@ git commit -m "feat(cart-core): scaffold publishable package skeleton."
     "repository": { "type": "git", "url": "git+https://github.com/filiphsps/commerce.git", "directory": "packages/cart/react" },
     "keywords": ["cart", "react", "ecommerce"],
     "bugs": { "url": "https://github.com/filiphsps/commerce/issues" },
-    "homepage": "https://filiphsps.github.io/commerce/cart/react/",
+    "homepage": "https://nordcom.store/docs/cart/react/",
     "peerDependencies": { "react": "^19.0.0", "react-dom": "^19.0.0" },
     "dependencies": { "@nordcom/cart-core": "workspace:*" },
     "devDependencies": {
@@ -395,7 +395,7 @@ git commit -m "feat(cart-react): scaffold publishable package skeleton."
 
 - [ ] **Step 1: Write `package.json`** — same shape as cart-react but:
   - `"name": "@nordcom/cart-next"`
-  - `"homepage": "https://filiphsps.github.io/commerce/cart/next/"`
+  - `"homepage": "https://nordcom.store/docs/cart/next/"`
   - `peerDependencies`: `{ "next": "^16.0.0", "react": "^19.0.0" }`
   - `dependencies`: `{ "@nordcom/cart-core": "workspace:*" }`
   - No `cart-react` runtime dep (type-only imports use the workspace `@nordcom/cart-react`; safe because vite externalizes it)
@@ -437,7 +437,7 @@ git commit -m "feat(cart-next): scaffold publishable package skeleton."
 
 - [ ] **Step 1: Write `package.json`** — same shape as cart-core but:
   - `"name": "@nordcom/cart-shopify"`
-  - `"homepage": "https://filiphsps.github.io/commerce/cart/shopify/"`
+  - `"homepage": "https://nordcom.store/docs/cart/shopify/"`
   - `exports`: `.` + `./testing`
   - `dependencies`: `{ "@nordcom/cart-core": "workspace:*" }`
   - `peerDependencies`: `{ "@nordcom/commerce-shopify-graphql": "workspace:*" }` (for gql.tada schema typing; verify version range matches existing peer usage)

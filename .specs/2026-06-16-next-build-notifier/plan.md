@@ -227,7 +227,7 @@ The agent records in the task notes that the name is reserved and the trusted pu
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://filiphsps.github.io/commerce/docs/next-build-notifier/",
+    "homepage": "https://nordcom.store/docs/docs/next-build-notifier/",
     "files": [
         "dist",
         "README.md"

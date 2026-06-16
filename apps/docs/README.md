@@ -4,7 +4,7 @@ Next.js 16 + Nextra 4 docs site. Static export. Supports three deployment shapes
 
 ## GH Pages (current canonical)
 
-CI builds with `NEXT_PUBLIC_DOCS_BASE_PATH=/commerce` and `NEXT_PUBLIC_DOCS_CANONICAL_URL=https://filiphsps.github.io/commerce`. Output at `apps/docs/out` is uploaded by `actions/deploy-pages`.
+CI builds with `NEXT_PUBLIC_DOCS_BASE_PATH=/commerce` and `NEXT_PUBLIC_DOCS_CANONICAL_URL=https://nordcom.store/docs`. Output at `apps/docs/out` is uploaded by `actions/deploy-pages`.
 
 ## Vercel — own subdomain (e.g. `docs.nordcom.io`)
 

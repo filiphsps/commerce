@@ -3096,7 +3096,7 @@ git commit -m "docs(context): add product-card glossary entries."
 
 - [ ] **Step 7: Confirm the spec's "Manual verification" checklist passes end-to-end**
 
-Visit `https://beta.pouched.de/en-US/search/?q=t-shirt` (or the equivalent deployment of the branch) and confirm:
+Visit `https://demo.nordcom.store/en-US/search/?q=t-shirt` (or the equivalent deployment of the branch) and confirm:
 1. Cards now render (Phase 1 bug).
 2. No `+0` chip leak anywhere.
 3. No text-strikethrough on pills (no pills on base card).
