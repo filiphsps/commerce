@@ -7,6 +7,7 @@ conditions:
   - field: new_text, operator: regex_match, pattern: new\s+Error\s*\(
   - field: file_path, operator: not_contains, pattern: /scripts/
   - field: file_path, operator: not_contains, pattern: packages/next-build-notifier/
+  - field: file_path, operator: not_contains, pattern: packages/ai/lspmesh/
   - field: file_path, operator: not_contains, pattern: .claude/mcp/
 ---
 
