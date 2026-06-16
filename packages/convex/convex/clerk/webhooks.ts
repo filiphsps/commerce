@@ -8,6 +8,7 @@ import { httpAction } from '../_generated/server';
 
 import { getServerEnv } from '../lib/env';
 import { systemMutation } from '../lib/system';
+import { displayName, SYNTHETIC_EMAIL_DOMAIN, upsertUserByClerkIdentity } from './provisioning';
 import { desiredCollaboratorRows, reconcileCollaboratorRows, type CollaboratorRow } from './sync';
 
 /**
@@ -92,26 +93,6 @@ function primaryEmail(data: ClerkWebhookEventData): string {
     const addresses = data.email_addresses ?? [];
     const primary = addresses.find((address) => address.id === data.primary_email_address_id) ?? addresses[0];
     return primary?.email_address ?? '';
-}
-
-/**
- * Joins a Clerk user's first/last name into a single display name, trimming and collapsing the gap so
- * a missing half does not leave a stray space. Returns the email local-part as a last resort when both
- * names are absent, so a provisioned `users.name` is never empty. Shared by the user-event path (names
- * from the top-level payload) and the membership-snapshot path (names from `public_user_data`).
- *
- * @param firstName - The user's first name, if present.
- * @param lastName - The user's last name, if present.
- * @param email - The already-resolved email, used for the fallback display name.
- * @returns A non-empty display name.
- */
-function displayName(firstName: string | null | undefined, lastName: string | null | undefined, email: string): string {
-    const joined = [firstName, lastName].filter((part): part is string => Boolean(part)).join(' ').trim();
-    if (joined.length > 0) {
-        return joined;
-    }
-    const localPart = email.split('@')[0];
-    return localPart && localPart.length > 0 ? localPart : email;
 }
 
 /**
@@ -275,15 +256,6 @@ async function projectUser(ctx: ProjectionCtx, userId: Id<'users'>): Promise<voi
 }
 
 /**
- * Domain of the synthetic email a user row is provisioned with when a membership lands before the
- * `user.created` webhook AND the membership payload carries no `identifier`. Reserved/invalid by
- * design (RFC 6761 `.invalid`) so it can never collide with a real address, and recognizable so
- * {@link upsertUserFromClerk}'s merge path can detect a placeholder row and collapse it onto the real
- * email row once that arrives.
- */
-const SYNTHETIC_EMAIL_DOMAIN = '@clerk.invalid';
-
-/**
  * The member snapshot a membership event carries about its user (from `public_user_data`): the real
  * email (`identifier`), display name, and avatar. Used by {@link resolveOrProvisionUser} to link or
  * provision the user by their REAL identity when the membership arrives before the `user.created`
@@ -404,12 +376,16 @@ async function resolveOrProvisionUser(
  * 1. **Subject hit** — a row already carries this `clerkUserId`. Normally it is patched in place. But
  *    when that row is a SYNTHETIC PLACEHOLDER (its email ends in `@clerk.invalid`, provisioned by a
  *    membership that lacked an `identifier`) AND a DIFFERENT row already holds the event's REAL email,
- *    the two are MERGED: the email row gains `clerkUserId`, the placeholder's `orgMemberships`
- *    re-point onto the email row, both projections reconcile, and the placeholder row is deleted —
- *    never leaving two rows sharing one email. Otherwise the subject row is patched with the email.
+ *    the two are MERGED via {@link upsertUserByClerkIdentity}: the email row gains `clerkUserId`, the
+ *    placeholder's `orgMemberships` re-point onto the email row (webhook-only step), both projections
+ *    reconcile, and the placeholder row is deleted — never leaving two rows sharing one email.
  * 2. **Email hit** — no subject row, but the `by_email` row exists: it is linked by stamping
  *    `clerkUserId`.
  * 3. **Insert** — neither exists: a new row.
+ *
+ * The membership re-point + projection reconcile steps are webhook-specific: they are performed here
+ * AFTER {@link upsertUserByClerkIdentity} returns, because the webhook alone creates placeholder rows
+ * with `orgMemberships`; the public `ensureCurrentUser` never holds membership rows on a placeholder.
  *
  * `name`/`avatar` are synced on every path. Written through the system tier because `users` is
  * platform-global. Idempotent: re-running the same event patches the same row, never a copy.
@@ -423,55 +399,33 @@ async function resolveOrProvisionUser(
 export const upsertUserFromClerk = systemMutation({
     args: { clerkUserId: v.string(), email: v.string(), name: v.string(), avatar: v.optional(v.string()) },
     handler: async (ctx, { clerkUserId, email, name, avatar }) => {
-        const now = Date.now();
-
-        const bySubject = await ctx.db
+        // Capture the placeholder id BEFORE the shared upsert runs so the post-merge projection
+        // cleanup can reap any orphaned collaborator rows on the now-deleted placeholder.
+        const bySubjectBefore = await ctx.db
             .query('users')
             .withIndex('by_clerk_user_id', (q) => q.eq('clerkUserId', clerkUserId))
             .first();
-        if (bySubject) {
-            const subjectIsPlaceholder = bySubject.email.endsWith(SYNTHETIC_EMAIL_DOMAIN) && bySubject.email !== email;
-            if (subjectIsPlaceholder) {
-                const emailRow = await ctx.db
-                    .query('users')
-                    .withIndex('by_email', (q) => q.eq('email', email))
-                    .first();
-                if (emailRow && emailRow._id !== bySubject._id) {
-                    // Collapse the placeholder onto the real-email row: move its grants, then delete it.
-                    await ctx.db.patch(emailRow._id, { clerkUserId, name, avatar, updatedAt: now });
-                    await repointMemberships(ctx, bySubject._id, emailRow._id);
-                    await ctx.db.delete(bySubject._id);
-                    await projectUser(ctx, emailRow._id);
-                    // Reap collaborator rows the deleted placeholder still owned: projectUser reads
-                    // only `by_user` indexes (never `ctx.db.get`), so for the now-deleted id it sees
-                    // zero memberships, computes an empty desired set, and deletes the orphans.
-                    await projectUser(ctx, bySubject._id);
-                    return emailRow._id;
-                }
-            }
-            await ctx.db.patch(bySubject._id, { email, name, avatar, updatedAt: now });
-            return bySubject._id;
+        const placeholderId =
+            bySubjectBefore?.email.endsWith(SYNTHETIC_EMAIL_DOMAIN) === true &&
+            bySubjectBefore.email !== email
+                ? bySubjectBefore._id
+                : undefined;
+
+        // When the subject row is a placeholder AND a real-email row already exists, the shared
+        // upsert collapses them (patches the email row, deletes the placeholder). The webhook then
+        // re-points the placeholder's orgMemberships and reconciles projections — steps not needed
+        // in ensureCurrentUser because placeholders are never created there.
+        const survivingId = await upsertUserByClerkIdentity(ctx, clerkUserId, email, name, avatar);
+
+        if (placeholderId !== undefined && survivingId !== placeholderId) {
+            // Merge occurred: move the placeholder's org-membership grants to the surviving row.
+            await repointMemberships(ctx, placeholderId, survivingId);
+            await projectUser(ctx, survivingId);
+            // Reap any collaborator rows still keyed on the deleted placeholder id.
+            await projectUser(ctx, placeholderId);
         }
 
-        const byEmail = await ctx.db
-            .query('users')
-            .withIndex('by_email', (q) => q.eq('email', email))
-            .first();
-        if (byEmail) {
-            await ctx.db.patch(byEmail._id, { clerkUserId, name, avatar, updatedAt: now });
-            return byEmail._id;
-        }
-
-        return ctx.db.insert('users', {
-            email,
-            name,
-            avatar,
-            emailVerified: null,
-            identities: [],
-            clerkUserId,
-            createdAt: now,
-            updatedAt: now,
-        });
+        return survivingId;
     },
 });
 

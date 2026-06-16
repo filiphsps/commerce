@@ -2,12 +2,13 @@ import 'server-only';
 
 import { auth, currentUser } from '@clerk/nextjs/server';
 import type { OnlineShop, UserBase } from '@nordcom/commerce-db';
-import { Shop, User } from '@nordcom/commerce-db';
+import { convexIdentityMutation, Shop, User } from '@nordcom/commerce-db';
 import { Error as CommerceError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import { setActiveShopDomain } from './active-shop';
+import { getAuthenticatedConvexClient } from './clerk-convex-token';
 
 /**
  * Bundled per-request context for the co-located CMS routes:
@@ -89,14 +90,30 @@ export async function getAuthedCmsCtx(domain?: string): Promise<AuthedCmsCtx> {
     let userDoc: UserBase;
     try {
         userDoc = await User.find({ filter: { email }, count: 1 });
-    } catch (err) {
-        if (CommerceError.isNotFound(err)) {
-            // Signed into Clerk but no platform user exists yet (the webhook/lazy provisioning has
-            // not landed). Punt to sign-in so the operator sees the failure instead of silently
-            // provisioning a collaborator-less account on every request.
+    } catch (firstErr) {
+        if (!CommerceError.isNotFound(firstErr)) {
+            throw firstErr;
+        }
+        // The platform users row does not exist yet — the Clerk user.created webhook has not
+        // landed (a first-sign-in race). Call ensureCurrentUser once to provision it from the
+        // JWT claims, then retry the lookup. Only one retry: if the row still misses after
+        // provisioning, the system has a deeper inconsistency and the operator should re-sign-in.
+        try {
+            const convex = await getAuthenticatedConvexClient();
+            await convexIdentityMutation<unknown>(convex, 'clerk/provisioning:ensureCurrentUser', {});
+        } catch {
+            // Provisioning failed (e.g. Convex unreachable, token issue). Redirect to sign-in
+            // so the operator sees the failure instead of an unhandled server error.
             redirect('/auth/sign-in/' as Route);
         }
-        throw err;
+        try {
+            userDoc = await User.find({ filter: { email }, count: 1 });
+        } catch (retryErr) {
+            if (CommerceError.isNotFound(retryErr)) {
+                redirect('/auth/sign-in/' as Route);
+            }
+            throw retryErr;
+        }
     }
 
     const platformUserId = String(userDoc.id);
