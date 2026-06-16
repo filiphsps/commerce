@@ -173,7 +173,8 @@
     }
 }
 
-/* Build-notifier banner entrance and accent-dot ring animations. */
+/* Build-notifier banner entrance and accent-dot ring animations. `nbn-ring` reads
+ * `--nbn-ring-color`, set on the dot element, so this block matches the other apps. */
 @keyframes nbn-in-bottom {
     from {
         opacity: 0;
@@ -187,7 +188,7 @@
 
 @keyframes nbn-ring {
     from {
-        box-shadow: 0 0 0 0 hsl(var(--color-brand));
+        box-shadow: 0 0 0 0 var(--nbn-ring-color);
     }
     to {
         box-shadow: 0 0 0 6px transparent;

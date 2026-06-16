@@ -1,7 +1,7 @@
 'use client';
 
 import { BuildNotifier, BuildNotifierProvider } from 'next-build-notifier';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 /**
  * Trims a full build id to 7 characters — enough to distinguish deployments without cluttering the
@@ -52,6 +52,7 @@ function AdminBuildNotifierBanner({
                 <div className="flex items-start gap-3">
                     <span
                         className="mt-0.5 flex size-2 shrink-0 rounded-full bg-primary motion-safe:animate-[nbn-ring_600ms_cubic-bezier(0,0,0.2,1)_both]"
+                        style={{ '--nbn-ring-color': 'hsl(var(--primary))' } as CSSProperties}
                         aria-hidden="true"
                     />
                     <div className="flex min-w-0 flex-col gap-0.5">

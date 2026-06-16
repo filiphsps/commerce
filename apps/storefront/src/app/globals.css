@@ -824,8 +824,9 @@ html:root {
     }
 }
 
-/* Build-notifier banner entrance and accent-dot ring animations. The `nbn-ring` pulse uses
- * `--accent` so the pulse tint matches the tenant's primary accent without extra tokens. */
+/* Build-notifier banner entrance and accent-dot ring animations. `nbn-ring` reads
+ * `--nbn-ring-color`, set per-app on the dot element (storefront maps it to the tenant `--accent`),
+ * so this keyframe block stays byte-identical across the apps. */
 @keyframes nbn-in-bottom {
     from {
         opacity: 0;
@@ -850,7 +851,7 @@ html:root {
 
 @keyframes nbn-ring {
     from {
-        box-shadow: 0 0 0 0 var(--accent);
+        box-shadow: 0 0 0 0 var(--nbn-ring-color);
     }
     to {
         box-shadow: 0 0 0 6px transparent;

@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 export type BuildNotifierBannerProps = {
     /** Whether the banner is pinned to `top` or `bottom` of the viewport. */
@@ -60,6 +60,7 @@ export function BuildNotifierBanner({
                 {/* Accent status dot with a one-shot ring pulse under motion-safe. */}
                 <span
                     className="relative flex size-2.5 shrink-0 motion-safe:animate-[nbn-ring_600ms_cubic-bezier(0,0,0.2,1)_both]"
+                    style={{ '--nbn-ring-color': 'var(--accent)' } as CSSProperties}
                     aria-hidden="true"
                 >
                     <span className="block size-2.5 rounded-full bg-(--accent)" />

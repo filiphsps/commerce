@@ -1,7 +1,7 @@
 'use client';
 
 import { BuildNotifier, BuildNotifierProvider } from 'next-build-notifier';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 /**
  * Inner banner rendered when a newer build is available. Uses the landing site's Tailwind token
@@ -32,6 +32,7 @@ function LandingBuildNotifierBanner({
                 <div className="flex items-start gap-3">
                     <span
                         className="mt-0.5 flex size-2 shrink-0 rounded-full bg-brand motion-safe:animate-[nbn-ring_600ms_cubic-bezier(0,0,0.2,1)_both]"
+                        style={{ '--nbn-ring-color': 'hsl(var(--color-brand))' } as CSSProperties}
                         aria-hidden="true"
                     />
                     <p className="font-semibold text-foreground text-sm leading-snug">We shipped an update</p>
