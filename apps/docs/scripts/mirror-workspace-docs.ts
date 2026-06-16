@@ -46,6 +46,7 @@ const PACKAGE_CATEGORY: Readonly<Record<string, string>> = {
 
 /** Display title for each category directory. Falls back to `capitalize(category)`. */
 const CATEGORY_TITLES: Readonly<Record<string, string>> = {
+    ai: 'AI',
     cart: 'Cart',
     core: 'Core',
     next: 'Next.js',
