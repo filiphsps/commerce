@@ -2,7 +2,7 @@
     "$schema": "https://turborepo.dev/schema.json",
     "envMode": "loose",
     "ui": "stream",
-    "globalPassThroughEnv": ["NODE_ENV"],
+    "globalPassThroughEnv": ["ETL_OUT_DIR", "GITHUB_ACTIONS", "NODE_ENV", "OPLOG_WINDOW_MINUTES", "RICHTEXT_DUMP_DIR"],
     "globalDependencies": ["tsconfig.json", "tsconfig.lib.json", "tsconfig.app.json", ".npmrc"],
     "tasks": {
         "build": {
@@ -54,6 +54,11 @@
             ],
             "outputs": ["src/generated/**", "src/graphql-env.d.ts", "storefront.schema.json"],
             "outputLogs": "new-only"
+        },
+        "@nordcom/commerce-convex#build": {
+            "cache": true,
+            "dependsOn": ["^generate", "^build"],
+            "outputs": ["convex/_generated/**"]
         },
         "build:packages": {
             "cache": true,

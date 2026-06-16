@@ -324,6 +324,45 @@ jobs:
             - name: 🧪 Integration / limit-boundary suites (real backends)
               run: pnpm --filter @nordcom/commerce-test-convex run test src/limits
 
+            # Produce the seeded-state cache the e2e jobs reuse instead of re-pushing + re-seeding their
+            # own backend. The key pins the backend binary version AND a hash of the Convex functions +
+            # seed fixtures, so any change invalidates it; the master restore-key only matches an
+            # IDENTICAL source+version cache seeded on master (a prefix match), never stale functions.
+            - name: 💾 Restore seeded Convex state
+              id: cache-convex-state
+              uses: actions/cache/restore@v5
+              with:
+                  path: packages/convex/.convex
+                  key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-convex-state-master-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+
+            # The limit suites above run EPHEMERAL backends that wipe the shared packages/convex/.convex
+            # state dir, so this boot+seed MUST run after them. `pnpm convex:local` self-heals: it always
+            # pushes (cheap, bakes auth env) but skips the expensive seed when the tenant already exists,
+            # so a cold cache runs the full canonical seed and a warm one does not. Stop the daemon
+            # and wait for it to release :3210 so the SQLite state is flushed before the save. Skipped
+            # entirely when any cache (exact or the master prefix) already holds this source+version.
+            - name: 🌱 Boot + seed persistent local Convex (produce e2e state cache)
+              id: seed-convex
+              if: steps.cache-convex-state.outputs.cache-matched-key == ''
+              run: |
+                  pnpm convex:local
+                  pnpm convex:local:stop
+                  for _ in $(seq 1 30); do
+                      curl -sf http://127.0.0.1:3210/instance_name >/dev/null 2>&1 || break
+                      sleep 1
+                  done
+
+            # Gated on the seed step SUCCEEDING (not always()) so a failed/partial seed never poisons the
+            # cache — a half-written DB would let the consumer's tenant probe pass yet serve corrupt state.
+            - name: 💾 Save seeded Convex state
+              if: steps.seed-convex.outcome == 'success' && hashFiles('packages/convex/.convex/**') != ''
+              uses: actions/cache/save@v5
+              with:
+                  path: packages/convex/.convex
+                  key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+
             - name: 💾 Save bootstrap caches
               if: always()
               uses: ./.github/common/bootstrap-save
@@ -429,6 +468,20 @@ jobs:
                       openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 2>/dev/null
                       echo '__OPERATOR_PEM__'
                   } >> "$GITHUB_ENV"
+
+            # Reuse the seeded database the Integration job cached instead of re-seeding here. Exact key,
+            # then a master prefix fallback — both pin the backend version AND the fn+seed hash, so a
+            # restore only ever brings state matching THIS source. `convex-local` still re-pushes the
+            # functions (cheap, bakes the per-run auth env) but skips the expensive seed on a hit, and
+            # self-heals on a miss (stale/absent cache) by running the full seed — so e2e never
+            # hard-depends on the cache being warm; a hit just skips the database rebuild.
+            - name: 💾 Restore seeded Convex state
+              uses: actions/cache/restore@v5
+              with:
+                  path: packages/convex/.convex
+                  key: ${{ runner.os }}-convex-state-${{ github.head_ref || github.ref_name }}-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-convex-state-master-${{ env.CONVEX_LOCAL_BACKEND_VERSION }}-${{ hashFiles('packages/convex/convex/**', 'packages/test-convex/src/seed/**') }}
 
             - name: 🌐 Local Convex backend (boot + seed)
               uses: ./.github/common/convex-local
