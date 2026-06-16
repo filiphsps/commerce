@@ -183,12 +183,24 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Added Link tests (new-tab default, explicit-rel preserved, same-tab unaffected).
 - Verified: biome clean, typecheck clean, link 11/11, rich-text + footer 29/29.
 
+### 15 — Localize cart-coupons (first i18n-pass slice)
+
+- `cart-coupons` had no `i18n` prop and hard-coded English ("Active discounts", `Remove promo code
+  "{code}"`) — wrong on every non-English store, and the remove button's only accessible name was that
+  English title.
+- Added two `cart` keys — `active-discounts` and `remove-discount` (with `{0}` code interpolation) —
+  across all six locales (en/de/es/fr/no/sv) with real translations. Threaded `i18n` from
+  `cart-summary` into `CartCoupons`; heading uses `t('active-discounts')`, the remove control uses
+  `t('remove-discount', code)` for both `title` and `aria-label`.
+- Updated the test to pass `i18n` and assert the interpolated localized accessible name.
+- Verified: all six locale JSONs valid, biome clean, typecheck clean, cart-coupons + cart-summary 12/12.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- i18n pass: localize `product-filters` (sort options, Min/Max, price/sort aria-labels),
-  `cart-coupons` ("Active discounts", remove title), and the generic primitives' literal
-  `aria-label="Close"` / `"Previous"` / `"Next"` / `"Product options"`. Requires adding keys across
-  all six locale JSONs (en/de/es/fr/no/sv).
+- Continue the i18n pass: `product-filters` (sort options, Min/Max, price/sort aria-labels) and the
+  generic primitives' literal `aria-label="Close"` / `"Previous"` / `"Next"` / `"Product options"`.
+  Same recipe — add keys across all six locale JSONs, thread `i18n` where the component lacks it.
+  Note fr/no/sv are partially stubbed (missing some `cart` keys); fill as encountered.
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
   /products, collections, and search as the shared faceted aside (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
