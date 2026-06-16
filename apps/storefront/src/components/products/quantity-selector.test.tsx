@@ -105,6 +105,15 @@ describe('components', () => {
             });
         });
 
+        it('disables the increase button once the value reaches maxQuantity', () => {
+            render(<QuantitySelector i18n={{} as any} update={() => {}} value={50} />);
+
+            // maxQuantity is mocked to 50; at the ceiling the increase control must signal the bound.
+            expect(screen.getByTestId('quantity-increase')).toBeDisabled();
+            // ...while decrease stays available to walk the value back down.
+            expect(screen.getByTestId('quantity-decrease')).not.toBeDisabled();
+        });
+
         it('applies a motion-safe tactile scale to the enabled stepper buttons', () => {
             render(<QuantitySelector i18n={{} as any} update={() => {}} value={3} />);
 

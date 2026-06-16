@@ -56,7 +56,10 @@ export type QuantitySelectorProps = {
 } & HTMLProps<HTMLDivElement>;
 
 /**
- * Stepper control for entering a purchase quantity, with decrease/increase buttons and a validated text input.
+ * Stepper control for entering a purchase quantity, with decrease/increase buttons and a validated
+ * text input. The decrease button disables at the lower bound (0 or 1, per `allowDecreaseToZero`) and
+ * the increase button disables once the value reaches the shop's `maxQuantity`, so each control gives
+ * a clear bound signal instead of silently no-opping.
  *
  * @param props.i18n - Locale dictionary for button and input accessible labels.
  * @param props.value - Controlled quantity value; defaults to 0.
@@ -167,6 +170,7 @@ const QuantitySelector = ({
 
     const disabled = isDisabled || !ready;
     const decreaseDisabled = disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1);
+    const increaseDisabled = disabled || quantity >= maxQuantity;
 
     return (
         <section
@@ -224,16 +228,16 @@ const QuantitySelector = ({
             />
 
             <Button
-                aria-disabled={disabled}
+                aria-disabled={increaseDisabled}
                 aria-label={t('increase')}
                 type="button"
                 className={cn(
                     'aspect-3/4 h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
-                    !disabled &&
+                    !increaseDisabled &&
                         'cursor-pointer hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground motion-safe:transition-[color,background-color,transform] motion-safe:duration-(--product-card-motion-fast) motion-safe:active:scale-[0.97]',
                     buttonClassName,
                 )}
-                disabled={disabled}
+                disabled={increaseDisabled}
                 onClick={increase}
                 title={t('increase')}
                 data-quantity-increase
