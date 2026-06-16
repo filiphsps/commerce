@@ -60,11 +60,16 @@ test('mounts the live storefront preview beside the fields, loads the cms-previe
     await waitForAutosave(page);
     await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/(?!new/)[^/]+/\\?locale=`));
 
+    // The /new/ create-bind is a shallow history.replaceState (it preserves the in-flight form state
+    // by keeping the preview-less new-page surface mounted). The live preview belongs to the real edit
+    // route, so reload onto the now-bound URL — the documented "a reload or shared link lands on the
+    // real edit page" path — to mount it.
+    await page.reload();
+
     // ── The live-preview pane is mounted and points at the storefront's draft-mode
     // activation route (the secret-bearing URL the admin builds server-side). ──
     const previewFrame = page.locator('iframe[title="Live preview"]');
-    // The preview pane mounts after the create-and-bind redirect resolves the editor; give the iframe
-    // room to appear under CI load rather than the 5s default.
+    // The preview pane streams in after the edit route resolves; give the iframe room under CI load.
     await expect(previewFrame).toBeVisible({ timeout: 20_000 });
     await expect(previewFrame).toHaveAttribute('src', /\/api\/cms-preview\?/);
 
