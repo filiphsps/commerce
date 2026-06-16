@@ -75,20 +75,14 @@ jobs:
                   turbo-cache: "false"
                   binary-caches: "false"
 
-            # Apply the committed Clerk config-as-code (clerk/clerk.config.json) + the convex JWT
-            # template (clerk/convex-jwt-template.json) to the PROD Clerk instance non-interactively
-            # via the Clerk Backend API authenticated with CLERK_SECRET_KEY_PROD.
-            # This mirrors what the agent did to the dev instance via `clerk api` and ensures the
-            # prod instance always converges to the committed config on every master push.
-            - name: 🔐 Apply Clerk config-as-code to prod instance
-              env:
-                  CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_PROD }}
-              run: |
-                  # PATCH the instance-level settings from clerk/clerk.config.json.
-                  # The Clerk Backend API /beta/instance accepts the same keys clerk config pull emits.
-                  pnpm dlx clerk@latest api -X PATCH /beta/instance \
-                      --data-raw "$(cat clerk/clerk.config.json)"
-
+            # NOTE: the PROD instance's settings — organizations, OAuth providers AND their real
+            # client credentials, email/attack-protection, block_email_subaddresses — are owned by
+            # `clerk deploy` + the Clerk dashboard, and are deliberately NOT auto-synced from
+            # clerk/clerk.config.json. That file is a DEV snapshot: it uses Clerk's shared dev OAuth
+            # (empty client_id/client_secret) and relaxes block_email_subaddresses for e2e, so
+            # PATCHing it onto prod would WIPE the real prod OAuth credentials and weaken prod
+            # security. Only the convex JWT template below — deployment-integration config — is
+            # converged onto prod (safe + idempotent; it carries no secrets and no instance policy).
             - name: 🔐 Apply convex JWT template to prod instance
               env:
                   CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_PROD }}
@@ -116,12 +110,13 @@ jobs:
               env:
                   CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
               run: |
-                  # CLERK_FRONTEND_API_URL: the prod Clerk instance Frontend API URL.
-                  # Hardcode the prod value here; update if the prod instance domain changes after
-                  # running `clerk deploy` (the prod Frontend API URL is not the dev shared one).
-                  # Until a prod Clerk instance exists (pre-`clerk deploy`), this is a placeholder.
-                  pnpm convex:env set CLERK_FRONTEND_API_URL "${{ vars.CLERK_FRONTEND_API_URL_PROD || 'https://clerk.nordcom.io' }}"
-                  pnpm convex:env set CLERK_WEBHOOK_SIGNING_SECRET "${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET_PROD }}"
+                  # This production Convex deployment is SHARED with preview (one deployment backs both
+                  # Vercel Production = the PROD Clerk instance and Preview = the DEV Clerk instance).
+                  # auth.config.ts validates BOTH instances, and the webhook handler accepts either
+                  # signing secret, so set the *_PROD variants here ADDITIVELY — never overwrite the dev
+                  # CLERK_FRONTEND_API_URL / CLERK_WEBHOOK_SIGNING_SECRET that preview depends on.
+                  pnpm convex:env set CLERK_FRONTEND_API_URL_PROD "${{ vars.CLERK_FRONTEND_API_URL_PROD || 'https://clerk.shops.pouched.de' }}"
+                  pnpm convex:env set CLERK_WEBHOOK_SIGNING_SECRET_PROD "${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET_PROD }}"
 
             # `convex deploy --dry-run` validates codegen, bundling and the schema against the LIVE
             # production data without promoting anything — the expand/contract pre-promotion gate.

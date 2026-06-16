@@ -688,8 +688,14 @@ async function runWebhookAction(
  * @returns A `Response`: 500 (unconfigured), 400 (bad/missing signature), or 200 (verified + applied).
  */
 export const clerkWebhook = httpAction(async (ctx, request) => {
-    const signingSecret = getServerEnv('CLERK_WEBHOOK_SIGNING_SECRET');
-    if (!signingSecret) {
+    // The deployment can back two Clerk instances (dev/preview + prod), each with its OWN webhook
+    // endpoint signing with its OWN secret. Collect every configured secret and accept a signature
+    // that verifies against ANY of them. Empty set = misconfigured deployment → fail closed.
+    const signingSecrets = [
+        getServerEnv('CLERK_WEBHOOK_SIGNING_SECRET'),
+        getServerEnv('CLERK_WEBHOOK_SIGNING_SECRET_PROD'),
+    ].filter((value): value is string => Boolean(value));
+    if (signingSecrets.length === 0) {
         return new Response('Webhook signing secret is not configured.', { status: 500 });
     }
 
@@ -700,15 +706,22 @@ export const clerkWebhook = httpAction(async (ctx, request) => {
     if (!svixId || !svixTimestamp || !svixSignature) {
         return new Response('Missing svix signature headers.', { status: 400 });
     }
+    const svixHeaders = {
+        'svix-id': svixId,
+        'svix-timestamp': svixTimestamp,
+        'svix-signature': svixSignature,
+    };
 
-    let event: ClerkWebhookEvent;
-    try {
-        event = new Webhook(signingSecret).verify(body, {
-            'svix-id': svixId,
-            'svix-timestamp': svixTimestamp,
-            'svix-signature': svixSignature,
-        }) as ClerkWebhookEvent;
-    } catch {
+    let event: ClerkWebhookEvent | undefined;
+    for (const secret of signingSecrets) {
+        try {
+            event = new Webhook(secret).verify(body, svixHeaders) as ClerkWebhookEvent;
+            break;
+        } catch {
+            // Signature did not verify against this secret; try the next configured instance.
+        }
+    }
+    if (!event) {
         return new Response('Invalid webhook signature.', { status: 400 });
     }
 

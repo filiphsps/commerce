@@ -43,26 +43,41 @@ const jwks = getServerEnv('CONVEX_AUTH_JWKS_URL') ?? `${issuer}/.well-known/jwks
 const clerkFrontendApiUrl = getServerEnv('CLERK_FRONTEND_API_URL') ?? '';
 
 /**
- * Convex auth provider configuration. Two providers coexist so `ctx.auth.getUserIdentity()`
- * returns a server-trusted identity for a token matching EITHER:
+ * Frontend API origin of a SECOND, PRODUCTION Clerk instance, validated alongside
+ * {@link clerkFrontendApiUrl}. A single Convex deployment can back more than one Vercel
+ * environment (here Preview runs on the DEV Clerk instance and Production on the PROD instance,
+ * both pointed at the same deployment), so the deployment must accept operator tokens from
+ * either Clerk instance. Set as the Convex env var `CLERK_FRONTEND_API_URL_PROD`; empty fallback
+ * makes the provider inert (matches no token) when only one instance is configured.
+ */
+const clerkFrontendApiUrlProd = getServerEnv('CLERK_FRONTEND_API_URL_PROD') ?? '';
+
+/**
+ * Convex auth provider configuration. Multiple providers coexist so `ctx.auth.getUserIdentity()`
+ * returns a server-trusted identity for a token matching ANY of:
  *
- * 1. **Clerk** (`domain` form) — ADMIN operators. Validated against Clerk's discovered JWKS;
- *    carries the Clerk subject (`user_…`), the `email` claim from the `convex` JWT template,
- *    and the active-organization claims (`org_id`/`org_role`/`org_slug`). `lib/auth.ts`
- *    consumes these to resolve the operator and authorize the active shop via its owning org.
- * 2. **customJwt / RS256** — STOREFRONT customers (and, until removed, the legacy admin minter).
+ * 1. **Clerk (dev/preview)** (`domain` form) — ADMIN operators on the DEV Clerk instance.
+ * 2. **Clerk (prod)** (`domain` form) — ADMIN operators on the PROD Clerk instance. Same
+ *    `applicationID: 'convex'`; a disjoint issuer (a different Clerk Frontend API). Lets one
+ *    Convex deployment validate both the preview (dev) and production (prod) Clerk instances.
+ * 3. **customJwt / RS256** — STOREFRONT customers (and, until removed, the legacy admin minter).
  *    Validated only when `iss` matches {@link issuer} AND `aud` matches {@link applicationID},
  *    against the {@link jwks} public keys. `lib/authed.ts` consumes these for the customer tier.
  *
- * A token authenticates if it satisfies ANY provider; the two issuers are disjoint, so admin
- * Clerk tokens never validate against the customer rule and vice versa. Because the issuers
- * differ, admin/operator code MUST assert the Clerk issuer/claims on its own path rather than
- * reuse the customer-tier `getTrustedIdentity`, which pins {@link issuer}.
+ * A token authenticates if it satisfies ANY provider; all issuers are disjoint, so a token never
+ * cross-validates between providers. Both Clerk providers carry the Clerk subject (`user_…`),
+ * the `email` claim, and the active-org claims — `lib/auth.ts` consumes them identically.
+ * Because the Clerk issuers differ from the customer issuer, admin/operator code MUST assert a
+ * Clerk issuer on its own path rather than reuse the customer-tier `getTrustedIdentity`.
  */
 export default {
     providers: [
         {
             domain: clerkFrontendApiUrl,
+            applicationID: 'convex',
+        },
+        {
+            domain: clerkFrontendApiUrlProd,
             applicationID: 'convex',
         },
         {
