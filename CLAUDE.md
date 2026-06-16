@@ -7,6 +7,7 @@
 LLM defaults that would otherwise be wrong here:
 
 -   **Biome only** for lint + format. No ESLint, no Prettier.
+-   **`pnpm dev` runs every workspace `dev` script through portless** — `portless.json`'s `apps` map only *overrides* per-app config (name/script/port/proxy); it is NOT an allow-list. portless auto-discovers all pnpm-workspace packages and the only way to drop one from the run-all set is to point its `script` at a target that doesn't exist (so portless silently skips it). Docs is excluded this way (`apps/docs.script: "dev:disabled-in-run-all"`); run it on its own with `pnpm dev:docs`.
 -   **`pnpm build:packages` before lint/typecheck/test in a fresh checkout** — apps import workspace packages from built `dist/`, not source.
 -   Top-level scripts run through `dotenv -c -- turbo …`; `.env` / `.env.local` load automatically. Don't prefix env vars manually.
 -   **Use `pnpm <script>` whenever a `package.json` script exists** — `pnpm test`, `pnpm build`, `pnpm lint`, `pnpm typecheck`, `pnpm test:e2e`, etc. Extra args forward through: `pnpm test --project @nordcom/commerce-storefront` runs `dotenv -c -- vitest run --coverage --project @nordcom/commerce-storefront`. Don't hand-roll `pnpm dotenv -c -- vitest run …` or `pnpm turbo run build …`. If a script doesn't forward extra args, fix the script in `package.json`, don't bypass it.
