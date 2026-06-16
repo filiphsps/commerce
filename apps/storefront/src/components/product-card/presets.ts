@@ -54,31 +54,38 @@ export type ProductCardSurfaceOverride = Partial<ProductCardSurfacePreset>;
 /**
  * Resolves the effective product-card surface configuration for a tenant.
  *
- * Precedence per field (highest first): per-surface store `override` → the store-wide `base` (applies
- * across every surface) → the {@link SURFACE_PRESETS} entry for the surface → {@link
- * BUILTIN_PRODUCT_CARD_SURFACE}. A shop with neither override nor base resolves byte-identically to
- * the current preset, so un-customized tenants are unchanged; both layers apply field-by-field (an
- * absent or `undefined` field defers to the next tier down). A store-wide `base` value deliberately
- * overrides the platform surface preset — "change every card at once" reaches all surfaces — while a
- * per-surface `override` carves out the exception. See `docs/adr/0004`.
+ * Precedence per field (highest first): per-instance `instance` (authored on the hosting block node)
+ * → per-surface store `override` → the store-wide `base` (applies across every surface) → the {@link
+ * SURFACE_PRESETS} entry for the surface → {@link BUILTIN_PRODUCT_CARD_SURFACE}. A shop with no
+ * override, base, or instance resolves byte-identically to the current preset, so un-customized
+ * tenants are unchanged; every layer applies field-by-field (an absent or `undefined` field defers to
+ * the next tier down). A store-wide `base` value deliberately overrides the platform surface preset —
+ * "change every card at once" reaches all surfaces — while the per-surface `override` and per-instance
+ * `instance` tiers carve out exceptions. See `docs/adr/0004`.
  *
  * @param surface - Surface key (e.g. `collection`, `search`, `recommendation`).
- * @param override - Optional per-surface store fields, highest precedence below per-instance.
+ * @param override - Optional per-surface store fields, below the per-instance override.
  * @param base - Optional store-wide fields applied across every surface, below the per-surface override.
+ * @param instance - Optional per-instance fields (highest precedence), authored on the hosting block node.
  * @returns The fully-resolved surface configuration with every field populated.
  */
 export function resolveProductCardSurface(
     surface: string,
     override?: ProductCardSurfaceOverride,
     base?: ProductCardSurfaceOverride,
+    instance?: ProductCardSurfaceOverride,
 ): ProductCardSurfacePreset {
     const preset: ProductCardSurfacePreset =
         (SURFACE_PRESETS as Record<string, ProductCardSurfacePreset>)[surface] ?? BUILTIN_PRODUCT_CARD_SURFACE;
 
     return {
-        layout: override?.layout ?? base?.layout ?? preset.layout,
-        chrome: override?.chrome ?? base?.chrome ?? preset.chrome,
-        ctaPlacement: override?.ctaPlacement ?? base?.ctaPlacement ?? preset.ctaPlacement,
-        pickerPresentation: override?.pickerPresentation ?? base?.pickerPresentation ?? preset.pickerPresentation,
+        layout: instance?.layout ?? override?.layout ?? base?.layout ?? preset.layout,
+        chrome: instance?.chrome ?? override?.chrome ?? base?.chrome ?? preset.chrome,
+        ctaPlacement: instance?.ctaPlacement ?? override?.ctaPlacement ?? base?.ctaPlacement ?? preset.ctaPlacement,
+        pickerPresentation:
+            instance?.pickerPresentation ??
+            override?.pickerPresentation ??
+            base?.pickerPresentation ??
+            preset.pickerPresentation,
     };
 }
