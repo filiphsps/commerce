@@ -6,7 +6,9 @@ import { trace } from '@opentelemetry/api';
 import type {
     CollectionEdge,
     CollectionSortKeys,
+    Filter,
     ProductCollectionSortKeys,
+    ProductFilter,
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { cache } from '@/cache';
 import type { ApiOptions } from '@/utils/abstract-api';
@@ -19,10 +21,47 @@ type GenericCollectionFilters = {
     before?: Nullable<string>;
 };
 
+/** Facet inputs compiled into the Shopify `collection.products(filters:)` argument. */
+export type CollectionProductFacets = {
+    available_for_sale?: boolean;
+    vendor?: string;
+    productType?: string;
+    minPrice?: number;
+    maxPrice?: number;
+};
+
 export type CollectionFilters = {
     sorting?: Nullable<ProductCollectionSortKeys>;
 } & GenericCollectionFilters &
+    CollectionProductFacets &
     LimitFilters;
+
+/**
+ * Compiles facet inputs into the Storefront API `[ProductFilter!]` array `collection.products(filters:)`
+ * accepts (the native faceting the root `products` connection lacks). Returns an empty array when no
+ * facet is set so an unfiltered collection query stays identical to today's.
+ *
+ * @param facets - The selected facet inputs.
+ * @returns The `ProductFilter[]` to pass as the `filters` argument.
+ */
+export const buildCollectionProductFilters = (facets: CollectionProductFacets): ProductFilter[] => {
+    const filters: ProductFilter[] = [];
+    if (facets.available_for_sale !== undefined) {
+        filters.push({ available: facets.available_for_sale });
+    }
+    if (facets.vendor) {
+        filters.push({ productVendor: facets.vendor });
+    }
+    if (facets.productType) {
+        filters.push({ productType: facets.productType });
+    }
+    const min = typeof facets.minPrice === 'number' && Number.isFinite(facets.minPrice) ? facets.minPrice : undefined;
+    const max = typeof facets.maxPrice === 'number' && Number.isFinite(facets.maxPrice) ? facets.maxPrice : undefined;
+    if (min !== undefined || max !== undefined) {
+        filters.push({ price: { ...(min !== undefined ? { min } : {}), ...(max !== undefined ? { max } : {}) } });
+    }
+    return filters;
+};
 
 type CollectionsFilters = {
     sorting?: Nullable<CollectionSortKeys>;
@@ -112,6 +151,7 @@ export const CollectionPaginationCountApi = async ({
     pages: number;
     products: number;
     cursors: string[];
+    filters: Filter[];
 }> => {
     if (!isValidHandle(handle)) {
         throw new InvalidHandleError(handle);
@@ -119,6 +159,11 @@ export const CollectionPaginationCountApi = async ({
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
+    const productFilters = buildCollectionProductFilters(filters);
+    // The connection's `filters` facets are identical across pages, so capture them off the first
+    // response of the count walk and reuse for the shared filter UI. A ref holder keeps the capture
+    // assignable from inside the recursive walk closure without a reassigned outer binding.
+    const facetsRef: { current: Filter[] } = { current: [] };
 
     // Walk the collection at Shopify's max page size rather than the grid's display size. Relay
     // edge cursors are position-stable across page sizes for a given sort key, so harvesting every
@@ -132,6 +177,7 @@ export const CollectionPaginationCountApi = async ({
             {
                 handle,
                 first: TRAVERSAL_PAGE_SIZE,
+                filters: productFilters,
                 ...(({ sorting = 'COLLECTION_DEFAULT' }) => ({
                     sorting,
                     after,
@@ -154,6 +200,9 @@ export const CollectionPaginationCountApi = async ({
         }
 
         const products = data?.collection?.products;
+        if (facetsRef.current.length === 0 && products?.filters) {
+            facetsRef.current = unsafe_cast<Filter[]>(products.filters);
+        }
         const edges = products?.edges;
         if (!edges || edges.length <= 0) {
             return allCursors;
@@ -185,6 +234,7 @@ export const CollectionPaginationCountApi = async ({
         pages,
         cursors,
         products,
+        filters: facetsRef.current,
     };
 };
 

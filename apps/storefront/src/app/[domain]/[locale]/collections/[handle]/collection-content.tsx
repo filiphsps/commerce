@@ -2,6 +2,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import type { CollectionProductFacets } from '@/api/shopify/collection';
 import CollectionBlock from '@/components/products/collection-block';
 
 import type { Locale } from '@/utils/locale';
@@ -14,14 +15,15 @@ type SearchParams = {
 };
 
 /**
- * Server component rendering a paginated product grid for a collection.
- * Validates the page number against the known page count and calls
- * `notFound()` for out-of-range or non-numeric page params.
+ * Server component rendering a paginated, optionally faceted product grid for a collection.
+ * Validates the page number against the known page count and calls `notFound()` for out-of-range or
+ * non-numeric page params.
  *
  * @param shop - The tenant shop, forwarded to `CollectionBlock` for API calls.
  * @param locale - The active locale forwarded to `CollectionBlock`.
  * @param handle - The Shopify collection handle to render.
  * @param searchParams - Optional query params; `page` controls the current page.
+ * @param facets - Selected facet inputs applied to the grid query (matching the count traversal).
  * @param pagesInfo - Pre-fetched cursor array and total page count from the parent.
  * @returns The paginated collection product grid wrapped in `Suspense`.
  */
@@ -30,12 +32,14 @@ export async function CollectionContent({
     locale,
     handle,
     searchParams = {},
+    facets,
     pagesInfo: { cursors, pages },
 }: {
     shop: OnlineShop;
     locale: Locale;
     handle: string;
     searchParams?: SearchParams;
+    facets?: CollectionProductFacets;
     pagesInfo: { cursors: string[]; pages: number; products: number };
 }) {
     if (typeof searchParams.page !== 'undefined' && Number.isNaN(Number.parseInt(searchParams.page.toString(), 10))) {
@@ -55,7 +59,7 @@ export async function CollectionContent({
                 shop={shop}
                 locale={locale}
                 handle={handle}
-                filters={{ first: PRODUCTS_PER_PAGE, after }}
+                filters={{ first: PRODUCTS_PER_PAGE, after, ...facets }}
                 showViewAll={false}
                 priority={true}
             />

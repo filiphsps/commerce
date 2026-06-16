@@ -12,6 +12,7 @@ export const COLLECTION_QUERY = graphql(
         $sorting: ProductCollectionSortKeys
         $before: String
         $after: String
+        $filters: [ProductFilter!]
     ) {
         collection(handle: $handle) {
             id
@@ -32,7 +33,14 @@ export const COLLECTION_QUERY = graphql(
                 title
                 description
             }
-            products(first: $first, last: $last, sortKey: $sorting, before: $before, after: $after) {
+            products(
+                first: $first
+                last: $last
+                sortKey: $sorting
+                before: $before
+                after: $after
+                filters: $filters
+            ) {
                 edges {
                     node {
                         ...ProductMinimal
@@ -67,11 +75,12 @@ export const COLLECTION_PAGINATION_COUNT_QUERY = graphql(`
         $sorting: ProductCollectionSortKeys
         $before: String
         $after: String
+        $filters: [ProductFilter!]
     ) {
         collection(handle: $handle) {
             id
             handle
-            products(first: $first, sortKey: $sorting, before: $before, after: $after) {
+            products(first: $first, sortKey: $sorting, before: $before, after: $after, filters: $filters) {
                 edges {
                     cursor
                     node {
@@ -80,6 +89,21 @@ export const COLLECTION_PAGINATION_COUNT_QUERY = graphql(`
                 }
                 pageInfo {
                     hasNextPage
+                }
+                filters {
+                    id
+                    label
+                    presentation
+                    type
+                    values {
+                        count
+                        id
+                        input
+                        label
+                        swatch {
+                            color
+                        }
+                    }
                 }
             }
         }

@@ -21,6 +21,7 @@ import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
+import { ProductFilters } from '@/components/products/product-filters';
 import { ShopifyContent } from '@/components/typography/shopify-content';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
@@ -34,7 +35,25 @@ export { type CollectionPageParams, generateStaticParams } from './static-params
 
 type SearchParams = Promise<{
     page?: string;
+    vendor?: string;
+    type?: string;
+    available?: string;
+    minPrice?: string;
+    maxPrice?: string;
 }>;
+
+/**
+ * Parses a numeric query param, returning `undefined` for an absent or non-finite value so it never
+ * compiles into a `price` facet clause with `NaN`.
+ *
+ * @param raw - The raw query-param string.
+ * @returns The finite number, or `undefined`.
+ */
+const numericParam = (raw: string | undefined): number | undefined => {
+    if (!raw) return undefined;
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : undefined;
+};
 
 async function buildMetadata(
     domain: string,
@@ -219,14 +238,6 @@ async function CollectionShell({ params, children }: { params: CollectionPagePar
         },
     };
 
-    const pagination = (
-        <section className="flex w-full items-center justify-center empty:hidden">
-            <Suspense key={`collections.${handle}.pagination`} fallback={<div className="h-8 w-full" data-skeleton />}>
-                <Pagination i18n={i18n} knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-            </Suspense>
-        </section>
-    );
-
     return (
         <>
             <Suspense key={`collections.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
@@ -250,16 +261,14 @@ async function CollectionShell({ params, children }: { params: CollectionPagePar
 
             {!empty ? (
                 <PageContent>
-                    {pagination}
-
+                    {/* The dynamic child owns the faceted filter toolbar, the filtered grid, and
+                     * filter-aware pagination, since all three depend on the request's facet params. */}
                     <Suspense
                         key={`collections.${handle}.content`}
                         fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
                     >
                         {children}
                     </Suspense>
-
-                    {pagination}
                 </PageContent>
             ) : (
                 <PageContent>
@@ -313,20 +322,62 @@ async function CollectionDynamic({
 
     const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
+    const i18n = await getDictionary({ shop, locale });
+    const { t } = getTranslations('common', i18n);
+
+    // Facets fold into Shopify's native `collection.products(filters:)`; the same params drive the
+    // count traversal and the grid, so pagination stays correct under filtering.
+    const facets = {
+        vendor: searchParams.vendor || undefined,
+        productType: searchParams.type || undefined,
+        available_for_sale: searchParams.available === 'true' ? true : undefined,
+        minPrice: numericParam(searchParams.minPrice),
+        maxPrice: numericParam(searchParams.maxPrice),
+    };
 
     const pagesInfo = await CollectionPaginationCountApi({
         api,
         handle,
-        filters: { first: PRODUCTS_PER_PAGE },
+        filters: { first: PRODUCTS_PER_PAGE, ...facets },
     });
 
+    const pagination = (
+        <section className="flex w-full items-center justify-center empty:hidden">
+            <Suspense key={`collections.${handle}.pagination`} fallback={<div className="h-8 w-full" data-skeleton />}>
+                <Pagination i18n={i18n} knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+            </Suspense>
+        </section>
+    );
+
     return (
-        <CollectionContent
-            shop={shop}
-            locale={locale}
-            searchParams={searchParams}
-            handle={handle}
-            pagesInfo={pagesInfo}
-        />
+        <>
+            <ProductFilters filters={pagesInfo.filters} i18n={i18n} total={pagesInfo.products} />
+
+            {pagesInfo.products > 0 ? (
+                <>
+                    {pagination}
+                    <CollectionContent
+                        shop={shop}
+                        locale={locale}
+                        searchParams={searchParams}
+                        handle={handle}
+                        facets={facets}
+                        pagesInfo={pagesInfo}
+                    />
+                    {pagination}
+                </>
+            ) : (
+                <EmptyState
+                    icon={<EmptyCollectionIcon aria-hidden="true" />}
+                    title={t('empty-collection-title')}
+                    description={t('empty-collection-description')}
+                    action={
+                        <Button as={Link} href="/products/">
+                            {t('browse-all-products')}
+                        </Button>
+                    }
+                />
+            )}
+        </>
     );
 }

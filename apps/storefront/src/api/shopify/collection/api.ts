@@ -7,7 +7,7 @@ import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
 import { unsafe_cast } from '@/utils/unsafe-cast';
-import { type CollectionFilters, extractLimitLikeFilters } from './pagination';
+import { buildCollectionProductFilters, type CollectionFilters, extractLimitLikeFilters } from './pagination';
 import { COLLECTION_QUERY, COLLECTIONS_QUERY } from './queries';
 
 type CollectionOptions = ApiOptions &
@@ -50,6 +50,7 @@ export const CollectionApi = async (
         {
             handle,
             ...extractLimitLikeFilters(filters),
+            filters: buildCollectionProductFilters(filters),
             ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
                 sorting,
                 before,
