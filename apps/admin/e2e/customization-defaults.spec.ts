@@ -77,6 +77,33 @@ test.describe('Customization — store-wide component defaults', () => {
         await waitForAutosave(page);
     });
 
+    test('a surface field inheriting a store-wide base names Base as its inherit source', async ({ page }) => {
+        const BASE_CTA = 'extensions.productCard.base.ctaPlacement';
+        const SURFACE_GHOST = 'override-inherited-extensions.productCard.collection.ctaPlacement';
+        await page.goto(`/${DOMAIN}/settings/customization/`);
+        await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/settings/customization/\\?locale=`));
+        await page.getByRole('tab', { name: 'Components' }).click();
+
+        // Set a store-wide base CTA.
+        await page.getByTestId('surface-productCard-base').click();
+        await page.getByTestId(`override-override-${BASE_CTA}`).click();
+        await fieldControl(page, BASE_CTA, 'select').selectOption('inline-button');
+        await page.getByRole('button', { name: 'Save Draft' }).click();
+        await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
+        await waitForAutosave(page);
+
+        // A surface field that still inherits now names Base (not "Platform default") as its source.
+        await page.getByTestId('surface-productCard-collection').click();
+        await expect(page.getByTestId(SURFACE_GHOST)).toContainText('Base');
+
+        // Reset the base override so the shared tenant is left as it was found.
+        await page.getByTestId('surface-productCard-base').click();
+        await page.getByTestId(`override-inherit-${BASE_CTA}`).click();
+        await page.getByRole('button', { name: 'Save Draft' }).click();
+        await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
+        await waitForAutosave(page);
+    });
+
     test('overriding the collection block default layout persists across reload, then resets', async ({ page }) => {
         await page.goto(`/${DOMAIN}/settings/customization/`);
         await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/settings/customization/\\?locale=`));

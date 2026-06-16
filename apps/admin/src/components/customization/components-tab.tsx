@@ -6,10 +6,15 @@ import {
     RenderFields,
     registerCompositeFieldWidgets,
     registerScalarFieldWidgets,
+    useAllFormFields,
 } from '@nordcom/commerce-cms/editor/form';
 import { COMPONENT_SETTINGS, type ComponentSettingsEntry } from '@nordcom/commerce-cms/extensions';
 import { useState } from 'react';
 import { cn } from '@/utils/tailwind';
+import { inheritSourceLabel, type SettingScope } from './inherit-label';
+
+/** A stored overridable value counts as set when it is not nullish or an empty string. */
+const isSet = (value: unknown): boolean => value !== undefined && value !== null && value !== '';
 
 /**
  * One configurable component's section: a heading, a scope selector for multi-surface components,
@@ -25,10 +30,27 @@ import { cn } from '@/utils/tailwind';
  * @returns The component section.
  */
 function ComponentSection({ entry, registry }: { entry: ComponentSettingsEntry; registry: FieldRegistry }) {
+    const [state] = useAllFormFields();
     const surfaces = entry.surfaces ?? [];
     const buckets = surfaces.length > 0 ? ['base', ...surfaces] : [];
     const [bucket, setBucket] = useState(buckets[0]);
     const parentPath = bucket ? `extensions.${entry.id}.${bucket}` : `extensions.${entry.id}`;
+
+    // Multi-surface scopes inherit through the store-wide `base`, so the inherit ghost names the real
+    // next tier: a base-scope field falls through to the platform default; a surface-scope field falls
+    // through to `base` when it sets the key, else the platform default. Single-surface components keep
+    // their declared label. Computed here (not in the generic widget) to keep the scope convention local.
+    const scope: SettingScope = bucket === 'base' ? 'base' : 'surface';
+    const settings =
+        buckets.length > 0
+            ? entry.settings.map((setting) => ({
+                  ...setting,
+                  inheritedSourceLabel: inheritSourceLabel({
+                      scope,
+                      baseSet: isSet(state[`extensions.${entry.id}.base.${setting.name}`]?.value),
+                  }),
+              }))
+            : entry.settings;
 
     return (
         <section aria-label={entry.label} className="rounded-xl border border-border">
@@ -65,7 +87,7 @@ function ComponentSection({ entry, registry }: { entry: ComponentSettingsEntry; 
             ) : null}
 
             <div className="flex flex-col gap-5 p-4">
-                <RenderFields registry={registry} fields={entry.settings} parentPath={parentPath} />
+                <RenderFields registry={registry} fields={settings} parentPath={parentPath} />
             </div>
         </section>
     );
