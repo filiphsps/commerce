@@ -25,6 +25,15 @@ const GROUP_LABELS: Record<ThemeGroup, string> = {
     sections: 'Sections',
 };
 
+/**
+ * Explanatory note shown under a cluster heading, keyed by `${group}/${cluster}`. Only for clusters
+ * whose scope is non-obvious — the product-card chip tokens also style the cart line item variant
+ * chips, so editing them here changes both surfaces.
+ */
+const CLUSTER_NOTES: Partial<Record<string, string>> = {
+    'productCard/chip': 'Variant option chips — these also style the chips on cart line items.',
+};
+
 /** One cluster of tokens within a section. */
 type ClusterEntry = { id: string; group: ThemeGroup; cluster: string; tokens: ThemeTokenMeta[] };
 
@@ -222,6 +231,7 @@ function ClusterSection({ entry }: { entry: ClusterEntry }) {
     const legacy = leafTokens.filter((token) => token.deprecated);
     const forthcomingCount = entry.tokens.filter((token) => token.forthcoming).length;
     const headingId = `theme-cluster-${slugify(entry.id)}`;
+    const note = CLUSTER_NOTES[entry.id];
 
     return (
         <section aria-labelledby={headingId} className="flex flex-col">
@@ -232,6 +242,8 @@ function ClusterSection({ entry }: { entry: ClusterEntry }) {
                 {legacy.length > 0 ? <Badge>{legacy.length} legacy</Badge> : null}
                 {forthcomingCount > 0 ? <Badge>{forthcomingCount} forthcoming</Badge> : null}
             </header>
+
+            {note ? <p className="mb-3 text-muted-foreground text-sm">{note}</p> : null}
 
             {accentTokens.length > 0 ? (
                 <div className="py-2">

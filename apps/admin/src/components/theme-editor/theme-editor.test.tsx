@@ -14,6 +14,7 @@ vi.mock('@nordcom/commerce-db/lib/theme-catalog', () => ({
         new Map([
             ['colors', new Map([['brand', [{ path: 'theme.colors.brand', cluster: 'brand' }]]])],
             ['typography', new Map([['fonts', [{ path: 'theme.typography.fonts', cluster: 'fonts' }]]])],
+            ['productCard', new Map([['chip', [{ path: 'theme.productCard.chipBg', cluster: 'chip' }]]])],
         ]),
 }));
 vi.mock('./token-control', () => ({ TokenControl: () => null }));
@@ -31,7 +32,7 @@ describe('<ThemeEditor> tablist', () => {
     it('renders one tab per section with roving tabindex on the active tab', () => {
         render(<ThemeEditor />);
         const tabs = screen.getAllByRole('tab');
-        expect(tabs.map((tab) => tab.textContent)).toEqual(['Colors', 'Typography']);
+        expect(tabs.map((tab) => tab.textContent)).toEqual(['Colors', 'Typography', 'Product Card']);
         expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
         expect(tabs[0]).toHaveAttribute('tabindex', '0');
         expect(tabs[1]).toHaveAttribute('aria-selected', 'false');
@@ -58,9 +59,9 @@ describe('<ThemeEditor> tablist', () => {
     });
 
     it('wraps from the last tab back to the first with ArrowRight', () => {
-        searchParams.value = new URLSearchParams('group=typography');
+        searchParams.value = new URLSearchParams('group=product-card');
         render(<ThemeEditor />);
-        fireEvent.keyDown(screen.getAllByRole('tab')[1]!, { key: 'ArrowRight' });
+        fireEvent.keyDown(screen.getAllByRole('tab')[2]!, { key: 'ArrowRight' });
         expect(mockReplace).toHaveBeenCalledWith(expect.stringContaining('group=colors'), expect.anything());
     });
 
@@ -78,5 +79,11 @@ describe('<ThemeEditor> tablist', () => {
             target: { value: 'zzzzz' },
         });
         expect(screen.getByText(/no settings match/i)).toBeInTheDocument();
+    });
+
+    it('notes that product-card chip tokens also style the cart', () => {
+        searchParams.value = new URLSearchParams('group=product-card');
+        render(<ThemeEditor />);
+        expect(screen.getByText(/cart/i)).toBeInTheDocument();
     });
 });
