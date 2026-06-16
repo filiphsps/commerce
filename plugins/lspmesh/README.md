@@ -9,7 +9,7 @@ package as both:
 - an **MCP server** (`lspmesh mcp`) — by-name `find_symbol`, `find_references`,
   and `find_implementations` for AI agents.
 
-Both run the **published package** via `pnpm dlx lspmesh@0.0.2`, so no local
+Both run the **published package** via `pnpm dlx lspmesh@0.0.3`, so no local
 build is required.
 
 > Inside the monorepo, use the repo-local `commerce-plugins` directory source
