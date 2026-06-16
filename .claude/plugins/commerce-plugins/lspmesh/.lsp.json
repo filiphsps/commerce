@@ -1,0 +1,20 @@
+{
+  "lspmesh": {
+    "command": "pnpm",
+    "args": ["dlx", "lspmesh@latest", "lsp"],
+    "extensionToLanguage": {
+      ".ts": "typescript",
+      ".tsx": "typescriptreact",
+      ".mts": "typescript",
+      ".cts": "typescript",
+      ".js": "javascript",
+      ".jsx": "javascriptreact",
+      ".mjs": "javascript",
+      ".cjs": "javascript",
+      ".css": "css",
+      ".scss": "scss",
+      ".json": "json",
+      ".jsonc": "jsonc"
+    }
+  }
+}
