@@ -12,44 +12,49 @@ const ERRORS_OUT = path.join(DOCS_APP, 'content/errors');
 const ERRORS_PKG_SRC = path.join(REPO_ROOT, 'packages/errors/src/index.ts');
 
 /**
- * Convert each Markdoc {% card %}-wrapped error page from apps/landing/docs/errors/
- * into plain MDX with H2 sections. Strips Markdoc-specific tags; preserves headings
- * and code blocks. Output filename is lowercase-kebab(code), so /docs/errors/api-unknown-locale/
- * resolves to API_UNKNOWN_LOCALE.
+ * Generate one MDX page per error code declared in `@nordcom/commerce-errors`.
+ * Each code's hero, class, kind, HTTP status, and description come from the
+ * package itself; a matching `{% card %}`-wrapped Markdoc file under
+ * apps/landing/docs/errors/ is OPTIONAL and only layers on extra causes, prose,
+ * and a code example. Output filename is lowercase-kebab(code), so
+ * /docs/errors/api-unknown-locale/ resolves to API_UNKNOWN_LOCALE.
  *
  * @param options.quiet - When true, suppresses console output.
- * @returns Count of converted pages.
+ * @returns Count of generated pages.
  */
 export function main({ quiet = false }: { quiet?: boolean } = {}): { converted: number } {
-    if (!fs.existsSync(ERRORS_SRC)) {
-        if (!quiet) console.warn('[port-errors] source directory missing — skipping');
-        return { converted: 0 };
-    }
     fs.mkdirSync(ERRORS_OUT, { recursive: true });
     const touched = new Set<string>();
     // _overrides.json and index.mdx are checked into the repo — preserve them through prune.
     touched.add(path.join(ERRORS_OUT, '_overrides.json'));
     touched.add(path.join(ERRORS_OUT, 'index.mdx'));
 
-    // First pass: collect every code so the per-page render can list its group
-    // siblings as related errors.
-    const entries: { code: string; src: string }[] = [];
-    for (const file of fs.readdirSync(ERRORS_SRC)) {
-        if (!file.endsWith('.mdx')) continue;
-        const code = file.replace(/\.mdx$/, '');
-        const src = fs.readFileSync(path.join(ERRORS_SRC, file), 'utf8');
-        entries.push({ code, src });
+    // Hand-authored Markdoc pages enrich a code with extra prose, causes, and a
+    // code example. They are OPTIONAL — keyed by code, present only when an error
+    // earns more documentation than the package metadata alone provides.
+    const sources = new Map<string, string>();
+    if (fs.existsSync(ERRORS_SRC)) {
+        for (const file of fs.readdirSync(ERRORS_SRC)) {
+            if (!file.endsWith('.mdx')) continue;
+            sources.set(file.replace(/\.mdx$/, ''), fs.readFileSync(path.join(ERRORS_SRC, file), 'utf8'));
+        }
     }
-    const codes = entries.map((e) => e.code);
+
+    // The errors package is the source of truth for which codes exist: every code
+    // mapped by `getErrorFromCode` in `@nordcom/commerce-errors` gets a page,
+    // whether or not a hand-authored enrichment file accompanies it. Union the
+    // rare hand-authored page that lacks a matching package code so nothing
+    // checked in is dropped.
+    const codes = Array.from(new Set([...collectAllCodes(), ...sources.keys()]));
     const groups = buildGroups(codes);
     const codeToGroup = new Map<string, string>();
     for (const [group, list] of Object.entries(groups)) for (const c of list) codeToGroup.set(c, group);
 
     let converted = 0;
-    for (const { code, src } of entries) {
+    for (const code of codes) {
         const group = codeToGroup.get(code) ?? 'general';
         const related = (groups[group] ?? []).filter((c) => c !== code).slice(0, 6);
-        const mdx = convertOne(code, src, related);
+        const mdx = convertOne(code, sources.get(code) ?? '', related);
         const dest = path.join(ERRORS_OUT, `${kebab(code)}.mdx`);
         writeIfChanged(dest, mdx, touched);
         converted++;
@@ -63,9 +68,11 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { converted: 
 }
 
 /**
- * Group every code by its SCREAMING_SNAKE prefix, honoring the hand-curated
- * override map in `_overrides.json`. Shared by both the meta.json emitter and
- * the per-page related-codes renderer.
+ * Group every code by the error-kind it belongs to in the package
+ * (`ApiErrorKind` → `api`, `GenericErrorKind` → `general`), honoring the
+ * hand-curated override map in `_overrides.json` for codes that should sit in a
+ * named group regardless of kind. Shared by both the meta.json emitter and the
+ * per-page related-codes renderer.
  *
  * @param codes - Flat list of error codes.
  * @returns Map from group key to ordered list of codes.
@@ -76,14 +83,30 @@ function buildGroups(codes: string[]): Record<string, string[]> {
         ? (JSON.parse(fs.readFileSync(overridesPath, 'utf8')) as Record<string, string[]>)
         : {};
     const overrideSet = new Set(Object.values(overrides).flat());
-    const groups: Record<string, string[]> = { general: overrides.general ?? [] };
+    // Seed override groups first so curated codes keep their declared order.
+    const groups: Record<string, string[]> = {};
+    for (const [group, list] of Object.entries(overrides)) groups[group] = [...list];
     for (const code of codes) {
         if (overrideSet.has(code)) continue;
-        const prefix = code.split('_')[0] as string;
-        groups[prefix] ??= [];
-        groups[prefix].push(code);
+        const group = groupForCode(code);
+        groups[group] ??= [];
+        groups[group].push(code);
     }
     return groups;
+}
+
+/**
+ * Resolve the sidebar group key for a code from its package kind, falling back
+ * to the code's SCREAMING_SNAKE prefix when the code maps to no known class.
+ *
+ * @param code - SCREAMING_SNAKE_CASE error code.
+ * @returns Group key (`api`, `general`, or a lowercased prefix fallback).
+ */
+function groupForCode(code: string): string {
+    const kind = resolveClassFromCode(code)?.kind;
+    if (kind === 'ApiErrorKind') return 'api';
+    if (kind === 'GenericErrorKind') return 'general';
+    return (code.split('_')[0] ?? 'general').toLowerCase();
 }
 
 /**
@@ -140,8 +163,11 @@ function pruneUntouched(root: string, touched: Set<string>): number {
  */
 function convertOne(code: string, src: string, related: string[]): string {
     const sections = parseSections(src);
-    const description = sections.documentation || `Error ${code}.`;
     const lookup = resolveClassFromCode(code);
+    // Prefer the hand-authored Documentation section, then fall back to the
+    // package class's own `description`/`details` fields so a code with no
+    // enrichment file still gets a meaningful summary.
+    const description = sections.documentation || lookup?.description || lookup?.details || `Error ${code}.`;
 
     const frontmatter = ['---', `title: ${code}`, `description: ${escapeYaml(description)}`, '---', ''].join('\n');
 
@@ -252,10 +278,10 @@ function kebabClass(name: string): string {
 }
 
 /**
- * Emit a Fumadocs meta.json for the errors tab, grouping codes by their
- * SCREAMING_SNAKE prefix with a hand-curated override map read from
- * `content/errors/_overrides.json`. Codes listed in the override map are
- * placed in the named group instead of their natural prefix group.
+ * Emit a Fumadocs meta.json for the errors tab, grouping codes by their package
+ * error-kind with a hand-curated override map read from
+ * `content/errors/_overrides.json`. Codes listed in the override map are placed
+ * in the named group instead of their natural kind group.
  *
  * Uses the Fumadocs `--<label>` separator syntax inside the `pages` array to
  * render group headers in the sidebar. If separators don't render in the
@@ -269,11 +295,11 @@ function emitErrorsMeta(codes: string[], touched: Set<string>): void {
     const pages: string[] = [];
     // Tab root index page first — keeps the sidebar tree rooted at this folder.
     if (fs.existsSync(path.join(ERRORS_OUT, 'index.mdx'))) pages.push('index');
-    for (const [prefix, list] of Object.entries(groups).sort()) {
+    for (const [group, list] of Object.entries(groups).sort()) {
         if (list.length === 0) continue;
         // Fumadocs separator syntax: `---Label---` renders a sidebar group header.
-        // Append the count so the sidebar shows e.g. `API_* · 11`.
-        const base = prefix === 'general' ? 'General' : `${prefix.toUpperCase()}_*`;
+        // Append the count so the sidebar shows e.g. `API · 33`.
+        const base = group === 'general' ? 'General' : group.toUpperCase();
         const label = `${base} · ${list.length}`;
         pages.push(`---${label}---`, ...list.map((c) => c.toLowerCase().replace(/_/g, '-')));
     }
@@ -310,31 +336,81 @@ function loadThrowSites(): ThrowSite[] {
     return throwSitesCache;
 }
 
-type SymbolLookup = { className: string; kind: string; statusCode?: number };
+type SymbolLookup = { className: string; kind: string; statusCode?: number; details?: string; description?: string };
+
+/** Class fields lifted off each `export class` declaration, before chain resolution. */
+type ClassMeta = { parent: string; statusCode?: number; details?: string; description?: string };
 
 /** Lazily populated cache from parsing the errors package switch. */
 let codeToSymbolCache: Map<string, SymbolLookup> | null = null;
 
+/** Lazily populated cache of every code declared by the two error-kind enums. */
+let allCodesCache: string[] | null = null;
+
+/**
+ * Read the errors package source, throwing a clear error when it is missing.
+ *
+ * @throws {Error} When the errors package source file is not found; the whole
+ *   errors tab is generated from it.
+ * @returns The file contents of `packages/errors/src/index.ts`.
+ */
+function readErrorsPkgSrc(): string {
+    if (!fs.existsSync(ERRORS_PKG_SRC)) {
+        throw new Error(
+            `[port-errors] Cannot find ${ERRORS_PKG_SRC}. The errors tab is generated from the errors package source.`,
+        );
+    }
+    return fs.readFileSync(ERRORS_PKG_SRC, 'utf8');
+}
+
+/**
+ * Collect (and cache) every SCREAMING_SNAKE_CASE code declared by the
+ * `GenericErrorKind` and `ApiErrorKind` enums — the canonical set of codes the
+ * package exposes, mirroring `getAllErrorCodes()` without importing the built
+ * package. Enum member names equal their string values, so the names double as
+ * the file-based slugs used throughout this script.
+ *
+ * @returns Ordered list of every declared error code.
+ */
+function collectAllCodes(): string[] {
+    if (allCodesCache !== null) return allCodesCache;
+    const src = readErrorsPkgSrc();
+    const codes: string[] = [];
+    for (const block of src.matchAll(/export enum \w+ErrorKind\s*\{([\s\S]*?)\n\}/g)) {
+        for (const member of (block[1] as string).matchAll(/^\s*(\w+)\s*=/gm)) codes.push(member[1] as string);
+    }
+    allCodesCache = codes;
+    return codes;
+}
+
+/**
+ * Read a string-literal class field's declared value from a class body,
+ * ignoring `this.`-prefixed constructor reassignments of the same field.
+ *
+ * @param body - The class body source.
+ * @param field - Field name to read (e.g. `description`).
+ * @returns The declared string value, or undefined when not declared.
+ */
+function matchField(body: string, field: string): string | undefined {
+    const m = body.match(new RegExp(`(?<![.\\w])${field}\\s*=\\s*(['"\`])([\\s\\S]*?)\\1`));
+    return m ? (m[2] as string) : undefined;
+}
+
 /**
  * Parse `packages/errors/src/index.ts`'s `getErrorFromCode` switch statement
  * to build a map from SCREAMING_SNAKE error code (enum member name) to its
- * class name, kind enum, and resolved HTTP status (walking the `extends`
- * chain when the class itself doesn't declare a `statusCode = NNN`).
+ * class name, kind enum, and resolved HTTP status, `details`, and
+ * `description` — each walked up the `extends` chain when the class itself
+ * doesn't declare the field.
  *
- * @throws {Error} When the errors package source file is not found; the
- *   throw-site feature depends on this mapping.
- * @returns Map from code string to `{ className, kind, statusCode? }`.
+ * @throws {Error} When the errors package source file is not found.
+ * @returns Map from code string to its resolved {@link SymbolLookup}.
  */
 function buildCodeToSymbolMap(): Map<string, SymbolLookup> {
-    if (!fs.existsSync(ERRORS_PKG_SRC)) {
-        throw new Error(
-            `[port-errors] Cannot find ${ERRORS_PKG_SRC}. The throw-site feature requires the errors package source.`,
-        );
-    }
-    const src = fs.readFileSync(ERRORS_PKG_SRC, 'utf8');
+    const src = readErrorsPkgSrc();
 
-    // Build classname → { parent, statusCode? } from `export class X extends Y { ... statusCode = NNN; ... }`.
-    const classes = new Map<string, { parent: string; statusCode?: number }>();
+    // Lift parent + declared class fields off each `export class X extends Y { ... }`.
+    const classes = new Map<string, ClassMeta>();
     for (const m of src.matchAll(/export class (\w+)\s+extends\s+([\w<>\s,]+?)\s*\{([\s\S]*?)\n\}/g)) {
         const name = m[1] as string;
         const parent = ((m[2] as string).split(/[<\s,]/)[0] ?? '') as string;
@@ -343,18 +419,20 @@ function buildCodeToSymbolMap(): Map<string, SymbolLookup> {
         classes.set(name, {
             parent,
             statusCode: statusMatch ? Number(statusMatch[1]) : undefined,
+            details: matchField(body, 'details'),
+            description: matchField(body, 'description'),
         });
     }
 
-    // Resolve statusCode by walking the extends chain.
-    const resolveStatus = (className: string): number | undefined => {
+    // Resolve a class field by walking the extends chain until one declares it.
+    const resolve = <K extends keyof ClassMeta>(className: string, field: K): ClassMeta[K] | undefined => {
         let current: string | undefined = className;
         const seen = new Set<string>();
         while (current && !seen.has(current)) {
             seen.add(current);
             const entry = classes.get(current);
             if (!entry) return undefined;
-            if (entry.statusCode !== undefined) return entry.statusCode;
+            if (entry[field] !== undefined) return entry[field];
             current = entry.parent;
         }
         return undefined;
@@ -365,22 +443,37 @@ function buildCodeToSymbolMap(): Map<string, SymbolLookup> {
         const kind = m[1] as string;
         const memberName = m[2] as string;
         const className = (m[3] as string).split(/\s/)[0] as string;
-        map.set(memberName, { className, kind, statusCode: resolveStatus(className) });
+        map.set(memberName, {
+            className,
+            kind,
+            statusCode: resolve(className, 'statusCode'),
+            details: resolve(className, 'details'),
+            description: resolve(className, 'description'),
+        });
     }
     return map;
+}
+
+/**
+ * Return (and cache) the parsed code → symbol map, building it at most once.
+ *
+ * @returns Map from every mapped error code to its {@link SymbolLookup}.
+ */
+function loadCodeToSymbolMap(): Map<string, SymbolLookup> {
+    if (codeToSymbolCache === null) {
+        codeToSymbolCache = buildCodeToSymbolMap();
+    }
+    return codeToSymbolCache;
 }
 
 /**
  * Resolve the symbol lookup for a given SCREAMING_SNAKE_CASE code string.
  *
  * @param code - SCREAMING_SNAKE_CASE error code (file-based, matches enum member name).
- * @returns Resolved `{ className, kind }`, or undefined when the code is unknown.
+ * @returns Resolved {@link SymbolLookup}, or undefined when the code is unknown.
  */
 function resolveClassFromCode(code: string): SymbolLookup | undefined {
-    if (codeToSymbolCache === null) {
-        codeToSymbolCache = buildCodeToSymbolMap();
-    }
-    return codeToSymbolCache.get(code);
+    return loadCodeToSymbolMap().get(code);
 }
 
 /**
