@@ -264,11 +264,23 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   literal; added `tCart` to the callback deps.
 - Verified: six locale JSONs valid, biome clean, typecheck clean, add-to-cart 6/6.
 
+### 22 — Product vendor: never a dead end
+
+- Closes overhaul spec #3. `ProductVendor` linked to the vendor's collection when one existed but
+  rendered the vendor as **plain non-interactive text** otherwise (and `null` on any non-404 error) —
+  a lost navigation path. The products listing already accepts a `vendor` search-param
+  (`vendor:"<name>"`).
+- Reworked: prefer `/collections/<handle>/`; on any lookup miss/failure fall back to
+  `/products/?vendor=<encoded name>`, so the vendor is always a working link. Dropped the now-unused
+  `NotFoundError` import and the plain-text branch.
+- Added a test for the no-collection fallback link.
+- Verified: biome clean, typecheck clean, product-vendor 4/4.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- Remaining literal `aria-label="Close"` in `product-options/primitives/overlay` (deep primitive, no
-  i18n prop) and the unused `layout/popover`. Lower priority — overlay needs i18n threading through
-  the product-options system.
+- Remaining literal `aria-label="Close"` / `Show all … options` in
+  `product-options/primitives/overlay` — the product-options Root/context carry no i18n, so this needs
+  threading i18n through the whole option system (sizeable; deferred).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE facets in `FilterValues` and wire the shared
   `ProductFilters` into /products, collections, and search (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets in `FilterValues` and wire the
