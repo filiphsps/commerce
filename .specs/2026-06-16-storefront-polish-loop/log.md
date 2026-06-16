@@ -155,11 +155,31 @@ translucent `bg-black/NN` scrims remain, by design).
   stay exempt. The ratchet now prevents bare black ink on a themeable surface from creeping back.
 - Verified: biome clean, typecheck clean, gate 22/22 (zero violations), cart-button 5/5.
 
+### 13 — Cart note: give the textarea an accessible name
+
+- The cart-note textarea had a `placeholder` but no accessible name — a placeholder disappears on
+  input and isn't a reliable label (WCAG 3.3.2 / 4.1.2). Added `aria-label` reusing the existing
+  `placeholder-cart-note` key (no new locale keys). This completes "every storefront text input has an
+  accessible name" — search and quantity were already labeled; cart-note was the only gap among the
+  Input/MultilineInput consumers.
+- Added a test querying the field by accessible name.
+- Verified: biome clean, typecheck clean, cart-note 5/5.
+
+#### i18n note
+
+The `t()` helper falls back to the raw key and `LocaleDictionaryKey` is type-derived from the
+dictionaries, so any NEW user-facing string needs a key added to all six locale files
+(en/de/es/fr/no/sv) — that's why `product-filters` ships literal sort/price labels and several generic
+primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file slice; logged below.
+
 #### Candidate slices for future iterations (audit backlog)
 
+- i18n pass: localize `product-filters` (sort options, Min/Max, price/sort aria-labels),
+  `cart-coupons` ("Active discounts", remove title), and the generic primitives' literal
+  `aria-label="Close"` / `"Previous"` / `"Next"` / `"Product options"`. Requires adding keys across
+  all six locale JSONs (en/de/es/fr/no/sv).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
   /products, collections, and search as the shared faceted aside (per the overhaul spec).
-- Localize the literal `aria-label="Close"` / `title="Close"` on the popover and picker-sheet.
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
   /products, collections, and search as the shared faceted aside (per the overhaul spec).
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
