@@ -195,6 +195,16 @@ const EDITOR_COLLECTION_SCHEMAS: Record<string, EditorCollectionSchema> = {
         ],
         drafts: AUTOSAVE,
     },
+    search: {
+        fields: [
+            localized(textField({ name: 'heading' })),
+            localized(textField({ name: 'subheading' })),
+            arrayField({ name: 'popularSearches', fields: [localized(required(textField({ name: 'term' })))] }),
+            blocksField({ name: 'blocks', blocks: allBlockDescriptors }),
+            seoGroup(),
+        ],
+        drafts: AUTOSAVE,
+    },
     header: {
         fields: [
             imageField({ name: 'logo' }),

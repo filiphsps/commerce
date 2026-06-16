@@ -541,6 +541,27 @@ export interface Footer {
     createdAt: string;
     _status?: ('draft' | 'published') | null;
 }
+export interface Search {
+    id: string;
+    tenant?: (string | null) | Shop;
+    heading?: string | null;
+    subheading?: string | null;
+    popularSearches?: Array<{
+        term: string;
+        id?: string | null;
+    }> | null;
+    blocks?: Array<ColumnsBlock | AlertBlock | BannerBlock | CollectionBlock | HtmlBlock | MediaGridBlock | OverviewBlock | RichTextBlock | VendorsBlock> | null;
+    seo?: {
+        title?: string | null;
+        description?: string | null;
+        keywords?: string[] | null;
+        image?: (string | null) | Media;
+        noindex?: boolean | null;
+    };
+    updatedAt: string;
+    createdAt: string;
+    _status?: ('draft' | 'published') | null;
+}
 export interface BusinessDatum {
     id: string;
     tenant?: (string | null) | Shop;

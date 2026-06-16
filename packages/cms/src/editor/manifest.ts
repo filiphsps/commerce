@@ -22,6 +22,7 @@ export type CollectionSlug =
     | 'reviews'
     | 'header'
     | 'footer'
+    | 'search'
     | 'businessData'
     | 'tenants';
 

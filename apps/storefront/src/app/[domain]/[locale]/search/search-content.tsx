@@ -108,6 +108,14 @@ export type SearchContentProps = {
     skeletonCards: ReactNode[];
     productFilters?: ProductFilters;
     totalCount?: number;
+    /** No-query landing headline (from the `search` singleton, platform-default fallback). */
+    landingHeading?: string;
+    /** No-query landing sub-copy. */
+    landingSubheading?: string;
+    /** Popular-search terms rendered as one-tap chips on the landing; each runs that query. */
+    popularSearches?: string[];
+    /** Server-rendered CMS blocks shown beneath the landing prompt. */
+    landingExtra?: ReactNode;
 };
 /**
  * Client component that composes the search page: a `SearchBar`, optional
@@ -132,6 +140,10 @@ export default function SearchContent({
     skeletonCards,
     productFilters = [],
     totalCount,
+    landingHeading,
+    landingSubheading,
+    popularSearches = [],
+    landingExtra,
 }: SearchContentProps) {
     const { replace } = useRouter();
     const searchParams = useSearchParams();
@@ -145,6 +157,39 @@ export default function SearchContent({
     // empty state. `empty:hidden` would otherwise collapse the list to nothing.
     const activeQuery = searchParams.get('q')?.trim() ?? '';
     const showEmptyState = !isPending && activeQuery.length > 0 && productCards.length <= 0;
+    // No query committed and nothing pending: render the tenant-configurable landing instead of a
+    // blank `empty:hidden` section (the prior crash-adjacent dead end).
+    const showLanding = !isPending && activeQuery.length === 0;
+
+    // Commits a query to the URL (Enter/blur/button via SearchBar, or a popular-search chip),
+    // dropping every other param so a new search starts from a clean facet state.
+    const runSearch = useCallback(
+        (q: string) => {
+            const query = q.trim();
+            const params = new URLSearchParams(searchParams);
+
+            if (query) {
+                if (params.get('q') === query) {
+                    return;
+                }
+                params.set('q', query);
+            } else {
+                params.delete('q');
+            }
+
+            params.forEach((_value, key) => {
+                if (key === 'q') {
+                    return;
+                }
+                params.delete(key);
+            });
+
+            startTransition(() => {
+                replace(`${pathname}?${params.toString()}`, { scroll: true });
+            });
+        },
+        [pathname, replace, searchParams],
+    );
 
     return (
         <>
@@ -153,36 +198,45 @@ export default function SearchContent({
                 locale={locale}
                 i18n={i18n}
                 defaultValue={searchParams.get('q')?.toString()}
-                onSearch={async (q) => {
-                    const query = q.trim();
-
-                    const params = new URLSearchParams(searchParams);
-
-                    if (query) {
-                        if (params.get('q') === query) {
-                            return;
-                        }
-
-                        params.set('q', query);
-                    } else {
-                        params.delete('q');
-                    }
-
-                    params.forEach((_value, key) => {
-                        if (key === 'q') {
-                            return;
-                        }
-
-                        params.delete(key);
-                    });
-
-                    startTransition(() => {
-                        replace(`${pathname}?${params.toString()}`, { scroll: true });
-                    });
-                }}
+                onSearch={runSearch}
             />
 
-            {showFilters ? (
+            {showLanding ? (
+                <section className="flex flex-col items-center gap-6 py-10 text-center">
+                    <div className="flex flex-col items-center gap-2">
+                        <SearchIcon
+                            className="size-10 text-(--text-muted)"
+                            aria-hidden="true"
+                            style={{ strokeWidth: 2 }}
+                        />
+                        <h2 className="font-bold text-(--text) text-h3">{landingHeading}</h2>
+                        {landingSubheading ? (
+                            <p className="max-w-prose text-(--text-muted)">{landingSubheading}</p>
+                        ) : null}
+                    </div>
+
+                    {popularSearches.length > 0 ? (
+                        <div className="flex flex-wrap items-center justify-center gap-2">
+                            {popularSearches.map((term) => (
+                                <button
+                                    key={term}
+                                    type="button"
+                                    className="rounded-full border border-(--border-default) bg-(--surface-1) px-4 py-2 font-semibold text-(--text) text-sm transition-colors hover:border-(--accent) hover:text-(--accent) focus-visible:outline-offset-2 focus-visible:[outline:2px_solid_var(--focus-ring)]"
+                                    onClick={() => runSearch(term)}
+                                >
+                                    {term}
+                                </button>
+                            ))}
+                        </div>
+                    ) : null}
+
+                    <Button as={Link} href="/" variant="secondary">
+                        {t('browse-all-products')}
+                    </Button>
+
+                    {landingExtra ? <div className="w-full text-left">{landingExtra}</div> : null}
+                </section>
+            ) : showFilters ? (
                 <ProductFilterBar filters={productFilters} i18n={i18n} total={totalCount} />
             ) : typeof totalCount === 'number' && totalCount > 0 ? (
                 <Label className="font-medium text-(--text-muted) text-sm">

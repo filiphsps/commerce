@@ -9,6 +9,7 @@ import { mediaEditor } from './media';
 import { pagesEditor } from './pages';
 import { productMetadataEditor } from './product-metadata';
 import { reviewsEditor } from './review';
+import { searchEditor } from './search';
 import { shopsEditor } from './shop';
 import { tenantsEditor } from './tenants';
 import { usersEditor } from './users';
@@ -23,6 +24,7 @@ export { mediaEditor } from './media';
 export { pagesEditor } from './pages';
 export { productMetadataEditor } from './product-metadata';
 export { reviewsEditor } from './review';
+export { searchEditor } from './search';
 export { shopsEditor } from './shop';
 export { tenantsEditor } from './tenants';
 export { usersEditor } from './users';
@@ -39,6 +41,7 @@ export const allManifests: readonly CollectionEditorManifest[] = [
     featureFlagsEditor as unknown as CollectionEditorManifest,
     headerEditor as unknown as CollectionEditorManifest,
     footerEditor as unknown as CollectionEditorManifest,
+    searchEditor as unknown as CollectionEditorManifest,
     mediaEditor as unknown as CollectionEditorManifest,
     pagesEditor as unknown as CollectionEditorManifest,
     productMetadataEditor as unknown as CollectionEditorManifest,

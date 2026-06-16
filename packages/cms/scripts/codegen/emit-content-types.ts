@@ -66,6 +66,7 @@ const RELATION_INTERFACE: Record<string, string> = {
     reviews: 'Review',
     header: 'Header',
     footer: 'Footer',
+    search: 'Search',
     businessData: 'BusinessDatum',
 };
 
@@ -333,6 +334,7 @@ const DOC_INJECTIONS: Record<string, DocInjection> = {
     reviews: { leading: [TENANT_LINE], beforeTimestamps: [], afterTimestamps: [], status: false },
     header: { leading: [TENANT_LINE], beforeTimestamps: [], afterTimestamps: [], status: true },
     footer: { leading: [TENANT_LINE], beforeTimestamps: [], afterTimestamps: [], status: true },
+    search: { leading: [TENANT_LINE], beforeTimestamps: [], afterTimestamps: [], status: true },
     businessData: { leading: [TENANT_LINE], beforeTimestamps: [], afterTimestamps: [], status: true },
 };
 

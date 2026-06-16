@@ -104,6 +104,7 @@ function resolveLocalizedFields(collection: string, data: unknown, chain: readon
 const DEEP_LOCALIZED_COLLECTIONS = new Set([
     'header',
     'footer',
+    'search',
     'pages',
     'articles',
     'collectionMetadata',
@@ -344,7 +345,7 @@ function docKey(doc: CmsPublishedDoc, field: string): string {
 export const singleton = serverQuery({
     args: {
         shopId: v.string(),
-        collection: v.union(v.literal('header'), v.literal('footer'), v.literal('businessData')),
+        collection: v.union(v.literal('header'), v.literal('footer'), v.literal('search'), v.literal('businessData')),
         locale: v.string(),
         draft: v.optional(v.boolean()),
     },

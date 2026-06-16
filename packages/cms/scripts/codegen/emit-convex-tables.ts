@@ -41,6 +41,7 @@ const CMS_CONTENT_COLLECTIONS = [
     'media',
     'header',
     'footer',
+    'search',
     'businessData',
 ] as const;
 

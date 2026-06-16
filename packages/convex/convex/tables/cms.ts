@@ -255,6 +255,26 @@ export const cmsContentTables = {
             updatedAt: v.number(),
         })
     ).index('by_shop', ['shop']),
+    search: defineTable(
+        v.object({
+            shop: v.string(),
+            heading: v.optional(v.string()),
+            subheading: v.optional(v.string()),
+            popularSearches: v.optional(v.array(v.object({
+                term: v.string(),
+            }))),
+            blocks: v.optional(v.array(v.any())),
+            seo: v.optional(v.object({
+                title: v.optional(v.string()),
+                description: v.optional(v.string()),
+                keywords: v.optional(v.array(v.string())),
+                image: v.optional(v.string()),
+                noindex: v.optional(v.boolean()),
+            })),
+            createdAt: v.number(),
+            updatedAt: v.number(),
+        })
+    ).index('by_shop', ['shop']),
     businessData: defineTable(
         v.object({
             shop: v.string(),

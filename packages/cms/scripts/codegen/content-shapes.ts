@@ -817,6 +817,17 @@ const footerShape: ContentCollectionShape = {
     ),
 };
 
+const searchShape: ContentCollectionShape = {
+    slug: 'search',
+    fields: shape(
+        localized(textField({ name: 'heading' })),
+        localized(textField({ name: 'subheading' })),
+        arrayField({ name: 'popularSearches', fields: [localized(required(textField({ name: 'term' })))] }),
+        { name: 'blocks', type: 'blocks', blocks: allBlockShapes },
+        seoGroup(),
+    ),
+};
+
 const businessDataShape: ContentCollectionShape = {
     slug: 'businessData',
     fields: shape(
@@ -862,5 +873,6 @@ export const allCollectionShapes: ContentCollectionShape[] = [
     reviewsShape,
     headerShape,
     footerShape,
+    searchShape,
     businessDataShape,
 ];

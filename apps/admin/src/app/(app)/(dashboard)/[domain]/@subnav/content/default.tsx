@@ -16,6 +16,7 @@ export default async function ContentSubNav({ params }: Props) {
             <NavItem href={`${base}/business-data/` as Route}>Business data</NavItem>
             <NavItem href={`${base}/header/` as Route}>Header</NavItem>
             <NavItem href={`${base}/footer/` as Route}>Footer</NavItem>
+            <NavItem href={`${base}/search/` as Route}>Search</NavItem>
             <NavItem href={`${base}/pages/` as Route}>Pages</NavItem>
             <NavItem href={`${base}/articles/` as Route}>Articles</NavItem>
             <NavItem href={`${base}/product-metadata/` as Route}>Product metadata</NavItem>

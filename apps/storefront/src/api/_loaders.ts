@@ -11,6 +11,7 @@ import { HeaderApi as _HeaderApi } from './header';
 import { InfoBarApi as _InfoBarApi } from './info-bar';
 import { CollectionMetadataApi as _CollectionMetadataApi, ProductMetadataApi as _ProductMetadataApi } from './metadata';
 import { PagesApi as _PagesApi } from './page';
+import { SearchApi as _SearchApi } from './search';
 import { BlogApi as _BlogApi } from './shopify/blog';
 import { CollectionApi as _CollectionApi } from './shopify/collection';
 import { ProductApi as _ProductApi } from './shopify/product';
@@ -117,6 +118,13 @@ export const HeaderApi = cache((args: Parameters<typeof _HeaderApi>[0]) => _Head
  * @returns Promise resolving to the CMS footer, or `null` when unseeded.
  */
 export const FooterApi = cache((args: Parameters<typeof _FooterApi>[0]) => _FooterApi(args));
+/**
+ * React-cached variant of `SearchApi`.
+ *
+ * @param args - Arguments forwarded to the underlying `SearchApi`.
+ * @returns Promise resolving to the CMS search-landing singleton, or `null` when unseeded.
+ */
+export const SearchApi = cache((args: Parameters<typeof _SearchApi>[0]) => _SearchApi(args));
 /**
  * React-cached variant of `InfoBarApi`.
  *

@@ -2,11 +2,21 @@ import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { Suspense } from 'react';
+import { SearchApi } from '@/api/_loaders';
 import type { Product, ProductFilters } from '@/api/product';
+import { Blocks } from '@/blocks/blocks';
+import type { BlockNode } from '@/blocks/types';
 import ProductCard from '@/components/product-card';
 import SearchProductCard from '@/components/products/search-product-card';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import SearchContent from './search-content';
+
+/** Platform-default search-landing copy + popular terms, used when a tenant has not seeded the `search` singleton. */
+const SEARCH_LANDING_DEFAULTS = {
+    heading: 'Search our store',
+    subheading: 'Find products, brands, and collections — start typing above.',
+    popularSearches: ['Sale', 'New in', 'Best sellers'],
+} as const;
 
 /** Props for the `SearchContentGate` server component. */
 export type SearchContentGateProps = {
@@ -31,7 +41,7 @@ export type SearchContentGateProps = {
  * @param data - Server-fetched search results containing products, filters, and total count.
  * @returns The `SearchContent` client component with pre-rendered product and skeleton cards.
  */
-export default function SearchContentGate({ shop, locale, i18n, showFilters, data }: SearchContentGateProps) {
+export default async function SearchContentGate({ shop, locale, i18n, showFilters, data }: SearchContentGateProps) {
     const { products = [], productFilters = [], totalCount } = data;
 
     const productCards = products.map((product) => (
@@ -44,6 +54,19 @@ export default function SearchContentGate({ shop, locale, i18n, showFilters, dat
         <ProductCard.skeleton key={index} layout="horizontal" chrome="boxed" />
     ));
 
+    // No-query landing, sourced from the tenant-editable `search` singleton with a platform-default
+    // fallback. Blocks render here (server-only) and pass down as a node; the popular-search terms go
+    // down as plain strings so the client can wire them to the search runner.
+    const search = await SearchApi({ shop, locale });
+    const landingHeading = search?.heading || SEARCH_LANDING_DEFAULTS.heading;
+    const landingSubheading = search?.subheading || SEARCH_LANDING_DEFAULTS.subheading;
+    const seededTerms = (search?.popularSearches ?? [])
+        .map((entry) => entry?.term)
+        .filter((term): term is string => typeof term === 'string' && term.trim().length > 0);
+    const popularSearches = seededTerms.length > 0 ? seededTerms : [...SEARCH_LANDING_DEFAULTS.popularSearches];
+    const landingBlocks = (search?.blocks ?? []) as BlockNode[];
+    const landingExtra = landingBlocks.length > 0 ? <Blocks blocks={landingBlocks} context={{ shop, locale }} /> : null;
+
     return (
         <SearchContent
             locale={locale}
@@ -53,6 +76,10 @@ export default function SearchContentGate({ shop, locale, i18n, showFilters, dat
             skeletonCards={skeletonCards}
             productFilters={productFilters}
             totalCount={totalCount}
+            landingHeading={landingHeading}
+            landingSubheading={landingSubheading}
+            popularSearches={popularSearches}
+            landingExtra={landingExtra}
         />
     );
 }
