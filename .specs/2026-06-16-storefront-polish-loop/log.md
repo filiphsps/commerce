@@ -97,6 +97,16 @@ Guiding principles (from the task + repo design system):
   facets are unimplemented and not yet wired into any page; full faceting is a separate slice.)
 - Verified: biome clean, typecheck clean, filter-values 9/9.
 
+### 8 — Breadcrumbs: fix per-crumb hrefs + nav landmark
+
+- `hrefs = path.map((_) => …)` ignored the index, so **every breadcrumb (and JSON-LD item URL)
+  pointed at the same URL**. Fixed to cumulative paths (`/a`, `/a/b`, …); Link re-adds the locale.
+- A11y: rendered as a bare `<section>` — promoted to `<nav aria-label="Breadcrumb">` (landmark) and
+  marked the current crumb `aria-current="page"`.
+- Added tests: distinct cumulative hrefs (regression guard for the constant-URL bug), the nav
+  landmark, and a single current marker.
+- Verified: biome clean, typecheck clean, breadcrumbs 3/3.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
