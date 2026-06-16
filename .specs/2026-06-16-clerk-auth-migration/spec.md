@@ -1,0 +1,278 @@
+# Clerk Auth Migration — Spec
+
+**Status:** Approved for planning (grilled 2026-06-16)
+**Branch:** `feat/clerk-auth-migration` (isolated worktree at execution)
+**Scope owner app:** `apps/admin` (landing gets a sign-in link only)
+
+## Goal
+
+Replace the admin app's hand-rolled NextAuth v5 + custom RS256 → Convex `customJwt`
+auth with Clerk, using Clerk Organizations as the multi-tenant model, while preserving
+the existing `/[domain]/` per-shop routing and Convex authorization seam.
+
+## Background — current state (mapped 2026-06-16)
+
+- **Auth:** `next-auth@5.0.0-beta.31` + `@auth/core` in `apps/admin`, JWT session
+  strategy, **GitHub OAuth only**. Configs: `apps/admin/src/utils/auth.{ts,config.ts,adapter.ts}`,
+  route `apps/admin/src/app/api/auth/[...nextauth]/route.ts`, re-export `apps/admin/src/auth.ts`.
+- **Convex bridge:** admin mints a custom **RS256 JWT** (`apps/admin/src/lib/convex-token.ts`,
+  claims `email` + `activeShop`) served via `apps/admin/src/app/.well-known/jwks.json/route.ts`;
+  Convex validates it as a `customJwt` provider in `packages/convex/convex/auth.config.ts`.
+- **Identity resolution:** `packages/convex/convex/lib/auth.ts` — `resolveUserFromIdentity`
+  (email → `users.by_email`), `resolveAdminShopId` (user → `shopCollaborators.by_user`,
+  errors on 0 / >1 membership: `NO_SHOP_MEMBERSHIP` / `AMBIGUOUS_SHOP_MEMBERSHIP`).
+- **Tables:** `packages/convex/convex/tables/auth.ts` — `users` (email-keyed, embedded
+  `identities[]`), `sessions` (unused under JWT strategy), `identities`.
+- **Tenancy:** `shops`, `shopCollaborators { shop, user, permissions[] }`. The
+  Auth.js adapter's `createUser` → `db/users:create` is the **only** path that provisions
+  a `users` row today. Shop creation wizard (`apps/admin/src/app/(app)/(setup)/new/`)
+  auto-makes the creator an `['admin']` collaborator via `db/shop_write:upsertShop`.
+- **E2E:** `apps/admin/e2e/global-setup.ts` signs a NextAuth JWT cookie offline
+  (`__Secure-authjs.session-token`) using `NEXTAUTH_SECRET`.
+- **Design:** Nordstar design system (`@nordcom/nordstar`), dark-mode only, primary
+  `#ED1E79`, Montserrat (`--font-primary`) + Geist Mono, `border-3` chunky cards,
+  `--radius: 0.5rem`, pink-halo glow shell (`apps/admin/src/components/auth-shell.tsx`).
+
+## Decision log (resolved during grilling)
+
+| # | Decision | Choice |
+|---|----------|--------|
+| 1 | Landing scope | **Admin-only Clerk.** Landing stays static, gets a "Sign in" link → admin sign-in route. No ClerkProvider on landing. |
+| 2 | Convex seam | **Replace** the RS256 minting seam with Clerk's native Convex integration. |
+| 3 | Identity key | `clerkUserId` (Clerk `subject`) **primary**, `email` **fallback** with lazy backfill. JWT template carries both. |
+| 4 | Sign-in methods | GitHub OAuth, Email magic-link/OTP, Google OAuth, **Shopify OAuth (scaffold/placeholder only)**. Accounts may link multiple methods (Clerk account linking). |
+| 5 | Shopify scope | **Env + config placeholders only** this plan; no working button, no e2e. |
+| 6 | Access gating | **Open sign-up + self-serve onboarding** (new user → create org → create storefront). |
+| 7 | User provisioning | **Clerk webhook → Convex httpAction (svix)** is source of truth; **lazy `ensureCurrentUser`** mutation as first-load safety net. |
+| 8 | E2E auth | `@clerk/testing` + **email-OTP test mode** (`clerk.signIn`) against the Clerk **dev** instance. |
+| 9 | Tenancy model | **Adopt Clerk Organizations.** Org = team/account; **owns N storefronts (shops)**. User ∈ multiple orgs. |
+| 10 | Collaborators | Keep `shopCollaborators` as a **webhook-synced read-mirror** (fan-out projection); existing Convex queries unchanged. |
+| 11 | Org data model | Add `orgs` mirror + org-membership mirror + `shops.clerkOrgId`; **fan out** org membership → `shopCollaborators` for every shop the org owns. |
+| 12 | Active org ↔ routing | **URL (`/[domain]/`) is canonical.** On entering a shop route, resolve its `clerkOrgId` and `setActive` to match; server verifies token `org_id` == shop's owning org, redirects through a sync step if stale. |
+| 13 | Roles | Baseline: **every org member → `['admin']`** permission (parity). Clerk role granularity deferred. |
+| 14 | Provisioning | Agent provisions **DEV** via Clerk CLI + commits config-as-code; **PROD** config applied in **GitHub CI** via Clerk Backend API (`CLERK_SECRET_KEY` secret). One-time human prod bootstrap (DNS, real OAuth apps). |
+| 15 | Env mapping | Clerk **dev** instance → Vercel Preview + local dev + CI/e2e. Clerk **prod** instance → Vercel Production. Set via CLI/scripts in CI where possible. |
+| 16 | Legacy env vars | Removed from **`.env.example` only**. **Kept** in CI, Vercel, and local `.env.local` for safekeeping. |
+| 17 | Cleanup | **Full removal now:** NextAuth + RS256 + JWKS + Convex `sessions`/`identities` tables + `users.identities[]`. |
+| 18 | Cutover | **Big-bang on a feature branch** (isolated worktree). No dual-auth, no flag. |
+| 19 | UI approach | **Clerk prebuilt components themed via `appearance`** to match admin tokens; bespoke org×storefront chooser only. |
+
+## Target architecture
+
+### Clerk instances & environments
+
+- **Dev instance:** uses Clerk's shared dev OAuth (no GitHub/Google app needed). Backs
+  Vercel **Preview**, local dev, and **CI/e2e** (test-mode reserved emails are dev-only).
+- **Prod instance:** own GitHub/Google OAuth apps + DNS CNAMEs. Backs Vercel **Production**.
+- Config-as-code (`clerk config pull` output) committed to the repo; the convex JWT
+  template, social connections, organizations setting, and Shopify custom-OAuth placeholder
+  are all declared there and applied to both instances.
+
+### Identity & user provisioning
+
+- Clerk identity `subject` = Clerk user id. The **`convex` JWT template** adds
+  `email: {{user.primary_email_address}}` (and Clerk's native `org_id`/`org_role`/`org_slug`
+  active-org claims ride along automatically).
+- `users` table gains `clerkUserId?: string` with index `by_clerk_user_id`.
+- **Webhook (source of truth):** Clerk `user.created` / `user.updated` / `user.deleted`
+  hit a Convex httpAction. Handler upserts `users` **by email** — if a row exists, set
+  `clerkUserId` = subject and sync `name`/`avatar`; else insert a new row with `clerkUserId`.
+  This single upsert covers both brand-new operators and existing email-keyed rows.
+- **Lazy safety net:** `account/self:ensureCurrentUser` mutation, called on first
+  authenticated admin load, performs the same upsert from JWT claims if the webhook
+  hasn't landed yet (first-sign-in race). Idempotent with the webhook.
+- `resolveUserFromIdentity` resolves `by_clerk_user_id` on `identity.subject` first;
+  falls back to `by_email`, lazily backfilling `clerkUserId` on that path.
+
+### Organizations as the tenant model
+
+```
+Clerk Organization (team/account)
+        │  owns
+        ▼
+   shops (storefronts)   ← shops.clerkOrgId  (index by_clerk_org)
+        │
+   /[domain]/…  route = one shop, owned by one org
+
+User ∈ many orgs (Clerk org memberships) → sees a mix-mash of storefronts across orgs
+```
+
+- **Convex mirror tables** (synced from Clerk webhooks, read-only mirrors):
+  - `orgs { clerkOrgId, name, slug, imageUrl?, createdAt, updatedAt }` — index `by_clerk_org`.
+  - `orgMemberships { clerkOrgId, user: Id<'users'>, clerkUserId, role, createdAt }` —
+    indexes `by_clerk_org`, `by_user`, `by_clerk_org_user`.
+- **Projection:** a membership change fans out to `shopCollaborators` — one row per shop
+  the org owns, `permissions: ['admin']` (decision 13). Adding a shop under an org backfills
+  collaborator rows for all current org members. This keeps every existing
+  `shopCollaborators`-based query unchanged (they read a derived projection).
+- **Webhook events synced:** `organization.created/updated/deleted`,
+  `organizationMembership.created/updated/deleted` (plus the `user.*` events above).
+
+### Active org ↔ `/[domain]/` reconciliation
+
+- The `/[domain]/` segment stays the tenant selector. On entering a shop route:
+  1. Resolve the shop → `shop.clerkOrgId` (the owning org).
+  2. Client `setActive({ organization: clerkOrgId })` if the active org differs.
+  3. Server layout reads `auth().orgId`; if it ≠ the routed shop's owning org (stale first
+     paint after a switch), redirect through a short sync step rather than render with the
+     wrong tenant.
+- **Convex authorization** (`resolveShopAccess(domain)`, replacing `resolveAdminShopId`):
+  shop → `clerkOrgId`; require the verified JWT `org_id` == that `clerkOrgId` (Clerk only
+  emits `org_id` for orgs the user is an active member of), and confirm the
+  `orgMemberships`/`shopCollaborators` mirror agrees (defense in depth).
+- The shop chooser lists storefronts across **all** the user's orgs (via the
+  `orgMemberships` mirror joined to `shops.by_clerk_org`), grouped by org.
+
+### Convex integration
+
+- `packages/convex/convex/auth.config.ts` → `{ providers: [{ domain: process.env.CLERK_FRONTEND_API_URL, applicationID: 'convex' }] }`.
+- **Client:** `apps/admin` wraps the tree in `<ClerkProvider>` → `<ConvexProviderWithClerk client={convex} useAuth={useAuth}>` (`convex/react-clerk`, `useAuth` from `@clerk/nextjs`).
+- **Server:** replace `mintConvexOperatorToken` with `(await auth()).getToken({ template: 'convex' })` → `convexHttpClient.setAuth(token)`. `apps/admin/src/lib/convex-auth.ts` is reworked (not deleted) to wire Clerk's token; `convex-token.ts` + the JWKS route are deleted.
+
+### Sign-in methods & account linking
+
+- Enabled on both instances: GitHub OAuth, Google OAuth, Email code (magic-link/OTP).
+- **Account linking:** Clerk "link accounts with same verified email" on → one Clerk user
+  may hold GitHub + Google + email. Subject-primary resolution (decision 3) is stable across
+  methods. Existing operators' first Clerk sign-in links to their email-keyed `users` row.
+- **Shopify OAuth:** reserved env vars + a documented Clerk custom-OAuth-connection in the
+  config-as-code, marked TODO; no UI, no e2e (decision 5).
+
+### Onboarding (self-serve)
+
+- New user (no org) lands on a **create-organization** step (`<CreateOrganization />`),
+  then the existing **create-storefront** wizard (`/[domain]/…` after creation), which now
+  creates a shop **under the active org** (writes `shops.clerkOrgId`). Org membership +
+  webhook projection grant `['admin']` on the new storefront.
+- Existing single-shop operators: on first sign-in, a one-time migration backfills a Clerk
+  org for their current shop membership (see plan Phase 7) so they land in their org.
+
+### Access & roles
+
+- Authorization gate = active-org match + mirror agreement. Every org member is `['admin']`
+  for parity; Clerk roles (`org:admin`/`org:member`) are stored in the mirror for future
+  granularity but not yet enforced.
+
+## UI / design direction (frontend-design)
+
+Reskin Clerk's prebuilt components to the **existing** admin identity — do not invent a new look.
+
+- **`appearance.variables`:** `colorPrimary: #ED1E79`, `colorBackground: #000`,
+  `colorText: #fefefe`, `colorInputBackground` ~ card, `borderRadius: 0.5rem`,
+  `fontFamily: var(--font-primary)` (Montserrat). `baseTheme: dark`.
+- **`appearance.elements`:** card → `border-3` + `bg-card/40 backdrop-blur-sm` (or
+  `card: 'shadow-none bg-transparent'` so Clerk's card sits inside the existing `AuthShell`);
+  primary button → Nordstar solid-primary look; social buttons → `outline` `h-12`.
+- **Surfaces:**
+  - `<SignIn/>` / `<SignUp/>` nested inside `AuthShell` (keep logo, pink-halo, "Welcome back" eyebrow).
+  - `<UserButton/>` replaces `AccountMenu`'s avatar dropdown in `shell-header`.
+  - `<UserProfile/>` (themed) replaces the custom `accounts/` page (theme preference stays
+    a Convex-backed control alongside it).
+  - **Bespoke org×storefront chooser** (replaces `apps/admin/src/app/(app)/page.tsx`): the
+    `<OrganizationSwitcher/>` for org selection + a Nordstar grid reusing the existing
+    shop-card pattern (`border-3 rounded-xl`, hover lift, staggered fade-in), grouped by org:
+
+```
+┌──────────────────────────────────────────────┐
+│  [logo]                         [UserButton]   │
+│  Hi {firstName}                                │
+│  Choose a storefront                           │
+│                                                │
+│  ▸ ACME ORG                  [+ New storefront]│
+│    ┌───────────┐  ┌───────────┐                │
+│    │ S  shop-a │  │ S  shop-b │   …            │
+│    └───────────┘  └───────────┘                │
+│  ▸ OTHER ORG                 [+ New storefront]│
+│    ┌───────────┐                               │
+│    │ S  shop-c │                               │
+│    └───────────┘                               │
+│                                                │
+│  [ + Create organization ]                     │
+└──────────────────────────────────────────────┘
+```
+
+- Copy: action-named, sentence case ("Create storefront", "Create organization", empty
+  state "No storefronts yet — create your first one"). American English.
+
+## Environment variables
+
+### New (added to `.env.example`, `.env.local`, CI, Vercel, Convex as noted)
+
+| Var | Where | Notes |
+|-----|-------|-------|
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | admin (Vercel Preview/Prod), CI, `.env.local` | dev key for Preview/CI, prod key for Production |
+| `CLERK_SECRET_KEY` | admin (Vercel Preview/Prod), CI, `.env.local` | dev/prod per env; CI prod-config job uses prod key |
+| `CLERK_FRONTEND_API_URL` | **Convex deployment** (dev + prod) + admin | `auth.config.ts` domain |
+| `CLERK_WEBHOOK_SIGNING_SECRET` | **Convex deployment** (dev + prod) | svix verification in httpAction |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` `…SIGN_UP_URL` `…AFTER_SIGN_IN_URL` `…AFTER_SIGN_UP_URL` | admin | route config (may live in code) |
+| `SHOPIFY_OAUTH_CLIENT_ID` / `SHOPIFY_OAUTH_CLIENT_SECRET` | reserved placeholders | scaffold only |
+
+Convex deployment vars set via `npx convex env set …` (dev locally; prod in CI deploy job).
+
+### Removed from `.env.example` only (kept in CI, Vercel, `.env.local`)
+
+`NEXTAUTH_SECRET`, `AUTH_SECRET`, `AUTH_TRUST_HOST`, `GITHUB_ID`, `GITHUB_TOKEN`,
+`CONVEX_AUTH_ISSUER`, `CONVEX_AUTH_APPLICATION_ID`, `CONVEX_AUTH_JWKS_URL`,
+`CONVEX_AUTH_PRIVATE_KEY`.
+
+## Clerk CLI provisioning
+
+- **Dev (agent, during execution):** `clerk apps create` (or link), then apply config-as-code
+  — convex JWT template, GitHub/Google/email connections, Organizations enabled + "allow
+  multiple orgs", account linking, Shopify custom-OAuth placeholder. Commit `clerk config pull` output.
+- **Prod (GitHub CI on deploy):** apply the **same committed config** non-interactively via
+  the Clerk **Backend API** (`clerk api …` or direct REST) authenticated with the prod
+  `CLERK_SECRET_KEY` GitHub secret — mirrors the Convex prod-deploy job. Webhook endpoint
+  (Convex `/clerk-webhooks` URL) registered to the prod instance.
+- **One-time human prod bootstrap:** `clerk deploy` for DNS CNAMEs + create real GitHub/Google
+  OAuth apps. Documented as a runbook in the plan.
+
+> **Open item (verify at execution):** the exact Clerk CLI non-interactive CI-auth mechanism
+> (device-flow cached credential vs. `clerk api` with `CLERK_SECRET_KEY`). Confirm via
+> `clerk auth --help` / `clerk config --help`; default to Backend-API application of config
+> if no first-class CI login token exists.
+
+## E2E harness
+
+- Add `@clerk/testing`. `global-setup.ts`: `clerkSetup()` (Testing Token via `CLERK_SECRET_KEY`),
+  ensure a Clerk **test user** (`e2e-test+clerk_test@example.com`) via Backend API, ensure its
+  Clerk **org** + membership, then seed the matching Convex `users` (`clerkUserId`) + `orgs` +
+  `orgMemberships` + projected `shopCollaborators` for the canonical shop. Sign in via
+  `clerk.signIn({ page, emailAddress })` (server-side token, bypasses verification); save
+  storage state. Per-spec, `setupClerkTestingToken({ page })`.
+- Runs against the Clerk **dev** instance only. CI needs `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+  + `CLERK_SECRET_KEY` (dev) in the e2e job.
+- New flows get specs (CLAUDE.md E2E rule): sign-in, create-org onboarding, org-switch,
+  storefront chooser, no-access/empty states.
+
+## Cleanup — removed in this migration
+
+- **Files (delete):** `apps/admin/src/utils/auth.{ts,config.ts,adapter.ts}`,
+  `apps/admin/src/auth.ts`, `apps/admin/src/app/api/auth/[...nextauth]/route.ts`,
+  `apps/admin/src/app/.well-known/jwks.json/route.ts`, `apps/admin/src/lib/convex-token.ts`,
+  `apps/admin/src/components/login-button.tsx`,
+  `apps/admin/src/app/(app)/(auth)/auth/login/page.tsx` + `…/logout/page.tsx`.
+- **Convex schema:** drop `sessions` + `identities` tables and the embedded `users.identities[]`;
+  rewrite `auth.config.ts` and `lib/auth.ts`. Touches the limit-boundary CI gate
+  (`pnpm --filter @nordcom/commerce-test-convex run test src/limits`).
+- **Deps:** remove `next-auth`, `@auth/core` from `apps/admin`; add `@clerk/nextjs`,
+  `@clerk/testing`, `convex` `react-clerk` is part of `convex`. Add changeset(s).
+
+## Out of scope / deferred
+
+- Full Shopify OAuth sign-in (placeholders only).
+- Clerk role granularity / per-shop permissions (mirror stores roles; not enforced).
+- Landing app session awareness (link only).
+- Org-level billing/settings UI (orgs table reserved for it later).
+
+## Risks & open items
+
+1. **CLI CI-auth mechanism** — verify exact command (see Open item above).
+2. **Active-org SSR staleness** — first paint after an org switch may lag the token; the
+   server sync-redirect (decision 12) must cover it. Validate with an org-switch e2e.
+3. **Existing-operator org backfill** — one-time migration must create a Clerk org per
+   current shop membership without duplicating on re-run (idempotent by `shops.clerkOrgId`).
+4. **Webhook eventual consistency** — membership/shop changes have a sync window; the lazy
+   `ensureCurrentUser` and server-side mirror checks must tolerate it.
+5. **Convex schema drop** — `sessions`/`identities` removal is a migration; confirm no
+   residual readers before deleting (grep + LSP find_references).
