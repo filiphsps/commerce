@@ -203,12 +203,20 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         (breakpoint) => resolveResponsiveValue(resolvedLayout, breakpoint) === 'carousel',
     );
 
-    // Resolve the carousel arrow labels only when arrows render; the dictionary import is
+    // Resolve the arrow + view-all labels only when something needs them; the dictionary import is
     // bundler-cached, so this is cheap on repeat across multiple rails on a page.
     let arrowLabels: { previous: string; next: string } | null = null;
-    if (showArrows) {
+    let viewAllTemplate: string | undefined;
+    if (showArrows || (collection && showViewAll)) {
         const { t } = getTranslations('common', await getDictionary({ shop, locale }));
-        arrowLabels = { previous: capitalize(t('previous')), next: capitalize(t('next')) };
+        if (showArrows) {
+            arrowLabels = { previous: capitalize(t('previous')), next: capitalize(t('next')) };
+        }
+        if (collection && showViewAll) {
+            // Pass the raw `{0}` template string, not an interpolated ReactNode: the tile splits it
+            // and builds the bold title client-side to survive the page's `'use cache'` Flight boundary.
+            viewAllTemplate = t('view-all-in');
+        }
     }
 
     return (
@@ -232,7 +240,10 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
                 {children}
                 {productCards}
                 {collection && showViewAll ? (
-                    <CollectionViewAllTile collection={{ handle: collection.handle, title: collection.title }} />
+                    <CollectionViewAllTile
+                        collection={{ handle: collection.handle, title: collection.title }}
+                        template={viewAllTemplate}
+                    />
                 ) : null}
             </Tag>
         </div>

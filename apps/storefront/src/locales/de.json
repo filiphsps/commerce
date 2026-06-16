@@ -52,6 +52,7 @@
     },
     "common": {
         "accepted-payment-methods": "Akzeptierte Zahlungsmethoden",
+        "view-all-in": "Alle Produkte in {0} ansehen.",
         "product-options": "Produktoptionen",
         "choose-product-options": "Produktoptionen wählen",
         "filters": "Filter",

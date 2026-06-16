@@ -47,6 +47,7 @@
     },
     "common": {
         "accepted-payment-methods": "Aksepterte betalingsmetoder",
+        "view-all-in": "Se alle produktene i {0}.",
         "product-options": "Produktvalg",
         "choose-product-options": "Velg produktvalg",
         "filters": "Filtre",
