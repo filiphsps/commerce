@@ -16,7 +16,8 @@ type ViewportListener = () => void;
 function createViewportStub(height: number, offsetTop = 0) {
     const listeners: Record<string, Set<ViewportListener>> = {};
     const addEventListener = vi.fn((type: string, cb: ViewportListener) => {
-        (listeners[type] ??= new Set()).add(cb);
+        listeners[type] ??= new Set();
+        listeners[type]?.add(cb);
     });
     const removeEventListener = vi.fn((type: string, cb: ViewportListener) => {
         listeners[type]?.delete(cb);
