@@ -76,6 +76,7 @@ export function ProductQuantityBreaksItem({
         <Button
             {...props}
             type="button"
+            aria-pressed={active}
             className={cn(
                 'flex h-16 items-center justify-between gap-2 rounded-xl border-(--surface-0) border-2 border-solid bg-(--surface-0) px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-(--border-strong) hover:border-(--border-strong)',
                 active && 'border-primary text-primary',
