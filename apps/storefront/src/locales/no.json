@@ -1,4 +1,9 @@
 {
+    "build-notifier": {
+        "title": "En ny versjon er tilgjengelig",
+        "reload": "Last inn på nytt",
+        "dismiss": "Lukk"
+    },
     "cart": {
         "add-n-to-your-cart": "Legg {0} til i handlekurven",
         "away-from-free-shipping": "Ikke gå glipp av et godt tilbud! Legg til varer verdt ytterligere {0} til bestillingen din og få helt GRATIS frakt.",

@@ -1,4 +1,9 @@
 {
+    "build-notifier": {
+        "title": "Hay una nueva versión disponible",
+        "reload": "Recargar",
+        "dismiss": "Descartar"
+    },
     "cart": {
         "add-n-to-your-cart": "Agregar {0} a tu carrito",
         "away-from-free-shipping": "¡No te pierdas una gran oferta! Agrega artículos por un valor adicional de {0} a tu pedido y obtén envío completamente GRATIS, por cuenta de la casa.",

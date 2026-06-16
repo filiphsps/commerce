@@ -1,4 +1,9 @@
 {
+    "build-notifier": {
+        "title": "En ny version är tillgänglig",
+        "reload": "Ladda om",
+        "dismiss": "Stäng"
+    },
     "cart": {
         "add-n-to-your-cart": "Lägg till {0} st i din varukorg",
         "away-from-getting": "Kvar tills du får",
