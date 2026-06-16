@@ -6,6 +6,7 @@ import type { Metadata, Viewport } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { LandingBuildNotifier } from '@/components/build-notifier/build-notifier';
 import Footer from '@/components/footer';
 import { Providers } from '@/components/providers';
 import logo from '@/static/logo.svg';
@@ -82,6 +83,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                     </div>
 
                     <Footer />
+                    <LandingBuildNotifier />
                 </Providers>
             </body>
         </html>

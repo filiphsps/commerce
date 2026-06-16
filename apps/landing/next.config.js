@@ -4,6 +4,7 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import withMarkdoc from '@markdoc/next.js';
 import { resolveBuildEnv } from '@nordcom/commerce-utils/env';
+import { withBuildNotifier } from 'next-build-notifier/config';
 
 const { isDev, environment, gitSHA } = resolveBuildEnv(process.env);
 
@@ -55,7 +56,7 @@ const config = {
     trailingSlash: true,
     productionBrowserSourceMaps: true,
     compress: true,
-    transpilePackages: [],
+    transpilePackages: ['next-build-notifier'],
     assetPrefix: getBaseUrl(),
     reactCompiler: true,
     cacheComponents: true,
@@ -130,11 +131,13 @@ const config = {
     skipTrailingSlashRedirect: true,
 };
 
-export default withMarkdoc({
-    mode: 'static',
-    schemaPath: './src/markdoc',
-    tokenizerOptions: {
-        allowComments: true,
-        slots: true,
-    },
-})(config);
+export default withBuildNotifier(
+    withMarkdoc({
+        mode: 'static',
+        schemaPath: './src/markdoc',
+        tokenizerOptions: {
+            allowComments: true,
+            slots: true,
+        },
+    })(config),
+);

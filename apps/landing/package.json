@@ -53,6 +53,7 @@
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-marketing-common": "workspace:*",
         "@nordcom/commerce-utils": "workspace:*",
+        "next-build-notifier": "workspace:*",
         "@nordcom/nordstar": "0.2.0",
         "@opentelemetry/api-logs": "0.219.0",
         "@opentelemetry/instrumentation": "0.219.0",

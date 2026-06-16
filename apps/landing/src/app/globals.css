@@ -172,3 +172,24 @@
         @apply flex flex-col gap-2;
     }
 }
+
+/* Build-notifier banner entrance and accent-dot ring animations. */
+@keyframes nbn-in-bottom {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes nbn-ring {
+    from {
+        box-shadow: 0 0 0 0 hsl(var(--color-brand));
+    }
+    to {
+        box-shadow: 0 0 0 6px transparent;
+    }
+}

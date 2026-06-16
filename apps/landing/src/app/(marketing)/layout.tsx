@@ -5,6 +5,7 @@ import { GeistMono } from 'geist/font/mono';
 import type { Metadata, Viewport } from 'next';
 import { Montserrat } from 'next/font/google';
 import type { ReactNode } from 'react';
+import { LandingBuildNotifier } from '@/components/build-notifier/build-notifier';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import { Providers } from '@/components/providers';
@@ -66,6 +67,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                     </View>
 
                     <Footer />
+                    <LandingBuildNotifier />
                 </Providers>
             </body>
         </html>
