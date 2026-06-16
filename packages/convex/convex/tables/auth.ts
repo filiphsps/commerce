@@ -84,8 +84,9 @@ export type UserPreferences = Infer<typeof userPreferencesValidator>;
  * `user.ts` and the Auth.js adapter contract: a unique `email`, a `name`, optional `avatar`, the
  * nullable `emailVerified` timestamp (Mongo `Date` → numeric epoch-ms here), an optional `groups`
  * allowlist, the embedded {@link embeddedIdentityValidator} list that links the user to its OAuth
- * identities, and optional per-user {@link userPreferencesValidator}. `email` uniqueness is enforced
- * in the mutation layer, not by the index.
+ * identities, optional per-user {@link userPreferencesValidator}, and the optional `clerkUserId`
+ * subject string populated during the Clerk auth migration so Clerk identities resolve to this row.
+ * `email` uniqueness is enforced in the mutation layer, not by the index.
  */
 export const userValidator = v.object({
     email: v.string(),
@@ -95,6 +96,8 @@ export const userValidator = v.object({
     groups: v.optional(v.array(v.string())),
     identities: v.array(embeddedIdentityValidator),
     preferences: v.optional(userPreferencesValidator),
+    /** Clerk user subject (`user_…`) that maps this row to a Clerk identity; absent on rows predating the migration. */
+    clerkUserId: v.optional(v.string()),
     ...timestampFields,
 });
 
@@ -122,10 +125,13 @@ export const sessionValidator = v.object({
 export type SessionBase = Infer<typeof sessionValidator>;
 
 /**
- * Platform user table. `by_email` backs the adapter's `getUserByEmail` lookup; the source `email`
- * uniqueness has no equivalent unique index in Convex and is enforced in the mutation layer.
+ * Platform user table. `by_email` backs the adapter's `getUserByEmail` lookup; `by_clerk_user_id`
+ * backs Clerk identity resolution during and after the auth migration. `email` uniqueness has no
+ * equivalent unique index in Convex and is enforced in the mutation layer.
  */
-const usersTable = defineTable(userValidator).index('by_email', ['email']);
+const usersTable = defineTable(userValidator)
+    .index('by_email', ['email'])
+    .index('by_clerk_user_id', ['clerkUserId']);
 
 /**
  * Session table. `by_token` backs token validation, `by_user` lists a user's sessions, and
