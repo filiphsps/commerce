@@ -23,7 +23,12 @@ type AuthReadCtx = Pick<GenericQueryCtx<DataModel>, 'auth' | 'db'>;
 export const AuthErrorCode = {
     /** No identity on the request — `getUserIdentity()` returned `null` (unauthenticated). */
     UNAUTHENTICATED: 'UNAUTHENTICATED',
-    /** The identity's `iss` does not match the configured trusted NextAuth issuer (forged / wrong provider). */
+    /**
+     * The identity's `iss` does not match the trusted issuer for its tier (forged / wrong provider):
+     * the Clerk issuer (`CLERK_FRONTEND_API_URL`) for ADMIN operators, or `CONVEX_AUTH_ISSUER` for
+     * storefront customers. Each tier re-asserts only its OWN issuer, so a token minted for the other
+     * tier is rejected here as well as cross-tier-forged.
+     */
     FORGED_IDENTITY: 'FORGED_IDENTITY',
     /** The validated identity carries no `email` claim, so it cannot be mapped to a `users` row. */
     IDENTITY_WITHOUT_EMAIL: 'IDENTITY_WITHOUT_EMAIL',
@@ -47,6 +52,61 @@ export const AuthErrorCode = {
  */
 function getTrustedIssuer(): string | undefined {
     return getServerEnv('CONVEX_AUTH_ISSUER');
+}
+
+/**
+ * The trusted Clerk issuer an ADMIN operator identity's `iss` must match, read from the Convex
+ * deployment env. Kept in lockstep with `auth.config.ts`'s Clerk provider, whose `domain` is this
+ * same `CLERK_FRONTEND_API_URL`: that config is the PRIMARY gate (Convex verifies the Clerk JWT's
+ * signature and `iss`/`aud` before `getUserIdentity()` ever returns), and this is the
+ * defense-in-depth re-assertion that also makes forgery rejection testable under `convex-test`,
+ * whose `withIdentity` fakes an identity WITHOUT running Convex's signature/issuer validation.
+ *
+ * This is the OPERATOR-tier counterpart to {@link getTrustedIssuer}: operator tokens come from
+ * Clerk (a different issuer than the customer `CONVEX_AUTH_ISSUER`), so the operator path validates
+ * against this issuer and must NOT reuse the customer gate.
+ *
+ * @returns The configured Clerk issuer, or `undefined` when the env var is unset.
+ */
+function getClerkIssuer(): string | undefined {
+    return getServerEnv('CLERK_FRONTEND_API_URL');
+}
+
+/**
+ * Validates the request's Convex auth identity as an ADMIN operator (Clerk) identity and returns it.
+ *
+ * The operator-tier analog of {@link getTrustedIdentity}: it reads the identity Convex already
+ * verified (signature + `iss`/`aud` per the Clerk provider in `auth.config.ts`) and re-asserts the
+ * issuer against {@link getClerkIssuer} as a second, in-handler line of defense. When the Clerk
+ * issuer is configured, an identity whose `issuer` differs is rejected as forged; when it is not
+ * configured, the platform-level validation is relied on alone (documented fallback, since the
+ * deployment always sets it). A CUSTOMER token (minted on the `CONVEX_AUTH_ISSUER` customJwt
+ * provider) carries a different issuer and is therefore rejected here — operator code must never
+ * reuse {@link getTrustedIdentity}, whose customer gate would conversely reject this Clerk identity.
+ *
+ * @param ctx - A Convex query or mutation context exposing `auth`.
+ * @returns The validated Clerk operator {@link UserIdentity}.
+ * @throws {ConvexError} `UNAUTHENTICATED` when there is no identity on the request.
+ * @throws {ConvexError} `FORGED_IDENTITY` when the identity's issuer is not the trusted Clerk issuer.
+ */
+export async function getClerkOperatorIdentity(ctx: AuthReadCtx): Promise<UserIdentity> {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+        throw new ConvexError({
+            code: AuthErrorCode.UNAUTHENTICATED,
+            message: 'No authenticated identity on the request.',
+        });
+    }
+
+    const clerkIssuer = getClerkIssuer();
+    if (clerkIssuer && identity.issuer !== clerkIssuer) {
+        throw new ConvexError({
+            code: AuthErrorCode.FORGED_IDENTITY,
+            message: 'Identity issuer does not match the trusted Clerk operator issuer.',
+        });
+    }
+
+    return identity;
 }
 
 /**
@@ -106,37 +166,56 @@ export function requireIdentityEmail(identity: UserIdentity): string {
 }
 
 /**
- * Resolves the platform `users` row backing the request's trusted identity.
+ * Resolves the platform `users` row backing the request's trusted ADMIN OPERATOR (Clerk) identity.
  *
- * Maps the validated identity onto a user via its `email` claim and the `users.by_email` index —
- * the same email-keyed mapping the Auth.js adapter and the admin `getAuthedCmsCtx` already use,
- * and the only user lookup the auth schema indexes (`users` carries no provider-subject column). The
- * email lookup goes through the RAW `ctx.db`: `users` is a platform-global, system-tier-exempt table
+ * The OPERATOR-tier user resolver. Validates the identity as a Clerk operator
+ * ({@link getClerkOperatorIdentity}) and maps it onto a `users` row in two ordered steps:
+ * 1. **Clerk subject** — `users.by_clerk_user_id` on `identity.subject` (the `user_…` id). This is
+ *    the durable, email-change-proof link populated by the Clerk webhook + `ensureCurrentUser`
+ *    backfill in later tasks; it is preferred so an operator who changes their email still resolves.
+ * 2. **Email fallback** — `users.by_email` using {@link requireIdentityEmail}, for rows that predate
+ *    the migration (or before the backfill has stamped `clerkUserId` onto them).
+ *
+ * This resolver is deliberately READ-ONLY: it does NOT lazily backfill `clerkUserId` on an
+ * email-fallback hit, so it stays safe to call from a query context. The backfill is owned by the
+ * Clerk webhook and the `ensureCurrentUser` mutation (later tasks), not this read path.
+ *
+ * Both lookups go through the RAW `ctx.db`: `users` is a platform-global, system-tier-exempt table
  * that sits above any tenant partition, so reading it here is sanctioned un-scoped access, not a
- * tenant-isolation hole.
+ * tenant-isolation hole. This is operator-only — every caller resolves a `shopCollaborators`
+ * membership downstream; the customer tier (`authedQuery`/`authedMutation`) never reaches it and
+ * keeps validating on the `CONVEX_AUTH_ISSUER` customJwt path via {@link getTrustedIdentity}.
  *
  * @param ctx - A Convex query or mutation context exposing `auth` and `db`.
- * @returns The `users` document the identity maps to.
- * @throws {ConvexError} `UNAUTHENTICATED` / `FORGED_IDENTITY` from {@link getTrustedIdentity}.
- * @throws {ConvexError} `IDENTITY_WITHOUT_EMAIL` when the identity carries no email claim.
- * @throws {ConvexError} `UNKNOWN_USER` when no `users` row matches the identity's email.
+ * @returns The `users` document the Clerk identity maps to.
+ * @throws {ConvexError} `UNAUTHENTICATED` / `FORGED_IDENTITY` from {@link getClerkOperatorIdentity}.
+ * @throws {ConvexError} `IDENTITY_WITHOUT_EMAIL` when the subject misses and the identity carries no email claim.
+ * @throws {ConvexError} `UNKNOWN_USER` when no `users` row matches the identity's Clerk subject or email.
  */
 export async function resolveUserFromIdentity(ctx: AuthReadCtx): Promise<Doc<'users'>> {
-    const identity = await getTrustedIdentity(ctx);
-    const email = requireIdentityEmail(identity);
+    const identity = await getClerkOperatorIdentity(ctx);
 
-    const user = await ctx.db
+    const bySubject = await ctx.db
+        .query('users')
+        .withIndex('by_clerk_user_id', (q) => q.eq('clerkUserId', identity.subject))
+        .first();
+    if (bySubject) {
+        return bySubject;
+    }
+
+    const email = requireIdentityEmail(identity);
+    const byEmail = await ctx.db
         .query('users')
         .withIndex('by_email', (q) => q.eq('email', email))
         .first();
-    if (!user) {
+    if (!byEmail) {
         throw new ConvexError({
             code: AuthErrorCode.UNKNOWN_USER,
-            message: 'No platform user matches the trusted identity.',
+            message: 'No platform user matches the trusted Clerk operator identity.',
         });
     }
 
-    return user;
+    return byEmail;
 }
 
 /**
