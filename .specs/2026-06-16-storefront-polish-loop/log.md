@@ -387,6 +387,17 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   and the stale-entry test confirms the file is now clean.
 - Verified: biome clean, typecheck clean, design-tokens gate 22/22.
 
+### 34 — Tokenize the rich-text collapsible chrome (shrink the color gate)
+
+- The CMS rich-text collapsible block (+ its skeleton) hard-coded `border-gray-300` / `bg-gray-100` —
+  un-themeable, allowlisted as a deferred CMS migration.
+- Migrated to `border-(--border-default)` / `bg-(--surface-1)` (the standard card border/surface),
+  removed `blocks/rich-text.tsx` from the gate allowlist (ratchet shrinks), re-sorted classes.
+- Note: the collapsible's `collapseLabel ?? 'Read more'` fallback is still English — but it's a
+  tenant-authored CMS field, so the real fix is the tenant setting it; localizing the fallback would
+  need a new key + i18n threading into the block renderer. Logged.
+- Verified: biome clean, typecheck clean, gate 22/22 + rich-text/registry 55 total.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
