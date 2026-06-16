@@ -12,6 +12,10 @@ vi.mock('./search-content', () => ({
     ),
 }));
 
+// The gate reads the tenant `search` singleton for its no-query landing; stub it so the test never
+// reaches Convex and falls back to the platform-default landing copy.
+vi.mock('@/api/_loaders', () => ({ SearchApi: vi.fn().mockResolvedValue(null) }));
+
 import { render, screen } from '@/utils/test/react';
 import SearchContentGate from './search-content-gate';
 
@@ -21,13 +25,13 @@ const i18n = {} as never;
 const data = { products: [], productFilters: [] };
 
 describe('SearchContentGate', () => {
-    it('forwards showFilters=true to SearchContent', () => {
-        render(<SearchContentGate shop={shop} locale={locale} i18n={i18n} data={data} showFilters={true} />);
+    it('forwards showFilters=true to SearchContent', async () => {
+        render(await SearchContentGate({ shop, locale, i18n, data, showFilters: true }));
         expect(screen.getByTestId('search-content').textContent).toBe('showFilters=true');
     });
 
-    it('forwards showFilters=false to SearchContent', () => {
-        render(<SearchContentGate shop={shop} locale={locale} i18n={i18n} data={data} showFilters={false} />);
+    it('forwards showFilters=false to SearchContent', async () => {
+        render(await SearchContentGate({ shop, locale, i18n, data, showFilters: false }));
         expect(screen.getByTestId('search-content').textContent).toBe('showFilters=false');
     });
 });

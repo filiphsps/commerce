@@ -19,6 +19,10 @@ vi.mock('./search-content', () => ({
     ),
 }));
 
+// The gate reads the tenant `search` singleton for its no-query landing; stub it so this regression
+// test stays focused on result-card rendering without reaching Convex.
+vi.mock('@/api/_loaders', () => ({ SearchApi: vi.fn().mockResolvedValue(null) }));
+
 import { render, screen } from '@/utils/test/react';
 import SearchContentGate from './search-content-gate';
 
@@ -27,7 +31,7 @@ const locale = { code: 'en-US' } as never;
 const i18n = {} as never;
 
 describe('SearchContentGate — phase 1 regression', () => {
-    it('renders one product-card-root per result returned by cachedSearch', () => {
+    it('renders one product-card-root per result returned by cachedSearch', async () => {
         const data = {
             products: [
                 {
@@ -50,7 +54,7 @@ describe('SearchContentGate — phase 1 regression', () => {
             totalCount: 3,
         };
 
-        render(<SearchContentGate shop={shop} locale={locale} i18n={i18n} data={data} showFilters={false} />);
+        render(await SearchContentGate({ shop, locale, i18n, data, showFilters: false }));
 
         expect(screen.getAllByTestId('product-card-root')).toHaveLength(3);
     });
