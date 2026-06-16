@@ -245,6 +245,13 @@
     --color-block-info-dark: #1c5d99;
     --color-block-info-text: var(--color-dark);
 
+    /* Warm warning palette: a light amber surface paired with a dark warm-brown ink. No prior
+     * `--color-*` source carried a warning tint (the Alert block hard-coded `bg-yellow-200`, which no
+     * tenant theme could recolor); these promote it to themeable sources, mirroring the green-light /
+     * green-dark success pair. The dark-on-light pairing clears WCAG AA (pinned in the gate). */
+    --color-warning-light: #fdeede;
+    --color-warning-dark: #6b3410;
+
     /* `--color-accent-*` is the single source of truth: the serializer (`CssVariablesProvider`)
      * emits it per-shop when branding resolves, and these aliases inherit it. The platform-default
      * literal lives only in the `var()` fallback, so a theme-less shop (no `--color-accent-*`
@@ -528,6 +535,11 @@ html:root {
      * pairing; the high contrast clears WCAG AA (pinned in design-tokens.gate.test.ts). */
     --surface-success: var(--color-green-light, #e1faea);
     --text-success-strong: var(--color-green-dark, #093f09);
+
+    /* Soft-warning alert surface — dark warm-brown ink on a light amber surface, replacing the
+     * hard-coded `bg-yellow-200` the Alert carried. Clears WCAG AA (pinned in design-tokens.gate.test.ts). */
+    --surface-warning: var(--color-warning-light, #fdeede);
+    --text-warning-strong: var(--color-warning-dark, #6b3410);
 
     --focus-ring: var(--accent);
 

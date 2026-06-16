@@ -62,6 +62,7 @@ const ALLOWLIST: ReadonlyMap<string, string> = new Map([
     ['blocks/media-grid.tsx', CMS_BLOCK],
     ['blocks/rich-text.tsx', CMS_BLOCK],
     ['components/actionable/button.tsx', WHITE_ON_BRAND],
+    ['components/informational/alert.tsx', WHITE_ON_BRAND],
     ['components/product-display/primitives/variant-badges.tsx', WHITE_ON_BRAND],
     ['components/products/product-quantity-breaks.tsx', WHITE_ON_BRAND],
 ]);
@@ -193,6 +194,8 @@ const TOKENS = {
     stateWarning: '#b54a2a', // --state-warning → --product-card-urgency-color
     surfaceSuccess: '#e1faea', // --surface-success → --color-green-light
     textSuccessStrong: '#093f09', // --text-success-strong → --color-green-dark
+    surfaceWarning: '#fdeede', // --surface-warning → --color-warning-light
+    textWarningStrong: '#6b3410', // --text-warning-strong → --color-warning-dark
     vendor: '#6b6555', // --product-card-vendor-color
 } as const;
 
@@ -223,6 +226,8 @@ describe('text-on-surface contrast (P5-9, WCAG AA)', () => {
             ['--product-card-urgency-color', TOKENS.stateWarning],
             ['--color-green-light', TOKENS.surfaceSuccess],
             ['--color-green-dark', TOKENS.textSuccessStrong],
+            ['--color-warning-light', TOKENS.surfaceWarning],
+            ['--color-warning-dark', TOKENS.textWarningStrong],
             ['--product-card-vendor-color', TOKENS.vendor],
         ];
         for (const [name, value] of sources) {
@@ -250,6 +255,12 @@ describe('text-on-surface contrast (P5-9, WCAG AA)', () => {
             label: '--text-success-strong on --surface-success',
             fg: TOKENS.textSuccessStrong,
             bg: TOKENS.surfaceSuccess,
+        },
+        // soft-warning alert → --text-warning-strong on --surface-warning (replaces hard-coded bg-yellow-200).
+        {
+            label: '--text-warning-strong on --surface-warning',
+            fg: TOKENS.textWarningStrong,
+            bg: TOKENS.surfaceWarning,
         },
         // body text baseline.
         { label: '--text on --surface-1', fg: TOKENS.text, bg: TOKENS.surface1 },
