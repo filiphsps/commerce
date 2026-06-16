@@ -50,8 +50,6 @@ const BANNED_UTILITIES: ReadonlyArray<{ readonly name: string; readonly pattern:
 // reasons (and every file that carried only them) have dropped off below.
 const WHITE_ON_BRAND =
     'text-white is the legible foreground on a saturated colored/branded badge or button (--state-success / sale-stripes / brand). No on-color foreground token exists; the white-on-success / white-on-danger assertions below guard its contrast.';
-const CMS_BLOCK =
-    'CMS block outside the P5 component/route migration scope; its bg-gray-* / border-gray-* migrate with the block batch.';
 const DOC_COMMENT = 'Match is a doc-comment reference to the legacy bg-gray-100 class, not a live utility.';
 
 /**
@@ -63,7 +61,7 @@ const ALLOWLIST: ReadonlyMap<string, string> = new Map([
     ['app/[domain]/[locale]/loading.tsx', DOC_COMMENT],
     ['app/[domain]/[locale]/products/[handle]/page.tsx', WHITE_ON_BRAND],
     ['app/[domain]/[locale]/products/[handle]/product-content.tsx', WHITE_ON_BRAND],
-    ['blocks/banner.tsx', `${CMS_BLOCK} ${WHITE_ON_BRAND}`],
+    ['blocks/banner.tsx', WHITE_ON_BRAND],
     ['components/actionable/button.tsx', WHITE_ON_BRAND],
     ['components/informational/alert.tsx', WHITE_ON_BRAND],
     ['components/product-display/primitives/variant-badges.tsx', WHITE_ON_BRAND],

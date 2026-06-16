@@ -127,7 +127,7 @@ const BannerBlockSkeleton = ({ block }: { block: BannerBlockNode }): JSX.Element
             data-block-type="banner"
             data-alignment={block.alignment}
             data-skeleton-variant="banner"
-            className="relative flex flex-col items-center justify-center gap-4 rounded-lg bg-gray-100 p-8"
+            className="relative flex flex-col items-center justify-center gap-4 rounded-lg bg-(--surface-1) p-8"
         >
             <div
                 className={cn(
