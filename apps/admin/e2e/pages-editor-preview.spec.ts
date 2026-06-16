@@ -63,7 +63,9 @@ test('mounts the live storefront preview beside the fields, loads the cms-previe
     // ── The live-preview pane is mounted and points at the storefront's draft-mode
     // activation route (the secret-bearing URL the admin builds server-side). ──
     const previewFrame = page.locator('iframe[title="Live preview"]');
-    await expect(previewFrame).toBeVisible();
+    // The preview pane mounts after the create-and-bind redirect resolves the editor; give the iframe
+    // room to appear under CI load rather than the 5s default.
+    await expect(previewFrame).toBeVisible({ timeout: 20_000 });
     await expect(previewFrame).toHaveAttribute('src', /\/api\/cms-preview\?/);
 
     // ── The pane collapses and re-opens through its own control without

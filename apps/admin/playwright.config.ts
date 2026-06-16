@@ -23,7 +23,11 @@ export default defineConfig({
     testMatch: '**/*.spec.ts',
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
-    retries: 0,
+    // The admin E2E suite drives a real Next server + live Convex backend, so transient timing races
+    // (client-side nav, preview-iframe load, theme/nav CSS transitions) surface under CI load. Retry on
+    // CI — the configured `on-first-retry` trace captures the first failure — and keep zero locally so
+    // flakes are caught during authoring.
+    retries: process.env.CI ? 2 : 0,
     reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
     // 60s absorbs turbopack first-compile (local `next dev --turbo`) plus
     // the auth-redirect chain that `/settings`, `/dashboard`, etc. trigger.

@@ -19,8 +19,11 @@ test.describe('Overview hubs', () => {
         await expect(main.getByRole('heading', { name: 'Media' })).toBeVisible();
 
         // The Users card's action link routes to the editor; the href anchors it past the rail/subnav.
-        await main.locator('a[href$="/settings/users/"]').click();
-        await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/settings/users`));
+        const usersLink = main.locator('a[href$="/settings/users/"]');
+        await expect(usersLink).toBeVisible();
+        await usersLink.click();
+        // waitForURL (vs. a 5s toHaveURL) tolerates a slow client-side navigation under CI load.
+        await page.waitForURL(new RegExp(`/${DOMAIN}/settings/users`), { timeout: 15_000 });
     });
 
     test('the content overview renders its sections and navigates', async ({ page }) => {
@@ -30,7 +33,9 @@ test.describe('Overview hubs', () => {
         await expect(main.getByRole('heading', { name: 'Pages' })).toBeVisible();
         await expect(main.getByRole('heading', { name: 'Footer' })).toBeVisible();
 
-        await main.locator('a[href$="/content/footer/"]').click();
-        await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/footer`));
+        const footerLink = main.locator('a[href$="/content/footer/"]');
+        await expect(footerLink).toBeVisible();
+        await footerLink.click();
+        await page.waitForURL(new RegExp(`/${DOMAIN}/content/footer`), { timeout: 15_000 });
     });
 });

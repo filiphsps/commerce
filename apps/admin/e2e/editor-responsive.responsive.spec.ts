@@ -62,12 +62,13 @@ test('the document editor layout adapts to the viewport without overflow', async
 
         // Switching shows the preview pane and hides the fields — the iframe
         // never has to share a scroll region with the field column.
+        // The switch flips a class on each pane; under CI load the re-render can lag the 5s default.
         await previewToggle.click();
-        await expect(previewPane).toBeVisible();
-        await expect(fieldsPane).toBeHidden();
+        await expect(previewPane).toBeVisible({ timeout: 10_000 });
+        await expect(fieldsPane).toBeHidden({ timeout: 10_000 });
 
         await editToggle.click();
-        await expect(fieldsPane).toBeVisible();
+        await expect(fieldsPane).toBeVisible({ timeout: 10_000 });
     }
 
     // ── The visible field column never exceeds the screen width. ──

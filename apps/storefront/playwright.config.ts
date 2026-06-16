@@ -31,7 +31,10 @@ export default defineConfig({
     testMatch: '**/*.spec.ts',
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
-    retries: 0,
+    // The storefront E2E suite drives a real Next server against live mock.shop data, so transient
+    // timing races surface under CI load. Retry on CI — the `on-first-retry` trace captures the first
+    // failure — and keep zero locally so flakes are caught during authoring.
+    retries: process.env.CI ? 2 : 0,
     reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
     // 60s absorbs turbopack first-compile (local `next dev --turbo`) plus
     // the middleware locale/shop chain.

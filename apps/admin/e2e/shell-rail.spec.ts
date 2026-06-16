@@ -31,8 +31,12 @@ test.describe('Shell rail & navigation', () => {
 
     test('the command palette surfaces an Actions group and a recent-section trail', async ({ page }) => {
         // Build a recent trail: visiting each section records it (the palette is mounted in the header).
+        // Wait for each page to settle so the recording effect runs before we open the palette — a
+        // race that otherwise drops Products from the trail under CI load.
         await page.goto(`/${DOMAIN}/products/`);
+        await page.waitForLoadState('networkidle');
         await page.goto(`/${DOMAIN}/reviews/`);
+        await page.waitForLoadState('networkidle');
 
         // The ⌘K handler attaches on hydration; retry until the palette opens (a one-shot global
         // keypress fired before the listener is live is simply lost).
