@@ -7,11 +7,12 @@ import schema from '../../convex/convex/schema';
 import { createUnitConvex } from './unit';
 
 /**
- * The trusted NextAuth issuer the tenant constructors assert against (via `resolveAdminShopId`). Stubbed
- * into `CONVEX_AUTH_ISSUER` so the in-handler issuer check is active under `convex-test`, whose
- * `withIdentity` fakes identities WITHOUT Convex's real signature/issuer validation.
+ * The trusted Clerk operator issuer the tenant constructors assert against (via `resolveAdminShopId` →
+ * `getClerkOperatorIdentity`). Stubbed into `CLERK_FRONTEND_API_URL` so the in-handler issuer check is
+ * active under `convex-test`, whose `withIdentity` fakes identities WITHOUT Convex's real
+ * signature/issuer validation.
  */
-const TRUSTED_ISSUER = 'https://admin.test.nordcom.io';
+const TRUSTED_ISSUER = 'https://clerk.test.nordcom.io';
 
 /** Operator identity the tenant path resolves a shop for, keyed via `users.by_email`. */
 const OPERATOR_EMAIL = 'unit-op@example.com';
@@ -117,7 +118,7 @@ const listReviewsRef = makeFunctionReference<'query'>('unit.test:listReviewsFixt
 const countReviewsRef = makeFunctionReference<'query'>('unit.test:countReviewsFixture');
 
 beforeEach(() => {
-    vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+    vi.stubEnv('CLERK_FRONTEND_API_URL', TRUSTED_ISSUER);
 });
 afterEach(() => {
     vi.unstubAllEnvs();
@@ -128,7 +129,7 @@ describe('createUnitConvex (in-memory unit harness)', () => {
         const t = createUnitConvex(schema, fixtureModules);
         const shopId = await t.mutation(seedRef, {});
 
-        const asOperator = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|unit', email: OPERATOR_EMAIL });
+        const asOperator = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'user_unit', email: OPERATOR_EMAIL });
         const reviewId = await asOperator.mutation(addReviewRef, {});
 
         // Tenant-tier read: the RLS-wrapped reader resolves the operator's shop and sees its own review.
