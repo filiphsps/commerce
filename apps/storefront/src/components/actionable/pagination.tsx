@@ -31,8 +31,8 @@ const ITEM_STYLES =
  * @returns A valid page number within `[firstPage, lastPage]`.
  */
 export function resolveCurrentPage(raw: string | null, firstPage: number, lastPage: number): number {
-    const parsed = Number.parseInt(raw ?? '', 10);
-    if (!Number.isFinite(parsed)) {
+    const parsed = raw === null ? Number.NaN : Number(raw);
+    if (!Number.isInteger(parsed)) {
         return firstPage;
     }
     return Math.min(Math.max(parsed, firstPage), lastPage);
