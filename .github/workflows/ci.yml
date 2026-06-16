@@ -6,13 +6,15 @@ on:
         branches:
             - master
             - staging
+            - "dev/*"
+            - "fix/*"
         paths-ignore:
             - "**.md"
             - "**.txt"
             - "LICENSE"
 
 concurrency:
-    group: ci-${{ github.workflow }}-${{ github.ref }}
+    group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
     cancel-in-progress: true
 
 env:
