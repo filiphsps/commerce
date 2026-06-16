@@ -28,11 +28,21 @@ Guiding principles (from the task + repo design system):
   `--text-warning-strong` on `--surface-warning` clears WCAG AA normal.
 - Verified: biome clean, storefront typecheck clean, gate (19) + blocks (18) tests pass.
 
+### 2 — Variant badges: tokenize the last hard-coded badge fills
+
+- Swept all components for hard-coded colors outside the gate's banned subset. Only outliers:
+  `product-display/primitives/variant-badges.tsx` hard-coded `bg-purple-600` (gift card) and
+  `bg-blue-600` (subscription), while vegan/sale/free-shipping already read tokens.
+- Promoted both to themeable `--badge-gift-card-bg` / `--badge-subscription-bg` tokens (defaults keep
+  the exact prior purple/blue), so a tenant can recolor every overlay badge. Collapsed `h-3 w-3` →
+  canonical `size-3`.
+- Gate: pinned both token literals and asserted white-on-badge clears WCAG AA normal (both ~5.2:1).
+- Verified: biome clean, typecheck clean, gate 21/21.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- Audit remaining hard-coded colors / non-token values across components (gate only scans a banned
-  subset). Sweep `bg-yellow`, raw hex, `text-{color}-N` outside the banned set.
 - `info` alert severity still uses neutral `--surface-1`; consider a dedicated info surface token.
+- Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
 - Verify responsive + Safari/Chromium behavior of interactive components (header mega-menu, product
   gallery lightbox, rail carousel) per the overhaul spec root-causes.
 - Extract repeated card wrappers (collection/recommendation/search product cards) — confirm they are
