@@ -33,11 +33,16 @@ export function ResolvedExtensionsApi({ shop }: { shop: OnlineShop }): ResolvedE
  *
  * @param shop - The tenant shop record.
  * @param surface - Surface key (`collection`, `search`, `recommendation`).
+ * @param instance - Optional per-instance override authored on the hosting block node; highest precedence.
  * @returns The fully-resolved surface configuration.
  */
-export function productCardSurfaceForShop(shop: OnlineShop, surface: string): ProductCardSurfacePreset {
+export function productCardSurfaceForShop(
+    shop: OnlineShop,
+    surface: string,
+    instance?: ProductCardSurfaceOverride,
+): ProductCardSurfacePreset {
     const resolved = ResolvedExtensionsApi({ shop }).productCard;
     const selection = resolved[surface] as ProductCardSurfaceOverride | undefined;
     const base = resolved.base as ProductCardSurfaceOverride | undefined;
-    return resolveProductCardSurface(surface, selection, base);
+    return resolveProductCardSurface(surface, selection, base, instance);
 }
