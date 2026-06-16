@@ -9,6 +9,7 @@ import {
     EmptyTenantScopeError,
     EmptyUploadFileError,
     GenericErrorKind,
+    getAllErrorCodes,
     getErrorFromCode,
     MalformedFormPayloadError,
     MediaStorageUploadError,
@@ -405,5 +406,37 @@ describe('Error.isTodo', () => {
         expect(CommerceError.isTodo(undefined)).toBe(false);
         expect(CommerceError.isTodo(null)).toBe(false);
         expect(CommerceError.isTodo('GENERIC_TODO')).toBe(false);
+    });
+});
+
+describe('error code enums', () => {
+    // Every member's string value MUST equal its member name. The whole system
+    // — runtime help URLs (`/errors/<code>/`), `getErrorFromCode`, and the docs
+    // catalogue generator — keys off the code value, so a drifted value (e.g.
+    // `API_METHOD_NOT_ALLOWED = 'API_IMAGE_NO_FRACTIONAL'`) silently routes an
+    // error to the wrong doc page and breaks the catalogue. Guard it here.
+    it.each([
+        ['GenericErrorKind', GenericErrorKind],
+        ['ApiErrorKind', ApiErrorKind],
+    ])('%s: every member value equals its member name', (_name, kind) => {
+        for (const [member, value] of Object.entries(kind)) {
+            expect(value).toBe(member);
+        }
+    });
+
+    it('getAllErrorCodes returns a unique, non-empty set of codes', () => {
+        const codes = getAllErrorCodes();
+        expect(codes.length).toBeGreaterThan(0);
+        expect(new Set(codes).size).toBe(codes.length);
+    });
+
+    it('every code resolves to a class whose own code round-trips', () => {
+        for (const code of getAllErrorCodes()) {
+            const Cls = getErrorFromCode(code);
+            expect(Cls, `no class mapped for ${code}`).not.toBeNull();
+            // The resolved class, when instantiated, reports the same code —
+            // catching switch/class drift on top of the enum invariant above.
+            expect(new (Cls as new () => CommerceError)().code).toBe(code);
+        }
     });
 });
