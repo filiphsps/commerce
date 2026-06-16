@@ -84,6 +84,17 @@ Storefront **customers** mint RS256 tokens via `apps/storefront/src/utils/convex
   added on top.
 - **Task 1.4 (revised):** drop only the NextAuth-era `sessions`/`identities` tables +
   `users.identities[]`. The customer customJwt provider and storefront minting are NOT touched.
+- **Convex authz is mirror-based, not org_id-claim-based (reshapes Task 2.3 & decision #12):**
+  Clerk's custom `convex` JWT template does not auto-carry active-org claims, and Convex
+  surfacing arbitrary custom claims on `getUserIdentity()` is uncertain. So the Convex
+  authorization gate is **membership in the shop's owning org via the synced mirror**:
+  `resolveShopAccess(ctx, domain)` = operator (`subject`→`users`) ∈
+  `orgMemberships.by_clerk_org_user(shop.clerkOrgId, user)`. Uses only the standard `subject`
+  claim + the mirror — no dependency on `org_id` being surfaced. The active-org / `org_id`
+  concern (decision #12) is an **app-layer** matter (Task 5.1: keep Clerk's active org synced to
+  the routed `/[domain]/` for UI/`OrganizationSwitcher` consistency). The `convex` JWT template
+  still declares `org_id`/`org_role`/`org_slug` (`{{org.id}}` etc.) for the app layer + future
+  defense-in-depth, but Convex authorization does not require them.
 
 ## Target architecture
 
