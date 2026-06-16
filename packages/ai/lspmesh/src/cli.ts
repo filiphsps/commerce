@@ -37,24 +37,44 @@ export const parseCli = (argv: string[]): CliResult => {
     return { kind: 'run', mode, root: values.root };
 };
 
-const main = async (): Promise<void> => {
-    const result = parseCli(process.argv.slice(2));
+/** Side-effecting dependencies, injectable so the dispatch is testable. */
+export interface CliDeps {
+    startLsp: (root?: string) => void;
+    startMcp: (engine: AggregatorEngine) => Promise<void>;
+    makeEngine: (root?: string) => AggregatorEngine;
+    write: (text: string) => void;
+}
+
+const defaultDeps: CliDeps = {
+    startLsp: startLspServer,
+    startMcp: startMcpServer,
+    makeEngine: (root) => new AggregatorEngine(loadConfig(root)),
+    write: (text) => {
+        process.stdout.write(text);
+    },
+};
+
+/** Execute a parsed CLI result: print help/version, or start the requested server. */
+export const run = async (result: CliResult, deps: CliDeps = defaultDeps): Promise<void> => {
     if (result.kind === 'help') {
-        process.stdout.write(`${USAGE}\n`);
+        deps.write(`${USAGE}\n`);
         return;
     }
     if (result.kind === 'version') {
-        process.stdout.write(`${LSPMESH_VERSION}\n`);
+        deps.write(`${LSPMESH_VERSION}\n`);
         return;
     }
     if (result.mode === 'lsp') {
-        startLspServer(result.root);
+        deps.startLsp(result.root);
         return;
     }
-    const engine = new AggregatorEngine(loadConfig(result.root));
+    const engine = deps.makeEngine(result.root);
     await engine.init();
-    await startMcpServer(engine);
+    await deps.startMcp(engine);
 };
+
+/* v8 ignore start -- bin bootstrap; parseCli and run are unit-tested directly. */
+const main = (): Promise<void> => run(parseCli(process.argv.slice(2)));
 
 // Only run when invoked as the bin, not when imported.
 if (import.meta.url === `file://${process.argv[1]}`) {
@@ -63,3 +83,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.exit(1);
     });
 }
+/* v8 ignore stop */

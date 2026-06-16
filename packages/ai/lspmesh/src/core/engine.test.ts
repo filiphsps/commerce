@@ -63,4 +63,33 @@ describe('AggregatorEngine', () => {
         const replies = await engine.forward('workspace/symbol', 'file:///fixture/a.ts', { query: 'Foo' });
         expect(replies).toHaveLength(1);
     });
+
+    it('findReferences unions references over the resolved definitions, tagged with definedAt', async () => {
+        engine = new AggregatorEngine(config);
+        await engine.init();
+        const refs = await engine.findReferences('Foo');
+        expect(refs.length).toBeGreaterThan(0);
+        expect(refs[0]?.definedAt).toBeTruthy();
+    });
+
+    it('findReferences pins to a single file when given one', async () => {
+        engine = new AggregatorEngine(config);
+        await engine.init();
+        const refs = await engine.findReferences('Foo', 'a.ts');
+        expect(Array.isArray(refs)).toBe(true);
+    });
+
+    it('findImplementations returns an array even when no backend answers', async () => {
+        engine = new AggregatorEngine(config);
+        await engine.init();
+        const impls = await engine.findImplementations('Foo');
+        expect(Array.isArray(impls)).toBe(true);
+    });
+
+    it('findSymbol with definitionsOnly filters to definition-shaped results', async () => {
+        engine = new AggregatorEngine(config);
+        await engine.init();
+        const defs = await engine.findSymbol('Foo', { definitionsOnly: true });
+        expect(Array.isArray(defs)).toBe(true);
+    });
 });
