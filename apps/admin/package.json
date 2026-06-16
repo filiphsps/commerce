@@ -21,7 +21,7 @@
         "test:e2e": "playwright test",
         "generate": "pnpm --filter @nordcom/commerce-cms cms:gen",
         "typegen": "next typegen",
-        "typecheck": "tsc -noEmit",
+        "typecheck": "tsc -noEmit && tsc -p e2e/tsconfig.json",
         "analyze": "next experimental-analyze",
         "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml"
     },
@@ -87,6 +87,7 @@
         "next": "16.2.9"
     },
     "devDependencies": {
+        "@clerk/testing": "2.1.2",
         "@happy-dom/global-registrator": "20.10.3",
         "@nordcom/commerce-test-convex": "workspace:*",
         "@nordcom/commerce-test-viewport": "workspace:*",

@@ -50,7 +50,7 @@
         "convex:deploy": "pnpm --filter @nordcom/commerce-convex convex:deploy",
         "convex:dev": "pnpm --filter @nordcom/commerce-convex convex:dev",
         "convex:env": "pnpm --filter @nordcom/commerce-convex convex:env",
-        "convex:local": "tsx packages/test-convex/src/cli.ts up",
+        "convex:local": "dotenv -c -- tsx packages/test-convex/src/cli.ts up",
         "convex:local:stop": "tsx packages/test-convex/src/cli.ts stop --dataDir .convex-local",
         "convex:local:reset": "tsx packages/test-convex/src/cli.ts reset --dataDir .convex-local && pnpm convex:local",
         "docs:gen:check": "pnpm --filter @nordcom/commerce-docs docs:gen:check",

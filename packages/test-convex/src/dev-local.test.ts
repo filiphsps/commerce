@@ -14,6 +14,7 @@ import {
     isBackendHealthy,
     isCanonicalSeeded,
     resolveBackendAuthEnv,
+    resolveClerkBackendEnv,
     waitForAdminKeyMarker,
     withRetry,
 } from './dev-local';
@@ -129,6 +130,28 @@ describe('isCanonicalSeeded', () => {
     it('is false when the query throws (functions not pushed / backend unreachable)', async () => {
         vi.spyOn(ConvexHttpClient.prototype, 'query').mockRejectedValue(new ConvexError('module not found'));
         expect(await isCanonicalSeeded('http://127.0.0.1:3210', 'secret')).toBe(false);
+    });
+});
+
+describe('resolveClerkBackendEnv', () => {
+    it('returns empty strings when no Clerk env is present (unit/integration backends)', () => {
+        const resolved = resolveClerkBackendEnv({});
+        expect(resolved.frontendApiUrl).toBe('');
+        expect(resolved.webhookSigningSecret).toBe('');
+    });
+
+    it('surfaces the Clerk Frontend API URL + webhook secret for the admin e2e operator-auth wiring', () => {
+        const resolved = resolveClerkBackendEnv({
+            CLERK_FRONTEND_API_URL: 'https://internal-roughy-49.clerk.accounts.dev',
+            CLERK_WEBHOOK_SIGNING_SECRET: 'whsec_test',
+        });
+        expect(resolved.frontendApiUrl).toBe('https://internal-roughy-49.clerk.accounts.dev');
+        expect(resolved.webhookSigningSecret).toBe('whsec_test');
+    });
+
+    it('treats a blank value as unset', () => {
+        const resolved = resolveClerkBackendEnv({ CLERK_FRONTEND_API_URL: '   ' });
+        expect(resolved.frontendApiUrl).toBe('');
     });
 });
 
