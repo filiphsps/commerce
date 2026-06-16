@@ -195,12 +195,26 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Updated the test to pass `i18n` and assert the interpolated localized accessible name.
 - Verified: all six locale JSONs valid, biome clean, typecheck clean, cart-coupons + cart-summary 12/12.
 
+### 16 — Localize product-filters (sort, facets, price, drawer)
+
+- `product-filters` shipped ~12 literal English strings (the deliberate "pending localization keys"
+  deferral): the four sort labels, the Sort aria-label, "Filters" (toolbar + drawer), "In stock"
+  (chip + checkbox), "Clear all", Min/Max placeholders + Minimum/Maximum-price aria-labels, and the
+  drawer "View ({n})" button.
+- Added 14 `common` keys across all six locales with real translations; `SORT_OPTIONS` now carries a
+  `labelKey` resolved via `t()` at render, and every literal is replaced with a `t()` call
+  (`view-n` interpolates the count).
+- Added a test (mocked navigation) asserting the sort control + its options + the Filters trigger
+  render localized.
+- Verified: all six locale JSONs valid, biome clean, typecheck clean (keys type-checked via
+  `LocaleDictionaryKey`), product-filters 1/1.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- Continue the i18n pass: `product-filters` (sort options, Min/Max, price/sort aria-labels) and the
-  generic primitives' literal `aria-label="Close"` / `"Previous"` / `"Next"` / `"Product options"`.
-  Same recipe — add keys across all six locale JSONs, thread `i18n` where the component lacks it.
-  Note fr/no/sv are partially stubbed (missing some `cart` keys); fill as encountered.
+- Finish the i18n pass on the generic primitives' literal `aria-label="Close"` / `"Previous"` /
+  `"Next"` / `"Product options"` — these primitives lack an `i18n` prop, so each needs threading.
+- Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets in `FilterValues` and wire the
+  shared `Filters`/`ProductFilters` into /products, collections, and search (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
   /products, collections, and search as the shared faceted aside (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
