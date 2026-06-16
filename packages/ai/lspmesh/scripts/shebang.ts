@@ -1,7 +1,6 @@
-#!/usr/bin/env node
 // Postbuild: ensure the built CLI entry is directly executable as `lspmesh`.
 // vite/rolldown does not reliably emit a per-entry shebang, so we prepend it
-// here and mark the file executable.
+// here and mark the file executable. Run via tsx (see package.json `postbuild`).
 import { chmodSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
@@ -14,5 +13,5 @@ if (!existsSync(cli)) {
 }
 
 const src = readFileSync(cli, 'utf8');
-if (!src.startsWith('#!')) writeFileSync(cli, SHEBANG + src);
+if (!src.startsWith('#!')) writeFileSync(cli, `${SHEBANG}${src}`);
 chmodSync(cli, 0o755);
