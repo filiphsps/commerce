@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { BackendConfig } from '../config/types.js';
-import { extnameLower, languageIdFor, matchesBackend } from './routing.js';
+import type { BackendConfig } from '@/config/types';
+import { extnameLower, languageIdFor, matchesBackend } from '@/core/routing';
 
 const ts: BackendConfig = {
     name: 'typescript',

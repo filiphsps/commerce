@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { AggregatorEngine } from '../core/engine.js';
-import { buildTools } from './server.js';
+import type { AggregatorEngine } from '@/core/engine';
+import { buildTools } from '@/mcp/server';
 
 const fakeEngine = {
     findSymbol: async () => [

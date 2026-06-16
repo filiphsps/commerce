@@ -1,4 +1,4 @@
-import type { BackendConfig, LspMeshConfig } from './types.js';
+import type { BackendConfig, LspMeshConfig } from '@/config/types';
 
 /** TypeScript/JavaScript extension → languageId map, shared by ts and tailwind. */
 const TS_EXT: Record<string, string> = {

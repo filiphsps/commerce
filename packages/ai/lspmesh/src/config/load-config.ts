@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-import { DEFAULT_CONFIG } from './default-config.js';
-import type { BackendConfig, LspMeshConfig } from './types.js';
+import { DEFAULT_CONFIG } from '@/config/default-config';
+import type { BackendConfig, LspMeshConfig } from '@/config/types';
 
 const CONFIG_FILENAME = 'lspmesh.json';
 

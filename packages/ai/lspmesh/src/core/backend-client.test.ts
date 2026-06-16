@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import type { BackendConfig } from '../config/types.js';
-import { BackendClient } from './backend-client.js';
+import type { BackendConfig } from '@/config/types';
+import { BackendClient } from '@/core/backend-client';
 
 const PKG_DIR = fileURLToPath(new URL('../../', import.meta.url));
 const FIXTURE = fileURLToPath(new URL('../../tests/fixtures/echo-lsp-server.ts', import.meta.url));

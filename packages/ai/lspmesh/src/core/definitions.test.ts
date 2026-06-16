@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isDefinitionSnippet } from './definitions.js';
+import { isDefinitionSnippet } from '@/core/definitions';
 
 describe('isDefinitionSnippet', () => {
     const cases: [string, boolean][] = [
@@ -10,8 +10,8 @@ describe('isDefinitionSnippet', () => {
         ['export function isProduction() {', true],
         ['export type Foo = {', true],
         ['export interface Bar {', true],
-        ["export { isProduction } from './env';", false],
-        ["export * from './x';", false],
+        ["export { isProduction } from '@/core/env';", false],
+        ["export * from '@/core/x';", false],
         ['enum Kind {', true],
         ['abstract class Base {', true],
     ];

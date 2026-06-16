@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Location } from 'vscode-languageserver-protocol';
 
-import { mergeLocations } from './merge.js';
+import { mergeLocations } from '@/core/merge';
 
 const loc = (uri: string, line: number): Location => ({
     uri,

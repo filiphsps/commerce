@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { loadConfig } from './load-config.js';
+import { loadConfig } from '@/config/load-config';
 
 describe('loadConfig', () => {
     it('returns the default config (with root) when no file is found', () => {

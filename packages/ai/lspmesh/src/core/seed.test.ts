@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { orderSeedFiles, seedScore } from './seed.js';
+import { orderSeedFiles, seedScore } from '@/core/seed';
 
 describe('seedScore', () => {
     it('defers tests, dist, and .d.ts; floats basename matches', () => {

@@ -1,7 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
-import type { AggregatorEngine } from '../core/engine.js';
+import type { AggregatorEngine } from '@/core/engine';
+import { LSPMESH_VERSION } from '@/version';
 
 interface McpTextResult {
     content: { type: 'text'; text: string }[];
@@ -61,7 +62,7 @@ export const buildTools = (engine: AggregatorEngine): ToolDef[] => [
 
 /** Build the lspmesh MCP server exposing by-name search over the engine. */
 export const buildMcpServer = (engine: AggregatorEngine): McpServer => {
-    const server = new McpServer({ name: 'lspmesh', version: '0.0.1' });
+    const server = new McpServer({ name: 'lspmesh', version: LSPMESH_VERSION });
     for (const t of buildTools(engine)) {
         server.registerTool(t.name, { description: t.description, inputSchema: t.inputSchema }, t.handler as never);
     }

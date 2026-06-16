@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { DEFAULT_CONFIG } from './default-config.js';
+import { DEFAULT_CONFIG } from '@/config/default-config';
 
 describe('DEFAULT_CONFIG', () => {
     it('wires typescript, tailwind, and biome backends', () => {

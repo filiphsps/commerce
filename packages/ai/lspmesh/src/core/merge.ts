@@ -1,6 +1,6 @@
 import type { Location, LocationLink } from 'vscode-languageserver-protocol';
 
-import { normLoc } from './locations.js';
+import { normLoc } from '@/core/locations';
 
 type LocReply = Location | Location[] | LocationLink[] | null | undefined;
 
