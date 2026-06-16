@@ -398,6 +398,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   need a new key + i18n threading into the block renderer. Logged.
 - Verified: biome clean, typecheck clean, gate 22/22 + rich-text/registry 55 total.
 
+### 35 — Retire the CMS-block color migration
+
+- The banner block's only remaining gray was the skeleton placeholder `bg-gray-100`; the live block's
+  `text-white` is legit white-on-hero (WHITE_ON_BRAND). Migrated the skeleton bg to `bg-(--surface-1)`.
+- Narrowed banner's gate-allowlist reason from `CMS_BLOCK + WHITE_ON_BRAND` to just `WHITE_ON_BRAND`
+  and removed the now-unused `CMS_BLOCK` constant — the CMS-block color-migration category is fully
+  retired. Every remaining allowlist entry is now a genuine `WHITE_ON_BRAND` (white on a saturated
+  brand surface) or a `DOC_COMMENT`, not an unmigrated gap.
+- Verified: biome clean, typecheck clean, gate 22/22 + registry 29 total.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
