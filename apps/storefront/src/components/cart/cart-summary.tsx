@@ -276,7 +276,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                                 return (
                                     <div key={index} className="flex items-center justify-between">
-                                        <Label>discount</Label>
+                                        <Label>{t('discount')}</Label>
                                         <Price data={discountedAmount as never} className="font-bold text-sm" />
                                     </div>
                                 );
@@ -329,16 +329,18 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                 <div className={'text-sm leading-snug'}>
                     <LockIcon className="stroke -mt-1 mr-1 inline h-3 stroke-2" />
-                    Safely complete your purchase through Nordcom AB&apos;s trusted partner&apos;s
-                    <Link
-                        href="https://www.shopify.com/security/pci-compliant"
-                        rel="nofollow"
-                        target="_blank"
-                        className="px-1 underline"
-                    >
-                        PCI DSS compliant
-                    </Link>
-                    checkout powered by Stripe and/or Shopify.
+                    {t(
+                        'secure-checkout',
+                        <Link
+                            key="pci"
+                            href="https://www.shopify.com/security/pci-compliant"
+                            rel="nofollow"
+                            target="_blank"
+                            className="px-1 underline"
+                        >
+                            PCI DSS compliant
+                        </Link>,
+                    )}
                 </div>
             </section>
 

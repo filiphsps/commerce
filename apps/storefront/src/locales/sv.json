@@ -6,6 +6,7 @@
     },
     "cart": {
         "still-loading": "Din varukorg laddas fortfarande. Försök igen om en stund.",
+        "secure-checkout": "Slutför ditt köp säkert via den {0} kassan från Nordcom ABs betrodda partner, som drivs av Stripe och/eller Shopify.",
         "active-discounts": "Aktiva rabatter",
         "remove-discount": "Ta bort rabatt {0}",
         "add-n-to-your-cart": "Lägg till {0} st i din varukorg",

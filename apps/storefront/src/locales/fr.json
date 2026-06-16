@@ -6,6 +6,7 @@
     },
     "cart": {
         "still-loading": "Votre panier est en cours de chargement. Réessayez dans un instant.",
+        "secure-checkout": "Finalisez votre achat en toute sécurité via le paiement {0} du partenaire de confiance de Nordcom AB, propulsé par Stripe et/ou Shopify.",
         "active-discounts": "Réductions actives",
         "remove-discount": "Supprimer la réduction {0}",
         "add-n-to-your-cart": "Ajouter {0} à votre panier",

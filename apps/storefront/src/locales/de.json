@@ -6,6 +6,7 @@
     },
     "cart": {
         "still-loading": "Dein Warenkorb wird noch geladen. Versuche es gleich erneut.",
+        "secure-checkout": "Schließe deinen Kauf sicher über den {0} Checkout des vertrauenswürdigen Partners von Nordcom AB ab, betrieben von Stripe und/oder Shopify.",
         "active-discounts": "Aktive Rabatte",
         "remove-discount": "Rabatt {0} entfernen",
         "add-n-to-your-cart": "{0} zum Warenkorb hinzufügen",

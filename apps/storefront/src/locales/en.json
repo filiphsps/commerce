@@ -6,6 +6,7 @@
     },
     "cart": {
         "still-loading": "Your cart is still loading. Try again in a moment.",
+        "secure-checkout": "Safely complete your purchase through Nordcom AB's trusted partner's {0} checkout powered by Stripe and/or Shopify.",
         "active-discounts": "Active discounts",
         "remove-discount": "Remove discount {0}",
         "add-n-to-your-cart": "Add {0} to your cart",

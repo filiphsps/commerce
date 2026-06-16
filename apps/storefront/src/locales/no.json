@@ -6,6 +6,7 @@
     },
     "cart": {
         "still-loading": "Handlekurven din lastes fortsatt. Prøv igjen om et øyeblikk.",
+        "secure-checkout": "Fullfør kjøpet trygt gjennom den {0} betalingsløsningen til Nordcom ABs betrodde partner, drevet av Stripe og/eller Shopify.",
         "active-discounts": "Aktive rabatter",
         "remove-discount": "Fjern rabatt {0}",
         "add-n-to-your-cart": "Legg {0} til i handlekurven",
