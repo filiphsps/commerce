@@ -273,6 +273,27 @@ Convex deployment vars set via `npx convex env set …` (dev locally; prod in CI
 > `clerk auth login` + `clerk deploy` once for the prod bootstrap. **Use `pnpm dlx clerk@latest`,
 > never `npx`** (repo hook blocks npx).
 
+### Provisioned dev instance (Task 0.2, 2026-06-16)
+
+Linked the project to the **existing** Clerk app **"Nordcom Commerce"** (user's choice):
+- App `app_3EWttZ6FZ31gkQKF9tgLLx1MreW`, dev instance `ins_3EWttZbcWibFmatzmoKc53agbqw` (no prod instance yet).
+- **Frontend API:** `https://internal-roughy-49.clerk.accounts.dev` (= `CLERK_FRONTEND_API_URL`).
+- **Already configured on the instance:** Organizations enabled (creator `org:admin`, org-creation on,
+  `force_organization_selection: true`); GitHub + Google enabled with empty client creds (Clerk shared
+  dev OAuth); email `email_code`/`email_link` sign-in. Multiple-orgs-per-user is Clerk default.
+- **Applied:** created the `convex` JWT template (`jtmp_3FCxnLNsVOKgodBPItEk1vfk4l9`, RS256, Clerk default
+  keys → JWKS-discoverable, claims `email` + `org_id`/`org_role`/`org_slug`); patched
+  `auth_access_control.block_email_subaddresses → false` so e2e `+clerk_test` emails work (dev-only;
+  prod keeps it true). Account-linking by verified email is Clerk's default — no change needed.
+- **Config-as-code:** committed to `clerk/clerk.config.json` (secret-free; client secrets are empty
+  strings). Dev keys (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `CLERK_FRONTEND_API_URL`)
+  written to gitignored root `.env.local`.
+- **Deferred (no public Convex URL yet — local backend only):** registering the Clerk **webhook
+  endpoint** (`<convex-site>/clerk-webhooks`, events `user.*`/`organization.*`/`organizationMembership.*`)
+  and setting `CLERK_FRONTEND_API_URL` + `CLERK_WEBHOOK_SIGNING_SECRET` on the Convex **deployment**.
+  These happen when a deployed Convex URL exists (e2e/CI/prod). The Convex auth provider only needs
+  `CLERK_FRONTEND_API_URL` set on whatever deployment serves a given env.
+
 ## E2E harness
 
 - Add `@clerk/testing`. `global-setup.ts`: `clerkSetup()` (Testing Token via `CLERK_SECRET_KEY`),
