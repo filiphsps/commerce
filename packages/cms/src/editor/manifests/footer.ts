@@ -7,6 +7,7 @@ export const footerEditor = defineCollectionEditor({
     collection: 'footer',
     routes: {
         label: { singular: 'Footer', plural: 'Footer' },
+        description: 'Sections, social links, legal links.',
         basePath: (domain) => `/${domain}/content/footer/` as Route,
         breadcrumbs: ({ domain }) => [{ label: 'Content', href: `/${domain}/content/` as Route }, { label: 'Footer' }],
     },

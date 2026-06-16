@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { allManifests } from '@nordcom/commerce-cms/editor/manifests';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -107,6 +108,34 @@ function CollectionCard<T>({
     );
 }
 
+// ── Content singletons (globals) ─────────────────────────────────────────────
+
+type GlobalCard = { collection: string; title: string; description?: string; href: Route };
+
+/**
+ * Derives the content-overview "Globals" cards from the editor manifest registry so a newly
+ * registered singleton surfaces here automatically — no hand-maintained card list to drift out
+ * of sync (the gap that hid the `search` singleton). A manifest is a content global when it is a
+ * singleton (one row per tenant/domain, hence no list affordance) routed under `/content/`.
+ *
+ * @param domain - The tenant domain segment used to build each card's editor route.
+ * @returns The ordered globals, mirroring the manifest-registry order.
+ */
+function contentGlobals(domain: string): GlobalCard[] {
+    const contentBase = `/${domain}/content/`;
+    return allManifests
+        .filter((m) => {
+            const isSingleton = m.tenant.kind === 'tenant-singleton' || m.tenant.kind === 'singleton-by-domain';
+            return isSingleton && !m.list && m.routes.basePath(domain).startsWith(contentBase);
+        })
+        .map((m) => ({
+            collection: m.collection,
+            title: m.routes.label.singular,
+            description: m.routes.description,
+            href: m.routes.basePath(domain),
+        }));
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function ContentOverviewPage({ params }: { params: Params }) {
@@ -118,6 +147,7 @@ export default async function ContentOverviewPage({ params }: { params: Params }
     }
 
     const urlBase = `/${domain}/content`;
+    const globals = contentGlobals(domain);
 
     // Fetch recent activity per collection in parallel.
     // Defensive .catch so a single inaccessible collection doesn't break the overview.
@@ -174,29 +204,18 @@ export default async function ContentOverviewPage({ params }: { params: Params }
                 <section className="flex flex-col gap-4">
                     <h2 className="font-semibold text-lg">Globals</h2>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        <Link
-                            href={`${urlBase}/business-data/` as Route}
-                            className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
-                        >
-                            <h3 className="font-semibold text-base leading-none">Business data</h3>
-                            <p className="text-muted-foreground text-sm">
-                                Legal name, support contact, address, social profiles.
-                            </p>
-                        </Link>
-                        <Link
-                            href={`${urlBase}/header/` as Route}
-                            className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
-                        >
-                            <h3 className="font-semibold text-base leading-none">Header</h3>
-                            <p className="text-muted-foreground text-sm">Logo, navigation, CTA, locale switcher.</p>
-                        </Link>
-                        <Link
-                            href={`${urlBase}/footer/` as Route}
-                            className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
-                        >
-                            <h3 className="font-semibold text-base leading-none">Footer</h3>
-                            <p className="text-muted-foreground text-sm">Sections, social links, legal links.</p>
-                        </Link>
+                        {globals.map((global) => (
+                            <Link
+                                key={global.collection}
+                                href={global.href}
+                                className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
+                            >
+                                <h3 className="font-semibold text-base leading-none">{global.title}</h3>
+                                {global.description && (
+                                    <p className="text-muted-foreground text-sm">{global.description}</p>
+                                )}
+                            </Link>
+                        ))}
                     </div>
                 </section>
 

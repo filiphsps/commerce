@@ -11,6 +11,7 @@ export const businessDataEditor = defineCollectionEditor({
     collection: 'businessData',
     routes: {
         label: { singular: 'Business data', plural: 'Business data' },
+        description: 'Legal name, support contact, address, social profiles.',
         basePath: (domain) => `/${domain}/content/business-data/` as Route,
         breadcrumbs: ({ domain }) => [
             { label: 'Content', href: `/${domain}/content/` as Route },

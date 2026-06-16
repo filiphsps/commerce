@@ -107,6 +107,8 @@ describe('(dashboard)/[domain]/content/page', () => {
         expect(q.getByText('Business data')).toBeInTheDocument();
         expect(q.getByText('Header')).toBeInTheDocument();
         expect(q.getByText('Footer')).toBeInTheDocument();
+        // Every content singleton surfaces dynamically — `search` was previously omitted.
+        expect(q.getByText('Search')).toBeInTheDocument();
         // Collection cards.
         expect(q.getByText('Pages')).toBeInTheDocument();
         expect(q.getByText('Articles')).toBeInTheDocument();

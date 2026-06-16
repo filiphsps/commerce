@@ -7,6 +7,7 @@ export const headerEditor = defineCollectionEditor({
     collection: 'header',
     routes: {
         label: { singular: 'Header', plural: 'Header' },
+        description: 'Logo, navigation, CTA, locale switcher.',
         basePath: (domain) => `/${domain}/content/header/` as Route,
         breadcrumbs: ({ domain }) => [{ label: 'Content', href: `/${domain}/content/` as Route }, { label: 'Header' }],
     },

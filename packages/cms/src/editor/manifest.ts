@@ -95,6 +95,12 @@ export type CollectionEditorManifest<TSlug extends CollectionSlug = CollectionSl
 
     routes: {
         label: { singular: string; plural: string };
+        /**
+         * Admin-facing one-line summary of what this surface edits, rendered on
+         * the content overview's navigation cards. Singletons (globals) should
+         * set this so the dynamically-derived card carries a description.
+         */
+        description?: string;
         /** Base path for the list view. `domain` is null on cross-tenant routes. */
         basePath: (domain: string | null) => Route;
         /** Breadcrumb trail for the edit/list/new pages. */

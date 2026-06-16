@@ -7,6 +7,7 @@ export const searchEditor = defineCollectionEditor({
     collection: 'search',
     routes: {
         label: { singular: 'Search', plural: 'Search' },
+        description: 'Search landing copy, empty-state, and promoted results.',
         basePath: (domain) => `/${domain}/content/search/` as Route,
         breadcrumbs: ({ domain }) => [{ label: 'Content', href: `/${domain}/content/` as Route }, { label: 'Search' }],
     },
