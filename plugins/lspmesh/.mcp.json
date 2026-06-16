@@ -1,0 +1,8 @@
+{
+    "mcpServers": {
+        "lspmesh": {
+            "command": "pnpm",
+            "args": ["dlx", "lspmesh@0.0.2", "mcp"]
+        }
+    }
+}

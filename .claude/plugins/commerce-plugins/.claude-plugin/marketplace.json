@@ -1,6 +1,7 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "commerce-plugins",
+  "version": "1.0.0",
   "description": "Repo-local Claude Code plugins for the commerce monorepo.",
   "owner": {
     "name": "Nordcom Commerce",
@@ -10,105 +11,13 @@
     {
       "name": "lspmesh",
       "description": "LSP aggregator + MCP server - fronts TypeScript, Tailwind, and Biome behind one LSP endpoint, with by-name symbol/reference/implementation search.",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "author": {
         "name": "Filiph Sandström",
         "email": "filfat@hotmail.se"
       },
       "source": "./lspmesh",
-      "category": "development",
-      "strict": false,
-      "lspServers": {
-        "lspmesh": {
-          "command": "node",
-          "args": ["packages/ai/lspmesh/dist/cli.js", "lsp"],
-          "extensionToLanguage": {
-            ".ts": "typescript",
-            ".tsx": "typescriptreact",
-            ".mts": "typescript",
-            ".cts": "typescript",
-            ".js": "javascript",
-            ".jsx": "javascriptreact",
-            ".mjs": "javascript",
-            ".cjs": "javascript",
-            ".css": "css",
-            ".scss": "scss",
-            ".json": "json",
-            ".jsonc": "jsonc"
-          }
-        }
-      },
-      "mcpServers": {
-        "lspmesh": {
-          "command": "node",
-          "args": ["packages/ai/lspmesh/dist/cli.js", "mcp"]
-        }
-      }
-    },
-    {
-      "name": "tailwind-lsp-adapter",
-      "description": "Tailwind CSS LSP for Claude Code - completions, hover info, and diagnostics for Tailwind classes.",
-      "version": "1.0.0",
-      "author": {
-        "name": "Nordcom Commerce",
-        "email": "dev@nordcom.io"
-      },
-      "source": "./tailwind-lsp-adapter",
-      "category": "development",
-      "strict": false,
-      "lspServers": {
-        "tailwindcss": {
-          "command": "pnpm",
-          "args": [
-            "dlx",
-            "--package",
-            "tailwind-lsp-adapter@1.1.5",
-            "--package",
-            "@tailwindcss/language-server@0.14.29",
-            "tailwind-lsp-adapter"
-          ],
-          "extensionToLanguage": {
-            ".css": "css",
-            ".scss": "scss",
-            ".less": "less",
-            ".html": "html",
-            ".vue": "vue",
-            ".svelte": "svelte"
-          }
-        }
-      }
-    },
-    {
-      "name": "typescript-lsp",
-      "description": "TypeScript/JavaScript LSP for Claude Code - go-to-definition, find references, hover, and diagnostics.",
-      "version": "1.0.0",
-      "author": {
-        "name": "Nordcom Commerce",
-        "email": "dev@nordcom.io"
-      },
-      "source": "./typescript-lsp",
-      "category": "development",
-      "strict": false,
-      "lspServers": {
-        "typescript": {
-          "command": "pnpm",
-          "args": [
-            "dlx",
-            "typescript-language-server@4.4.1",
-            "--stdio"
-          ],
-          "extensionToLanguage": {
-            ".ts": "typescript",
-            ".tsx": "typescriptreact",
-            ".js": "javascript",
-            ".jsx": "javascriptreact",
-            ".mts": "typescript",
-            ".cts": "typescript",
-            ".mjs": "javascript",
-            ".cjs": "javascript"
-          }
-        }
-      }
+      "category": "development"
     }
   ]
 }

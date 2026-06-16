@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+    "name": "commerce-plugins",
+    "version": "1.0.0",
+    "description": "Repo-local Claude Code plugins for the commerce monorepo.",
+    "owner": {
+        "name": "Nordcom Commerce",
+        "email": "dev@nordcom.io"
+    },
+    "plugins": [
+        {
+            "name": "lspmesh",
+            "description": "LSP aggregator + MCP server - fronts TypeScript, Tailwind, and Biome behind one LSP endpoint, with by-name symbol/reference/implementation search.",
+            "version": "0.0.2",
+            "author": {
+                "name": "Filiph Sandström",
+                "email": "filfat@hotmail.se"
+            },
+            "source": "./plugins/lspmesh",
+            "category": "development"
+        }
+    ]
+}
