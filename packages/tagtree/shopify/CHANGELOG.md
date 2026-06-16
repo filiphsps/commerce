@@ -1,5 +1,14 @@
 # @tagtree/shopify
 
+## 0.0.6
+
+### Patch Changes
+
+- [`95249fe`](https://github.com/filiphsps/commerce/commit/95249febac61d518d31e5ad7036488825300b88b) Thanks [@filiphsps](https://github.com/filiphsps)! - Update domain to <nordcom.store> 🎉
+
+- Updated dependencies [[`95249fe`](https://github.com/filiphsps/commerce/commit/95249febac61d518d31e5ad7036488825300b88b)]:
+  - @tagtree/core@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes
