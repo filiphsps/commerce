@@ -345,6 +345,14 @@ jobs:
             CONVEX_AUTH_ISSUER: ${{ matrix.app == 'admin' && 'http://localhost:3000' || '' }}
             CONVEX_AUTH_APPLICATION_ID: ${{ matrix.app == 'admin' && 'convex' || '' }}
             CONVEX_AUTH_JWKS_URL: ${{ matrix.app == 'admin' && 'http://localhost:3000/.well-known/jwks.json' || '' }}
+            # The runtime `/api/version` endpoint (read by `resolveBuildId` per request) must report the
+            # SAME id baked into the client bundle at build time (`NEXT_PUBLIC_BUILD_ID: github.sha`).
+            # Without this, the endpoint here resolves to `'development'`, so the build-notifier engine
+            # sees client(github.sha) ≠ server('development') and reports "update available" on every
+            # page — its fixed overlay then intercepts toolbar clicks (admin) and its auto-reload steals
+            # in-flight navigations (storefront), breaking otherwise-unrelated specs. The banner specs
+            # stub `/api/version` to a deliberately different id, so they still exercise the live path.
+            NEXT_PUBLIC_BUILD_ID: ${{ github.sha }}
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
