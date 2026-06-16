@@ -1,10 +1,18 @@
+import type { GenericMutationCtx } from 'convex/server';
 import { makeFunctionReference } from 'convex/server';
 import { v } from 'convex/values';
 import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { DataModel, Id } from '../_generated/dataModel';
 import schema from '../schema';
-import { AuthErrorCode, getClerkOperatorIdentity, resolveAdminShopId, resolveUserFromIdentity } from './auth';
+import {
+    AuthErrorCode,
+    getClerkOperatorIdentity,
+    resolveAdminShopId,
+    resolveShopAccess,
+    resolveUserFromIdentity,
+} from './auth';
 import { systemMutation, systemQuery } from './system';
 
 /**
@@ -16,6 +24,36 @@ import { systemMutation, systemQuery } from './system';
  */
 const CLERK_ISSUER = 'https://clerk.test.nordcom.io';
 
+/** Fixed epoch-ms stamp shared by every seeded row so the seeds are deterministic across cases. */
+const SEED_NOW = 1_700_000_000_000;
+
+/**
+ * Inserts one platform `users` row, the single seed point both {@link seedCollaborator} and
+ * {@link seedShopAccess} share so the row shape (`emailVerified`/`identities`/managed timestamps) is
+ * declared once. `clerkUserId` is optional: stamp it to exercise subject-keyed operator resolution,
+ * leave it unset to exercise the email fallback.
+ *
+ * @param ctx - A system-tier mutation context exposing the raw writer `db`.
+ * @param email - The user's email (the `by_email` fallback key).
+ * @param clerkUserId - Optional Clerk subject stamped onto `users.clerkUserId`.
+ * @returns The inserted `users` row id.
+ */
+function insertOperatorUser(
+    ctx: Pick<GenericMutationCtx<DataModel>, 'db'>,
+    email: string,
+    clerkUserId?: string,
+): Promise<Id<'users'>> {
+    return ctx.db.insert('users', {
+        email,
+        name: 'Operator',
+        emailVerified: null,
+        identities: [],
+        clerkUserId,
+        createdAt: SEED_NOW,
+        updatedAt: SEED_NOW,
+    });
+}
+
 /**
  * Seeds a platform user plus `shopCount` shops, each with a `shopCollaborators` row linking the
  * user to that shop, exercising the real {@link resolveAdminShopId} membership chain end to end.
@@ -23,21 +61,14 @@ const CLERK_ISSUER = 'https://clerk.test.nordcom.io';
  * platform-global tables the system tier is sanctioned to write unscoped. The optional
  * `clerkUserId` stamps the Clerk subject onto the row so the subject-keyed operator resolution
  * resolves (leave it unset to exercise the email fallback). Returns the seeded email and the FIRST
- * shop's id so the single-shop case can assert the exact resolution.
+ * shop's id so the single-shop case can assert the exact resolution. `shopCount: 0` seeds the user
+ * alone, exercising the zero-membership `NO_SHOP_MEMBERSHIP` branch.
  */
 const seedCollaborator = systemMutation({
     args: { email: v.string(), shopCount: v.number(), clerkUserId: v.optional(v.string()) },
     handler: async (ctx, { email, shopCount, clerkUserId }) => {
-        const now = 1_700_000_000_000;
-        const userId = await ctx.db.insert('users', {
-            email,
-            name: 'Operator',
-            emailVerified: null,
-            identities: [],
-            clerkUserId,
-            createdAt: now,
-            updatedAt: now,
-        });
+        const now = SEED_NOW;
+        const userId = await insertOperatorUser(ctx, email, clerkUserId);
 
         let firstShopId: string | null = null;
         for (let index = 0; index < shopCount; index++) {
@@ -69,6 +100,83 @@ const seedCollaborator = systemMutation({
 const resolveShopIdFixture = systemQuery({
     args: {},
     handler: async (ctx) => resolveAdminShopId(ctx),
+});
+
+/**
+ * Seeds the Clerk-org tenancy graph {@link resolveShopAccess} authorizes against: a `users` row
+ * (subject-keyed via `clerkUserId`), an `orgs` mirror row, a shop carrying `clerkOrgId` plus its
+ * routing `shopDomains.by_domain` row, and — unless `withoutMembership` — the `orgMemberships` row
+ * joining the user to that org. Toggles let each case carve a single failure mode: `withoutOrg` omits
+ * the shop's `clerkOrgId` (SHOP_WITHOUT_ORG), `withoutMembership` omits the membership join
+ * (NO_ORG_MEMBERSHIP), and `orphanShop` deletes the shop AFTER its `shopDomains` row exists, leaving a
+ * dangling routing FK (SHOP_ORPHANED). Written through the system tier's raw `ctx.db` because every
+ * table here is platform-global. Returns the seeded `shopId`, `domain`, and `clerkOrgId` so cases can
+ * assert exactly.
+ */
+const seedShopAccess = systemMutation({
+    args: {
+        email: v.string(),
+        clerkUserId: v.string(),
+        clerkOrgId: v.string(),
+        domain: v.string(),
+        withoutOrg: v.optional(v.boolean()),
+        withoutMembership: v.optional(v.boolean()),
+        orphanShop: v.optional(v.boolean()),
+    },
+    handler: async (ctx, { email, clerkUserId, clerkOrgId, domain, withoutOrg, withoutMembership, orphanShop }) => {
+        const now = SEED_NOW;
+        const userId = await insertOperatorUser(ctx, email, clerkUserId);
+
+        await ctx.db.insert('orgs', {
+            clerkOrgId,
+            name: 'Acme Org',
+            slug: 'acme-org',
+            createdAt: now,
+            updatedAt: now,
+        });
+
+        const shopId = await ctx.db.insert('shops', {
+            legacyId: 'shop_access',
+            name: 'Access Shop',
+            domain,
+            clerkOrgId: withoutOrg ? undefined : clerkOrgId,
+            design: {
+                header: { logo: { width: 512, height: 512, src: 'https://cdn/logo.png', alt: 'Access Shop' } },
+                accents: [],
+            },
+            commerceProvider: { type: 'stripe', authentication: {} },
+            createdAt: now,
+            updatedAt: now,
+        });
+        await ctx.db.insert('shopDomains', { shop: shopId, domain });
+
+        if (!withoutMembership) {
+            await ctx.db.insert('orgMemberships', {
+                clerkOrgId,
+                user: userId,
+                clerkUserId,
+                role: 'org:admin',
+                createdAt: now,
+            });
+        }
+
+        // Delete the shop AFTER its routing row so the `shopDomains` row dangles, exercising SHOP_ORPHANED.
+        if (orphanShop) {
+            await ctx.db.delete(shopId);
+        }
+
+        return { shopId, domain, clerkOrgId };
+    },
+});
+
+/**
+ * A {@link systemQuery} that runs the real {@link resolveShopAccess} for a given `domain` against the
+ * request's `convex-test` identity, so the Clerk-org authorization gate (identity → user → owning-org
+ * membership → shop) is exercised through an actual Convex function ctx rather than a hand-built stub.
+ */
+const resolveShopAccessFixture = systemQuery({
+    args: { domain: v.string() },
+    handler: async (ctx, { domain }) => resolveShopAccess(ctx, domain),
 });
 
 /**
@@ -110,6 +218,8 @@ const modules = {
         Promise.resolve({
             seedCollaborator,
             resolveShopIdFixture,
+            seedShopAccess,
+            resolveShopAccessFixture,
             clerkOperatorIdentityFixture,
             resolveOperatorFixture,
         }),
@@ -117,6 +227,8 @@ const modules = {
 
 const seedCollaboratorRef = makeFunctionReference<'mutation'>('lib/auth.test:seedCollaborator');
 const resolveShopIdRef = makeFunctionReference<'query'>('lib/auth.test:resolveShopIdFixture');
+const seedShopAccessRef = makeFunctionReference<'mutation'>('lib/auth.test:seedShopAccess');
+const resolveShopAccessRef = makeFunctionReference<'query'>('lib/auth.test:resolveShopAccessFixture');
 const clerkOperatorIdentityRef = makeFunctionReference<'query'>('lib/auth.test:clerkOperatorIdentityFixture');
 const resolveOperatorRef = makeFunctionReference<'query'>('lib/auth.test:resolveOperatorFixture');
 
@@ -256,6 +368,18 @@ describe('resolveAdminShopId', () => {
         });
     });
 
+    it('rejects a resolved user with zero shop collaborations as NO_SHOP_MEMBERSHIP', async () => {
+        const t = convexTest(schema, modules);
+        // Seed the user alone (no shops, no collaborator rows) so the membership query returns empty.
+        await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 0, clerkUserId: 'user_1' });
+
+        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
+
+        await expect(asOperator.query(resolveShopIdRef, {})).rejects.toMatchObject({
+            data: { code: AuthErrorCode.NO_SHOP_MEMBERSHIP },
+        });
+    });
+
     it('rejects an identity collaborating on multiple shops as ambiguous (active-tenant selection is CONVEXCORE-16)', async () => {
         const t = convexTest(schema, modules);
         await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 2, clerkUserId: 'user_1' });
@@ -268,6 +392,92 @@ describe('resolveAdminShopId', () => {
 
         await expect(asOperator.query(resolveShopIdRef, {})).rejects.toMatchObject({
             data: { code: AuthErrorCode.AMBIGUOUS_SHOP_MEMBERSHIP },
+        });
+    });
+});
+
+describe('resolveShopAccess', () => {
+    const DOMAIN = 'acme-shop.example.com';
+
+    it('authorizes an operator who is a member of the shop\'s owning org', async () => {
+        const t = convexTest(schema, modules);
+        const { shopId } = await t.mutation(seedShopAccessRef, {
+            email: 'operator@example.com',
+            clerkUserId: 'user_1',
+            clerkOrgId: 'org_1',
+            domain: DOMAIN,
+        });
+
+        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
+        const resolved = await asOperator.query(resolveShopAccessRef, { domain: DOMAIN });
+
+        expect(resolved).toBe(shopId);
+    });
+
+    it('rejects an operator with no membership in the shop\'s owning org as NO_ORG_MEMBERSHIP', async () => {
+        const t = convexTest(schema, modules);
+        await t.mutation(seedShopAccessRef, {
+            email: 'operator@example.com',
+            clerkUserId: 'user_1',
+            clerkOrgId: 'org_1',
+            domain: DOMAIN,
+            withoutMembership: true,
+        });
+
+        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
+
+        await expect(asOperator.query(resolveShopAccessRef, { domain: DOMAIN })).rejects.toMatchObject({
+            data: { code: AuthErrorCode.NO_ORG_MEMBERSHIP },
+        });
+    });
+
+    it('rejects an unknown domain claimed by no shop as UNKNOWN_SHOP', async () => {
+        const t = convexTest(schema, modules);
+        await t.mutation(seedShopAccessRef, {
+            email: 'operator@example.com',
+            clerkUserId: 'user_1',
+            clerkOrgId: 'org_1',
+            domain: DOMAIN,
+        });
+
+        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
+
+        await expect(asOperator.query(resolveShopAccessRef, { domain: 'unclaimed.example.com' })).rejects.toMatchObject({
+            data: { code: AuthErrorCode.UNKNOWN_SHOP },
+        });
+    });
+
+    it('rejects a routing row whose shop FK dangles as SHOP_ORPHANED', async () => {
+        const t = convexTest(schema, modules);
+        await t.mutation(seedShopAccessRef, {
+            email: 'operator@example.com',
+            clerkUserId: 'user_1',
+            clerkOrgId: 'org_1',
+            domain: DOMAIN,
+            orphanShop: true,
+        });
+
+        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
+
+        await expect(asOperator.query(resolveShopAccessRef, { domain: DOMAIN })).rejects.toMatchObject({
+            data: { code: AuthErrorCode.SHOP_ORPHANED },
+        });
+    });
+
+    it('rejects a shop missing its clerkOrgId as SHOP_WITHOUT_ORG', async () => {
+        const t = convexTest(schema, modules);
+        await t.mutation(seedShopAccessRef, {
+            email: 'operator@example.com',
+            clerkUserId: 'user_1',
+            clerkOrgId: 'org_1',
+            domain: DOMAIN,
+            withoutOrg: true,
+        });
+
+        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
+
+        await expect(asOperator.query(resolveShopAccessRef, { domain: DOMAIN })).rejects.toMatchObject({
+            data: { code: AuthErrorCode.SHOP_WITHOUT_ORG },
         });
     });
 });
