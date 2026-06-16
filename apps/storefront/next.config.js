@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { resolveBuildEnv } from '@nordcom/commerce-utils/env';
+import { withBuildNotifier } from 'next-build-notifier/config';
 
 import { buildContentSecurityPolicy } from './src/utils/csp.mjs';
 
@@ -29,7 +30,7 @@ const config = {
     compress: !isDev,
     reactCompiler: true,
     cacheComponents: true,
-    transpilePackages: ['@shopify/hydrogen-react'],
+    transpilePackages: ['@shopify/hydrogen-react', 'next-build-notifier'],
     serverExternalPackages: ['crypto-js'],
     turbopack: { root: path.resolve(path.join(__dirname, '../..')) },
     devIndicators: {
@@ -180,4 +181,4 @@ const wrapConfig = (config) => {
     return config;
 };
 
-export default wrapConfig(config);
+export default wrapConfig(withBuildNotifier(config));

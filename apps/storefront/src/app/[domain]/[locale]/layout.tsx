@@ -10,6 +10,7 @@ import { notFound, unstable_rethrow } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
 import { CountriesApi, LocaleApi, LocalesApi, Shop } from '@/api/_loaders';
+import { ResolvedExtensionsApi } from '@/api/extensions';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { dispatch as dispatchCartMutation } from '@/app/[domain]/[locale]/_actions/cart';
 import { tenantRootTags } from '@/cache';
@@ -18,6 +19,7 @@ import { CartClientShell } from '@/cart/cart-client-shell';
 import { resolveContext } from '@/cart/context';
 import { cartKernel, readCart } from '@/cart/kernel';
 import { AnalyticsProvider } from '@/components/analytics-provider';
+import { StorefrontBuildNotifier } from '@/components/build-notifier/storefront-build-notifier';
 import { ReactiveIslandProviderGate } from '@/components/convex/reactive-island-provider-gate';
 import { GeoRedirect } from '@/components/geo-redirect';
 import { HeaderProvider } from '@/components/header/header-provider';
@@ -29,7 +31,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { resolveFontClassName } from '@/utils/fonts';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
+import { getTranslations, Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { PreviewContentBridge } from './preview-content-bridge';
 import { PreviewThemeBridge } from './preview-theme-bridge';
@@ -232,11 +234,27 @@ async function CachedShell({
         getDictionary(locale),
     ]);
 
+    const extensions = ResolvedExtensionsApi({ shop });
+    const notifier = extensions.buildNotifier;
+    const { t: tNotifier } = getTranslations('build-notifier', i18n);
+
     return (
         <ProvidersRegistry shop={shop} locale={locale} domain={domain}>
             <Suspense fallback={<Fragment />}>
                 <CssVariablesProvider domain={domain} shop={shop} />
             </Suspense>
+
+            <StorefrontBuildNotifier
+                enabled={notifier.enabled}
+                position={notifier.position}
+                autoReload={notifier.autoReload}
+                dismissable={notifier.dismissable}
+                labels={{
+                    title: notifier.copy ?? tNotifier('title'),
+                    reload: tNotifier('reload'),
+                    dismiss: tNotifier('dismiss'),
+                }}
+            />
 
             <AnalyticsProvider shop={shop} hostname={domain}>
                 <HeaderProvider loaderColor={branding?.primary.color}>

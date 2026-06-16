@@ -824,6 +824,39 @@ html:root {
     }
 }
 
+/* Build-notifier banner entrance and accent-dot ring animations. The `nbn-ring` pulse uses
+ * `--accent` so the pulse tint matches the tenant's primary accent without extra tokens. */
+@keyframes nbn-in-bottom {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes nbn-in-top {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes nbn-ring {
+    from {
+        box-shadow: 0 0 0 0 var(--accent);
+    }
+    to {
+        box-shadow: 0 0 0 6px transparent;
+    }
+}
+
 /* Tie @tailwindcss/typography to the tenant semantic tokens so prose content (CMS articles, blog
  * bodies) inherits the brand text/heading/link colors instead of the plugin's gray defaults. Links
  * track the tenant accent (`--color-primary`); body/headings/quotes track the semantic `--text` /
