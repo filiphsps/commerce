@@ -57,7 +57,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://filiphsps.github.io/commerce/cart/react/",
+    "homepage": "https://filiphsps.github.io/commerce/packages/cart/react/overview/",
     "dependencies": {
         "@nordcom/cart-core": "workspace:*"
     },

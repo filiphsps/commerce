@@ -53,7 +53,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://filiphsps.github.io/commerce/cart/next/",
+    "homepage": "https://filiphsps.github.io/commerce/packages/cart/next/overview/",
     "dependencies": {
         "@nordcom/cart-core": "workspace:*"
     },

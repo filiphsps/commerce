@@ -49,7 +49,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://filiphsps.github.io/commerce/docs/tagtree/next/overview/",
+    "homepage": "https://filiphsps.github.io/commerce/packages/tagtree/next/overview/",
     "dependencies": {
         "@tagtree/core": "workspace:*",
         "server-only": "0.0.1"
