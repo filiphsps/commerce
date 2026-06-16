@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { builtinModules } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +8,10 @@ import { defineConfig } from 'vite';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Single source of truth for the version: package.json, injected at build time so
+// `--version` and the MCP server version never drift from the published release.
+const pkgVersion = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf8')).version as string;
+
 // A node CLI/library: never bundle node builtins or the runtime dependencies —
 // consumers install them. Externalize both bare and `node:`-prefixed builtins.
 const nodeExternals = [...builtinModules, ...builtinModules.map((m) => `node:${m}`)];
@@ -14,6 +19,9 @@ const nodeExternals = [...builtinModules, ...builtinModules.map((m) => `node:${m
 // Self-contained (not extending packages/vite.config) so the shared input glob
 // `./**/src/**` doesn't sweep in the integration fixture's own `src/` directory.
 export default defineConfig({
+    define: {
+        __LSPMESH_VERSION__: JSON.stringify(pkgVersion),
+    },
     resolve: {
         alias: { '@': resolve(__dirname, 'src') },
     },
