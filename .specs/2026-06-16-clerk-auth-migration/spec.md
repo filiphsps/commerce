@@ -57,6 +57,34 @@ the existing `/[domain]/` per-shop routing and Convex authorization seam.
 | 18 | Cutover | **Big-bang on a feature branch** (isolated worktree). No dual-auth, no flag. |
 | 19 | UI approach | **Clerk prebuilt components themed via `appearance`** to match admin tokens; bespoke org×storefront chooser only. |
 
+## Correction (2026-06-16, Task 2.1) — the Convex `customJwt` provider is SHARED with storefront customers
+
+Discovered during implementation: the Convex `customJwt` RS256 provider is **not admin-only**.
+Storefront **customers** mint RS256 tokens via `apps/storefront/src/utils/convex-token.ts`
+(same `CONVEX_AUTH_PRIVATE_KEY`/`CONVEX_AUTH_ISSUER`/`CONVEX_AUTH_APPLICATION_ID`), served by
+`apps/storefront/src/app/[domain]/api/auth/convex-jwks/route.ts`, and validated by the **same**
+`auth.config.ts` provider feeding `lib/authed.ts` (`authedQuery`/`authedMutation`) for
+`account/profile` + `account/self`. This **supersedes decisions #2 and #17** as follows:
+
+- **Decision #2 (revised):** Convex gets the Clerk provider **ADDED ALONGSIDE** the customJwt
+  provider (both in `auth.config.ts.providers`). Only the **admin operator** minting moves to
+  Clerk. The customer customJwt provider stays until a future, separate storefront migration.
+- **Decision #17 (revised cleanup scope):** Delete only the **admin** RS256 surfaces
+  (`apps/admin/src/lib/convex-token.ts`, `apps/admin/src/app/.well-known/jwks.json/route.ts`).
+  **KEEP** the storefront's `apps/storefront/src/utils/convex-token.ts`, its
+  `…/api/auth/convex-jwks/route.ts` + `…/api/auth/convex-token/route.ts`, and the shared
+  `CONVEX_AUTH_*` keypair. **Do NOT** drop these on the Convex deployment.
+- **Issuer split (reshapes Task 2.2):** `lib/auth.ts` `getTrustedIdentity` re-asserts
+  `iss == CONVEX_AUTH_ISSUER` — that is the **customer-tier** gate and MUST stay for storefront.
+  Admin/operator code must validate the **Clerk** issuer/claims on its **own** path (a new
+  admin-specific identity getter, e.g. `getClerkOperatorIdentity`), NOT by reusing
+  `getTrustedIdentity`. The two issuers are disjoint, so the providers never cross-validate.
+- **Env (revised #16):** `CONVEX_AUTH_*` remain set on the Convex **deployment** (dev + prod)
+  because storefront needs them; they are only removed from `.env.example`. New Clerk vars are
+  added on top.
+- **Task 1.4 (revised):** drop only the NextAuth-era `sessions`/`identities` tables +
+  `users.identities[]`. The customer customJwt provider and storefront minting are NOT touched.
+
 ## Target architecture
 
 ### Clerk instances & environments
