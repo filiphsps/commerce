@@ -13,6 +13,7 @@ import {
     localizedPathsFor,
     readLocalizedField,
 } from './localization';
+import { resolveMediaForRead } from './media';
 
 /**
  * Storefront-facing CMS reads (SFREAD-12). The storefront getter path is identity-less — it runs
@@ -352,7 +353,18 @@ export const singleton = serverQuery({
         if (!scope) return null;
         const docs = await liveDocs(ctx, scope, collection, draft === true);
         const doc = (draft === true ? docs.find((row) => row.status === 'draft') : undefined) ?? docs[0];
-        return doc ? reassembleDoc(ctx, doc, scope.chain, draft === true) : null;
+        if (!doc) return null;
+        const result = await reassembleDoc(ctx, doc, scope.chain, draft === true);
+        // Populate the header's `logo` upload relation: the storefront receives a `Media` object,
+        // not the stored media id (SFREAD-01 — uploads arrived populated under Payload). The
+        // editor's media picker writes the id as a bare string, which the storefront's
+        // `populatedMedia` discards; without this the admin-set logo never shows and the shop
+        // record's placeholder stands in. A foreign, unparseable, or unset id collapses to `null`,
+        // and the storefront falls back to the shop record's logo exactly as before.
+        if (typeof result.logo === 'string') {
+            result.logo = await resolveMediaForRead(ctx, scope.shop._id, result.logo);
+        }
+        return result;
     },
 });
 

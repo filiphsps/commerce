@@ -187,6 +187,55 @@ describe('cms/read — storefront-facing published reads', () => {
         expect(typeof header?.id).toBe('string');
     });
 
+    it('populates the header logo upload relation as a Media object (SFREAD-01)', async () => {
+        const t = await corpus();
+        const mediaId = await t.run(async (ctx) => {
+            const shop = (await ctx.db.query('shops').collect()).find((row) => row.legacyId === SHOP_PUBLIC_ID);
+            if (!shop) throw new TypeError('corpus shop missing');
+            const storageId = await ctx.storage.store(new Blob([new Uint8Array([1, 2, 3])]));
+            const id = await ctx.db.insert('cmsMedia', {
+                shopId: shop._id,
+                storageId,
+                filename: 'brand-logo.png',
+                mimeType: 'image/png',
+                filesize: 3,
+                alt: 'Brand logo',
+                width: 320,
+                height: 80,
+                createdAt: NOW,
+                updatedAt: NOW,
+            });
+            const header = (await ctx.db.query('cmsDocuments').collect()).find(
+                (row) => row.shopId === shop._id && row.collection === 'header',
+            );
+            if (!header) throw new TypeError('corpus header missing');
+            await ctx.db.patch(header._id, { data: { ...(header.data as Record<string, unknown>), logo: id } });
+            return id;
+        });
+
+        const header = await t.query(singletonRef, { ...base, collection: 'header' });
+        const logo = header?.logo as Record<string, unknown> | null;
+        expect(logo).toMatchObject({ id: String(mediaId), width: 320, height: 80, alt: 'Brand logo' });
+        expect(typeof logo?.url).toBe('string');
+    });
+
+    it('collapses a foreign or unparseable header logo id to null so the storefront falls back', async () => {
+        const t = await corpus();
+        await t.run(async (ctx) => {
+            const shop = (await ctx.db.query('shops').collect()).find((row) => row.legacyId === SHOP_PUBLIC_ID);
+            if (!shop) throw new TypeError('corpus shop missing');
+            const header = (await ctx.db.query('cmsDocuments').collect()).find(
+                (row) => row.shopId === shop._id && row.collection === 'header',
+            );
+            if (!header) throw new TypeError('corpus header missing');
+            await ctx.db.patch(header._id, {
+                data: { ...(header.data as Record<string, unknown>), logo: 'not-a-real-media-id' },
+            });
+        });
+        const header = await t.query(singletonRef, { ...base, collection: 'header' });
+        expect(header?.logo).toBeNull();
+    });
+
     it('returns null for an unseeded singleton and for an unresolved shop', async () => {
         const t = await corpus();
         await expect(t.query(singletonRef, { ...base, collection: 'footer' })).resolves.toBeNull();

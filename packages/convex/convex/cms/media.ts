@@ -2,7 +2,7 @@ import type { Media } from '@nordcom/commerce-cms/types';
 import type { GenericDatabaseReader, StorageReader } from 'convex/server';
 import { ConvexError, v } from 'convex/values';
 
-import type { DataModel, Doc } from '../_generated/dataModel';
+import type { DataModel, Doc, Id } from '../_generated/dataModel';
 import { countWithinBudget } from '../lib/scan_budget';
 import { tenantMutation, tenantQuery } from '../lib/tenant';
 import { MEDIA_DERIVATIVE_SIZE_NAMES } from '../tables/cms_media';
@@ -151,6 +151,33 @@ async function resolveMediaUrls(ctx: MediaUrlResolutionCtx, doc: Doc<'cmsMedia'>
         };
     }
     return { ...base, url, thumbnailURL: sizes.thumbnail?.url ?? url, sizes };
+}
+
+/**
+ * Populates a stored media id onto the frozen `Media` contract for an identity-less STOREFRONT read
+ * — the seam the secret-gated `cms/read` queries use so upload relations (the header `logo`) reach
+ * the storefront as objects, not bare ids. Payload populated uploads by depth, so the SFREAD-01
+ * byte-identity contract expects the object; without this the storefront's `populatedMedia` discards
+ * the bare id and falls back to the shop record's logo. The server-secret read path carries no RLS
+ * identity, so tenancy is enforced manually: a cross-tenant, unparseable, or absent id resolves to
+ * `null` — never another tenant's media — and serving URLs resolve at read time via
+ * {@link resolveMediaUrls}.
+ *
+ * @param ctx - The database + storage slice of a server query context.
+ * @param shopId - The tenant the media id must belong to.
+ * @param mediaId - The raw media id string stored on the upload field.
+ * @returns The populated `Media`, or `null` when absent, foreign, or unparseable.
+ */
+export async function resolveMediaForRead(
+    ctx: MediaUrlResolutionCtx,
+    shopId: Id<'shops'>,
+    mediaId: string,
+): Promise<Media | null> {
+    const normalized = ctx.db.normalizeId('cmsMedia', mediaId);
+    if (!normalized) return null;
+    const doc = await ctx.db.get(normalized);
+    if (!doc || doc.shopId !== shopId) return null;
+    return resolveMediaUrls(ctx, doc);
 }
 
 /**
