@@ -3,6 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { resolveBuildId } from './resolve-build-id';
 
 describe('resolveBuildId', () => {
+    it('prefers NEXT_DEPLOYMENT_ID above all', () =>
+        expect(resolveBuildId({ NEXT_DEPLOYMENT_ID: 'nd', VERCEL_DEPLOYMENT_ID: 'dpl', GIT_COMMIT_SHA: 'sha' })).toBe(
+            'nd',
+        ));
+
     it('prefers VERCEL_DEPLOYMENT_ID above all', () => {
         expect(
             resolveBuildId({
