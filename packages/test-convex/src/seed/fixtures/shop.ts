@@ -1,4 +1,5 @@
 import type { Doc } from '../../../../convex/convex/_generated/dataModel';
+import { businessDataFixture } from './business-data';
 
 /**
  * The canonical demo shop's preserved Mongo `ObjectId` string. The unified `shops` row keys external
@@ -106,6 +107,7 @@ export function buildCanonicalShopFixture(opts: CanonicalShopFixtureOptions = {}
             domain,
             alternativeDomains,
             i18n: { defaultLocale: 'en-US' },
+            businessData: businessDataFixture,
             commerce: { maxQuantity: 25, processingTimeInDays: 3 },
             showProductVendor: true,
             design: {

@@ -452,6 +452,25 @@ export declare const api: {
           serverSecret: string;
           shop: {
             alternativeDomains?: Array<string>;
+            branding?: { faviconMediaId?: string; logoMediaId?: string };
+            businessData?: {
+              address?: {
+                city?: string;
+                country?: string;
+                line1?: string;
+                line2?: string;
+                postalCode?: string;
+                region?: string;
+              };
+              legalName?: string;
+              profiles?: Array<{
+                handle: string;
+                platform: string;
+                url?: string;
+              }>;
+              supportEmail?: string;
+              supportPhone?: string;
+            };
             clerkOrgId?: string;
             commerce?: { maxQuantity?: number; processingTimeInDays?: number };
             commerceProvider?:

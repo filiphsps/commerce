@@ -42,6 +42,11 @@ const writableShopValidator = v.object({
     theme: shopFields.theme,
     extensions: shopFields.extensions,
     icons: shopFields.icons,
+    // businessData + branding are shop-row identity/presentation fields folded onto the shop (UNIFY-SHOP),
+    // siblings of design/icons which are already writable here. The provisioning writer owns the initial
+    // value (the canonical seed sets it); the admin's cms/shop_config path edits it thereafter.
+    businessData: shopFields.businessData,
+    branding: shopFields.branding,
     commerceProvider: v.optional(shopFields.commerceProvider),
     integrations: shopFields.integrations,
     thirdParty: shopFields.thirdParty,
