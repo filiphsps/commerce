@@ -276,11 +276,24 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Added a test for the no-collection fallback link.
 - Verified: biome clean, typecheck clean, product-vendor 4/4.
 
+### 23 — Vendors rail: filtered-products links (no dead collection links)
+
+- The CMS Vendors block (`blocks/vendors.tsx` → `informational/vendors.tsx`, production) linked every
+  vendor chip to `/collections/<handle>/` with a TODO flagging the dead-link risk — those vendors are
+  derived from products, so a matching collection isn't guaranteed.
+- Pointed each chip at `/products/?vendor=<encoded title>` (always resolves; the listing compiles the
+  raw vendor name into `vendor:"…"`), resolving the TODO and extending iter 22's no-dead-end rule to
+  the bulk rail. A per-vendor collection-existence check was rejected — it's one API call per chip.
+- Added the component's first test asserting filtered links and zero `/collections/` hrefs.
+- Verified: biome clean, typecheck clean, vendors 1/1.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Remaining literal `aria-label="Close"` / `Show all … options` in
   `product-options/primitives/overlay` — the product-options Root/context carry no i18n, so this needs
   threading i18n through the whole option system (sizeable; deferred).
+- `--color-secondary-light` (used by the vendor chip `bg-secondary-light`) lacks the `var(…, fallback)`
+  its sibling accent tokens have — a theme-less shop has no chip background. Low priority.
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE facets in `FilterValues` and wire the shared
   `ProductFilters` into /products, collections, and search (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets in `FilterValues` and wire the
