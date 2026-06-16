@@ -16,7 +16,8 @@ export type VendorsProps = {
     className?: string | undefined;
 };
 /**
- * Async server component fetching all vendors from Shopify and rendering them as collection links.
+ * Async server component fetching all vendors from Shopify and rendering each as a link to the
+ * all-products listing filtered by that vendor, so no chip is ever a dead link.
  *
  * @param props.shop - Shop record used to build the Shopify API client.
  * @param props.locale - Active locale forwarded to the API client.
@@ -35,8 +36,12 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
         <Link
             key={vendor.handle}
             {...props}
-            // TODO: Figure out if we should link to the collection or a filtered product list.
-            href={`/collections/${vendor.handle}/`}
+            // Link to the all-products listing filtered by vendor rather than `/collections/<handle>/`:
+            // these vendors are derived from products, so a matching collection isn't guaranteed and a
+            // bulk per-vendor existence check would be one API call each. The filter always resolves,
+            // so no chip is ever a dead link (overhaul spec #3). `title` is the raw vendor name the
+            // products listing compiles into `vendor:"…"`.
+            href={`/products/?vendor=${encodeURIComponent(vendor.title)}`}
             className={cn(
                 'flex items-center justify-center whitespace-nowrap rounded-lg bg-secondary-light p-2 px-3 text-center font-semibold text-sm leading-tight transition-colors hover:bg-primary hover:text-primary-foreground md:mr-0 md:whitespace-normal md:px-3',
                 className,
