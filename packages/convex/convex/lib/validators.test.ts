@@ -149,6 +149,9 @@ const fullTheme = {
         gap: '12px',
         paddingY: '12px',
         dividerColor: '#ece6d4',
+        variantStyle: 'swatch',
+        showVendor: true,
+        showSku: false,
     },
 };
 
