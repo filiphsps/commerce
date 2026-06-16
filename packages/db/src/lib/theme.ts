@@ -305,6 +305,9 @@ export interface ResolvedShopTheme {
         /** → `--focus-ring`. Defaults to `var(--accent)`. No consumer until the P5 semantic
          * migration (components read `var(--accent)` directly today), so an override is inert. */
         focusRing: string;
+        /** → `--section-dark-bg`. Fill painted behind a section whose CMS `colorScheme` is `dark`
+         * (the Collection / Banner dark option); `.on-dark` flips the ink that sits on it. */
+        sectionDark: string;
     };
     typography: {
         /** Allowlist key resolved to a module-scope `next/font` call in the storefront → `--font-primary`. */
@@ -376,6 +379,7 @@ export const THEME_DEFAULTS: ResolvedShopTheme = {
         border: { default: '#ece6d4', strong: '#d8d8d8' },
         state: { sale: '#b51200', danger: '#a53d3a', success: '#3b9e2e', info: '#6dc0d5' },
         focusRing: 'var(--accent)',
+        sectionDark: '#051821',
     },
     typography: {
         fontFamily: 'public-sans',
@@ -820,6 +824,9 @@ export const serializeThemeToCssVars = (theme: ResolvedShopTheme, branding: Them
 
         // Focus ring → semantic `--focus-ring` (no consumer until P5; components use `--accent`).
         ['--focus-ring', colors.focusRing, d.colors.focusRing],
+
+        // Dark-section fill → `--section-dark-bg` (the CMS `colorScheme: dark` surface).
+        ['--section-dark-bg', colors.sectionDark, d.colors.sectionDark],
 
         // Block radii / spacing → consumed live throughout the storefront.
         ['--block-border-radius', radii.block, d.radii.block],

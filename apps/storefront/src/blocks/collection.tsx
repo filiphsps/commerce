@@ -75,12 +75,20 @@ export const CollectionBlock = ({
     const fallbackLayout =
         block.defaultLayout ?? (typeof storeDefaultLayout === 'string' ? storeDefaultLayout : undefined);
     const layout = resolveBlockLayout(block.layout, fallbackLayout ?? undefined);
+    // `colorScheme: dark` wraps the grid in a tenant-themeable dark surface (`--section-dark-bg`) and
+    // applies `on-dark`, flipping the product-card option/price tokens (and, via `text-(--text)`, the
+    // section title) to their light values so a collection reads correctly on a dark band.
+    const dark = (block.colorScheme ?? 'light') === 'dark';
 
     return (
         <section
             data-block-type="collection"
             data-layout={layoutSummary(layout)}
-            className={cn('flex w-full flex-col items-start justify-start gap-4 self-start')}
+            data-color-scheme={dark ? 'dark' : 'light'}
+            className={cn(
+                'flex w-full flex-col items-start justify-start gap-4 self-start',
+                dark && 'on-dark rounded-lg bg-(--section-dark-bg) p-6 text-(--text)',
+            )}
         >
             {block.title ? (
                 <Title as="h2" className="font-bold text-xl leading-tight lg:text-2xl">

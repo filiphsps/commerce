@@ -31,6 +31,7 @@ export const themeColorsValidator = v.object({
     border: v.object({ default: v.string(), strong: v.string() }),
     state: v.object({ sale: v.string(), danger: v.string(), success: v.string(), info: v.string() }),
     focusRing: v.string(),
+    sectionDark: v.string(),
 });
 
 /**

@@ -122,6 +122,15 @@ const bannerBlockShape: ContentBlockShape = {
                 { label: 'Right', value: 'right' },
             ],
         }),
+        selectField({
+            name: 'colorScheme',
+            label: 'Color scheme',
+            defaultValue: 'dark',
+            options: [
+                { label: 'Dark', value: 'dark' },
+                { label: 'Light', value: 'light' },
+            ],
+        }),
     ),
 };
 
@@ -152,6 +161,15 @@ const collectionBlockShape: ContentBlockShape = {
             options: [
                 { label: 'Grid', value: 'grid' },
                 { label: 'Carousel', value: 'carousel' },
+            ],
+        }),
+        selectField({
+            name: 'colorScheme',
+            label: 'Color scheme',
+            defaultValue: 'light',
+            options: [
+                { label: 'Light', value: 'light' },
+                { label: 'Dark', value: 'dark' },
             ],
         }),
     ),

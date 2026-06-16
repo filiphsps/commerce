@@ -121,6 +121,15 @@ const bannerFields: FieldDescriptor[] = [
             { label: 'Right', value: 'right' },
         ],
     }),
+    selectField({
+        name: 'colorScheme',
+        label: 'Color scheme',
+        defaultValue: 'dark',
+        options: [
+            { label: 'Dark', value: 'dark' },
+            { label: 'Light', value: 'light' },
+        ],
+    }),
 ];
 
 /**
@@ -144,6 +153,15 @@ const collectionFields: FieldDescriptor[] = [
         defaultValue: { base: 'carousel', md: 'grid' },
     }),
     numberField({ name: 'limit', defaultValue: 8 }),
+    selectField({
+        name: 'colorScheme',
+        label: 'Color scheme',
+        defaultValue: 'light',
+        options: [
+            { label: 'Light', value: 'light' },
+            { label: 'Dark', value: 'dark' },
+        ],
+    }),
 ];
 
 /**

@@ -221,6 +221,10 @@
 
     --color-lights-out: #051821;
 
+    /* Dark-section fill (CMS `colorScheme: dark`); mirrors `THEME_DEFAULTS.colors.sectionDark`. The
+     * per-shop `CssVariablesProvider` `:root` overrides it when a tenant themes the dark surface. */
+    --section-dark-bg: #051821;
+
     --color-block: #f3f3f3;
     --color-block-light: #f5f5f5;
     --color-block-dark: #d8d8d8;

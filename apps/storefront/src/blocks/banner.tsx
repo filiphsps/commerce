@@ -51,14 +51,25 @@ export const BannerBlock = ({
 }): JSX.Element => {
     const bgUrl = typeof block.background === 'string' ? undefined : block.background?.url;
     const cta = resolveLink(block.cta, { locale: context.locale });
+    // A background photo is always a dark surface; otherwise the editor's `colorScheme` decides
+    // (default `dark`, preserving the banner's accent fill). `on-dark` flips the token-reading
+    // controls (e.g. the secondary CTA button) so they stay legible on the dark fill.
+    const hasImage = !!bgUrl;
+    const dark = hasImage || (block.colorScheme ?? 'dark') === 'dark';
 
     return (
         <section
             data-block-type="banner"
             data-alignment={block.alignment}
+            data-color-scheme={dark ? 'dark' : 'light'}
             className={cn(
-                'relative flex flex-col items-center justify-center gap-4 rounded-lg bg-primary p-8 text-primary-foreground',
-                bgUrl && 'bg-center bg-cover text-white',
+                'relative flex flex-col items-center justify-center gap-4 rounded-lg p-8',
+                dark && 'on-dark',
+                hasImage
+                    ? 'bg-center bg-cover text-white'
+                    : dark
+                      ? 'bg-primary text-primary-foreground'
+                      : 'border border-(--border-default) bg-(--color-background) text-foreground',
             )}
             style={bgUrl ? { backgroundImage: cssUrl(bgUrl) } : undefined}
         >

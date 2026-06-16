@@ -599,6 +599,7 @@ export interface BannerBlock {
         openInNewTab?: boolean | null;
     };
     alignment?: ('left' | 'center' | 'right') | null;
+    colorScheme?: ('dark' | 'light') | null;
     id?: string | null;
     blockName?: string | null;
     blockType: 'banner';
@@ -609,6 +610,7 @@ export interface CollectionBlock {
     layout?: { base: ('grid' | 'carousel'); sm?: ('grid' | 'carousel') | null; md?: ('grid' | 'carousel') | null; lg?: ('grid' | 'carousel') | null; xl?: ('grid' | 'carousel') | null; '2xl'?: ('grid' | 'carousel') | null } | null;
     limit?: number | null;
     defaultLayout?: ('grid' | 'carousel') | null;
+    colorScheme?: ('light' | 'dark') | null;
     id?: string | null;
     blockName?: string | null;
     blockType: 'collection';
