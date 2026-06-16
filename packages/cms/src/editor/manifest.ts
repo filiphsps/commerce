@@ -23,7 +23,6 @@ export type CollectionSlug =
     | 'header'
     | 'footer'
     | 'search'
-    | 'businessData'
     | 'tenants';
 
 /**
@@ -150,8 +149,8 @@ export type CollectionEditorManifest<TSlug extends CollectionSlug = CollectionSl
 /**
  * Identity helper that gives the manifest the right type without `as const`.
  * @example
- * export const businessDataEditor = defineCollectionEditor({
- *     collection: 'businessData',
+ * export const articlesEditor = defineCollectionEditor({
+ *     collection: 'articles',
  *     routes: { ... },
  *     tenant: { kind: 'scoped', field: 'tenant' },
  *     access: { ... },

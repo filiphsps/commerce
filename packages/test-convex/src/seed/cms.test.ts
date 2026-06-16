@@ -35,7 +35,7 @@ function asSeedCtx(ctx: unknown): Parameters<typeof seedCmsMutation>[0] {
 }
 
 describe('seedCmsMutation', () => {
-    it('seeds the header/footer/businessData singletons scoped to the canonical shop id (no Payload, no tenant doc)', async () => {
+    it('seeds the header/footer singletons scoped to the canonical shop id (no Payload, no tenant doc)', async () => {
         const t = convexTest(schema, modules);
 
         const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
@@ -44,16 +44,13 @@ describe('seedCmsMutation', () => {
         const rows = await t.run(async (ctx) => ({
             header: await ctx.db.query('header').collect(),
             footer: await ctx.db.query('footer').collect(),
-            businessData: await ctx.db.query('businessData').collect(),
         }));
 
         // Exactly one of each singleton, scoped to the canonical shop id (the unified tenant key).
         expect(rows.header).toHaveLength(1);
         expect(rows.footer).toHaveLength(1);
-        expect(rows.businessData).toHaveLength(1);
         expect(rows.header[0]?.shop).toBe(shopId);
         expect(rows.footer[0]?.shop).toBe(shopId);
-        expect(rows.businessData[0]?.shop).toBe(shopId);
     });
 
     it('produces header/footer rows matching the storefront getHeader/getFooter read shape (non-null)', async () => {
@@ -62,7 +59,7 @@ describe('seedCmsMutation', () => {
         const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
         await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
 
-        const { header, footer, businessData } = await t.run(async (ctx) => ({
+        const { header, footer, shop } = await t.run(async (ctx) => ({
             header: await ctx.db
                 .query('header')
                 .withIndex('by_shop', (q) => q.eq('shop', shopId))
@@ -71,10 +68,7 @@ describe('seedCmsMutation', () => {
                 .query('footer')
                 .withIndex('by_shop', (q) => q.eq('shop', shopId))
                 .unique(),
-            businessData: await ctx.db
-                .query('businessData')
-                .withIndex('by_shop', (q) => q.eq('shop', shopId))
-                .unique(),
+            shop: await ctx.db.get(shopId),
         }));
 
         // getHeader returns a `Header` doc: a populated mega-menu plus the locale switcher and CTA.
@@ -93,11 +87,12 @@ describe('seedCmsMutation', () => {
         expect(footer?.legal).toHaveLength(5);
         expect(footer?.copyrightLine).toContain('Nordcom Demo Shop');
 
-        // getBusinessData returns the structured-data surface the storefront SEO renderers interpolate.
-        expect(businessData).not.toBeNull();
-        expect(businessData?.legalName).toBe('Nordcom Demo Shop AB');
-        expect(businessData?.address?.city).toBe('Stockholm');
-        expect(businessData?.profiles).toHaveLength(4);
+        // Business data rides on the shop row (UNIFY-SHOP) — the structured-data surface the
+        // storefront SEO renderers interpolate.
+        expect(shop?.businessData).toBeDefined();
+        expect(shop?.businessData?.legalName).toBe('Nordcom Demo Shop AB');
+        expect(shop?.businessData?.address?.city).toBe('Stockholm');
+        expect(shop?.businessData?.profiles).toHaveLength(4);
     });
 
     it('seeds global feature flags with native JSON values (no JSON.stringify) linked to the shop', async () => {
@@ -137,7 +132,6 @@ describe('seedCmsMutation', () => {
         const counts = await t.run(async (ctx) => ({
             header: (await ctx.db.query('header').collect()).length,
             footer: (await ctx.db.query('footer').collect()).length,
-            businessData: (await ctx.db.query('businessData').collect()).length,
             pages: (await ctx.db.query('pages').collect()).length,
             articles: (await ctx.db.query('articles').collect()).length,
             productMetadata: (await ctx.db.query('productMetadata').collect()).length,
@@ -150,18 +144,17 @@ describe('seedCmsMutation', () => {
         expect(counts).toEqual({
             header: 1,
             footer: 1,
-            businessData: 1,
             pages: pageFixtures.length,
             articles: articleFixtures.length,
             productMetadata: productMetadataFixtures.length,
             collectionMetadata: collectionMetadataFixtures.length,
             featureFlags: featureFlagFixtures.length,
             shopFeatureFlags: featureFlagFixtures.length,
-            // The flipped cohorts: the header/footer/businessData singletons (CUTOVER-04/06) +
-            // every page (CUTOVER-04) plus every article and metadata overlay (CUTOVER-05) as
-            // live editor-model rows.
+            // The flipped cohorts: the header/footer singletons (CUTOVER-04/06) + every page
+            // (CUTOVER-04) plus every article and metadata overlay (CUTOVER-05) as live
+            // editor-model rows.
             cmsDocuments:
-                3 +
+                2 +
                 pageFixtures.length +
                 articleFixtures.length +
                 productMetadataFixtures.length +
@@ -247,34 +240,25 @@ describe('seedCmsMutation', () => {
         }
     });
 
-    it('seeds the CUTOVER-06 cohort (footer + businessData singletons) as published, pointerless cmsDocuments rows', async () => {
+    it('seeds the CUTOVER-06 cohort (footer singleton) as a published, pointerless cmsDocuments row', async () => {
         const t = convexTest(schema, modules);
 
         const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
         await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
 
-        const { footerDocs, businessDocs } = await t.run(async (ctx) => ({
+        const { footerDocs } = await t.run(async (ctx) => ({
             footerDocs: await ctx.db
                 .query('cmsDocuments')
                 .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'footer'))
                 .collect(),
-            businessDocs: await ctx.db
-                .query('cmsDocuments')
-                .withIndex('by_shop_collection', (q) => q.eq('shopId', shopId).eq('collection', 'businessData'))
-                .collect(),
         }));
 
-        // One live row per singleton in the pointerless ETL/seed shape — what `cms/read:singleton`
-        // serves to the default-flipped FooterApi/BusinessDataApi getters.
+        // One live row for the singleton in the pointerless ETL/seed shape — what `cms/read:singleton`
+        // serves to the default-flipped FooterApi getter.
         expect(footerDocs).toHaveLength(1);
         expect(footerDocs[0]?.status).toBe('published');
         expect(footerDocs[0]?.publishedVersionId).toBeUndefined();
         expect((footerDocs[0]?.data as { sections?: unknown[] }).sections).toHaveLength(4);
-
-        expect(businessDocs).toHaveLength(1);
-        expect(businessDocs[0]?.status).toBe('published');
-        expect(businessDocs[0]?.publishedVersionId).toBeUndefined();
-        expect(businessDocs[0]?.data).toMatchObject({ legalName: 'Nordcom Demo Shop AB' });
     });
 
     it('seeds the full pages/articles/productMetadata/collectionMetadata corpus scoped to the canonical shop id', async () => {

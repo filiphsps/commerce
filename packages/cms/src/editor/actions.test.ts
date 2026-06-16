@@ -23,7 +23,7 @@ const baseManifest = defineCollectionEditor({
 
 const tenantSingletonManifest = defineCollectionEditor({
     ...baseManifest,
-    collection: 'businessData',
+    collection: 'footer',
     tenant: { kind: 'tenant-singleton', field: 'tenant' },
 });
 
@@ -121,7 +121,7 @@ describe('createCollectionEditorActions.saveDraft', () => {
         await actions.saveDraft('a.test', '', fd({ legalName: 'Acme' }), 'en-US');
 
         expect(bridge.saveDraft).toHaveBeenCalledWith({
-            collection: 'businessData',
+            collection: 'footer',
             data: { legalName: 'Acme' },
             locale: 'en-US',
         });

@@ -51,11 +51,55 @@ const shopIconsValidator = v.object({
 });
 
 /**
+ * Optional media-library provenance for the shop's brand assets (UNIFY-SHOP). The rendered logo /
+ * favicon live as resolved {@link imageAssetValidator} assets (`design.header.logo`,
+ * `icons.favicon`) the storefront reads unchanged; these ids record WHICH `cmsMedia` document each
+ * was picked from so the unified Shop settings editor can re-show the current selection in its image
+ * picker. Absent on every shop whose assets predate the picker.
+ */
+const shopBrandingValidator = v.object({
+    logoMediaId: v.optional(v.string()),
+    faviconMediaId: v.optional(v.string()),
+});
+
+/**
  * Locale configuration, mirroring `ShopBase['i18n']`. The shop default locale anchors the
  * `request locale → shop default → platform default` fallback chain.
  */
 const shopI18nValidator = v.object({
     defaultLocale: v.string(),
+});
+
+/**
+ * Operator-facing business identity, folded onto the shop row from the former standalone
+ * `businessData` CMS singleton (UNIFY-SHOP): the legal entity name, support contact channels, the
+ * postal address, and the public social profiles. Every member is optional — a shop publishes its
+ * storefront long before it fills in legal/support details — so the whole group is optional on the
+ * row and absent shops read as "no business data" rather than an empty scaffold.
+ */
+const shopBusinessDataValidator = v.object({
+    legalName: v.optional(v.string()),
+    supportEmail: v.optional(v.string()),
+    supportPhone: v.optional(v.string()),
+    address: v.optional(
+        v.object({
+            line1: v.optional(v.string()),
+            line2: v.optional(v.string()),
+            city: v.optional(v.string()),
+            region: v.optional(v.string()),
+            postalCode: v.optional(v.string()),
+            country: v.optional(v.string()),
+        }),
+    ),
+    profiles: v.optional(
+        v.array(
+            v.object({
+                platform: v.string(),
+                handle: v.string(),
+                url: v.optional(v.string()),
+            }),
+        ),
+    ),
 });
 
 /**
@@ -157,12 +201,14 @@ export const shopValidator = v.object({
     alternativeDomains: v.optional(v.array(v.string())),
     clerkOrgId: v.optional(v.string()),
     i18n: v.optional(shopI18nValidator),
+    businessData: v.optional(shopBusinessDataValidator),
     commerce: v.optional(shopCommerceValidator),
     showProductVendor: v.optional(v.boolean()),
     design: shopDesignValidator,
     theme: v.optional(shopThemeTokensValidator),
     extensions: v.optional(shopExtensionManifestValidator),
     icons: v.optional(shopIconsValidator),
+    branding: v.optional(shopBrandingValidator),
     commerceProvider: commerceProviderValidator,
     integrations: v.optional(shopIntegrationsValidator),
     thirdParty: v.optional(shopThirdPartyValidator),

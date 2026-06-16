@@ -1,6 +1,5 @@
 import type { CollectionEditorManifest } from '../manifest';
 import { articlesEditor } from './articles';
-import { businessDataEditor } from './business-data';
 import { collectionMetadataEditor } from './collection-metadata';
 import { featureFlagsEditor } from './feature-flag';
 import { footerEditor } from './footer';
@@ -15,7 +14,6 @@ import { tenantsEditor } from './tenants';
 import { usersEditor } from './users';
 
 export { articlesEditor } from './articles';
-export { businessDataEditor } from './business-data';
 export { collectionMetadataEditor } from './collection-metadata';
 export { featureFlagsEditor } from './feature-flag';
 export { footerEditor } from './footer';
@@ -35,7 +33,6 @@ export { usersEditor } from './users';
  */
 export const allManifests: readonly CollectionEditorManifest[] = [
     articlesEditor as unknown as CollectionEditorManifest,
-    businessDataEditor as unknown as CollectionEditorManifest,
     shopsEditor as unknown as CollectionEditorManifest,
     reviewsEditor as unknown as CollectionEditorManifest,
     featureFlagsEditor as unknown as CollectionEditorManifest,

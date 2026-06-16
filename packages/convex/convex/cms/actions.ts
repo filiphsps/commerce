@@ -89,7 +89,7 @@ async function requireWritePrincipal(ctx: EditorActionCtx): Promise<CmsPrincipal
  * - **`keyField`/`keyValue`** — collections routed by a content key (e.g. `productMetadata` by
  *   `shopifyHandle`): the tenant's rows for the collection are streamed via `by_shop_collection`
  *   and matched on the serialized `data[keyField]`.
- * - **neither** — tenant singletons (`header`/`footer`/`businessData`): the tenant's single row
+ * - **neither** — tenant singletons (`header`/`footer`/`search`): the tenant's single row
  *   for the collection IS the target, so an autosave loop upserts instead of inserting per tick.
  *
  * Reads go through the RLS-wrapped db, so another tenant's id/key resolves to nothing and the

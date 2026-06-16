@@ -1,6 +1,5 @@
 import 'server-only';
 
-import type { BusinessDatum } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { NoLocalesAvailableError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
@@ -8,7 +7,6 @@ import { trace } from '@opentelemetry/api';
 import type { Country, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
-import { cmsRead } from './_cms-read';
 
 const COUNTRIES_QUERY = graphql(`
     query countries {
@@ -200,21 +198,20 @@ export const ShopPaymentSettingsApi = async ({
 
 export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
 
+/** The operator-facing business identity carried on the shop record (UNIFY-SHOP). */
+export type BusinessData = NonNullable<OnlineShop['businessData']>;
+
 /**
- * Reads the `BusinessData` singleton for this tenant + locale from the Convex
- * `cms/read:singleton` query. Returns `null` when the doc has not been
- * seeded — InfoBar / Footer call sites collapse to no-render in that case.
- * InfoBarApi delegates here, so this single read covers both surfaces.
+ * Reads the tenant's business identity (legal name, support contact, address, social profiles).
+ * Folded onto the shop record (UNIFY-SHOP), so this resolves straight off the already-loaded shop
+ * — no second fetch — and returns `null` when unset, which the InfoBar / Footer call sites collapse
+ * to no-render. `InfoBarApi` delegates here, so this single accessor covers both surfaces.
  *
- * @param options - Tenant shop record and locale used to scope the CMS fetch.
- * @param options.shop - Shop record identifying the tenant.
- * @param options.locale - Request locale for CMS field resolution.
- * @returns The contract-shaped business data, or `null` when the doc has not been seeded.
+ * @param options - Tenant shop record (the locale is accepted for call-site symmetry; business data
+ *   is not localized).
+ * @param options.shop - Shop record carrying the business data.
+ * @returns The business data, or `null` when unset.
  */
-export const BusinessDataApi = async ({ shop, locale }: BusinessDataApiArgs): Promise<BusinessDatum | null> => {
-    return (await cmsRead('cms/read:singleton', {
-        shopId: shop.id,
-        collection: 'businessData',
-        locale: locale.code,
-    })) as BusinessDatum | null;
+export const BusinessDataApi = async ({ shop }: BusinessDataApiArgs): Promise<BusinessData | null> => {
+    return shop.businessData ?? null;
 };

@@ -275,27 +275,4 @@ export const cmsContentTables = {
             updatedAt: v.number(),
         })
     ).index('by_shop', ['shop']),
-    businessData: defineTable(
-        v.object({
-            shop: v.string(),
-            legalName: v.optional(v.string()),
-            supportEmail: v.optional(v.string()),
-            supportPhone: v.optional(v.string()),
-            address: v.optional(v.object({
-                line1: v.optional(v.string()),
-                line2: v.optional(v.string()),
-                city: v.optional(v.string()),
-                region: v.optional(v.string()),
-                postalCode: v.optional(v.string()),
-                country: v.optional(v.string()),
-            })),
-            profiles: v.optional(v.array(v.object({
-                platform: v.string(),
-                handle: v.string(),
-                url: v.optional(v.string()),
-            }))),
-            createdAt: v.number(),
-            updatedAt: v.number(),
-        })
-    ).index('by_shop', ['shop']),
 };

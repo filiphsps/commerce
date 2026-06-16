@@ -241,6 +241,14 @@ function saveArgs(args: {
  */
 export const editorConvexBridge: EditorConvexBridge = {
     saveDraft: async (args) => {
+        if (args.collection === 'shops') {
+            // The `shops` surface writes the REAL shop row (UNIFY-SHOP), not a `cmsDocuments`
+            // singleton; it has no draft lifecycle, so a draft save persists the config directly.
+            const { documentId } = await operatorMutation<{ documentId: string }>('cms/shop_config:save', {
+                data: args.data,
+            });
+            return { documentId };
+        }
         const { documentId, conflict } = await operatorMutation<ConvexSaveResult>(
             'cms/actions:saveDraft',
             saveArgs(args),
@@ -248,6 +256,12 @@ export const editorConvexBridge: EditorConvexBridge = {
         return { documentId, ...(conflict === undefined ? {} : { conflict }) };
     },
     publish: async (args) => {
+        if (args.collection === 'shops') {
+            const { documentId } = await operatorMutation<{ documentId: string }>('cms/shop_config:save', {
+                data: args.data,
+            });
+            return { documentId };
+        }
         const { documentId } = await operatorMutation<ConvexSaveResult>('cms/actions:publish', saveArgs(args));
         return { documentId };
     },
@@ -300,6 +314,21 @@ export const editorConvexBridge: EditorConvexBridge = {
         };
     },
     getDocument: async ({ collection, documentId, keyField, keyValue }): Promise<EditorCmsDocument | null> => {
+        if (collection === 'shops') {
+            // The unified Shop settings surface reads the REAL shop row, projected onto the editor
+            // document by `cms/shop_config:get`. The shop is a singleton per tenant, so the URL
+            // addressing (`keyField`/`keyValue`/`documentId`) is irrelevant — the active tenant IS
+            // the target. No draft lifecycle, so the document is always `published`.
+            const data = await operatorQuery<Record<string, unknown> | null>('cms/shop_config:get', {});
+            if (data === null) return null;
+            return {
+                documentId: typeof data.primaryDomain === 'string' ? data.primaryDomain : 'shop',
+                collection: 'shops',
+                data,
+                status: 'published',
+                updatedAt: 0,
+            };
+        }
         if (collection === 'media') {
             // Same `cmsMedia` routing as `list`: a media document is addressed by its own id and
             // reads null-on-missing (an unparseable/foreign id is normalized away Convex-side).
@@ -316,6 +345,8 @@ export const editorConvexBridge: EditorConvexBridge = {
         return row === null ? null : toEditorDocument(row);
     },
     listVersions: async ({ documentId }): Promise<EditorCmsVersion[]> => {
+        // The `shops` surface writes the real shop row, which has no `cmsVersions` history.
+        if (documentId === 'shop' || documentId.includes('.')) return [];
         const rows = await operatorQuery<ConvexCmsVersionRow[]>('cms/versions:list', { documentId });
         return rows.map((row) => ({
             versionId: row._id,
@@ -325,6 +356,12 @@ export const editorConvexBridge: EditorConvexBridge = {
         }));
     },
     listRelationshipOptions: async ({ relationTo }): Promise<EditorRelationshipOption[]> => {
+        if (relationTo === 'shopDomains') {
+            // The unified Shop settings surface's primary-domain picker (UNIFY-SHOP) chooses among
+            // the tenant's already-connected domains; the option value IS the domain string.
+            const domains = await operatorQuery<string[]>('cms/shop_config:connectedDomains', {});
+            return domains.map((domain) => ({ id: domain, label: domain }));
+        }
         // Media lives in its own tenant table behind the paginated `cms/media:page`; every CMS
         // content collection routes through the page-bounded `cms/list:list`. Both reads clamp
         // the requested window server-side, so this prefetch can never unbound. A `relationTo`

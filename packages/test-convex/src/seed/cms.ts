@@ -3,7 +3,6 @@ import { ConvexError } from 'convex/values';
 import type { Id } from '../../../convex/convex/_generated/dataModel';
 import type { MutationCtx } from '../../../convex/convex/_generated/server';
 import { articleFixtures } from './fixtures/articles';
-import { businessDataFixture } from './fixtures/business-data';
 import { collectionMetadataFixtures } from './fixtures/collection-metadata';
 import { featureFlagFixtures } from './fixtures/feature-flags';
 import { footerData } from './fixtures/footer';
@@ -36,8 +35,8 @@ export interface SeedCmsMutationOptions {
 
 /**
  * The Convex seed mutation re-expressing Mongo's `seed/cms.ts` against the Convex-native CMS tables
- * (CMSDESC-02), with NO Payload boot: it inserts the `header`, `footer`, and `businessData` singletons
- * scoped to `shopId`, seeds the rich-text-bearing content collections (`pages`, `articles`,
+ * (CMSDESC-02), with NO Payload boot: it inserts the `header` and `footer` singletons scoped to
+ * `shopId`, seeds the rich-text-bearing content collections (`pages`, `articles`,
  * `productMetadata`, `collectionMetadata`) under the same shop, then seeds the platform-global
  * `featureFlags` rows and links each to the canonical shop via a `shopFeatureFlags` join row so the
  * flags are genuinely scoped under the tenant.
@@ -54,8 +53,8 @@ export interface SeedCmsMutationOptions {
  * post-flip: without the rows the canonical tenant would render fallback chrome and empty content
  * surfaces under e2e. CUTOVER-04 covers `header` + `pages`; CUTOVER-05 adds the rich-text cohort
  * (`articles` keyed by slug, `productMetadata`/`collectionMetadata` keyed by Shopify handle —
- * the natural keys the flipped getters resolve by); CUTOVER-06 adds the last two singletons
- * (`footer` + `businessData`), completing the live-document corpus for the whole getter surface.
+ * the natural keys the flipped getters resolve by); CUTOVER-06 adds the last singleton
+ * (`footer`), completing the live-document corpus for the whole getter surface.
  * The rows use the pointerless ETL/seed shape (`status: 'published'`, no `publishedVersionId`),
  * for which the live `data` IS the published content. The legacy mirror-table rows for the
  * cohorts keep seeding alongside until TEARDOWN-03 retires the seed machinery.
@@ -90,14 +89,6 @@ export async function seedCmsMutation(ctx: MutationCtx, { shopId }: SeedCmsMutat
         await ctx.db.insert('footer', { shop: shopId, ...footerData, createdAt: now, updatedAt: now });
     }
 
-    const existingBusinessData = await ctx.db
-        .query('businessData')
-        .withIndex('by_shop', (q) => q.eq('shop', shopId))
-        .unique();
-    if (!existingBusinessData) {
-        await ctx.db.insert('businessData', { shop: shopId, ...businessDataFixture, createdAt: now, updatedAt: now });
-    }
-
     const existingPageSlugs = new Set(
         (
             await ctx.db
@@ -112,11 +103,10 @@ export async function seedCmsMutation(ctx: MutationCtx, { shopId }: SeedCmsMutat
     }
 
     // The tenant singletons land one live `cmsDocuments` row each — CUTOVER-04's `header` plus the
-    // CUTOVER-06 finishers `footer`/`businessData`.
+    // CUTOVER-06 finisher `footer`.
     for (const [collection, data] of [
         ['header', headerData],
         ['footer', footerData],
-        ['businessData', businessDataFixture],
     ] as const) {
         const existingCohortSingleton = await ctx.db
             .query('cmsDocuments')

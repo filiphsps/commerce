@@ -51,6 +51,25 @@ export interface Shop {
     i18n: {
         defaultLocale: string;
     };
+    businessData?: {
+        legalName?: string | null;
+        supportEmail?: string | null;
+        supportPhone?: string | null;
+        address?: {
+            line1?: string | null;
+            line2?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+        };
+        profiles?: Array<{
+            platform: string;
+            handle: string;
+            url?: string | null;
+            id?: string | null;
+        }> | null;
+    };
     design: {
         header: {
             logo: {
@@ -558,30 +577,6 @@ export interface Search {
         image?: (string | null) | Media;
         noindex?: boolean | null;
     };
-    updatedAt: string;
-    createdAt: string;
-    _status?: ('draft' | 'published') | null;
-}
-export interface BusinessDatum {
-    id: string;
-    tenant?: (string | null) | Shop;
-    legalName?: string | null;
-    supportEmail?: string | null;
-    supportPhone?: string | null;
-    address?: {
-        line1?: string | null;
-        line2?: string | null;
-        city?: string | null;
-        region?: string | null;
-        postalCode?: string | null;
-        country?: string | null;
-    };
-    profiles?: Array<{
-        platform: string;
-        handle: string;
-        url?: string | null;
-        id?: string | null;
-    }> | null;
     updatedAt: string;
     createdAt: string;
     _status?: ('draft' | 'published') | null;

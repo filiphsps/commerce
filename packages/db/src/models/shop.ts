@@ -158,6 +158,31 @@ export interface ShopBase extends BaseDocument {
         defaultLocale: string;
     };
 
+    /**
+     * Operator-facing business identity — legal entity name, support contact channels, postal
+     * address, and public social profiles. Folded onto the shop row from the former standalone
+     * `businessData` CMS singleton (UNIFY-SHOP). Every member is optional: a shop publishes long
+     * before it fills these in, so an absent group reads as "no business data".
+     */
+    businessData?: {
+        legalName?: string;
+        supportEmail?: string;
+        supportPhone?: string;
+        address?: {
+            line1?: string;
+            line2?: string;
+            city?: string;
+            region?: string;
+            postalCode?: string;
+            country?: string;
+        };
+        profiles?: {
+            platform: string;
+            handle: string;
+            url?: string;
+        }[];
+    };
+
     commerce?: {
         maxQuantity?: number;
         processingTimeInDays?: number;

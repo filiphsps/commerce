@@ -83,7 +83,7 @@ function assertPublishable(collection: string, data: unknown): void {
  * - **`keyField`/`keyValue`** — keyField-routed collections (e.g. `productMetadata` by
  *   `shopifyHandle`): the tenant's rows are streamed via `by_shop_collection` and matched on the
  *   serialized `data[keyField]`.
- * - **neither** — tenant singletons (`header`/`footer`/`businessData`/`shops`): the tenant's single
+ * - **neither** — tenant singletons (`header`/`footer`/`search`): the tenant's single
  *   row for the collection IS the target.
  *
  * Built on {@link tenantQuery}, so the shop is pinned from server-trusted context and the

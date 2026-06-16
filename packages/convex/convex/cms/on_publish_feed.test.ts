@@ -11,10 +11,9 @@ import { PUBLISHABLE_CMS_COLLECTIONS, publishFeedTags } from './on_publish_feed'
 const TENANT_ID = 'shop_123';
 
 describe('on-publish-feed (CMSDATA-08 completeness)', () => {
-    it('pins the publishable-collection list to the shared taxonomy — all seven, no parallel registry', () => {
+    it('pins the publishable-collection list to the shared taxonomy — all six, no parallel registry', () => {
         expect([...PUBLISHABLE_CMS_COLLECTIONS]).toEqual([
             'articles',
-            'businessData',
             'collectionMetadata',
             'footer',
             'header',
@@ -58,7 +57,7 @@ describe('on-publish-feed (CMSDATA-08 completeness)', () => {
     });
 
     it('publishes the tenant singletons at the collection level even when data carries key-shaped fields', () => {
-        for (const collection of ['header', 'footer', 'businessData']) {
+        for (const collection of ['header', 'footer']) {
             expect(
                 publishFeedTags({ collection, data: { slug: 'x', shopifyHandle: 'y' }, tenantId: TENANT_ID }),
             ).toEqual([`cms.${TENANT_ID}.${collection}`, `cms.${TENANT_ID}`, 'cms']);

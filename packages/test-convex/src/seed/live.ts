@@ -11,7 +11,6 @@ import { ConvexError } from 'convex/values';
 import { resolveConvexProjectDir } from '../start';
 import type { SeedCanonicalOptions } from './canonical';
 import { articleFixtures } from './fixtures/articles';
-import { businessDataFixture } from './fixtures/business-data';
 import { collectionMetadataFixtures } from './fixtures/collection-metadata';
 import { featureFlagFixtures } from './fixtures/feature-flags';
 import { footerData } from './fixtures/footer';
@@ -253,7 +252,6 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
     const stamp = { createdAt: now, updatedAt: now };
     importSeedRows(url, 'header', [{ shop: shopId, ...headerData, ...stamp }]);
     importSeedRows(url, 'footer', [{ shop: shopId, ...footerData, ...stamp }]);
-    importSeedRows(url, 'businessData', [{ shop: shopId, ...businessDataFixture, ...stamp }]);
     importSeedRows(
         url,
         'pages',
@@ -262,12 +260,11 @@ export async function seedCanonicalLive(url: string, opts: SeedCanonicalOptions 
     // The flipped CMS cohorts also land as live `cmsDocuments` rows — the editor-model table the
     // default-flipped storefront getters read (`cms/read.ts`); the pointerless published shape
     // serves its own `data` as the published content. CUTOVER-04: header + pages; CUTOVER-05:
-    // articles (by slug) + the metadata overlays (by Shopify handle); CUTOVER-06: the footer and
-    // businessData singletons. Mirrors `seedCmsMutation`'s cohort blocks.
+    // articles (by slug) + the metadata overlays (by Shopify handle); CUTOVER-06: the footer.
+    // Mirrors `seedCmsMutation`'s cohort blocks.
     importSeedRows(url, 'cmsDocuments', [
         { shopId, collection: 'header', data: { ...headerData }, status: 'published', ...stamp },
         { shopId, collection: 'footer', data: { ...footerData }, status: 'published', ...stamp },
-        { shopId, collection: 'businessData', data: { ...businessDataFixture }, status: 'published', ...stamp },
         ...pageFixtures.map((page) => ({
             shopId,
             collection: 'pages',

@@ -1,20 +1,19 @@
 import 'server-only';
 
-import type { BusinessDatum } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
-import { BusinessDataApi } from './store';
+import { type BusinessData, BusinessDataApi } from './store';
 
 export type InfoBarApiArgs = { shop: OnlineShop; locale: Locale };
 
 /**
- * The info bar is a presentation surface for BusinessData (support contact
+ * The info bar is a presentation surface for business data (support contact
  * fields). This helper is a thin alias with a targeted name so call sites
- * read clearly; the underlying fetch is the same as `BusinessDataApi`.
+ * read clearly; the underlying read is the same as `BusinessDataApi`.
  *
- * @param args - Fetch options forwarded to `BusinessDataApi`.
- * @returns The business data document, or `null` when unseeded.
+ * @param args - Options forwarded to `BusinessDataApi`.
+ * @returns The business data, or `null` when unset.
  */
-export async function InfoBarApi(args: InfoBarApiArgs): Promise<BusinessDatum | null> {
+export async function InfoBarApi(args: InfoBarApiArgs): Promise<BusinessData | null> {
     return BusinessDataApi(args);
 }

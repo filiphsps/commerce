@@ -348,7 +348,6 @@ export const CMS_LOCALIZED_PATHS_BY_COLLECTION: Record<string, readonly string[]
         'seo.title',
         'title',
     ],
-    businessData: [],
     collectionMetadata: [
         'blocks.*.background',
         'blocks.*.body',

@@ -22,7 +22,7 @@ vi.mock('./locale-switcher', () => ({ LocaleSwitcher: () => null }));
 import { EditorEditPage } from './editor-edit-page';
 
 const baseManifest = defineCollectionEditor({
-    collection: 'businessData',
+    collection: 'footer',
     routes: { label: { singular: 'X', plural: 'X' }, basePath: (d) => `/${d}/x/` as Route },
     tenant: { kind: 'tenant-singleton', field: 'tenant' },
     access: { list: () => true, read: () => true, update: () => true },
@@ -49,7 +49,7 @@ const generatedActions: EditorActions = {
 const buildRuntime = (
     getDocument: (args: Record<string, unknown>) => Promise<EditorCmsDocument | null> = async () => ({
         documentId: 'd1',
-        collection: 'businessData',
+        collection: 'footer',
         data: { legalName: 'A' },
         status: 'draft',
         updatedAt: 1_700_000_000_000,
@@ -93,7 +93,7 @@ describe('<EditorEditPage>', () => {
             manifest: baseManifest,
             runtime: buildRuntime(async () => ({
                 documentId: 'd1',
-                collection: 'businessData',
+                collection: 'footer',
                 data: { name: 'Named Doc' },
                 status: 'published',
                 updatedAt: 1_700_000_000_000,
