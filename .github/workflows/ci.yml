@@ -98,7 +98,7 @@ jobs:
                   TURBO_SCM_HEAD: ${{ github.event_name == 'pull_request' && github.sha || '' }}
               run: |
                   if [ "${{ github.event_name }}" = "pull_request" ]; then
-                      pnpm run typecheck -- --affected
+                      pnpm run typecheck --affected
                   else
                       pnpm run typecheck
                   fi
