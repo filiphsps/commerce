@@ -299,6 +299,18 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   generally. Added the components' first tests.
 - Verified: biome clean, typecheck clean, locale-flag 3/3, flag consumers (geo-redirect/info-bar/footer) 16/16.
 
+### 25 — Accepted payment methods: labeled, localized list
+
+- The payment-brand icons rendered as a bare `<div>` of `<img>`s with no group name — assistive tech
+  announced a run of brand images with no context.
+- Reworked to a `<ul aria-label>` with one `<li>` per brand; added a localized
+  `common.accepted-payment-methods` key across all six locales and a `label` prop (i18n-agnostic,
+  defaulting to English). Threaded the label from both call sites — footer-content (`t`) and the cart
+  page's cached `CartPaymentMethods` (via `getDictionary`).
+- Test-infra: added the component's first test (mocking the icon lib) — empty → null, populated →
+  labeled `<ul>` with the right `<li>` count.
+- Verified: six locale JSONs valid, biome clean, typecheck clean, payment-methods 2/2, footer 3/3.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Remaining literal `aria-label="Close"` / `Show all … options` in
