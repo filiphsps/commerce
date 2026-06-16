@@ -46,6 +46,7 @@
         "provider-error": "Erreur du service de panier. Veuillez réessayer."
     },
     "common": {
+        "accepted-payment-methods": "Moyens de paiement acceptés",
         "product-options": "Options du produit",
         "choose-product-options": "Choisir les options du produit",
         "filters": "Filtres",

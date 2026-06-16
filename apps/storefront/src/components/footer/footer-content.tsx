@@ -30,7 +30,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
         <section className="grid h-full w-full grid-cols-1 gap-8 overflow-hidden md:grid-cols-2 md:gap-4">
             <div className="flex flex-col items-center justify-end gap-2 md:items-start">
                 <Suspense>
-                    <AcceptedPaymentMethods shop={shop} locale={locale} />
+                    <AcceptedPaymentMethods shop={shop} locale={locale} label={t('accepted-payment-methods')} />
                 </Suspense>
             </div>
 

@@ -46,6 +46,7 @@
         "provider-error": "Feil i handlekurvtjenesten. Prøv igjen."
     },
     "common": {
+        "accepted-payment-methods": "Aksepterte betalingsmetoder",
         "product-options": "Produktvalg",
         "choose-product-options": "Velg produktvalg",
         "filters": "Filtre",

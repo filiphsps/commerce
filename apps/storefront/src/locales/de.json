@@ -51,6 +51,7 @@
         "provider-error": "Fehler im Warenkorb-Dienst. Bitte erneut versuchen."
     },
     "common": {
+        "accepted-payment-methods": "Akzeptierte Zahlungsmethoden",
         "product-options": "Produktoptionen",
         "choose-product-options": "Produktoptionen wählen",
         "filters": "Filter",

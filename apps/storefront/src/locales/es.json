@@ -51,6 +51,7 @@
         "provider-error": "Error en el servicio del carrito. Inténtalo de nuevo."
     },
     "common": {
+        "accepted-payment-methods": "Métodos de pago aceptados",
         "product-options": "Opciones del producto",
         "choose-product-options": "Elegir opciones del producto",
         "filters": "Filtros",

@@ -51,6 +51,7 @@
         "provider-error": "Cart provider error. Try again."
     },
     "common": {
+        "accepted-payment-methods": "Accepted payment methods",
         "product-options": "Product options",
         "choose-product-options": "Choose product options",
         "filters": "Filters",

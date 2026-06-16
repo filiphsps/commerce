@@ -143,5 +143,7 @@ async function CartPaymentMethods({ domain, locale }: { domain: string; locale: 
     const shop = await getCartShop(domain);
     cacheTag(...tenantRootTags(shop));
 
-    return <AcceptedPaymentMethods shop={shop} locale={locale} />;
+    const { t } = getTranslations('common', await getDictionary(locale));
+
+    return <AcceptedPaymentMethods shop={shop} locale={locale} label={t('accepted-payment-methods')} />;
 }

@@ -44,6 +44,7 @@
         "provider-error": "Fel i varukorgstjänsten. Försök igen."
     },
     "common": {
+        "accepted-payment-methods": "Accepterade betalningsmetoder",
         "product-options": "Produktalternativ",
         "choose-product-options": "Välj produktalternativ",
         "filters": "Filter",
