@@ -45,6 +45,10 @@ export class BackendClient {
         this.#proc.on('error', (err) => this.#die(`backend "${config.name}" failed: ${err.message}`));
         this.#conn.listen();
         this.#ready = this.#initialize();
+        // A respawned client's whenReady() is never awaited; guard so a failed or
+        // disposed initialize never surfaces as an unhandled rejection. Awaiters
+        // (registry.init) still observe the rejection via their own handler.
+        this.#ready.catch(() => {});
     }
 
     get name(): string {
@@ -122,13 +126,18 @@ export class BackendClient {
     /** Send an LSP request, rejecting on timeout or backend death. */
     async request<T = unknown>(method: string, params: unknown, timeoutMs = DEFAULT_TIMEOUT): Promise<T> {
         if (this.#dead) throw new Error(`lspmesh: backend "${this.config.name}" is not running`);
+        const req = this.#conn.sendRequest<T>(method, params);
+        // If the timeout wins the race below (or the connection is later disposed),
+        // this promise stays pending; attach a no-op catch so its eventual rejection
+        // never surfaces as an unhandled rejection.
+        req.catch(() => {});
         let timer: ReturnType<typeof setTimeout> | undefined;
         const timeout = new Promise<never>((_, reject) => {
             timer = setTimeout(() => reject(new Error(`lspmesh: ${method} timed out after ${timeoutMs}ms`)), timeoutMs);
             timer.unref?.();
         });
         try {
-            return await Promise.race([this.#conn.sendRequest<T>(method, params), timeout]);
+            return await Promise.race([req, timeout]);
         } finally {
             if (timer) clearTimeout(timer);
         }

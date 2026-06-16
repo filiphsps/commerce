@@ -11,10 +11,16 @@ export class BackendRegistry {
         this.#config = config;
     }
 
-    /** Eagerly spawn + initialize every backend. */
+    /** Eagerly spawn + initialize every backend, logging any that fail to start. */
     async init(): Promise<void> {
         for (const b of this.#config.backends) this.#clients.set(b.name, new BackendClient(b, this.#config.root));
-        await Promise.allSettled([...this.#clients.values()].map((c) => c.whenReady()));
+        const settled = await Promise.allSettled([...this.#clients.values()].map((c) => c.whenReady()));
+        settled.forEach((r, i) => {
+            if (r.status === 'rejected') {
+                const name = this.#config.backends[i]?.name ?? 'unknown';
+                process.stderr.write(`[lspmesh] backend "${name}" failed to initialize: ${r.reason}\n`);
+            }
+        });
     }
 
     /** Return the live client for a backend, respawning it if it died. */
