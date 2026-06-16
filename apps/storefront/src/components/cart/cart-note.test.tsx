@@ -48,6 +48,14 @@ describe('components', () => {
             expect(screen.getByRole('textbox')).toBeTruthy();
         });
 
+        it('exposes an accessible name (not just a placeholder)', () => {
+            setState({ cartReady: true, note: null });
+            render(<CartNote i18n={{} as any} />);
+            // With an empty dictionary the key itself is the resolved label; the point is the
+            // textarea is queryable by an accessible name rather than relying on the placeholder.
+            expect(screen.getByRole('textbox', { name: 'placeholder-cart-note' })).toBeTruthy();
+        });
+
         it('renders disabled when cart is not ready', () => {
             setState({ cartReady: false, note: null });
             render(<CartNote i18n={{} as any} />);

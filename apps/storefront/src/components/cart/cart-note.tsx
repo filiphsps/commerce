@@ -7,9 +7,11 @@ import { MultilineInput } from '@/components/actionable/input';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
 /**
- * Controlled textarea that persists a note on the Shopify cart on blur.
+ * Controlled textarea that persists a note on the Shopify cart on blur. Carries an explicit
+ * `aria-label` (not just a placeholder, which disappears on input and is not a reliable accessible
+ * name) so assistive tech announces the field.
  *
- * @param props.i18n - Locale dictionary for the placeholder text.
+ * @param props.i18n - Locale dictionary for the placeholder and accessible label.
  * @returns The cart note textarea.
  */
 const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
@@ -32,6 +34,7 @@ const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
         <MultilineInput
             className="h-16"
             value={text}
+            aria-label={t('placeholder-cart-note')}
             placeholder={t('placeholder-cart-note')}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
             onBlur={() => text !== note && void updateNote(text.length > 0 ? text : '')}
