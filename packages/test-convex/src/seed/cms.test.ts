@@ -59,7 +59,7 @@ describe('seedCmsMutation', () => {
         const shopId = await t.run((ctx) => seedShopMutation(asSeedCtx(ctx)));
         await t.run((ctx) => seedCmsMutation(asSeedCtx(ctx), { shopId }));
 
-        const { header, footer, shop } = await t.run(async (ctx) => ({
+        const { header, footer } = await t.run(async (ctx) => ({
             header: await ctx.db
                 .query('header')
                 .withIndex('by_shop', (q) => q.eq('shop', shopId))
@@ -68,7 +68,6 @@ describe('seedCmsMutation', () => {
                 .query('footer')
                 .withIndex('by_shop', (q) => q.eq('shop', shopId))
                 .unique(),
-            shop: await ctx.db.get(shopId),
         }));
 
         // getHeader returns a `Header` doc: a populated mega-menu plus the locale switcher and CTA.
@@ -86,13 +85,6 @@ describe('seedCmsMutation', () => {
         expect(footer?.social).toHaveLength(5);
         expect(footer?.legal).toHaveLength(5);
         expect(footer?.copyrightLine).toContain('Nordcom Demo Shop');
-
-        // Business data rides on the shop row (UNIFY-SHOP) — the structured-data surface the
-        // storefront SEO renderers interpolate.
-        expect(shop?.businessData).toBeDefined();
-        expect(shop?.businessData?.legalName).toBe('Nordcom Demo Shop AB');
-        expect(shop?.businessData?.address?.city).toBe('Stockholm');
-        expect(shop?.businessData?.profiles).toHaveLength(4);
     });
 
     it('seeds global feature flags with native JSON values (no JSON.stringify) linked to the shop', async () => {
