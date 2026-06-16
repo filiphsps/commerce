@@ -89,6 +89,23 @@ describe('components', () => {
             expect(link?.getAttribute('class')).toBe(className);
         });
 
+        it('hardens new-tab links with rel="noopener noreferrer"', () => {
+            const { container } = render(<Link href="https://example.com" target="_blank" />);
+            const link = container.querySelector('a');
+            expect(link?.getAttribute('target')).toBe('_blank');
+            expect(link?.getAttribute('rel')).toBe('noopener noreferrer');
+        });
+
+        it('preserves an explicit rel on a new-tab link', () => {
+            const { container } = render(<Link href="https://example.com" target="_blank" rel="nofollow" />);
+            expect(container.querySelector('a')?.getAttribute('rel')).toBe('nofollow');
+        });
+
+        it('does not add rel to same-tab links', () => {
+            const { container } = render(<Link href="/some/path" />);
+            expect(container.querySelector('a')?.getAttribute('rel')).toBeNull();
+        });
+
         it('should handle `href` using `tel:`, `mailto:`, etc protocols', () => {
             const href = 'mailto:hi@nordcom.io';
             const { container } = render(<Link href={href} />);

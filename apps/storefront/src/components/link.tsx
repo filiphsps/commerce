@@ -47,12 +47,18 @@ const isInternal = (href: string, shop?: OnlineShop): boolean => {
 /**
  * Locale-aware wrapper around Next.js `Link` that injects the active locale into internal paths.
  *
+ * Hardens new-tab links: when `target="_blank"` and no explicit `rel` is given, defaults to
+ * `rel="noopener noreferrer"` so the opened page can't reach back through `window.opener`
+ * (reverse tabnabbing). Callers that need a specific `rel` (e.g. `nofollow`) override it.
+ *
  * @param props.locale - Explicit locale; falls back to shop context and `Locale.default`.
  * @param props.href - Destination URL; supports strings and `Url` objects.
  * @param props.prefetch - Forwarded to the underlying `BaseLink`; defaults to `false`.
+ * @param props.target - Anchor target; `_blank` triggers the safe `rel` default.
+ * @param props.rel - Explicit `rel`; overrides the new-tab default when provided.
  * @returns The rendered `BaseLink` element, or `null` when `href` is not a string.
  */
-export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
+export default function Link({ locale, href, prefetch, target, rel, ...props }: LinkProps) {
     const shop = useShop();
 
     if (typeof href !== 'string') {
@@ -101,5 +107,7 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
         return new URL(href);
     })(href, shop.shop);
 
-    return <BaseLink prefetch={prefetch || false} {...props} href={url} />;
+    const resolvedRel = rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined);
+
+    return <BaseLink prefetch={prefetch || false} {...props} href={url} target={target} rel={resolvedRel} />;
 }
