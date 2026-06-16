@@ -24,7 +24,7 @@ export type AlertProps = {
  */
 const SEVERITY_SURFACE: Record<AlertProps['severity'], string> = {
     success: 'bg-(--surface-success) text-(color:var(--text-success-strong))',
-    info: 'bg-(--surface-1) text-(color:var(--text))',
+    info: 'bg-(--surface-info) text-(color:var(--text-info-strong))',
     warning: 'bg-(--surface-warning) text-(color:var(--text-warning-strong))',
     error: 'bg-(--state-danger) text-white',
     callout: 'bg-primary text-primary-foreground',

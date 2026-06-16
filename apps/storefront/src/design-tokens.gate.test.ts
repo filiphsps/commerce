@@ -198,6 +198,8 @@ const TOKENS = {
     textWarningStrong: '#6b3410', // --text-warning-strong → --color-warning-dark
     badgeGiftCard: '#9333ea', // --badge-gift-card-bg
     badgeSubscription: '#2563eb', // --badge-subscription-bg
+    surfaceInfo: '#e6f4f8', // --surface-info → --color-info-light
+    textInfoStrong: '#1c5d99', // --text-info-strong → --color-block-info-dark
     vendor: '#6b6555', // --product-card-vendor-color
 } as const;
 
@@ -232,6 +234,8 @@ describe('text-on-surface contrast (P5-9, WCAG AA)', () => {
             ['--color-warning-dark', TOKENS.textWarningStrong],
             ['--badge-gift-card-bg', TOKENS.badgeGiftCard],
             ['--badge-subscription-bg', TOKENS.badgeSubscription],
+            ['--color-info-light', TOKENS.surfaceInfo],
+            ['--color-block-info-dark', TOKENS.textInfoStrong],
             ['--product-card-vendor-color', TOKENS.vendor],
         ];
         for (const [name, value] of sources) {
@@ -266,6 +270,8 @@ describe('text-on-surface contrast (P5-9, WCAG AA)', () => {
             fg: TOKENS.textWarningStrong,
             bg: TOKENS.surfaceWarning,
         },
+        // soft-info alert → --text-info-strong on --surface-info.
+        { label: '--text-info-strong on --surface-info', fg: TOKENS.textInfoStrong, bg: TOKENS.surfaceInfo },
         // product overlay badges → white on the gift-card / subscription badge fills.
         { label: 'white on --badge-gift-card-bg', fg: TOKENS.white, bg: TOKENS.badgeGiftCard },
         { label: 'white on --badge-subscription-bg', fg: TOKENS.white, bg: TOKENS.badgeSubscription },

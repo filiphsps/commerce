@@ -244,6 +244,8 @@
     --color-block-info: #6dc0d5;
     --color-block-info-dark: #1c5d99;
     --color-block-info-text: var(--color-dark);
+    /* Light info surface, paired with the existing dark-blue info ink for the Alert info severity. */
+    --color-info-light: #e6f4f8;
 
     /* Warm warning palette: a light amber surface paired with a dark warm-brown ink. No prior
      * `--color-*` source carried a warning tint (the Alert block hard-coded `bg-yellow-200`, which no
@@ -547,6 +549,11 @@ html:root {
      * hard-coded `bg-yellow-200` the Alert carried. Clears WCAG AA (pinned in design-tokens.gate.test.ts). */
     --surface-warning: var(--color-warning-light, #fdeede);
     --text-warning-strong: var(--color-warning-dark, #6b3410);
+
+    /* Soft-info alert surface — dark-blue ink on a light cyan surface, so the info severity reads as
+     * informational rather than a neutral card. Clears WCAG AA (pinned in design-tokens.gate.test.ts). */
+    --surface-info: var(--color-info-light, #e6f4f8);
+    --text-info-strong: var(--color-block-info-dark, #1c5d99);
 
     --focus-ring: var(--accent);
 
