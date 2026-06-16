@@ -39,3 +39,27 @@ test('a collection block overrides its default layout per instance', async ({ pa
     await expect(page.getByTestId(`override-override-${layoutPath}`)).toHaveAttribute('aria-pressed', 'true');
     await expect(fieldControl(page, layoutPath, 'select')).toHaveValue('grid');
 });
+
+test('a collection block overrides product-card settings per instance', async ({ page }) => {
+    await page.goto(`/${DOMAIN}/content/pages/new/`);
+    await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/new/\\?locale=`));
+    await fieldControl(page, 'title', 'input').fill(`Card override page ${RUN_TOKEN}`);
+    await fieldControl(page, 'slug', 'input').fill(`card-override-page-${RUN_TOKEN}`);
+    await waitForAutosave(page);
+    await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/content/pages/(?!new/)[^/]+/\\?locale=`));
+
+    await addBlock(page, 'blocks', 'collection');
+    await fieldControl(page, 'blocks.0.handle', 'input').fill('men');
+
+    // The "Card overrides" group exposes overridable product-card knobs on the block node.
+    const ctaPath = 'blocks.0.productCard.ctaPlacement';
+    await page.getByTestId(`override-override-${ctaPath}`).click();
+    await fieldControl(page, ctaPath, 'select').selectOption('inline-button');
+
+    await waitForAutosave(page);
+
+    // Reload → the per-instance card override persisted on the block node.
+    await page.reload();
+    await expect(page.getByTestId(`override-override-${ctaPath}`)).toHaveAttribute('aria-pressed', 'true');
+    await expect(fieldControl(page, ctaPath, 'select')).toHaveValue('inline-button');
+});
