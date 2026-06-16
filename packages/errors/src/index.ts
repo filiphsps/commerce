@@ -1493,9 +1493,18 @@ export class LocalizedCompositeFieldError extends GenericError {
 }
 
 /**
- * Returns all error code string values from both {@link GenericErrorKind} and {@link ApiErrorKind} enums in a single flat array.
+ * The single registry of error-code enums. `getAllErrorCodes`, the docs catalogue, and the drift
+ * guards in `index.test.ts` all derive from this map, so registering a new `*ErrorKind` enum here is
+ * enough to bring it under code-uniqueness, value===name, and `getErrorFromCode` round-trip coverage
+ * — there is no second hand-maintained enum list to keep in sync. Keyed by enum name so consumers
+ * that need a label (test parameterization, doc category mapping) get it from the same source.
+ */
+export const ERROR_KINDS = { GenericErrorKind, ApiErrorKind } as const;
+
+/**
+ * Returns all error code string values across every enum in {@link ERROR_KINDS} in a single flat array.
  *
- * @returns An array of every `GenericErrorKind` and `ApiErrorKind` string value.
+ * @returns An array of every registered `*ErrorKind` string value.
  * @example
  * ```ts
  * const codes = getAllErrorCodes();
@@ -1503,7 +1512,7 @@ export class LocalizedCompositeFieldError extends GenericError {
  * ```
  */
 export const getAllErrorCodes = () => {
-    return [...Object.values(GenericErrorKind), ...Object.values(ApiErrorKind)];
+    return Object.values(ERROR_KINDS).flatMap((kind) => Object.values(kind));
 };
 
 /**

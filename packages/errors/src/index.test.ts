@@ -8,6 +8,7 @@ import {
     DuplicateWorkspaceSlugError,
     EmptyTenantScopeError,
     EmptyUploadFileError,
+    ERROR_KINDS,
     GenericErrorKind,
     getAllErrorCodes,
     getErrorFromCode,
@@ -414,11 +415,9 @@ describe('error code enums', () => {
     // — runtime help URLs (`/errors/<code>/`), `getErrorFromCode`, and the docs
     // catalogue generator — keys off the code value, so a drifted value (e.g.
     // `API_METHOD_NOT_ALLOWED = 'API_IMAGE_NO_FRACTIONAL'`) silently routes an
-    // error to the wrong doc page and breaks the catalogue. Guard it here.
-    it.each([
-        ['GenericErrorKind', GenericErrorKind],
-        ['ApiErrorKind', ApiErrorKind],
-    ])('%s: every member value equals its member name', (_name, kind) => {
+    // error to the wrong doc page and breaks the catalogue. Driven by `ERROR_KINDS`
+    // so a newly-registered enum is covered without editing this list.
+    it.each(Object.entries(ERROR_KINDS))('%s: every member value equals its member name', (_name, kind) => {
         for (const [member, value] of Object.entries(kind)) {
             expect(value).toBe(member);
         }
