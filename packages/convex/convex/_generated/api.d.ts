@@ -45,6 +45,21 @@ export declare const api: {
       >;
     };
   };
+  orgs: {
+    chooser: {
+      listForOperator: FunctionReference<
+        "query",
+        "public",
+        {},
+        Array<{
+          clerkOrgId: string;
+          imageUrl: string | null;
+          name: string;
+          shops: Array<{ domain: string; name: string }>;
+        }>
+      >;
+    };
+  };
   cms: {
     actions: {
       bulkDelete: FunctionReference<
@@ -484,6 +499,7 @@ export declare const api: {
           serverSecret: string;
           shop: {
             alternativeDomains?: Array<string>;
+            clerkOrgId?: string;
             commerce?: { maxQuantity?: number; processingTimeInDays?: number };
             commerceProvider?:
               | {

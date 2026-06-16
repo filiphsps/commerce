@@ -4,13 +4,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Hoisted mock fns (must be declared before vi.mock calls)
 // ------------------------------------------------------------------
 
-const { mockRedirect, mockAuth, mockCurrentUser, mockGetShopsForUser } = vi.hoisted(() => ({
+const { mockRedirect, mockAuth, mockCurrentUser, mockGetChooserOrgs } = vi.hoisted(() => ({
     mockRedirect: vi.fn((url: string): never => {
         throw new Error(`NEXT_REDIRECT:${url}`);
     }),
     mockAuth: vi.fn(),
     mockCurrentUser: vi.fn(),
-    mockGetShopsForUser: vi.fn(),
+    mockGetChooserOrgs: vi.fn(),
 }));
 
 // ------------------------------------------------------------------
@@ -28,9 +28,9 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('@clerk/nextjs/server', () => ({ auth: mockAuth, currentUser: mockCurrentUser }));
 vi.mock('@clerk/nextjs', () => ({
-    SignOutButton: ({ children }: { children?: React.ReactNode }) => <>{children ?? <button type="button" />}</>,
+    UserButton: () => <div data-testid="user-button" />,
 }));
-vi.mock('@/utils/fetchers', () => ({ getShopsForUser: mockGetShopsForUser }));
+vi.mock('@/lib/orgs-convex', () => ({ getChooserOrgs: mockGetChooserOrgs }));
 
 vi.mock('next/image', () => ({
     // biome-ignore lint/performance/noImgElement: test mock for next/image
@@ -52,10 +52,9 @@ vi.mock('@nordcom/nordstar', () => ({
 }));
 
 vi.mock('lucide-react', () => ({
+    Building2: () => <svg />,
     ChevronRight: () => <svg />,
-    LogOut: () => <svg />,
     Plus: () => <svg />,
-    Settings: () => <svg />,
     Store: () => <svg />,
 }));
 
@@ -64,7 +63,7 @@ import type React from 'react';
 import { renderRSC } from '@/utils/test/rsc';
 import Overview from './page';
 
-describe('app/page (root Overview)', () => {
+describe('app/page (org×storefront chooser)', () => {
     const CLERK_USER = {
         firstName: 'Alice',
         fullName: 'Alice Smith',
@@ -74,11 +73,12 @@ describe('app/page (root Overview)', () => {
     beforeEach(() => {
         mockAuth.mockReset();
         mockCurrentUser.mockReset();
-        mockGetShopsForUser.mockReset();
+        mockGetChooserOrgs.mockReset();
         mockRedirect.mockClear();
 
         mockAuth.mockResolvedValue({ userId: 'user_clerk_1' });
         mockCurrentUser.mockResolvedValue(CLERK_USER);
+        mockGetChooserOrgs.mockResolvedValue([]);
     });
 
     it('is an async function (server component)', () => {
@@ -96,38 +96,42 @@ describe('app/page (root Overview)', () => {
     });
 
     it('renders a greeting with the user first name when authenticated', async () => {
-        mockGetShopsForUser.mockResolvedValue([]);
-
         const { container } = await renderRSC(() => Overview());
         const q = within(container as HTMLElement);
 
-        // The page renders "Hi <Accented>Alice</Accented>" — find the Accented span.
         expect(q.getByTestId('accented')).toHaveTextContent('Alice');
     });
 
-    it('renders shop buttons for each shop returned by getShopsForUser', async () => {
-        mockGetShopsForUser.mockResolvedValue([
-            { id: 's1', domain: 'shop-a.myshopify.com', name: 'Shop A' },
-            { id: 's2', domain: 'shop-b.myshopify.com', name: 'Shop B' },
+    it('renders the empty state when the operator has no orgs', async () => {
+        const { container } = await renderRSC(() => Overview());
+        const q = within(container as HTMLElement);
+
+        expect(q.getByText(/No storefronts yet — create your first one\./i)).toBeInTheDocument();
+    });
+
+    it('renders each org group with its shop cards', async () => {
+        mockGetChooserOrgs.mockResolvedValue([
+            {
+                clerkOrgId: 'org_a',
+                name: 'Acme Org',
+                imageUrl: null,
+                shops: [
+                    { name: 'Shop A', domain: 'shop-a.example.com' },
+                    { name: 'Shop B', domain: 'shop-b.example.com' },
+                ],
+            },
         ]);
 
         const { container } = await renderRSC(() => Overview());
         const q = within(container as HTMLElement);
 
+        expect(q.getByText('Acme Org')).toBeInTheDocument();
         expect(q.getByText('Shop A')).toBeInTheDocument();
         expect(q.getByText('Shop B')).toBeInTheDocument();
     });
 
-    it('fetches shops using the operator email as the stable key', async () => {
-        mockGetShopsForUser.mockResolvedValue([]);
-
-        await renderRSC(() => Overview());
-
-        expect(mockGetShopsForUser).toHaveBeenCalledWith('alice@example.com', 'alice@example.com');
-    });
-
-    it('exports metadata with title "Your Shops"', async () => {
+    it('exports metadata with title "Choose a storefront"', async () => {
         const { metadata } = await import('./page');
-        expect((metadata as { title?: string }).title).toBe('Your Shops');
+        expect((metadata as { title?: string }).title).toBe('Choose a storefront');
     });
 });

@@ -18,11 +18,14 @@ const { systemMutation, systemQuery, tenantQuery } = constructors;
  */
 
 /**
- * The trusted NextAuth issuer the tenant constructors assert against (via `resolveAdminShopId`). Stubbed
- * into `CONVEX_AUTH_ISSUER` for every case so the issuer check is active under `convex-test`, whose
- * `withIdentity` fakes identities WITHOUT Convex's real signature/issuer validation.
+ * The trusted Clerk operator issuer the tenant constructors assert against (the tenant tier resolves
+ * through `resolveActiveAdminShopId` → `resolveUserFromIdentity` → `getClerkOperatorIdentity`, which
+ * validates the Clerk issuer and FAILS CLOSED when it is unset). Stubbed into `CLERK_FRONTEND_API_URL`
+ * for every case so the issuer check is active under `convex-test`, whose `withIdentity` fakes
+ * identities WITHOUT Convex's real signature/issuer validation. Mirrors `tenant.test.ts` /
+ * `admin_shop_resolver.test.ts`.
  */
-const TRUSTED_ISSUER = 'https://admin.test.nordcom.io';
+const CLERK_ISSUER = 'https://clerk.test.nordcom.io';
 
 /**
  * A fixed epoch-ms stamp for seeded rows' managed `createdAt`/`updatedAt`. Its exact value is irrelevant
@@ -130,7 +133,7 @@ const readExemptRef = makeFunctionReference<'query'>('__tests__/system-escape-ha
 const scanAsTenantRef = makeFunctionReference<'query'>('__tests__/system-escape-hatch.test:scanExemptTablesAsTenant');
 
 beforeEach(() => {
-    vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+    vi.stubEnv('CLERK_FRONTEND_API_URL', CLERK_ISSUER);
 });
 afterEach(() => {
     vi.unstubAllEnvs();
@@ -158,7 +161,7 @@ describe('Phase 2 exit: system-tier escape hatch for exempt/global tables', () =
         const t = convexTest(schema, modules);
         await t.mutation(seedExemptRef, { operatorEmail: 'op@example.com' });
 
-        const asOperator = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|op', email: 'op@example.com' });
+        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'github|op', email: 'op@example.com' });
         const counts = await asOperator.query(scanAsTenantRef, {});
 
         // One flag and two users exist (read back through the system tier above), yet the deny-default
@@ -168,18 +171,21 @@ describe('Phase 2 exit: system-tier escape hatch for exempt/global tables', () =
 });
 
 describe('Phase 2 exit: the _constructors barrel surface', () => {
-    it('exposes exactly the nine sanctioned builders and no raw _generated escape', () => {
+    it('exposes exactly the ten sanctioned builders and no raw _generated escape', () => {
         // Pinned by exact value so adding (or leaking) ANY export — especially a raw `query`/`mutation`/
         // `internalQuery` re-export from `_generated/server` — fails this gate and forces a review.
         // `authedQuery`/`authedMutation` joined deliberately in POLISH-04: the customer tier whose db is
         // RLS-scoped to the caller's own email-keyed `users` row (see `lib/authed.test.ts` for its gate).
-        // `clerkMutation` joined in the Clerk auth migration: a Clerk-operator-authenticated builder for
-        // the first-sign-in `ensureCurrentUser` path, where the JWT arrives before any `users` row exists
-        // (so the customer/tenant tiers can't apply — see `lib/clerk.ts`).
+        // `clerkMutation`/`clerkQuery` joined in the Clerk auth migration: Clerk-operator-authenticated
+        // builders for operator paths ABOVE any single tenant — the first-sign-in `ensureCurrentUser`
+        // path (JWT arrives before any `users` row exists) and the cross-org chooser read (every org the
+        // operator belongs to + the shops those orgs own), neither of which the customer/tenant tiers can
+        // express (see `lib/clerk.ts`).
         expect(Object.keys(constructors).sort()).toEqual([
             'authedMutation',
             'authedQuery',
             'clerkMutation',
+            'clerkQuery',
             'serverMutation',
             'serverQuery',
             'systemMutation',

@@ -99,17 +99,23 @@ function getClerkIssuer(): string | undefined {
  *
  * The operator-tier analog of {@link getTrustedIdentity}: it reads the identity Convex already
  * verified (signature + `iss`/`aud` per the Clerk provider in `auth.config.ts`) and re-asserts the
- * issuer against {@link getClerkIssuer} as a second, in-handler line of defense. When the Clerk
- * issuer is configured, an identity whose `issuer` differs is rejected as forged; when it is not
- * configured, the platform-level validation is relied on alone (documented fallback, since the
- * deployment always sets it). A CUSTOMER token (minted on the `CONVEX_AUTH_ISSUER` customJwt
- * provider) carries a different issuer and is therefore rejected here — operator code must never
- * reuse {@link getTrustedIdentity}, whose customer gate would conversely reject this Clerk identity.
+ * issuer against {@link getClerkIssuer} as a second, in-handler line of defense. A CUSTOMER token
+ * (minted on the `CONVEX_AUTH_ISSUER` customJwt provider) carries a different issuer and is therefore
+ * rejected here — operator code must never reuse {@link getTrustedIdentity}, whose customer gate would
+ * conversely reject this Clerk identity.
+ *
+ * Unlike the customer-tier {@link getTrustedIdentity}, the OPERATOR path FAILS CLOSED on a missing
+ * `CLERK_FRONTEND_API_URL`: this gate guards the privileged operator constructors (`clerkQuery`/
+ * `clerkMutation`) and the tenant tier, so an un-asserted issuer would let a customer customJwt token
+ * (whose issuer Convex's platform validation accepts on the shared provider) slip into operator paths.
+ * Rather than skip the re-assertion when the env is unset, it throws — a misconfigured deployment is a
+ * hard failure here, never a silent downgrade to "trust whatever Convex surfaced".
  *
  * @param ctx - A Convex query or mutation context exposing `auth`.
  * @returns The validated Clerk operator {@link UserIdentity}.
  * @throws {ConvexError} `UNAUTHENTICATED` when there is no identity on the request.
- * @throws {ConvexError} `FORGED_IDENTITY` when the identity's issuer is not the trusted Clerk issuer.
+ * @throws {ConvexError} `FORGED_IDENTITY` when the trusted Clerk issuer is unconfigured (fail-closed),
+ *   or when the identity's issuer does not match it.
  */
 export async function getClerkOperatorIdentity(ctx: AuthReadCtx): Promise<UserIdentity> {
     const identity = await ctx.auth.getUserIdentity();
@@ -121,7 +127,16 @@ export async function getClerkOperatorIdentity(ctx: AuthReadCtx): Promise<UserId
     }
 
     const clerkIssuer = getClerkIssuer();
-    if (clerkIssuer && identity.issuer !== clerkIssuer) {
+    if (!clerkIssuer) {
+        // Fail closed: with no trusted operator issuer to assert against, the privileged operator path
+        // must NOT fall through to bare platform validation (which the shared customJwt provider would
+        // pass). A missing env is a deployment misconfiguration, surfaced as a hard rejection.
+        throw new ConvexError({
+            code: AuthErrorCode.FORGED_IDENTITY,
+            message: 'Trusted Clerk operator issuer is not configured; operator identity cannot be asserted.',
+        });
+    }
+    if (identity.issuer !== clerkIssuer) {
         throw new ConvexError({
             code: AuthErrorCode.FORGED_IDENTITY,
             message: 'Identity issuer does not match the trusted Clerk operator issuer.',

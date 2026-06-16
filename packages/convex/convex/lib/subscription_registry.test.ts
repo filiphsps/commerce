@@ -172,7 +172,7 @@ const probeRef = makeFunctionReference<'query'>('lib/subscription_registry.test:
 
 describe('tenantQuery wiring (default registry admits each invocation)', () => {
     beforeEach(() => {
-        vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+        vi.stubEnv('CLERK_FRONTEND_API_URL', TRUSTED_ISSUER);
         tenantSubscriptionRegistry.reset();
         drainTenantSubscriptionMetrics();
     });

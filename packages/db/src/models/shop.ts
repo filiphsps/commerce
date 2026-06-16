@@ -141,6 +141,16 @@ export interface ShopBase extends BaseDocument {
     name: string;
     description?: string;
 
+    /**
+     * The Clerk Organization (`org_…`) that owns this storefront — the multi-tenant team the shop
+     * belongs to under the Clerk auth model. Optional because rows created before the Clerk migration
+     * (or before the org backfill) carry no owning org; an unset value means access can only be
+     * decided once the backfill stamps it. The Convex `shops` row is the source of truth; this is the
+     * pass-through projection of `shops.clerkOrgId` the admin reads to keep Clerk's active org synced
+     * to the routed `/[domain]/` shop.
+     */
+    clerkOrgId?: string;
+
     domain: string;
     alternativeDomains?: string[];
 

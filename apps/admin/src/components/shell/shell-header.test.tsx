@@ -15,14 +15,27 @@ vi.mock('next/link', () => ({
     ),
 }));
 vi.mock('next/navigation', () => ({ usePathname: () => '/abc/', useRouter: () => ({ push: vi.fn() }) }));
+// Stub the Clerk client surfaces the header mounts so it renders without a real ClerkProvider.
+vi.mock('@clerk/nextjs', () => {
+    const UserButton = Object.assign(
+        ({ children }: { children?: React.ReactNode }) => <div data-testid="user-button">{children}</div>,
+        {
+            MenuItems: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+            Action: ({ label }: { label: string }) => <button type="button">{label}</button>,
+        },
+    );
+    return {
+        UserButton,
+        OrganizationSwitcher: () => <div data-testid="org-switcher" />,
+    };
+});
 
 describe('ShellHeader', () => {
-    it('renders logo, shop switcher, command-palette trigger, and account menu', () => {
+    it('renders logo, org switcher, shop switcher, command-palette trigger, and account menu', () => {
         render(
             <ThemeProvider initialPreference="dark">
                 <ShellHeader
                     shop={{ name: 'Acme', domain: 'acme.test' }}
-                    user={{ name: 'A B', email: 'a@b.com', role: 'admin' }}
                     shopsForSwitcher={[{ name: 'Acme', domain: 'acme.test' }]}
                     commandPaletteItems={[]}
                     navSections={[{ label: 'Home', href: '/acme.test/' }]}
@@ -31,8 +44,9 @@ describe('ShellHeader', () => {
             </ThemeProvider>,
         );
         expect(screen.getByAltText(/Nordcom Commerce Logo/i)).toBeInTheDocument();
+        expect(screen.getByTestId('org-switcher')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Acme/ })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Account/ })).toBeInTheDocument();
+        expect(screen.getByTestId('user-button')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Search/i })).toBeInTheDocument();
     });
 });

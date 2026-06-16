@@ -32,6 +32,7 @@ const shopFields = shopValidator.fields;
 const writableShopValidator = v.object({
     name: v.optional(shopFields.name),
     description: shopFields.description,
+    clerkOrgId: shopFields.clerkOrgId,
     domain: v.optional(shopFields.domain),
     alternativeDomains: shopFields.alternativeDomains,
     i18n: shopFields.i18n,

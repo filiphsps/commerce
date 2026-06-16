@@ -190,7 +190,7 @@ const asOperator = (t: ReturnType<typeof convexTest>, email: string, subject: st
 
 describe('shop secret exposure boundary', () => {
     beforeEach(() => {
-        vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+        vi.stubEnv('CLERK_FRONTEND_API_URL', TRUSTED_ISSUER);
     });
     afterEach(() => {
         vi.unstubAllEnvs();

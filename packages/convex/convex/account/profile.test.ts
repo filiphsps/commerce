@@ -286,16 +286,20 @@ describe('account/profile:provision', () => {
         });
     });
 
-    it('does NOT widen tenant access: a provisioned customer still fails the tenant tier', async () => {
+    it('does NOT widen tenant access: a provisioned customer is rejected at the operator issuer gate', async () => {
         const t = convexTest(schema, modules);
 
         const asNew = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'customer-8', email: 'cust@example.com' });
         await asNew.mutation(provisionRef, {});
 
-        // The users row exists now, but with no `shopCollaborators` membership the tenant
-        // constructors keep rejecting — provisioning grants the profile read, nothing more.
+        // The users row exists now, but the tenant tier resolves through the Clerk OPERATOR issuer
+        // gate — a customer customJwt token (the storefront `CONVEX_AUTH_ISSUER`) carries the wrong
+        // issuer and is rejected as FORGED_IDENTITY BEFORE any membership is consulted. Provisioning a
+        // profile row is no path into operator-tier access. Stub a distinct Clerk issuer so the
+        // operator gate is active and the customer's storefront issuer mismatches it.
+        vi.stubEnv('CLERK_FRONTEND_API_URL', 'https://clerk.test.nordcom.io');
         await expect(asNew.query(tenantProbeRef, {})).rejects.toMatchObject({
-            data: { code: AuthErrorCode.NO_SHOP_MEMBERSHIP },
+            data: { code: AuthErrorCode.FORGED_IDENTITY },
         });
     });
 });
