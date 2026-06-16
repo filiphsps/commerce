@@ -37,7 +37,9 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
     const linkStyles = 'text-sm capitalize hover:text-primary leading-none';
     const iconStyles = 'text-(--text-muted) text-lg font-normal';
 
-    const hrefs = path.map((_) => `/${path.slice(0, -1).join('/')}`);
+    // Each crumb links to its own cumulative path (`/a`, `/a/b`, …); Link re-adds the locale prefix.
+    // The previous `path.map((_) => …)` ignored the index and pointed every crumb at the same URL.
+    const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
 
     const jsonLd: WithContext<BreadcrumbList> = {
         '@context': 'https://schema.org',
@@ -60,7 +62,8 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
         <>
             <JsonLd data={jsonLd} />
 
-            <section
+            <nav
+                aria-label="Breadcrumb"
                 className={cn(
                     '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium text-(--text-muted) leading-none md:mx-0 md:w-full md:max-w-full md:px-0',
                     className,
@@ -93,6 +96,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
                                     index === path.length - 1 && 'font-semibold text-(--text-muted)',
                                 )}
                                 href={hrefs[index]!}
+                                aria-current={index === path.length - 1 ? 'page' : undefined}
                                 itemType="https://schema.org/Thing"
                                 itemProp="item"
                             >
@@ -103,7 +107,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
                         {index + 1 < path.length ? <span className={iconStyles}>/</span> : null}
                     </Fragment>
                 ))}
-            </section>
+            </nav>
         </>
     );
 };
