@@ -39,10 +39,25 @@ Guiding principles (from the task + repo design system):
 - Gate: pinned both token literals and asserted white-on-badge clears WCAG AA normal (both ~5.2:1).
 - Verified: biome clean, typecheck clean, gate 21/21.
 
+### 3 — Product-card wrappers: extract a generic, close the recommendation gap
+
+- `collection`/`recommendation`/`search` product-card wrappers were near-identical thin delegations,
+  but `recommendation` rendered the raw `SURFACE_PRESETS.recommendation` instead of the shop cascade —
+  so tenants could theme collection/search cards but **not** recommendation cards (configurability gap).
+- Extracted `components/products/surface-product-card.tsx`: one generic that resolves any `surface`
+  through the full cascade (instance → per-surface selection → store base → preset → built-in) and
+  renders `ProductCard`. All three wrappers now delegate, pinning only their `surface` + display name.
+- Recommendation cards are now tenant-customizable like the rest; no-extensions shops stay byte-identical.
+- Added an extensions test locking that the recommendation surface honors store base + per-surface
+  selection over the preset.
+- Verified: biome clean, typecheck clean, extensions 3/3 + presets pass.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - `info` alert severity still uses neutral `--surface-1`; consider a dedicated info surface token.
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
+- Cross-engine/responsive validation (Safari + Chromium) of header mega-menu, gallery lightbox,
+  rail carousel per the overhaul spec root-causes — needs a running storefront + browser.
 - Verify responsive + Safari/Chromium behavior of interactive components (header mega-menu, product
   gallery lightbox, rail carousel) per the overhaul spec root-causes.
 - Extract repeated card wrappers (collection/recommendation/search product cards) — confirm they are
