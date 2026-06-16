@@ -10,7 +10,28 @@ import type {
 import type { Media } from '@nordcom/commerce-cms/types';
 import { convexIdentityMutation, convexIdentityQuery } from '@nordcom/commerce-db';
 
+import { getActiveShopDomain } from './active-shop';
 import { getAuthenticatedConvexClient } from './clerk-convex-token';
+
+/**
+ * Merges the request's routed tenant selector into a tenant Convex call's args. The active shop's
+ * `/[domain]/` hostname (pinned by `getAuthedCmsCtx`) rides as the reserved `shopDomain` arg the
+ * tenant-tier constructor consumes (`resolveShopAccess`) to authorize and scope the call — the
+ * mechanism that lets a multi-org/multi-shop operator address one specific shop, which a Clerk
+ * `org_id` (one org owns many shops) cannot. Injected centrally here so no individual call site has
+ * to thread it, and it is unspoofable: Convex re-checks the operator's owning-org membership.
+ *
+ * Omitted when no routed domain is set (a cross-tenant admin route): the call then falls back to the
+ * tenant constructor's lone-membership resolution, so the args stay clean rather than carrying an
+ * `undefined` the Convex validator would reject.
+ *
+ * @param args - The tenant function's own args.
+ * @returns The args with `shopDomain` merged in when a routed domain is active.
+ */
+function withTenantSelector(args: Record<string, unknown>): Record<string, unknown> {
+    const shopDomain = getActiveShopDomain();
+    return shopDomain === undefined ? args : { ...args, shopDomain };
+}
 
 /**
  * The result shape Convex's `cms/actions.ts` save mutations return; the bridge
@@ -141,37 +162,41 @@ function toEditorDocument(row: ConvexCmsDocumentRow): EditorCmsDocument {
 }
 
 /**
- * Runs one Convex mutation on a FRESH Clerk-authenticated client. Per-call construction is the
+ * Runs one tenant Convex mutation on a FRESH Clerk-authenticated client. Per-call construction is the
  * token-hygiene contract: the operator bearer token comes from Clerk's `convex` JWT template for the
  * live session, is applied via `setAuth`, and the client is discarded — nothing caches a token across
- * requests and nothing ships it to the browser. Tenant scope is derived entirely inside Convex from
- * the validated Clerk identity (`resolveShopAccess` via the shop's owning org), so no tenant selector
- * travels as an argument.
+ * requests and nothing ships it to the browser. The request's routed tenant selector is injected
+ * centrally via {@link withTenantSelector}: the active shop's `/[domain]/` hostname rides as the
+ * reserved `shopDomain` arg, which the Convex tenant constructor consumes and authorizes through
+ * `resolveShopAccess` (the operator's owning-org membership), so it picks the routed shop without ever
+ * granting a foreign one. With no routed domain set the selector is omitted and Convex falls back to
+ * the lone-membership resolution.
  *
  * @param name - The Convex function path in `module/path:function` form.
- * @param args - The mutation's args.
+ * @param args - The mutation's own args (the routed `shopDomain` selector is merged in centrally).
  * @returns The mutation's result.
  * @throws {ConvexOperatorTokenMintError} When no operator token can be obtained (no authenticated
  *   Clerk operator, or Clerk could not issue a `convex`-template token).
  */
 async function operatorMutation<Result>(name: string, args: Record<string, unknown>): Promise<Result> {
     const client = await getAuthenticatedConvexClient();
-    return convexIdentityMutation<Result>(client, name, args);
+    return convexIdentityMutation<Result>(client, name, withTenantSelector(args));
 }
 
 /**
- * Runs one Convex query on a FRESH Clerk-authenticated client — the read-side companion of
+ * Runs one tenant Convex query on a FRESH Clerk-authenticated client — the read-side companion of
  * {@link operatorMutation} with the identical token-hygiene contract (per-call client, per-request
- * bearer token, no tenant selector in the args). Backs the CMSDATA-07 editor shell reads.
+ * bearer token) and the same central routed-`shopDomain` selector injection via
+ * {@link withTenantSelector}. Backs the CMSDATA-07 editor shell reads.
  *
  * @param name - The Convex function path in `module/path:function` form.
- * @param args - The query's args.
+ * @param args - The query's own args (the routed `shopDomain` selector is merged in centrally).
  * @returns The query's result.
  * @throws {ConvexOperatorTokenMintError} When no operator token can be obtained.
  */
 async function operatorQuery<Result>(name: string, args: Record<string, unknown>): Promise<Result> {
     const client = await getAuthenticatedConvexClient();
-    return convexIdentityQuery<Result>(client, name, args);
+    return convexIdentityQuery<Result>(client, name, withTenantSelector(args));
 }
 
 /**
