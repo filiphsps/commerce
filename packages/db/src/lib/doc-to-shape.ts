@@ -1,4 +1,4 @@
-import type { FeatureFlagBase, IdentityBase, OnlineShop, ReviewBase, SessionBase, UserBase } from '../models';
+import type { FeatureFlagBase, IdentityBase, OnlineShop, ReviewBase, UserBase } from '../models';
 
 type Doc = Record<string, unknown>;
 
@@ -140,7 +140,7 @@ export const docToReview = (doc: Doc): ReviewBase => stripInternals(doc) as unkn
 export const docToFeatureFlag = (doc: Doc): FeatureFlagBase => stripInternals(doc) as unknown as FeatureFlagBase;
 
 /**
- * Projects a Convex `identities` row (standalone or embedded on a user) onto `IdentityBase`,
+ * Projects a Convex OAuth identity embedded on a user (`users.identities[]`) onto `IdentityBase`,
  * rehydrating the optional epoch-ms `expiresAt` into a `Date` alongside the managed timestamps.
  *
  * @param doc - Raw identity payload.
@@ -171,21 +171,4 @@ export const docToUser = (doc: Doc): UserBase => {
         out.identities = out.identities.map((identity) => docToIdentity(identity as Doc));
     }
     return out as unknown as UserBase;
-};
-
-/**
- * Projects a Convex session read (`{ session, user }`) onto `SessionBase`, replacing the stored
- * branded user reference with the populated `UserBase` the frozen seam contract promises and
- * rehydrating the epoch-ms `expiresAt`.
- *
- * @param payload - The session row paired with its owning user row.
- * @returns The session document as `SessionBase`.
- */
-export const docToSession = (payload: { session: Doc; user: Doc }): SessionBase => {
-    const out = stripInternals(payload.session) as Doc;
-    if (typeof out.expiresAt === 'number') {
-        out.expiresAt = new Date(out.expiresAt);
-    }
-    out.user = docToUser(payload.user);
-    return out as unknown as SessionBase;
 };

@@ -14,10 +14,10 @@ const timestampFields = {
 };
 
 /**
- * OAuth provider-link attributes shared by the standalone {@link identityValidator} row and the
- * copy embedded on each user (`UserBase.identities`). Mirrors `IdentityBase`'s own fields from
- * `@nordcom/commerce-db`'s `identity.ts`: a `provider` name, the provider-scoped `identity` id,
- * and the optional OAuth token fields. Mongo `Date` token expiry becomes numeric epoch-ms here.
+ * OAuth provider-link attributes embedded on each user (`UserBase.identities`). Mirrors `IdentityBase`'s
+ * own fields from `@nordcom/commerce-db`'s `identity.ts`: a `provider` name, the provider-scoped
+ * `identity` id, and the optional OAuth token fields. Mongo `Date` token expiry becomes numeric epoch-ms
+ * here.
  */
 const identityAttributes = {
     provider: v.string(),
@@ -33,7 +33,7 @@ const identityAttributes = {
  * (`IdentityBase[]`). Carries its own string `id` because the Auth.js adapter dedupes the embedded
  * list by `identity.id` (`auth.adapter.ts` `linkAccount`); on migration this is the Mongo subdocument
  * id. The user→identities relationship lives as this embedded array (the `$elemMatch` query path used
- * by `getUserByAccount`), which is why the standalone {@link identitiesTable} needs no `by_user` index.
+ * by `getUserByAccount`).
  */
 export const embeddedIdentityValidator = v.object({
     id: v.string(),
@@ -46,22 +46,6 @@ export const embeddedIdentityValidator = v.object({
  * `@nordcom/commerce-db`. See {@link embeddedIdentityValidator}.
  */
 export type EmbeddedIdentity = Infer<typeof embeddedIdentityValidator>;
-
-/**
- * Stored row shape for the canonical, standalone OAuth identity, mirroring `IdentityBase`'s own
- * fields. The Auth.js adapter upserts this row keyed on `(provider, identity)` before copying it
- * into the owning user's embedded list. No `user` foreign key: the user link is the embedded array
- * on `users`, faithful to the Mongo `IdentitySchema`, which likewise carries no user reference.
- */
-export const identityValidator = v.object({
-    ...identityAttributes,
-    ...timestampFields,
-});
-
-/**
- * Inferred row shape for a standalone identity. See {@link identityValidator}.
- */
-export type IdentityBase = Infer<typeof identityValidator>;
 
 /**
  * Per-user UI preferences embedded on the platform user. Optional end-to-end so existing rows (which
@@ -107,24 +91,6 @@ export const userValidator = v.object({
 export type UserBase = Infer<typeof userValidator>;
 
 /**
- * Stored row shape for an authenticated session, mirroring `SessionBase` from
- * `@nordcom/commerce-db`'s `session.ts`: a bearer `token`, an `expiresAt` expiry (Mongo `Date` →
- * numeric epoch-ms here), and the owning `user`. `user` is a real `v.id('users')` reference because
- * the `users` table is registered in this same table group, so codegen resolves it.
- */
-export const sessionValidator = v.object({
-    user: v.id('users'),
-    token: v.string(),
-    expiresAt: v.number(),
-    ...timestampFields,
-});
-
-/**
- * Inferred row shape for a session, mirroring `SessionBase`. See {@link sessionValidator}.
- */
-export type SessionBase = Infer<typeof sessionValidator>;
-
-/**
  * Platform user table. `by_email` backs the adapter's `getUserByEmail` lookup; `by_clerk_user_id`
  * backs Clerk identity resolution during and after the auth migration. `email` uniqueness has no
  * equivalent unique index in Convex and is enforced in the mutation layer.
@@ -134,31 +100,16 @@ const usersTable = defineTable(userValidator)
     .index('by_clerk_user_id', ['clerkUserId']);
 
 /**
- * Session table. `by_token` backs token validation, `by_user` lists a user's sessions, and
- * `by_expiry` backs reaping expired sessions.
- */
-const sessionsTable = defineTable(sessionValidator)
-    .index('by_token', ['token'])
-    .index('by_user', ['user'])
-    .index('by_expiry', ['expiresAt']);
-
-/**
- * Canonical OAuth identity table. `by_provider_identity` backs the `(provider, identity)` upsert
- * lookup. Convex indexes are NOT unique, so the `(provider, identity)` uniqueness the Mongo
- * `IdentitySchema` enforced via a unique index is instead enforced in the mutation layer (read
- * through `by_provider_identity` before insert) — this index is a lookup accelerator, not a constraint.
- */
-const identitiesTable = defineTable(identityValidator).index('by_provider_identity', ['provider', 'identity']);
-
-/**
- * Platform-global auth tables (`users`, `sessions`, `identities`). These are NOT tenant-scoped: a
- * user, its sessions, and its OAuth identities exist above any single shop, so they carry no `shop`
- * foreign key and sit OUTSIDE the multi-tenant `by_shop_<field>` index convention. Wired into
- * `coreTables` (the platform-global group), never into a tenant grouping. Spread into `defineSchema`
- * via `tables/index.ts`.
+ * Platform-global auth tables (just `users`). NOT tenant-scoped: a user exists above any single shop,
+ * so it carries no `shop` foreign key and sits OUTSIDE the multi-tenant `by_shop_<field>` index
+ * convention. Wired into `coreTables` (the platform-global group), never into a tenant grouping.
+ * Spread into `defineSchema` via `tables/index.ts`.
+ *
+ * The NextAuth-era standalone `sessions` and `identities` tables were dropped after the Clerk auth
+ * migration: operators authenticate through Clerk and the storefront customer path runs a JWT-strategy
+ * NextAuth config with no database adapter, so neither table had a live reader or writer. The OAuth
+ * provider links a user owns survive as the embedded `users.identities` array ({@link embeddedIdentityValidator}).
  */
 export const authTables = {
     users: usersTable,
-    sessions: sessionsTable,
-    identities: identitiesTable,
 };

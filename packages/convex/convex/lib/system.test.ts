@@ -6,11 +6,11 @@ import schema from '../schema';
 import { systemMutation, systemQuery } from './system';
 
 /**
- * A {@link systemMutation} that writes a user, a session for that user, a shop, and a review for that
- * shop in one transaction — four DIFFERENT tables with no `shop`/tenant scoping — proving the system
- * tier's writer reaches the raw `ctx.db` across the whole db. The shop is seeded so the review's
- * `shopId` (`v.id('shops')`) references a real row. The real constructor (its no-op ctx customization
- * plus the handler) is the code under test.
+ * A {@link systemMutation} that writes a user, a shop, and a review for that shop in one transaction —
+ * three DIFFERENT tables with no `shop`/tenant scoping — proving the system tier's writer reaches the
+ * raw `ctx.db` across the whole db. The shop is seeded so the review's `shopId` (`v.id('shops')`)
+ * references a real row. The real constructor (its no-op ctx customization plus the handler) is the
+ * code under test.
  */
 const seedAcrossDb = systemMutation({
     args: {},
@@ -21,13 +21,6 @@ const seedAcrossDb = systemMutation({
             name: 'System Tier',
             emailVerified: null,
             identities: [],
-            createdAt: now,
-            updatedAt: now,
-        });
-        const sessionId = await ctx.db.insert('sessions', {
-            user: userId,
-            token: 'system-tier-token',
-            expiresAt: now + 86_400_000,
             createdAt: now,
             updatedAt: now,
         });
@@ -48,20 +41,20 @@ const seedAcrossDb = systemMutation({
             createdAt: now,
             updatedAt: now,
         });
-        return { userId, sessionId, shopId, reviewId };
+        return { userId, shopId, reviewId };
     },
 });
 
 /**
- * A {@link systemQuery} that reads the platform-global `users` and `sessions` tables plus `reviews`
- * straight off the raw `ctx.db` with no tenant filter, proving the system tier reads across the db
- * unscoped.
+ * A {@link systemQuery} that reads the platform-global `users` table plus the tenant-keyed `reviews`
+ * and `shops` tables straight off the raw `ctx.db` with no tenant filter, proving the system tier
+ * reads across the db unscoped.
  */
 const readAcrossDb = systemQuery({
     args: {},
     handler: async (ctx) => ({
         users: await ctx.db.query('users').collect(),
-        sessions: await ctx.db.query('sessions').collect(),
+        shops: await ctx.db.query('shops').collect(),
         reviews: await ctx.db.query('reviews').collect(),
     }),
 });
@@ -85,25 +78,23 @@ const seedAcrossDbRef = makeFunctionReference<'mutation'>('lib/system.test:seedA
 const readAcrossDbRef = makeFunctionReference<'query'>('lib/system.test:readAcrossDb');
 
 describe('systemQuery / systemMutation', () => {
-    it('writes across the db (users + sessions + reviews) unscoped and reads it back off the raw db', async () => {
+    it('writes across the db (users + shops + reviews) unscoped and reads it back off the raw db', async () => {
         const t = convexTest(schema, modules);
 
         const ids = await t.mutation(seedAcrossDbRef, {});
         const all = await t.query(readAcrossDbRef, {});
 
-        // systemQuery reads the platform-global auth tables off the raw db.
+        // systemQuery reads the platform-global `users` table off the raw db.
         expect(all.users).toHaveLength(1);
-        expect(all.sessions).toHaveLength(1);
         const [user] = all.users;
-        const [session] = all.sessions;
         expect(user?.email).toBe('system-tier@example.com');
         expect(user?._id).toBe(ids.userId);
-        // The session crosses to the user it references — no tenant boundary sits between them.
-        expect(session?.user).toBe(ids.userId);
-        expect(session?.token).toBe('system-tier-token');
 
-        // systemMutation wrote a third, unrelated table in the same transaction — proof the writer is
-        // unscoped across the whole db, not pinned to any single tenant partition.
+        // systemMutation wrote two more unrelated tables in the same transaction — proof the writer is
+        // unscoped across the whole db, not pinned to any single tenant partition. The review crosses
+        // to the shop it references with no tenant boundary sitting between them.
+        expect(all.shops).toHaveLength(1);
+        expect(all.shops[0]?._id).toBe(ids.shopId);
         expect(all.reviews).toHaveLength(1);
         const [review] = all.reviews;
         expect(review?._id).toBe(ids.reviewId);

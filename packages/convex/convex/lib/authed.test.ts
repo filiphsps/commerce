@@ -60,8 +60,8 @@ const seedWorld = systemMutation({
 
 /**
  * An {@link authedQuery} fixture scanning the tables a customer must NOT see: other tenants'
- * `shops`/`reviews` and the platform-global `sessions`/`identities`. All must read EMPTY, and the
- * `users` scan must surface ONLY the caller's own row despite the unbounded scan.
+ * `shops`/`reviews`. Both must read EMPTY, and the `users` scan must surface ONLY the caller's own row
+ * despite the unbounded scan.
  */
 const scanFixture = authedQuery({
     args: {},
@@ -70,8 +70,6 @@ const scanFixture = authedQuery({
         users: (await ctx.db.query('users').collect()).map((row) => row.email),
         shops: (await ctx.db.query('shops').collect()).length,
         reviews: (await ctx.db.query('reviews').collect()).length,
-        sessions: (await ctx.db.query('sessions').collect()).length,
-        identities: (await ctx.db.query('identities').collect()).length,
     }),
 });
 
@@ -185,8 +183,6 @@ describe('customer tier: deny-default coverage', () => {
             users: ['a@example.com'],
             shops: 0,
             reviews: 0,
-            sessions: 0,
-            identities: 0,
         });
     });
 

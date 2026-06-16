@@ -25,12 +25,12 @@ import { shopTables } from './shops';
  */
 
 /**
- * Platform/core table groups (shops, identities, sessions, feature flags, reviews, …). Spread future
+ * Platform/core table groups (shops, users, feature flags, reviews, …). Spread future
  * `tables/<group>.ts` maps in here, e.g. `...shopsTables`.
  *
- * `authTables` (users/sessions/identities) and `reviewsTables` are platform-global, NOT tenant-scoped,
- * so they belong in this core group rather than any tenant grouping (auth rows live above any single
- * shop; the review→shop link is an id ref, not a tenant partition). `shopTables` carries the collapsed
+ * `authTables` (just `users`) and `reviewsTables` are platform-global, NOT tenant-scoped, so they
+ * belong in this core group rather than any tenant grouping (a user row lives above any single shop;
+ * the review→shop link is an id ref, not a tenant partition). `shopTables` carries the collapsed
  * shop==tenant `shops` row plus its credential/domain/collaborator/feature-flag side tables and the
  * platform-global `featureFlags` — its tenant-scoped members enforce the `by_shop` index convention.
  *

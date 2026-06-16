@@ -75,10 +75,10 @@ const denyEveryTable = Object.fromEntries(Object.keys(schema.tables).map((table)
  *   assert that key equals `shopId`. Read AND write predicates are provided so the wrapped WRITER can
  *   still write a tenant's own rows under `defaultPolicy: 'deny'` (an omitted `modify`/`insert` rule
  *   would otherwise fall through to deny, locking the writer out of every tenant table).
- * - **Explicit deny for the auth tables (`users`/`sessions`/`identities`) and the platform-global
- *   `featureFlags`.** These sit ABOVE any tenant partition (they carry no `shop` key) and are reached
- *   through `systemQuery`/`systemMutation` (lib/system.ts), NEVER through the wrapped tenant db —
- *   which denies them via their {@link denyEveryTable} entry.
+ * - **Explicit deny for the platform-global `users` table and `featureFlags`.** These sit ABOVE any
+ *   tenant partition (they carry no `shop` key) and are reached through `systemQuery`/`systemMutation`
+ *   (lib/system.ts), NEVER through the wrapped tenant db — which denies them via their
+ *   {@link denyEveryTable} entry.
  * - **Explicit deny for the CMS content tables** (`pages`, `articles`, …). They are tenant-scoped but
  *   key on a forward-referenced `shop: v.string()` (not a `v.id('shops')` foreign key, mirroring the
  *   revalidation bridge's string tenant id), so they are NOT in this `v.id('shops')`-keyed tenant tier.
@@ -176,8 +176,8 @@ export function tenantRules(shopId: Id<'shops'>): Rules<TenantRuleCtx, DataModel
  *
  * This is deliberately the narrowest possible scope, and the WHY is tenant safety: the customer
  * tier exists so customers can read and provision their own profile WITHOUT inheriting any of the
- * tenant tier's reach. Every tenant-owned table (and every other platform-global table — sessions,
- * identities, featureFlags, the CMS tables) carries {@link denyEveryTable}'s unconditional deny,
+ * tenant tier's reach. Every tenant-owned table (and every other platform-global table — `users`,
+ * featureFlags, the CMS tables) carries {@link denyEveryTable}'s unconditional deny,
  * so a customer-tier function is structurally unable to widen into operator-tier tenant access no
  * matter what its handler does. Total table coverage also closes the bare-id inference bypass,
  * exactly as in {@link tenantRules}.

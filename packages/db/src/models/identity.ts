@@ -2,10 +2,10 @@ import type { BaseDocument } from '../db';
 
 /**
  * Document shape for an OAuth provider link attached to a user. Stores the provider name, the
- * provider-scoped identity ID, optional token fields, and the token expiry date. `(provider,
- * identity)` is unique — GitHub user `42` and a future Google user `42` must not collide — and that
- * uniqueness is enforced inside the Convex `db/identities:upsertByProviderIdentity` mutation (the
- * migrated form of the old Mongo unique index).
+ * provider-scoped identity ID, optional token fields, and the token expiry date. Lives as an element
+ * of the embedded `users.identities[]` array — the standalone NextAuth-era `identities` table was
+ * dropped after the Clerk auth migration; the per-user embedded list is the surviving home for a
+ * user's OAuth provider links.
  *
  * @example
  * ```ts

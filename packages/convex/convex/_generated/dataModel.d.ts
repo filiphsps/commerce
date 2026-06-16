@@ -723,38 +723,6 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
-  identities: {
-    document: {
-      accessToken?: string;
-      createdAt: number;
-      expiresAt?: number;
-      identity: string;
-      provider: string;
-      refreshToken?: string;
-      scope?: string;
-      updatedAt: number;
-      _id: Id<"identities">;
-      _creationTime: number;
-    };
-    fieldPaths:
-      | "_creationTime"
-      | "_id"
-      | "accessToken"
-      | "createdAt"
-      | "expiresAt"
-      | "identity"
-      | "provider"
-      | "refreshToken"
-      | "scope"
-      | "updatedAt";
-    indexes: {
-      by_id: ["_id"];
-      by_creation_time: ["_creationTime"];
-      by_provider_identity: ["provider", "identity", "_creationTime"];
-    };
-    searchIndexes: {};
-    vectorIndexes: {};
-  };
   media: {
     document: {
       alt: string;
@@ -1009,34 +977,6 @@ export type DataModel = {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
       by_shop: ["shopId", "_creationTime"];
-    };
-    searchIndexes: {};
-    vectorIndexes: {};
-  };
-  sessions: {
-    document: {
-      createdAt: number;
-      expiresAt: number;
-      token: string;
-      updatedAt: number;
-      user: Id<"users">;
-      _id: Id<"sessions">;
-      _creationTime: number;
-    };
-    fieldPaths:
-      | "_creationTime"
-      | "_id"
-      | "createdAt"
-      | "expiresAt"
-      | "token"
-      | "updatedAt"
-      | "user";
-    indexes: {
-      by_id: ["_id"];
-      by_creation_time: ["_creationTime"];
-      by_expiry: ["expiresAt", "_creationTime"];
-      by_token: ["token", "_creationTime"];
-      by_user: ["user", "_creationTime"];
     };
     searchIndexes: {};
     vectorIndexes: {};

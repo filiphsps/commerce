@@ -22,8 +22,6 @@ const POPULATED_TABLES = [
     'shopFeatureFlags',
     'featureFlags',
     'users',
-    'sessions',
-    'identities',
     'reviews',
     'media',
     'cmsDocuments',

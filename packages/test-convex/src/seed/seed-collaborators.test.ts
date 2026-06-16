@@ -14,7 +14,7 @@ function asSeedCtx(ctx: unknown): Parameters<typeof seedCanonicalMutation>[0] {
 }
 
 describe('seeded collaborators', () => {
-    it('creates three users linked to the shop at admin/editor/viewer tiers, each with a session', async () => {
+    it('creates three users linked to the shop at admin/editor/viewer tiers, each with an embedded identity', async () => {
         const t = convexTest(schema, modules);
         const shopId = await t.run((ctx) => seedCanonicalMutation(asSeedCtx(ctx)));
 
@@ -24,15 +24,12 @@ describe('seeded collaborators', () => {
             'owner@nordcom-demo-shop.com',
             'viewer@nordcom-demo-shop.com',
         ]);
+        // Each seeded user carries its embedded GitHub OAuth identity.
+        expect(users.every((u) => u.identities.length === 1 && u.identities[0]?.provider === 'github')).toBe(true);
 
         const allLinks = await t.run((ctx) => ctx.db.query('shopCollaborators').collect());
         const links = allLinks.filter((l) => l.shop === shopId);
         expect(links.map((l) => l.permissions.join(',')).sort()).toEqual(['admin', 'editor', 'viewer']);
-
-        const sessions = await t.run((ctx) => ctx.db.query('sessions').collect());
-        expect(sessions.length).toBe(3);
-        const identities = await t.run((ctx) => ctx.db.query('identities').collect());
-        expect(identities.length).toBe(3);
     });
 
     it('is idempotent — a second run adds no duplicate users or links', async () => {

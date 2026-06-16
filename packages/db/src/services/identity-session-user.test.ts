@@ -1,11 +1,11 @@
 import { getFunctionName } from 'convex/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// `Identity`, `Session`, and `User` are `Service` singletons over per-entity Convex backends.
-// This file pins the SFREAD-02 base contract (NotFoundError on an empty single-result lookup,
-// `[]` on an empty multi-result lookup) AND the seam translation — each frozen Mongoose-shaped
-// call lands on the matching deployed `db/*` function with the server secret attached — on a
-// mocked `ConvexHttpClient`, the only transport the re-homed seam owns.
+// `User` is a `Service` singleton over a per-entity Convex backend. This file pins the SFREAD-02 base
+// contract (NotFoundError on an empty single-result lookup, `[]` on an empty multi-result lookup) AND
+// the seam translation — each frozen Mongoose-shaped call lands on the matching deployed `db/users`
+// function with the server secret attached — on a mocked `ConvexHttpClient`, the only transport the
+// re-homed seam owns. The NextAuth-era `Identity`/`Session` seams were dropped with their tables.
 const { queryMock, mutationMock } = vi.hoisted(() => ({ queryMock: vi.fn(), mutationMock: vi.fn() }));
 
 vi.mock('convex/browser', () => ({
@@ -17,8 +17,6 @@ vi.mock('convex/browser', () => ({
     },
 }));
 
-import { Identity } from './identity';
-import { Session } from './session';
 import { User } from './user';
 
 /**
@@ -168,129 +166,5 @@ describe('User (Convex-backed seam)', () => {
         });
         expect(result?.identities[0]).toMatchObject({ id: 'idn_1', provider: 'github' });
         expect(result?.identities[0]?.createdAt).toBeInstanceOf(Date);
-    });
-});
-
-describe('Identity (Convex-backed seam)', () => {
-    it('upserts on (provider, identity) through db/identities:upsertByProviderIdentity', async () => {
-        mutationMock.mockResolvedValueOnce({
-            _id: 'idn_1',
-            _creationTime: NOW,
-            provider: 'github',
-            identity: '42',
-            scope: 'read:user',
-            accessToken: 'at',
-            createdAt: NOW,
-            updatedAt: NOW,
-        });
-
-        const result = await Identity.findOneAndUpdate(
-            { provider: 'github', identity: '42' } as never,
-            {
-                provider: 'github',
-                identity: '42',
-                scope: 'read:user',
-                expiresAt: new Date(NOW),
-                refreshToken: 'rt',
-                accessToken: 'at',
-            } as never,
-            { upsert: true, new: true },
-        );
-
-        expect(calledFunction(mutationMock)).toBe('db/identities:upsertByProviderIdentity');
-        expect(calledArgs(mutationMock)).toMatchObject({
-            provider: 'github',
-            identity: '42',
-            scope: 'read:user',
-            expiresAt: NOW,
-            refreshToken: 'rt',
-            accessToken: 'at',
-            upsert: true,
-            serverSecret: 'test-server-secret',
-        });
-        expect(result).toMatchObject({ id: 'idn_1', provider: 'github', identity: '42' });
-        expect(result).not.toHaveProperty('_id');
-    });
-
-    it('resolves findOneAndUpdate to null when the pair is absent and upsert was not requested', async () => {
-        mutationMock.mockResolvedValueOnce(null);
-        const result = await Identity.findOneAndUpdate(
-            { provider: 'github', identity: 'missing' } as never,
-            {
-                provider: 'github',
-                identity: 'missing',
-            } as never,
-        );
-        expect(result).toBeNull();
-        expect(calledArgs(mutationMock)).toMatchObject({ upsert: false });
-    });
-
-    it('find by (provider, identity) returns [] on a multi-result miss', async () => {
-        queryMock.mockResolvedValueOnce(null);
-        const result = await Identity.find({ filter: { provider: 'github', identity: 'missing' } });
-        expect(calledFunction(queryMock)).toBe('db/identities:byProviderIdentity');
-        expect(result).toEqual([]);
-    });
-
-    it('find({ id }) throws NotFoundError when the lookup misses', async () => {
-        queryMock.mockResolvedValueOnce(null);
-        await expect(Identity.find({ id: 'missing' })).rejects.toMatchObject({ name: 'NotFoundError' });
-    });
-});
-
-describe('Session (Convex-backed seam)', () => {
-    const sessionPayload = {
-        session: {
-            _id: 'ses_1',
-            _creationTime: NOW,
-            user: 'usr_1',
-            token: 'tok_1',
-            expiresAt: NOW + 60_000,
-            createdAt: NOW,
-            updatedAt: NOW,
-        },
-        user: userRow,
-    };
-
-    it('create writes through db/sessions:create with the owning user id and epoch-ms expiry', async () => {
-        mutationMock.mockResolvedValueOnce(sessionPayload);
-        const user = { id: 'usr_1', email: 'john@example.com', name: 'John Doe' } as never;
-
-        const session = await Session.create({
-            user,
-            token: 'tok_1',
-            expiresAt: new Date(NOW + 60_000),
-        } as never);
-
-        expect(calledFunction(mutationMock)).toBe('db/sessions:create');
-        expect(calledArgs(mutationMock)).toEqual({
-            userId: 'usr_1',
-            token: 'tok_1',
-            expiresAt: NOW + 60_000,
-            serverSecret: 'test-server-secret',
-        });
-        expect(session).toMatchObject({ id: 'ses_1', token: 'tok_1' });
-        expect(session.expiresAt).toBeInstanceOf(Date);
-        // The frozen contract populates the owning user, never a bare reference string.
-        expect(session.user).toMatchObject({ id: 'usr_1', email: 'john@example.com' });
-    });
-
-    it('find by token resolves through db/sessions:byToken', async () => {
-        queryMock.mockResolvedValueOnce(sessionPayload);
-        const session = await Session.find({ count: 1, filter: { token: 'tok_1' } });
-
-        expect(calledFunction(queryMock)).toBe('db/sessions:byToken');
-        expect(calledArgs(queryMock)).toMatchObject({ token: 'tok_1' });
-        expect(session.user.id).toBe('usr_1');
-    });
-
-    it('find({ id }) throws NotFoundError when the lookup misses', async () => {
-        queryMock.mockResolvedValueOnce(null);
-        await expect(Session.find({ id: 'missing' })).rejects.toMatchObject({ name: 'NotFoundError' });
-    });
-
-    it('findById resolves null on a miss instead of throwing', async () => {
-        queryMock.mockResolvedValueOnce(null);
-        await expect(Session.findById('missing')).resolves.toBeNull();
     });
 });
