@@ -95,10 +95,44 @@ const ProductGallery = ({
 
     return (
         <section draggable={false} className={cn(className)} {...props}>
-            <div className="flex w-full min-w-0 flex-col gap-2 overflow-clip md:sticky md:top-36 lg:gap-3">
+            {/* Desktop: a sticky two-column gallery — a vertical thumbnail rail beside the primary image.
+             * Mobile: the rail drops below the primary image as a horizontal-scroll strip (order-2). */}
+            <div className="flex w-full min-w-0 flex-col gap-2 overflow-clip md:sticky md:top-36 md:flex-row md:items-start md:gap-3">
+                {images.length > 1 ? (
+                    <aside className="order-2 -mx-1 flex shrink-0 flex-row gap-2 overflow-x-auto px-1 md:order-1 md:mx-0 md:max-h-[40rem] md:w-20 md:flex-col md:overflow-y-auto md:overflow-x-visible md:px-0 lg:w-24">
+                        {images
+                            .filter(({ id }) => image.id !== id)
+                            .map((thumbnail, index) => {
+                                return (
+                                    <button
+                                        type="button"
+                                        key={thumbnail.id ?? thumbnail.url}
+                                        aria-label={t('view-image', index + 1)}
+                                        onClick={() => setImage(thumbnail)}
+                                        className="focus-ring hover:border-(color:var(--accent)) flex size-16 shrink-0 appearance-none items-center justify-center rounded-lg border-(--border-default) border-2 border-solid bg-(--surface-2) p-1 motion-safe:transition-colors md:aspect-4/5 md:size-auto md:w-full md:p-2"
+                                    >
+                                        <Image
+                                            className="size-14 object-contain object-center md:aspect-4/5 md:size-full"
+                                            role={thumbnail.altText ? undefined : 'presentation'}
+                                            src={thumbnail.url}
+                                            alt={thumbnail.altText ?? ''}
+                                            title={thumbnail.altText ?? undefined}
+                                            width={thumbnail.width ?? 175}
+                                            height={thumbnail.height ?? 175}
+                                            sizes="(max-width: 920px) 75px, 120px"
+                                            loading="eager"
+                                            decoding="async"
+                                            draggable={false}
+                                        />
+                                    </button>
+                                );
+                            })}
+                    </aside>
+                ) : null}
+
                 <div
                     className={cn(
-                        'relative flex w-full grow items-center justify-center overflow-hidden rounded-lg border border-(--border-default) border-solid bg-(--surface-2) p-2 md:h-full md:p-3',
+                        'relative order-1 flex w-full min-w-0 grow items-center justify-center overflow-hidden rounded-lg border border-(--border-default) border-solid bg-(--surface-2) p-2 md:order-2 md:h-full md:p-3',
                         padding && 'p-4 py-6 md:p-8',
                     )}
                     {...loadingProps}
@@ -147,38 +181,6 @@ const ProductGallery = ({
                         </div>
                     ) : null}
                 </div>
-
-                {images.length > 1 ? (
-                    <aside className="-mx-1 flex flex-row gap-2 overflow-x-auto px-1 md:mx-0 md:grid md:h-40 md:grid-cols-4 md:grid-rows-[1fr] md:overflow-hidden md:px-0">
-                        {images
-                            .filter(({ id }) => image.id !== id)
-                            .map((thumbnail, index) => {
-                                return (
-                                    <button
-                                        type="button"
-                                        key={thumbnail.id ?? thumbnail.url}
-                                        aria-label={t('view-image', index + 1)}
-                                        onClick={() => setImage(thumbnail)}
-                                        className="focus-ring hover:border-(color:var(--accent)) flex size-16 shrink-0 appearance-none items-center justify-center rounded-lg border-(--border-default) border-2 border-solid bg-(--surface-2) p-1 motion-safe:transition-colors md:aspect-4/3 md:size-32 md:p-4"
-                                    >
-                                        <Image
-                                            className="h-14 w-14 object-contain object-center md:aspect-4/3 md:size-full"
-                                            role={thumbnail.altText ? undefined : 'presentation'}
-                                            src={thumbnail.url}
-                                            alt={thumbnail.altText ?? ''}
-                                            title={thumbnail.altText ?? undefined}
-                                            width={thumbnail.width ?? 175}
-                                            height={thumbnail.height ?? 175}
-                                            sizes="(max-width: 920px) 75px, 175px"
-                                            loading="eager"
-                                            decoding="async"
-                                            draggable={false}
-                                        />
-                                    </button>
-                                );
-                            })}
-                    </aside>
-                ) : null}
             </div>
 
             <ProductGalleryLightbox
