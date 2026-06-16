@@ -20,6 +20,16 @@ import type { GenericId as Id } from "convex/values";
  * ```
  */
 export declare const api: {
+  clerk: {
+    provisioning: {
+      ensureCurrentUser: FunctionReference<
+        "mutation",
+        "public",
+        {},
+        { email: string; id: Id<"users">; name: string }
+      >;
+    };
+  };
   account: {
     profile: {
       get: FunctionReference<"query", "public", {}, any>;
