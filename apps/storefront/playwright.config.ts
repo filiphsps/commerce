@@ -80,6 +80,8 @@ export default defineConfig({
         // Isolate the local dev server's distDir so the e2e `next dev` can run
         // concurrently with a developer's `pnpm dev` (Next's dev lock is keyed
         // by distDir). CI builds + serves the default `.next`, so leave it unset.
-        ...(process.env.CI ? {} : { env: { ...process.env, E2E_DIST_DIR: '.next-e2e' } }),
+        ...(process.env.CI
+            ? {}
+            : { env: { ...process.env, E2E_DIST_DIR: '.next-e2e', NEXT_PUBLIC_BUILD_ID: 'e2e-baked-id' } }),
     },
 });
