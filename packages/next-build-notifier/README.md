@@ -124,6 +124,10 @@ Vercel's [Skew Protection](https://vercel.com/docs/deployments/skew-protection) 
 
 `createVersionRoute` responds with `Cache-Control: no-store` so Vercel's CDN never serves a stale response. Add `export const dynamic = 'force-dynamic'` in your route file (as shown in the usage example) so the route renders dynamically rather than freezing the build ID at build time.
 
+## Self-hosting
+
+On Vercel this works out of the box because `VERCEL_DEPLOYMENT_ID` is present at both build time and runtime. When you self-host, you must supply a stable per-deploy identifier through an env var that is set during **both** the build and the running server — `GIT_COMMIT_SHA`, `BUILD_ID`, or Next's own `NEXT_DEPLOYMENT_ID` all work. Without one, both the baked client id and the `/api/version` response resolve to `'development'`, so the notifier stays permanently inert: it raises no false positives, but it also never detects a new release.
+
 ## Configuration
 
 | Prop | Type | Default | Notes |

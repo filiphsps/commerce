@@ -145,6 +145,16 @@ current live deployment. The `/api/version` route leverages this: it always retu
 build ID of whichever deployment is currently receiving traffic, so a mismatch between
 that and the baked-in build ID reliably signals a new release.
 
+## Self-hosting
+
+On Vercel this works out of the box because `VERCEL_DEPLOYMENT_ID` is present at both
+build time and runtime. When you self-host, you must supply a stable per-deploy identifier
+through an env var that is set during **both** the build and the running server —
+`GIT_COMMIT_SHA`, `BUILD_ID`, or Next's own `NEXT_DEPLOYMENT_ID` all work. Without one,
+both the baked client id and the `/api/version` response resolve to `'development'`, so the
+notifier stays permanently inert: it raises no false positives, but it also never detects a
+new release.
+
 ## Configuration
 
 | Prop | Type | Default | Notes |
