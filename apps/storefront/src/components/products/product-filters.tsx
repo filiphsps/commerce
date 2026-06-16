@@ -7,14 +7,13 @@ import { useCallback, useRef, useState, useTransition } from 'react';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
-// Sort options map to `ProductSortKeys`; the label is the default value so deselecting it clears the
-// param. Labels are literal pending localization keys (tracked as a follow-up) so the feature ships
-// without blocking on six locale files.
+// Sort options map to `ProductSortKeys`; the first entry is the default, so selecting it clears the
+// param. `labelKey` resolves through the locale dictionary at render so the control is localized.
 const SORT_OPTIONS = [
-    { value: 'BEST_SELLING', label: 'Best selling' },
-    { value: 'CREATED_AT', label: 'Newest' },
-    { value: 'PRICE', label: 'Price' },
-    { value: 'TITLE', label: 'Alphabetical' },
+    { value: 'BEST_SELLING', labelKey: 'sort-best-selling' },
+    { value: 'CREATED_AT', labelKey: 'sort-newest' },
+    { value: 'PRICE', labelKey: 'sort-price' },
+    { value: 'TITLE', labelKey: 'sort-alphabetical' },
 ] as const;
 
 type FacetKind = 'availability' | 'vendor' | 'type' | 'price';
@@ -144,7 +143,7 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
     const activeChips: Array<{ key: string; label: string }> = [];
     if (vendor) activeChips.push({ key: 'vendor', label: vendor });
     if (type) activeChips.push({ key: 'type', label: type });
-    if (available === 'true') activeChips.push({ key: 'available', label: 'In stock' });
+    if (available === 'true') activeChips.push({ key: 'available', label: t('in-stock') });
     if (minPrice || maxPrice) activeChips.push({ key: 'price', label: `${minPrice || '0'}–${maxPrice || '∞'}` });
 
     /** Clears a named facet (and both price bounds + the error for the price chip). */
@@ -176,10 +175,10 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                                         type="number"
                                         min={0}
                                         inputMode="decimal"
-                                        aria-label="Minimum price"
+                                        aria-label={t('minimum-price')}
                                         aria-invalid={priceError !== null}
                                         defaultValue={minPrice ?? ''}
-                                        placeholder="Min"
+                                        placeholder={t('min')}
                                         onBlur={applyPrice}
                                         className="w-full rounded-md border border-(--border-default) border-solid bg-(--surface-0) px-2 py-1.5 text-sm aria-[invalid=true]:border-(--state-danger)"
                                     />
@@ -189,10 +188,10 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                                         type="number"
                                         min={0}
                                         inputMode="decimal"
-                                        aria-label="Maximum price"
+                                        aria-label={t('maximum-price')}
                                         aria-invalid={priceError !== null}
                                         defaultValue={maxPrice ?? ''}
-                                        placeholder="Max"
+                                        placeholder={t('max')}
                                         onBlur={applyPrice}
                                         className="w-full rounded-md border border-(--border-default) border-solid bg-(--surface-0) px-2 py-1.5 text-sm aria-[invalid=true]:border-(--state-danger)"
                                     />
@@ -211,7 +210,7 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                                     onChange={(e) => setParam('available', e.target.checked ? 'true' : null)}
                                     className="size-4 accent-(--accent)"
                                 />
-                                In stock
+                                {t('in-stock')}
                             </label>
                         ) : (
                             filter.values.map((value) => {
@@ -254,7 +253,7 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                     className="focus-ring inline-flex items-center gap-2 rounded-lg border border-(--border-default) border-solid px-3 py-2 font-semibold text-sm disabled:opacity-40"
                 >
                     <FilterIcon className="size-4" aria-hidden={true} />
-                    Filters
+                    {t('filters')}
                     {activeChips.length > 0 ? (
                         <span className="rounded-full bg-(--accent) px-1.5 text-(--accent-primary-text) text-xs">
                             {activeChips.length}
@@ -263,7 +262,7 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                 </button>
 
                 <select
-                    aria-label="Sort"
+                    aria-label={t('sort')}
                     value={searchParams.get('sorting') ?? SORT_OPTIONS[0].value}
                     onChange={(e) =>
                         setParam('sorting', e.target.value === SORT_OPTIONS[0].value ? null : e.target.value)
@@ -272,7 +271,7 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                 >
                     {SORT_OPTIONS.map((option) => (
                         <option key={option.value} value={option.value}>
-                            {option.label}
+                            {t(option.labelKey)}
                         </option>
                     ))}
                 </select>
@@ -296,7 +295,7 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                         onClick={() => commit(new URLSearchParams())}
                         className="font-semibold text-(--accent) text-sm"
                     >
-                        Clear all
+                        {t('clear-all')}
                     </button>
                 </div>
             ) : null}
@@ -312,7 +311,7 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                     {/* Bottom sheet on mobile; a right-side panel from md up. */}
                     <div className="absolute inset-x-0 bottom-0 max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-(--surface-0) p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[24rem] md:max-w-[90vw] md:rounded-t-none md:pb-5">
                         <div className="mb-2 flex items-center justify-between">
-                            <span className="font-bold text-lg">Filters</span>
+                            <span className="font-bold text-lg">{t('filters')}</span>
                             <button type="button" aria-label={t('close')} onClick={() => setDrawerOpen(false)}>
                                 <XIcon className="size-5" aria-hidden={true} />
                             </button>
@@ -323,7 +322,7 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
                             onClick={() => setDrawerOpen(false)}
                             className="focus-ring mt-4 w-full rounded-lg bg-(--product-card-cta-bg) py-3 font-semibold text-(--product-card-cta-color)"
                         >
-                            {typeof total === 'number' ? `View (${total})` : 'View'}
+                            {typeof total === 'number' ? t('view-n', total) : t('view')}
                         </button>
                     </div>
                 </div>
