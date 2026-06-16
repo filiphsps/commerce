@@ -155,6 +155,9 @@ jobs:
         # build time) so the e2e job's prebuilt artifacts connect to the seeded :3210 backend.
         env:
             NEXT_PUBLIC_CONVEX_URL: http://127.0.0.1:3210
+            # Bake a non-dev build id so the build-notifier engine is active in the prebuilt
+            # e2e bundles (Vercel deploys use VERCEL_DEPLOYMENT_ID, which takes precedence).
+            NEXT_PUBLIC_BUILD_ID: ${{ github.sha }}
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
