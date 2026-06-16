@@ -6,7 +6,10 @@ export type InputProps<T extends ElementType = 'input'> = {
     ref?: RefObject<HTMLInputElement | null>;
 } & ComponentProps<T>;
 /**
- * Polymorphic single-line input with consistent focus and disabled styles.
+ * Polymorphic single-line input with consistent focus and disabled styles. Carries the shared,
+ * tenant-themeable `focus-ring` so a bare input keeps a visible keyboard focus indicator (WCAG 2.4.7)
+ * — the previous `focus:outline-none` removed the native outline with no replacement. Callers that
+ * render focus on a wrapping element can override via `className`.
  *
  * @param props.as - Element or component to render; defaults to `input`.
  * @param props.ref - Forwarded ref for the underlying `HTMLInputElement`.
@@ -25,7 +28,7 @@ const Input = <T extends ElementType = 'input'>({
             {...(props as ComponentProps<T>)}
             draggable={false}
             className={cn(
-                'w-full appearance-none rounded-lg focus:outline-none focus:ring-0',
+                'focus-ring w-full appearance-none rounded-lg',
                 (props as { disabled?: boolean }).disabled && 'pointer-events-none cursor-not-allowed',
                 className,
             )}
@@ -40,7 +43,8 @@ export type MultilineInputProps<T extends ElementType> = {
     children: ReactNode;
 } & ComponentProps<T>;
 /**
- * Multiline text input (textarea by default) with consistent styling.
+ * Multiline text input (textarea by default) with consistent styling. Carries the shared
+ * `focus-ring` so keyboard focus stays visible (WCAG 2.4.7) instead of the suppressed native outline.
  *
  * @param props.as - Element or component to render; defaults to `textarea`.
  * @param props.children - Content rendered inside the element.
@@ -58,7 +62,7 @@ const MultilineInput = <T extends ElementType>({
             draggable={false}
             {...props}
             className={cn(
-                'w-full resize-none appearance-none rounded-md border-primary bg-(--surface-0) p-2 text-xs focus:outline-none focus:ring-0',
+                'focus-ring w-full resize-none appearance-none rounded-md border-primary bg-(--surface-0) p-2 text-xs',
                 className,
             )}
         >

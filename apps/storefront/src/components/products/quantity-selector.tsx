@@ -213,7 +213,7 @@ const QuantitySelector = ({
                 step={1}
                 pattern="[0-9]"
                 className={cn(
-                    'h-full w-full grow appearance-none border-none bg-transparent font-bold text-sm outline-none focus:outline-none focus:ring-0',
+                    'h-full w-full grow appearance-none border-none bg-transparent font-bold text-sm',
                     inputClassName,
                 )}
                 disabled={disabled}
