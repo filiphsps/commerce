@@ -341,6 +341,15 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   switched the dev label to `t('discount')` (existing key).
 - Verified: six locale JSONs valid, biome clean, typecheck clean, cart-summary 7/7.
 
+### 29 — Product category: never a dead end
+
+- `ProductCategory` had the same dead-end pattern the vendor had before iter 22: collection-if-exists,
+  else **plain non-interactive text**. The products listing accepts a `type` facet
+  (`productType: searchParams.type` → `product_type:"…"`).
+- Reworked to prefer `/collections/<handle>/` and fall back to `/products/?type=<encoded name>` on any
+  lookup miss, so the category is always a working link. Added the no-collection fallback test.
+- Verified: biome clean, typecheck clean, product-category 4/4.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
