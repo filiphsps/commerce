@@ -408,6 +408,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   brand surface) or a `DOC_COMMENT`, not an unmigrated gap.
 - Verified: biome clean, typecheck clean, gate 22/22 + registry 29 total.
 
+### 36 — Quantity-break tiers expose selected state
+
+- The bulk-pricing tier buttons conveyed their active/selected tier only visually (`border-primary
+  text-primary`); screen readers got no selected-state. These are selection toggles (click sets the
+  cart quantity to the tier).
+- Added `aria-pressed={active}` so the selected tier is announced — consistent with the gallery
+  thumbnail / filter-value selected-state pattern. Added the component's first test (active vs inactive
+  tier, mocking the option/quantity/cart contexts).
+- Verified: biome clean, typecheck clean, quantity-breaks 2/2.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
