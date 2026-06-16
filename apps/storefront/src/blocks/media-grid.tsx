@@ -119,7 +119,7 @@ export const MediaGridBlock = ({
                         <ItemWrapper
                             key={key}
                             link={link}
-                            className="group/item flex items-center justify-center gap-4 rounded-lg border-2 border-transparent border-solid bg-gray-50 p-4 transition-colors hover:bg-gray-100"
+                            className="group/item flex items-center justify-center gap-4 rounded-lg border-2 border-transparent border-solid bg-(--surface-2) p-4 transition-colors hover:bg-(--surface-1)"
                         >
                             <Image
                                 role={alt ? undefined : 'presentation'}
@@ -214,7 +214,7 @@ const MediaGridBlockSkeleton = ({ block }: { block: MediaGridBlockNode }): JSX.E
                 return isIcon ? (
                     <div
                         key={key}
-                        className="flex items-center justify-center gap-4 rounded-lg border-2 border-transparent border-solid bg-gray-50 p-4"
+                        className="flex items-center justify-center gap-4 rounded-lg border-2 border-transparent border-solid bg-(--surface-2) p-4"
                     >
                         <div className="h-8 w-8 rounded-sm md:h-6 md:w-6" data-skeleton />
                         {item.caption ? <div className="h-4 w-24 rounded-sm" data-skeleton /> : null}

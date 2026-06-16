@@ -64,7 +64,6 @@ const ALLOWLIST: ReadonlyMap<string, string> = new Map([
     ['app/[domain]/[locale]/products/[handle]/page.tsx', WHITE_ON_BRAND],
     ['app/[domain]/[locale]/products/[handle]/product-content.tsx', WHITE_ON_BRAND],
     ['blocks/banner.tsx', `${CMS_BLOCK} ${WHITE_ON_BRAND}`],
-    ['blocks/media-grid.tsx', CMS_BLOCK],
     ['blocks/rich-text.tsx', CMS_BLOCK],
     ['components/actionable/button.tsx', WHITE_ON_BRAND],
     ['components/informational/alert.tsx', WHITE_ON_BRAND],
