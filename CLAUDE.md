@@ -20,7 +20,7 @@ LLM defaults that would otherwise be wrong here:
 
 Prefer LSP over `Grep`/`Read` for navigation — faster, precise, no whole-file reads.
 
--   **Find a symbol by name → `lsp-symbols` MCP** (`find_symbol`, `find_references`). The built-in LSP tool has **no `query` param**, so its `workspaceSymbol` always returns nothing ([claude-code#30948](https://github.com/anthropics/claude-code/issues/30948)). The `lsp-symbols` server fills that gap; opt-in per machine — see `.claude/mcp/README.md`. If it isn't connected, fall back to `Grep` for the name, then point position-based LSP ops at the hit.
+-   **Find a symbol by name → `lspmesh` MCP** (`find_symbol`, `find_references`, `find_implementations`). The built-in LSP tool has **no `query` param**, so its `workspaceSymbol` always returns nothing ([claude-code#30948](https://github.com/anthropics/claude-code/issues/30948)). `lspmesh` (`packages/ai/lspmesh`) fills that gap and aggregates the TypeScript, Tailwind, and Biome language servers behind one endpoint; it's the `lspmesh@commerce-plugins` plugin, launched from the workspace build (`pnpm --filter lspmesh build`), and replaces the old `lsp-symbols` MCP plus the `typescript-lsp`/`tailwind-lsp-adapter` plugins. If it isn't connected, fall back to `Grep` for the name, then point position-based LSP ops at the hit.
 -   The remaining built-in LSP ops are position-based (`filePath` + `line` + `character`):
     -   **`findReferences`** for every usage across the repo.
     -   **`goToDefinition` / `goToImplementation`** to jump to source.

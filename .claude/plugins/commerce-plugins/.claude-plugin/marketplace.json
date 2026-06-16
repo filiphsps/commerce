@@ -20,8 +20,8 @@
       "strict": false,
       "lspServers": {
         "lspmesh": {
-          "command": "pnpm",
-          "args": ["dlx", "lspmesh@latest", "lsp"],
+          "command": "node",
+          "args": ["packages/ai/lspmesh/dist/cli.js", "lsp"],
           "extensionToLanguage": {
             ".ts": "typescript",
             ".tsx": "typescriptreact",
@@ -40,8 +40,8 @@
       },
       "mcpServers": {
         "lspmesh": {
-          "command": "pnpm",
-          "args": ["dlx", "lspmesh@latest", "mcp"]
+          "command": "node",
+          "args": ["packages/ai/lspmesh/dist/cli.js", "mcp"]
         }
       }
     },
