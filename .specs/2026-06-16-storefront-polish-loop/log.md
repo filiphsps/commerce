@@ -311,6 +311,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   labeled `<ul>` with the right `<li>` count.
 - Verified: six locale JSONs valid, biome clean, typecheck clean, payment-methods 2/2, footer 3/3.
 
+### 26 — Localize the collection "view all" tile
+
+- `CollectionViewAllTile` hard-coded "View all of the products in {title}." — visible English copy on
+  the tile that closes a collection rail/grid.
+- Added a `common.view-all-in` key (`{0}` = the bold collection title) across all six locales and a
+  `label?: ReactNode` prop (English fallback retained). `collection-block` builds the localized node
+  with the ReactNode-literal `t()` form and reuses the same dictionary load it already does for the
+  arrow labels (one `getDictionary` call covers both).
+- Verified: six locale JSONs valid, biome clean, typecheck clean, CMS collection block 6/6.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Remaining literal `aria-label="Close"` / `Show all … options` in
