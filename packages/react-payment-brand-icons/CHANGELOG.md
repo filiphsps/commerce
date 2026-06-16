@@ -1,5 +1,11 @@
 # react-payment-brand-icons
 
+## 0.2.4
+
+### Patch Changes
+
+- [`95249fe`](https://github.com/filiphsps/commerce/commit/95249febac61d518d31e5ad7036488825300b88b) Thanks [@filiphsps](https://github.com/filiphsps)! - Update domain to <nordcom.store> 🎉
+
 ## 0.2.3
 
 ### Patch Changes
