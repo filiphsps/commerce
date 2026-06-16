@@ -1,5 +1,8 @@
 # react-payment-brand-icons
 
+[![npm version](https://img.shields.io/npm/v/react-payment-brand-icons)](https://www.npmjs.com/package/react-payment-brand-icons)
+[![npm downloads](https://img.shields.io/npm/dm/react-payment-brand-icons)](https://www.npmjs.com/package/react-payment-brand-icons)
+
 Tree-shakeable React components for payment-method brand icons (Visa, Mastercard, Apple Pay, Swish, and 460+ more).
 
 ## Installation

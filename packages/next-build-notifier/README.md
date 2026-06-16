@@ -1,5 +1,8 @@
 # next-build-notifier
 
+[![npm version](https://img.shields.io/npm/v/next-build-notifier)](https://www.npmjs.com/package/next-build-notifier)
+[![npm downloads](https://img.shields.io/npm/dm/next-build-notifier)](https://www.npmjs.com/package/next-build-notifier)
+
 A headless "new build available" indicator for Next.js. Detects when a newer deployment is live and surfaces that state to your UI — no opinions about how to render it.
 
 Works on any host. Ships first-class support for Vercel deployments.

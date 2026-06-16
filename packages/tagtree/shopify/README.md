@@ -1,5 +1,8 @@
 # @tagtree/shopify
 
+[![npm version](https://img.shields.io/npm/v/@tagtree/shopify)](https://www.npmjs.com/package/@tagtree/shopify)
+[![npm downloads](https://img.shields.io/npm/dm/@tagtree/shopify)](https://www.npmjs.com/package/@tagtree/shopify)
+
 Shopify webhook plugin for `@tagtree/core` — HMAC verification and schema-aware
 topic-to-tag mapping.
 

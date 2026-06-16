@@ -1,5 +1,8 @@
 # @tagtree/core
 
+[![npm version](https://img.shields.io/npm/v/@tagtree/core)](https://www.npmjs.com/package/@tagtree/core)
+[![npm downloads](https://img.shields.io/npm/dm/@tagtree/core)](https://www.npmjs.com/package/@tagtree/core)
+
 Schema-driven, tenant-aware cache tag management for multi-tenant applications.
 
 Most cache tag libraries are stringly-typed: you mint strings at write time and

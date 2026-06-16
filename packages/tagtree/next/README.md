@@ -1,5 +1,8 @@
 # @tagtree/next
 
+[![npm version](https://img.shields.io/npm/v/@tagtree/next)](https://www.npmjs.com/package/@tagtree/next)
+[![npm downloads](https://img.shields.io/npm/dm/@tagtree/next)](https://www.npmjs.com/package/@tagtree/next)
+
 Next.js adapter for `@tagtree/core` — delegates `wrap` to `unstable_cache` and
 `invalidate` to `revalidateTag`.
 
