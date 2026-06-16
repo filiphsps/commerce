@@ -19,7 +19,8 @@ import type { ProductCardSurfaceOverride } from '@/components/product-card/prese
 import CollectionBlockArrows from '@/components/products/collection-block-arrows';
 import CollectionProductCard from '@/components/products/collection-product-card';
 import CollectionViewAllTile from '@/components/products/collection-view-all-tile';
-import type { Locale } from '@/utils/locale';
+import { getDictionary } from '@/utils/dictionary';
+import { capitalize, getTranslations, type Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 type CardComponent = ComponentType<{
@@ -202,13 +203,27 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         (breakpoint) => resolveResponsiveValue(resolvedLayout, breakpoint) === 'carousel',
     );
 
+    // Resolve the carousel arrow labels only when arrows render; the dictionary import is
+    // bundler-cached, so this is cheap on repeat across multiple rails on a page.
+    let arrowLabels: { previous: string; next: string } | null = null;
+    if (showArrows) {
+        const { t } = getTranslations('common', await getDictionary({ shop, locale }));
+        arrowLabels = { previous: capitalize(t('previous')), next: capitalize(t('next')) };
+    }
+
     return (
         // `w-full min-w-0` pins this wrapper to the container width. Without it, a parent that
         // cross-aligns its children (`items-start`, e.g. the CMS Collection block section) shrink-wraps
         // this div to content size: the grid layout then collapses to a single column (vertical list on
         // mobile) and the horizontal rail blows past the viewport instead of scroll-containing.
         <div className="relative w-full min-w-0">
-            {showArrows ? <CollectionBlockArrows railSelector={`[data-rail='${railId}']`} /> : null}
+            {showArrows ? (
+                <CollectionBlockArrows
+                    railSelector={`[data-rail='${railId}']`}
+                    previousLabel={arrowLabels?.previous}
+                    nextLabel={arrowLabels?.next}
+                />
+            ) : null}
             <Tag
                 {...props}
                 data-rail={hasCarousel(resolvedLayout) ? railId : undefined}

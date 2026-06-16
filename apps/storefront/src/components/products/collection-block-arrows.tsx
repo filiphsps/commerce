@@ -7,6 +7,10 @@ import { cn } from '@/utils/tailwind';
 export type CollectionBlockArrowsProps = {
     /** CSS selector pointing at the rail container element; used to find first/last children. */
     railSelector: string;
+    /** Localized accessible label for the scroll-back control; defaults to English. */
+    previousLabel?: string;
+    /** Localized accessible label for the scroll-forward control; defaults to English. */
+    nextLabel?: string;
 };
 
 const ARROW_CLASSES = cn(
@@ -30,7 +34,11 @@ const ARROW_CLASSES = cn(
  * @param props - {@link CollectionBlockArrowsProps}.
  * @returns Two absolutely-positioned arrow buttons (siblings, no wrapper).
  */
-const CollectionBlockArrows = ({ railSelector }: CollectionBlockArrowsProps) => {
+const CollectionBlockArrows = ({
+    railSelector,
+    previousLabel = 'Previous',
+    nextLabel = 'Next',
+}: CollectionBlockArrowsProps) => {
     const railRef = useRef<HTMLElement | null>(null);
     const [firstVisible, setFirstVisible] = useState(true);
     const [lastVisible, setLastVisible] = useState(false);
@@ -71,7 +79,7 @@ const CollectionBlockArrows = ({ railSelector }: CollectionBlockArrowsProps) => 
         <>
             <button
                 type="button"
-                aria-label="Previous"
+                aria-label={previousLabel}
                 data-side="prev"
                 onClick={() => scroll(-1)}
                 {...(firstVisible || allVisible ? { 'data-hidden': '' } : {})}
@@ -81,7 +89,7 @@ const CollectionBlockArrows = ({ railSelector }: CollectionBlockArrowsProps) => 
             </button>
             <button
                 type="button"
-                aria-label="Next"
+                aria-label={nextLabel}
                 data-side="next"
                 onClick={() => scroll(1)}
                 {...(lastVisible || allVisible ? { 'data-hidden': '' } : {})}
