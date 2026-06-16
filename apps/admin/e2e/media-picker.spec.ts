@@ -62,4 +62,13 @@ test('uploads, edits metadata, and commits an image through the cover picker, su
     await waitForAutosave(page);
     await page.reload();
     await expect(page.getByTestId('upload-cover-value')).toBeVisible({ timeout: 15_000 });
+
+    // Deselect: clearing the field drops the selection back to "no image", and that survives a reload.
+    await page.getByTestId('media-clear-cover').click();
+    await expect(page.getByTestId('upload-cover-value')).toBeHidden();
+    await expect(page.getByText('No image selected')).toBeVisible();
+    await waitForAutosave(page);
+    await page.reload();
+    await expect(page.getByTestId('upload-cover-value')).toBeHidden({ timeout: 15_000 });
+    await expect(page.getByText('No image selected')).toBeVisible();
 });

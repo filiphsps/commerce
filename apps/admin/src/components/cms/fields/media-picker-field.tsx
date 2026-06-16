@@ -91,6 +91,8 @@ type MediaPickerDialogProps = {
     preselected: Media | null;
     /** Commits a chosen media row to the field and closes the dialog. */
     onCommit: (media: Media) => void;
+    /** Clears the field's selection ("no image") and closes the dialog. */
+    onClear: () => void;
     /** The trigger element that opens the dialog. */
     children: ReactNode;
 };
@@ -106,7 +108,7 @@ type MediaPickerDialogProps = {
  * @param props - {@link MediaPickerDialogProps}.
  * @returns The trigger wrapping the portalled picker dialog.
  */
-function MediaPickerDialog({ domain, path, value, preselected, onCommit, children }: MediaPickerDialogProps) {
+function MediaPickerDialog({ domain, path, value, preselected, onCommit, onClear, children }: MediaPickerDialogProps) {
     const [open, setOpen] = useState(false);
     const [items, setItems] = useState<Media[]>([]);
     const [loading, setLoading] = useState(false);
@@ -217,6 +219,12 @@ function MediaPickerDialog({ domain, path, value, preselected, onCommit, childre
         },
         [onCommit],
     );
+
+    /** Clears the field's selection ("no image") and closes the dialog. */
+    const clearAndClose = useCallback(() => {
+        onClear();
+        setOpen(false);
+    }, [onClear]);
 
     /** Places the focal reticle from a click on the preview, normalizing the pointer to `0..1`. */
     const onFocalClick = useCallback((event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -455,19 +463,32 @@ function MediaPickerDialog({ domain, path, value, preselected, onCommit, childre
                     </div>
                 </div>
 
-                <DialogFooter>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
-                        Cancel
-                    </Button>
-                    <Button
-                        type="button"
-                        size="sm"
-                        disabled={!active}
-                        data-testid={`media-use-${path}`}
-                        onClick={() => active && commit(active)}
-                    >
-                        Use image
-                    </Button>
+                <DialogFooter className={value ? 'justify-between' : undefined}>
+                    {value ? (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            data-testid={`media-dialog-clear-${path}`}
+                            onClick={clearAndClose}
+                        >
+                            Remove image
+                        </Button>
+                    ) : null}
+                    <div className="flex items-center gap-2">
+                        <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button
+                            type="button"
+                            size="sm"
+                            disabled={!active}
+                            data-testid={`media-use-${path}`}
+                            onClick={() => active && commit(active)}
+                        >
+                            Use image
+                        </Button>
+                    </div>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -568,6 +589,13 @@ export function AdminUploadField({ field, path }: FieldRendererProps<UploadField
         [setValue],
     );
 
+    // Deselect: an empty id is the field's "no image" state — every render path keys off the value's
+    // truthiness, so the cleared field shows the empty dropzone and round-trips as no selection.
+    const onClear = useCallback(() => {
+        setValue('');
+        setPreview(null);
+    }, [setValue]);
+
     if (!visible) return null;
 
     const src = preview ? thumbnailSrc(preview) : null;
@@ -595,17 +623,31 @@ export function AdminUploadField({ field, path }: FieldRendererProps<UploadField
                     ) : (
                         <span className="text-muted-foreground text-sm">No image selected</span>
                     )}
-                    <MediaPickerDialog
-                        domain={domain}
-                        path={path}
-                        value={value}
-                        preselected={preview}
-                        onCommit={onCommit}
-                    >
-                        <Button type="button" variant="outline" size="sm" data-testid={`media-picker-open-${path}`}>
-                            {value ? 'Change image' : 'Choose image'}
-                        </Button>
-                    </MediaPickerDialog>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <MediaPickerDialog
+                            domain={domain}
+                            path={path}
+                            value={value}
+                            preselected={preview}
+                            onCommit={onCommit}
+                            onClear={onClear}
+                        >
+                            <Button type="button" variant="outline" size="sm" data-testid={`media-picker-open-${path}`}>
+                                {value ? 'Change image' : 'Choose image'}
+                            </Button>
+                        </MediaPickerDialog>
+                        {value ? (
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                data-testid={`media-clear-${path}`}
+                                onClick={onClear}
+                            >
+                                Remove
+                            </Button>
+                        ) : null}
+                    </div>
                 </div>
             </div>
         </FieldShell>
