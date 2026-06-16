@@ -8,7 +8,9 @@ import { cn } from '@/utils/tailwind';
 
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color' | 'as'>;
 /**
- * Renders the site navigation header with the Nordcom Commerce logo, nav links, and an Admin portal CTA.
+ * Renders the site navigation header with the Nordcom Commerce logo, nav links, a Sign in link to the
+ * admin sign-in route, and an Admin portal CTA. The landing app carries no Clerk session of its own —
+ * both links simply hand off to the admin origin (`admin.<SERVICE_DOMAIN>`).
  *
  * @param props.className - Additional CSS classes merged onto the header root element.
  */
@@ -36,6 +38,10 @@ export default async function Header({ className, ...props }: HeaderProps) {
                 </NordstarHeader.Menu.Link>
                 <NordstarHeader.Menu.Link as={Link} href="/docs/">
                     Documentation
+                </NordstarHeader.Menu.Link>
+
+                <NordstarHeader.Menu.Link as={Link} href={`https://${getAdminHostname()}/auth/sign-in/`}>
+                    Sign in
                 </NordstarHeader.Menu.Link>
 
                 <Button as={Link} href={`https://${getAdminHostname()}/`}>

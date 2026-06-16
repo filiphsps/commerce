@@ -11,8 +11,8 @@ import { RECONCILE_THROTTLE } from '../reconcile';
 import { deriveRevalidateTags } from '../tags';
 
 /**
- * The trusted NextAuth issuer the tenant constructors assert against (via `resolveAdminShopId`),
- * stubbed into `CONVEX_AUTH_ISSUER` so the issuer check is active under `convex-test`, whose
+ * The trusted Clerk operator issuer the tenant constructors assert against (via the resolveActiveAdminShopId chain),
+ * stubbed into `CLERK_FRONTEND_API_URL` so the issuer check is active under `convex-test`, whose
  * `withIdentity` fakes identities WITHOUT Convex's real signature/issuer validation.
  */
 const TRUSTED_ISSUER = 'https://admin.test.nordcom.io';
@@ -217,7 +217,7 @@ beforeEach(() => {
     // stage of the publish→delivery chain individually assertable.
     vi.useFakeTimers();
     vi.setSystemTime(NOW);
-    vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+    vi.stubEnv('CLERK_FRONTEND_API_URL', TRUSTED_ISSUER);
     vi.stubEnv('CONVEX_REVALIDATE_SECRET', SECRET);
 });
 

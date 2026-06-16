@@ -1,6 +1,6 @@
-import { customCtx, customMutation } from 'convex-helpers/server/customFunctions';
+import { customCtx, customMutation, customQuery } from 'convex-helpers/server/customFunctions';
 
-import { mutation } from '../_generated/server';
+import { mutation, query } from '../_generated/server';
 import { getClerkOperatorIdentity, requireIdentityEmail } from './auth';
 
 /**
@@ -31,6 +31,33 @@ import { getClerkOperatorIdentity, requireIdentityEmail } from './auth';
  */
 export const clerkMutation = customMutation(
     mutation,
+    customCtx(async (ctx) => {
+        const identity = await getClerkOperatorIdentity(ctx);
+        const identityEmail = requireIdentityEmail(identity);
+        return { identity, identityEmail };
+    }),
+);
+
+/**
+ * Public, Clerk-operator-authenticated QUERY constructor — the read-side companion to
+ * {@link clerkMutation}. Validates through {@link getClerkOperatorIdentity} (re-asserting the
+ * `CLERK_FRONTEND_API_URL` issuer specifically) and pins the validated identity + email onto
+ * `ctx.identity` / `ctx.identityEmail`, exposing the RAW `ctx.db` (no tenant RLS wrap).
+ *
+ * The Clerk operator chooser sits ABOVE any single tenant — it lists every org the operator belongs
+ * to and every shop those orgs own (`orgMemberships` + `orgs` + `shops` are platform-global, no
+ * `shop` foreign key), so it cannot be expressed through the tenant tier (which pins exactly one
+ * shop). It must also be PUBLIC (callable from the admin Next.js server on the operator's own
+ * Clerk-issued token) yet must NOT validate on the customer `CONVEX_AUTH_ISSUER` path that
+ * {@link authedQuery} uses. The handler derives the operator entirely from the validated identity,
+ * never a client argument, so it cannot leak another operator's orgs.
+ *
+ * @throws {ConvexError} `UNAUTHENTICATED` when there is no Clerk identity on the request.
+ * @throws {ConvexError} `FORGED_IDENTITY` when the identity's issuer does not match `CLERK_FRONTEND_API_URL`.
+ * @throws {ConvexError} `IDENTITY_WITHOUT_EMAIL` when the Clerk JWT carries no `email` claim.
+ */
+export const clerkQuery = customQuery(
+    query,
     customCtx(async (ctx) => {
         const identity = await getClerkOperatorIdentity(ctx);
         const identityEmail = requireIdentityEmail(identity);

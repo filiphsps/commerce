@@ -273,6 +273,19 @@ describe('getClerkOperatorIdentity', () => {
             data: { code: AuthErrorCode.UNAUTHENTICATED },
         });
     });
+
+    it('fails closed when the Clerk operator issuer is unconfigured (does NOT trust the identity)', async () => {
+        const t = convexTest(schema, modules);
+        // With no trusted operator issuer set, the privileged operator gate must reject rather than
+        // fall through to bare platform validation — otherwise a customer customJwt token could slip
+        // into operator paths. A valid-looking Clerk identity is still rejected here.
+        vi.stubEnv('CLERK_FRONTEND_API_URL', '');
+
+        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
+        await expect(asOperator.query(clerkOperatorIdentityRef, {})).rejects.toMatchObject({
+            data: { code: AuthErrorCode.FORGED_IDENTITY },
+        });
+    });
 });
 
 describe('resolveUserFromIdentity (Clerk operator resolution)', () => {

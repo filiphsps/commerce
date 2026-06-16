@@ -1,36 +1,35 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AccountMenu } from '@/components/shell/account-menu';
+import { ThemeProvider } from '@/components/theme/theme-provider';
 import { render, screen } from '@/utils/test/react';
 
-vi.mock('next/link', () => ({
-    default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
-        <a href={String(href)} {...rest}>
-            {children}
-        </a>
-    ),
-}));
+// Clerk's <UserButton> reaches for the live session; stub it (and its compound parts) to passthrough
+// renderers so the themed account control can be asserted without a real ClerkProvider. The Action's
+// label is surfaced as text so the theme-toggle wiring stays observable.
+vi.mock('@clerk/nextjs', () => {
+    const UserButton = Object.assign(
+        ({ children }: { children?: React.ReactNode }) => <div data-testid="user-button">{children}</div>,
+        {
+            MenuItems: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+            Action: ({ label, onClick }: { label: string; onClick?: () => void }) => (
+                <button type="button" onClick={onClick}>
+                    {label}
+                </button>
+            ),
+        },
+    );
+    return { UserButton };
+});
 
 describe('AccountMenu', () => {
-    it('renders an avatar trigger with the user fallback initials', () => {
-        render(<AccountMenu user={{ name: 'Filiph S', email: 'a@b.com', role: 'admin' }} />);
-        expect(screen.getByRole('button', { name: /Account/i })).toBeInTheDocument();
-    });
-
-    it('accepts a gravatar image and derives fallback initials from the name', () => {
+    it('renders the Clerk user button with a theme-toggle action', () => {
         render(
-            <AccountMenu
-                user={{
-                    name: 'Filiph S',
-                    email: 'a@b.com',
-                    image: 'https://www.gravatar.com/avatar/abc?d=mp&s=160',
-                    role: 'admin',
-                }}
-            />,
+            <ThemeProvider initialPreference="dark">
+                <AccountMenu />
+            </ThemeProvider>,
         );
-        // The trigger renders without error when an image is supplied (the `user.image` branch), and
-        // the avatar fallback derives 'FS' from the name (the image element stays unmounted in the
-        // test DOM until it loads, so the fallback is the stable assertion).
-        expect(screen.getByRole('button', { name: /Account/i })).toBeInTheDocument();
-        expect(screen.getByText('FS')).toBeInTheDocument();
+        expect(screen.getByTestId('user-button')).toBeInTheDocument();
+        // From the 'dark' preference the toggle offers the 'system' switch.
+        expect(screen.getByRole('button', { name: /Switch to system theme/i })).toBeInTheDocument();
     });
 });

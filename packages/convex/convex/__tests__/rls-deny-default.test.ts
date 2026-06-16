@@ -34,8 +34,8 @@ import schema from '../schema';
  */
 
 /**
- * The trusted NextAuth issuer the tenant constructors assert against (via `resolveAdminShopId`). Stubbed
- * into `CONVEX_AUTH_ISSUER` for every case so the issuer check is active under `convex-test`, whose
+ * The trusted Clerk operator issuer the tenant constructors assert against (via the resolveActiveAdminShopId chain). Stubbed
+ * into `CLERK_FRONTEND_API_URL` for every case so the issuer check is active under `convex-test`, whose
  * `withIdentity` fakes identities WITHOUT Convex's real signature/issuer validation.
  */
 const TRUSTED_ISSUER = 'https://admin.test.nordcom.io';
@@ -262,7 +262,7 @@ async function setUpTwoTenants() {
 }
 
 beforeEach(() => {
-    vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+    vi.stubEnv('CLERK_FRONTEND_API_URL', TRUSTED_ISSUER);
 });
 afterEach(() => {
     vi.unstubAllEnvs();

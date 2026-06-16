@@ -20,6 +20,7 @@ import type { Metadata, Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
+import { ActiveOrgSync } from '@/components/shell/active-org-sync';
 import type { CommandPaletteItem } from '@/components/shell/command-palette';
 import type { IconRailGroup, IconRailItem } from '@/components/shell/icon-rail';
 import { MobileNav } from '@/components/shell/mobile-nav';
@@ -27,7 +28,6 @@ import { ShellHeader } from '@/components/shell/shell-header';
 import { ShellRoot } from '@/components/shell/shell-root';
 import { getAuthedCmsCtx } from '@/lib/cms-ctx';
 import { getShopsForUser } from '@/lib/shops-for-user';
-import { gravatarUrl } from '@/utils/gravatar';
 
 export type ShopLayoutProps = {
     children: ReactNode;
@@ -144,12 +144,6 @@ export default async function ShopLayout({ children, subnav, inspector, params }
     const header = (
         <ShellHeader
             shop={{ name: shop.name, domain: shop.domain }}
-            user={{
-                name: user.name,
-                email: user.email ?? undefined,
-                image: gravatarUrl(user.email),
-                role: user.role,
-            }}
             shopsForSwitcher={shopsForSwitcher}
             commandPaletteItems={commandPaletteItems}
             navSections={navItems.map((item) => ({ label: item.label, href: item.href }))}
@@ -159,6 +153,7 @@ export default async function ShopLayout({ children, subnav, inspector, params }
 
     return (
         <ShellRoot header={header} subnav={subnav} inspector={inspector} iconRailGroups={iconRailGroups}>
+            <ActiveOrgSync clerkOrgId={shop.clerkOrgId ?? null} />
             {children}
         </ShellRoot>
     );

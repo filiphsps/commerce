@@ -42,18 +42,29 @@ export async function checkDomainAvailability(domain: string): Promise<{ availab
 
 /**
  * Creates a new shop from the wizard payload in one atomic `Shop.create` (→ `db/shop_write:upsertShop`)
- * transaction: the shop row, the shredded secret credentials, the `shopDomains` routing row, and the
- * creator's `['admin']` collaborator membership. On success it revalidates the shop overview and
- * redirects to the new shop's Domain settings screen so the operator can connect DNS; on a seam
- * failure it returns the error for the review step to show.
+ * transaction: the shop row (stamped with the operator's ACTIVE Clerk org as its owner), the shredded
+ * secret credentials, the `shopDomains` routing row, and the creator's `['admin']` collaborator
+ * membership. The org membership + webhook projection fan `['admin']` out to every org member. On
+ * success it revalidates the shop overview and redirects to the new shop's Domain settings screen so
+ * the operator can connect DNS; on a seam failure it returns the error for the review step to show.
+ *
+ * With no active Clerk org there is no owning team to attach the storefront to, so the operator is
+ * redirected to `/onboarding` to create one first.
  *
  * @param input - The collected name, domain, locale, provider connection, and optional branding.
  * @returns `{ ok: false, error }` on failure; never resolves on success (it redirects).
  */
 export async function createShop(input: CreateShopInput): Promise<CreateShopResult> {
-    const { userId: clerkUserId } = await auth();
+    const { userId: clerkUserId, orgId } = await auth();
     if (!clerkUserId) {
         return { ok: false, error: 'You must be signed in to create a shop.' };
+    }
+
+    // A storefront is created UNDER the operator's active Clerk org (it owns the shop and grants
+    // `['admin']` to every org member via the webhook projection). With no active org there is no owner
+    // to attach, so send the operator through onboarding to create one first.
+    if (!orgId) {
+        redirect('/onboarding/' as Route);
     }
 
     // The shop's creator collaborator is keyed on the platform `users.id`, not the Clerk subject.
@@ -140,6 +151,7 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
         const shop = await Shop.create({
             name,
             domain,
+            clerkOrgId: orgId,
             i18n: { defaultLocale: locale },
             design: {
                 header: { logo: { ...DEFAULT_SHOP_LOGO, alt: `${name} logo` } },

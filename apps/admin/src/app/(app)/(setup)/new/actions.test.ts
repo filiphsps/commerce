@@ -35,8 +35,9 @@ vi.mock('@nordcom/commerce-errors', () => ({ Error: { isNotFound: mockIsNotFound
 import { checkDomainAvailability, createShop } from './actions';
 
 beforeEach(() => {
-    // Signed-in Clerk operator → resolves to the platform `users` row keyed on the email claim.
-    mockAuth.mockResolvedValue({ userId: 'user_clerk_1' });
+    // Signed-in Clerk operator with an active org → resolves to the platform `users` row keyed on the
+    // email claim and stamps the new shop with the active org as its owner.
+    mockAuth.mockResolvedValue({ userId: 'user_clerk_1', orgId: 'org_active_1' });
     mockCurrentUser.mockResolvedValue({ primaryEmailAddress: { emailAddress: 'op@example.com' } });
     mockUserFind.mockResolvedValue({ id: 'user-1', email: 'op@example.com' });
 });
@@ -85,6 +86,7 @@ describe('createShop', () => {
         const arg = mockCreate.mock.calls[0]![0];
         expect(arg.name).toBe('Acme');
         expect(arg.domain).toBe('shop.acme.com');
+        expect(arg.clerkOrgId).toBe('org_active_1');
         expect(arg.i18n).toEqual({ defaultLocale: 'en-US' });
         expect(arg.collaborators).toEqual([{ user: 'user-1', permissions: ['admin'] }]);
         expect(arg.design.accents).toEqual([]);
@@ -124,6 +126,12 @@ describe('createShop', () => {
             ok: false,
             error: 'You must be signed in to create a shop.',
         });
+    });
+
+    it('redirects to onboarding when the operator has no active org', async () => {
+        mockAuth.mockResolvedValue({ userId: 'user_clerk_1', orgId: null });
+        await expect(createShop(baseInput)).rejects.toThrow('NEXT_REDIRECT:/onboarding/');
+        expect(mockCreate).not.toHaveBeenCalled();
     });
 
     it('refuses an empty/whitespace name (defense in depth)', async () => {

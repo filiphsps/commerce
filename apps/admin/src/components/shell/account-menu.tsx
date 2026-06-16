@@ -1,68 +1,39 @@
 'use client';
 
-import { SignOutButton } from '@clerk/nextjs';
-import { DropdownMenu } from '@nordcom/nordstar';
-import { LogOut } from 'lucide-react';
-import type { Route } from 'next';
-import Link from 'next/link';
+import { UserButton } from '@clerk/nextjs';
+import { SunMoon } from 'lucide-react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
-
-export type AccountMenuUser = { name?: string; email?: string; image?: string; role: string };
-
-export type AccountMenuProps = { user: AccountMenuUser };
+import { clerkAppearance } from '@/lib/clerk-appearance';
+import { useTheme } from '@/components/theme/theme-provider';
 
 /**
- * Derives two-letter initials from a user's name or email for the avatar fallback.
+ * Account control in the shell header: Clerk's `<UserButton>` themed to the admin tokens. It supplies
+ * the avatar trigger, the "Manage account" entry (navigating to the existing `/accounts/` settings
+ * page rather than opening a modal), and "Sign out" — replacing the previous bespoke avatar dropdown
+ * and its custom sign-out wiring. The post-sign-out redirect to `/auth/sign-in` is configured once on
+ * the root `<ClerkProvider afterSignOutUrl>`, so it is not repeated here.
  *
- * @param user - The account user; name is preferred over email, falls back to '?'.
- * @returns Up to two uppercase initials joined as a string.
+ * The shell's theme toggle survives the migration as a custom `<UserButton.Action>`: it flips the
+ * operator's preference through {@link useTheme} (applying it to `<html data-theme>` and mirroring the
+ * `admin-theme` cookie), the same in-place toggle the command palette exposes. Durable cross-device
+ * persistence stays the account page's job; this is the lightweight per-session control.
+ *
+ * @returns The themed Clerk user button with the theme-toggle action.
  */
-function initialsOf(user: AccountMenuUser): string {
-    const source = user.name ?? user.email ?? '?';
-    return source
-        .split(/\s+/)
-        .map((part) => part.charAt(0).toUpperCase())
-        .slice(0, 2)
-        .join('');
-}
+export function AccountMenu() {
+    const { preference, setPreference } = useTheme();
+    const nextPreference = preference === 'dark' ? 'system' : 'dark';
+    const themeLabel = nextPreference === 'dark' ? 'Switch to dark theme' : 'Switch to system theme';
 
-/**
- * Dropdown account menu in the shell header; shows the user's avatar plus an account link and a Clerk
- * sign-out action.
- *
- * @param props.user - Authenticated user whose name, email, and image are displayed.
- * @returns The account dropdown menu element.
- */
-export function AccountMenu({ user }: AccountMenuProps) {
     return (
-        <DropdownMenu modal={false}>
-            <DropdownMenu.Trigger aria-label="Account" className="flex items-center rounded-full">
-                <Avatar>
-                    {user.image ? <AvatarImage src={user.image} alt={user.name ?? user.email ?? 'Account'} /> : null}
-                    <AvatarFallback>{initialsOf(user)}</AvatarFallback>
-                </Avatar>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content align="end" className="min-w-56">
-                <DropdownMenu.Label>
-                    <div className="flex flex-col gap-0.5">
-                        <span className="font-bold text-sm uppercase tracking-wide">{user.name ?? user.email}</span>
-                        {user.email ? (
-                            <span className="font-normal text-muted-foreground text-xs normal-case">{user.email}</span>
-                        ) : null}
-                    </div>
-                </DropdownMenu.Label>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item asChild>
-                    <Link href={'/accounts' as Route}>Account</Link>
-                </DropdownMenu.Item>
-                <SignOutButton>
-                    <DropdownMenu.Item className="flex items-center gap-2">
-                        <LogOut className="size-4" />
-                        Sign out
-                    </DropdownMenu.Item>
-                </SignOutButton>
-            </DropdownMenu.Content>
-        </DropdownMenu>
+        <UserButton appearance={clerkAppearance} userProfileMode="navigation" userProfileUrl="/accounts/">
+            <UserButton.MenuItems>
+                <UserButton.Action
+                    label={themeLabel}
+                    labelIcon={<SunMoon className="size-4" />}
+                    onClick={() => setPreference(nextPreference)}
+                />
+            </UserButton.MenuItems>
+        </UserButton>
     );
 }
