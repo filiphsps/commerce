@@ -125,6 +125,38 @@ vi.mock('@nordcom/nordstar', () => {
 });
 vi.mock('@/components/cms/collection-table', () => ({ CollectionTable: vi.fn() }));
 vi.mock('@/components/shell/empty-state', () => ({ EmptyState: vi.fn() }));
+// The real WYSIWYG rich-text editor mounts a ProseMirror view happy-dom can't drive deterministically.
+// Stand it in with the same JSON-textarea contract the field's library fallback exposed, so this gate
+// keeps asserting the rich-text body round-trips form → Convex; the editor itself is covered by its own
+// unit spec and the e2e flow.
+vi.mock('@/components/cms/fields/rich-text-editor', () => ({
+    AdminRichTextEditor: ({
+        id,
+        value,
+        onChange,
+    }: {
+        id: string;
+        value: unknown;
+        onChange: (doc: unknown) => void;
+    }) => (
+        <textarea
+            id={id}
+            defaultValue={value ? JSON.stringify(value) : ''}
+            onChange={(event) => {
+                const raw = event.target.value;
+                if (raw.trim() === '') {
+                    onChange({ type: 'doc', content: [] });
+                    return;
+                }
+                try {
+                    onChange(JSON.parse(raw));
+                } catch {
+                    // Mirror the fallback: invalid JSON leaves the last good document untouched.
+                }
+            }}
+        />
+    ),
+}));
 
 // Session/Payload seams the runtime touches but this gate replaces with act-as
 // context (the authoritative enforcement is the Convex side, driven for real).

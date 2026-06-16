@@ -43,6 +43,24 @@ export async function addBlock(page: Page, path: string, type: string): Promise<
 }
 
 /**
+ * Authors plain text into the WYSIWYG rich-text editor at a dotted path, replacing any existing
+ * content. Drives the REAL Tiptap surface (the `contenteditable` inside the field shell) the way a
+ * person does — focus, select-all, delete, then type — so ProseMirror's input handling produces the
+ * document the field persists. Use this anywhere the old JSON-textarea fallback was filled directly.
+ *
+ * @param page - The Playwright page.
+ * @param path - The rich-text field's dotted form-state path (e.g. `body`, `blocks.7.body`).
+ * @param text - The plain-text body to author.
+ */
+export async function fillRichText(page: Page, path: string, text: string): Promise<void> {
+    const editor = page.locator(`[data-testid="field-${path}"] [contenteditable="true"]`).first();
+    await editor.click();
+    await editor.press('ControlOrMeta+a');
+    await editor.press('Delete');
+    await editor.pressSequentially(text);
+}
+
+/**
  * Waits for the interval autosave to QUIESCE — every pending edit round-tripped.
  *
  * "Last saved" is sticky: the toolbar sets it on the first tick and never clears it, so a bare

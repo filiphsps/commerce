@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { DOMAIN, fieldControl, waitForAutosave } from './fixtures/editor';
+import { DOMAIN, fieldControl, fillRichText, waitForAutosave } from './fixtures/editor';
 
 /**
  * The articles editor flow end to end through the REAL admin app: creation on `/new/` (the first
@@ -16,12 +16,8 @@ test.describe.configure({ mode: 'serial' });
 const RUN_TOKEN = `e2e-${Date.now()}`;
 const TITLE = `Gate article ${RUN_TOKEN}`;
 const SLUG = `gate-article-${RUN_TOKEN}`;
-
-/** The authored ProseMirror document for the localized JSON body field. */
-const PM_DOC = JSON.stringify({
-    type: 'doc',
-    content: [{ type: 'paragraph', content: [{ type: 'text', text: `Body ${RUN_TOKEN}` }] }],
-});
+/** The authored body text for the localized rich-text field. */
+const BODY = `Body ${RUN_TOKEN}`;
 
 test('creates an article on /new/, binds + autosaves, reloads, publishes, and lists it', async ({ page }) => {
     await page.goto(`/${DOMAIN}/content/articles/new/`);
@@ -44,10 +40,14 @@ test('creates an article on /new/, binds + autosaves, reloads, publishes, and li
 
     // Localized body + excerpt.
     await fieldControl(page, 'excerpt', 'textarea').fill(`Excerpt ${RUN_TOKEN}`);
-    await fieldControl(page, 'body', 'textarea').fill(PM_DOC);
+    await fillRichText(page, 'body', BODY);
     await waitForAutosave(page);
     await page.reload();
     await expect(fieldControl(page, 'excerpt', 'textarea')).toHaveValue(`Excerpt ${RUN_TOKEN}`);
+    // The authored prose round-trips: the editor re-renders the persisted ProseMirror body as text.
+    await expect(page.locator('[data-testid="field-body"] [contenteditable="true"]').first()).toContainText(BODY, {
+        timeout: 15_000,
+    });
 
     // Publish; validation passes (title + slug + author set).
     await page.getByRole('button', { name: 'Publish' }).click();

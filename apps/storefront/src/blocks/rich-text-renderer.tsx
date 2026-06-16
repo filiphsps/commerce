@@ -1,4 +1,10 @@
-import type { ProseMirrorDocument, ProseMirrorMark, ProseMirrorNode } from '@nordcom/commerce-cms/editor/richtext';
+import {
+    type LexicalDocument,
+    lexicalToProseMirror,
+    type ProseMirrorDocument,
+    type ProseMirrorMark,
+    type ProseMirrorNode,
+} from '@nordcom/commerce-cms/editor/richtext';
 import { Fragment, type JSX, type ReactNode } from 'react';
 import Link from '@/components/link';
 import type { Locale } from '@/utils/locale';
@@ -256,6 +262,30 @@ const renderBlock = (node: ProseMirrorNode, idx: number, locale: Locale): ReactN
     }
 };
 
+/**
+ * Coerces an arbitrary stored body into a renderable ProseMirror document, or `null` when it is not
+ * one. This is the frontend's hard guarantee that arbitrary JSON is NEVER rendered: only a well-formed
+ * ProseMirror `doc` (`{ type: 'doc', content: [...] }`) — or a legacy Payload/Lexical body converted
+ * through the codec — passes; anything else (a raw string, a half-migrated blob, an unconvertible
+ * Lexical node) returns `null` so the caller emits nothing instead of leaking serialized data onto the
+ * page. The Lexical leg keeps pre-migration tenants rendering real prose rather than a blank region.
+ *
+ * @param data - The body carried on the rich-text block (any shape).
+ * @returns The ProseMirror document to render, or `null` when the body is not renderable prose.
+ */
+const normalizeRichTextDocument = (data: RichTextDocument): ProseMirrorDocument | null => {
+    if (!data || typeof data !== 'object') return null;
+    if (data.type === 'doc' && Array.isArray(data.content)) return data;
+    if ('root' in data) {
+        try {
+            return lexicalToProseMirror(data as unknown as LexicalDocument);
+        } catch {
+            return null;
+        }
+    }
+    return null;
+};
+
 export type RichTextProps = {
     data: RichTextDocument;
     locale: Locale;
@@ -274,7 +304,8 @@ export type RichTextProps = {
  * @returns The rendered React node tree, or `null` for an empty document.
  */
 export const RichText = ({ data, locale }: RichTextProps): ReactNode => {
-    const content = data?.content;
+    const document = normalizeRichTextDocument(data);
+    const content = document?.content;
     if (!content || content.length === 0) return null;
     return <>{content.map((node, idx) => renderBlock(node, idx, locale))}</>;
 };
@@ -287,7 +318,7 @@ export const RichText = ({ data, locale }: RichTextProps): ReactNode => {
  * @returns `true` when the document has no content or only an empty initial paragraph.
  */
 export const isRichTextEmpty = (data: RichTextDocument): boolean => {
-    const content = data?.content;
+    const content = normalizeRichTextDocument(data)?.content;
     if (!content || content.length === 0) return true;
     // A single empty paragraph (the editor's canonical empty state — and
     // what the codec emits for an empty Lexical document) should also count

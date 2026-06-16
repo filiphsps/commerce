@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test';
 
+import { fillRichText } from './fixtures/editor';
+
 // The seeded canonical tenant (e2e/global-setup.ts). CI/staging may override.
 const DOMAIN = process.env.E2E_SHOP_DOMAIN ?? 'nordcom-demo-shop.com';
 
@@ -41,11 +43,8 @@ const TINY_PNG = Buffer.from(
     'base64',
 );
 
-/** The authored ProseMirror document for the rich-text blocks. */
-const PM_DOC = JSON.stringify({
-    type: 'doc',
-    content: [{ type: 'paragraph', content: [{ type: 'text', text: `Body ${RUN_TOKEN}` }] }],
-});
+/** The authored body text for the rich-text blocks. */
+const BODY = `Body ${RUN_TOKEN}`;
 
 /**
  * Locator for the control inside the native field shell at a dotted path.
@@ -133,14 +132,14 @@ test('authors all nine blocks (nested rich-text included), uploads media through
     // ── Columns-nested rich-text: the ProseMirror block inside the layout
     // block (the columns block's minRows-1 column row mounts automatically). ──
     await addBlock(page, 'blocks.0.columns.0.content', 'rich-text');
-    await fieldControl(page, 'blocks.0.columns.0.content.0.body', 'textarea').fill(PM_DOC);
+    await fillRichText(page, 'blocks.0.columns.0.content.0.body', `Nested ${BODY}`);
 
     // Leaf edits across the block set.
     await fieldControl(page, 'blocks.1.title', 'input').fill(`Alert ${RUN_TOKEN}`);
     await fieldControl(page, 'blocks.2.heading', 'input').fill(`Banner ${RUN_TOKEN}`);
     await fieldControl(page, 'blocks.3.handle', 'input').fill('frontpage');
     await fieldControl(page, 'blocks.4.html', 'textarea').fill(`<p>${RUN_TOKEN}</p>`);
-    await fieldControl(page, 'blocks.7.body', 'textarea').fill(PM_DOC);
+    await fillRichText(page, 'blocks.7.body', BODY);
     await fieldControl(page, 'blocks.8.title', 'input').fill(`Vendors ${RUN_TOKEN}`);
 
     // Relationship options load from the live bounded Convex list path: the

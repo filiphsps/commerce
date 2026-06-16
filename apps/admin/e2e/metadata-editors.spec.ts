@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { addBlock, DOMAIN, fieldControl, waitForAutosave } from './fixtures/editor';
+import { addBlock, DOMAIN, fieldControl, fillRichText, waitForAutosave } from './fixtures/editor';
 
 /**
  * The product- and collection-metadata editor flows end to end through the REAL admin app. Both are
@@ -17,12 +17,8 @@ test.describe.configure({ mode: 'serial' });
 /** Unique per-run marker so assertions never pass on a previous run's data. */
 const RUN_TOKEN = `e2e-${Date.now()}`;
 
-/** The authored ProseMirror document for the localized JSON description-override field. */
-const pmDoc = (label: string) =>
-    JSON.stringify({
-        type: 'doc',
-        content: [{ type: 'paragraph', content: [{ type: 'text', text: `${label} ${RUN_TOKEN}` }] }],
-    });
+/** The authored body text for the localized rich-text description-override field. */
+const overrideText = (label: string) => `${label} ${RUN_TOKEN}`;
 
 /**
  * Drives one metadata editor: opens the handle through the list form, authors the override + a block,
@@ -53,31 +49,18 @@ async function runMetadataEditor(
         await handleField.fill(handle);
     }
 
-    await fieldControl(page, 'descriptionOverride', 'textarea').fill(pmDoc(kind));
+    await fillRichText(page, 'descriptionOverride', overrideText(kind));
     if ((await page.locator('[data-testid="blocks-row-blocks"]').count()) === 0) {
         await addBlock(page, 'blocks', 'rich-text');
     }
     await waitForAutosave(page);
 
     await page.reload();
-    // The stored ProseMirror doc round-trips through the rich-text JSON fallback, which both
-    // PRETTY-PRINTS (`stringifyProseMirrorDoc`) and re-serializes with sorted object keys — so the
-    // textarea never matches the authored string verbatim. Assert structural (key-order-insensitive)
-    // equality on the PARSED documents, polling through the post-reload hydration.
-    const overrideField = fieldControl(page, 'descriptionOverride', 'textarea');
-    await expect(overrideField).toBeVisible({ timeout: 15_000 });
-    await expect
-        .poll(
-            async () => {
-                try {
-                    return JSON.parse(await overrideField.inputValue());
-                } catch {
-                    return null;
-                }
-            },
-            { timeout: 15_000 },
-        )
-        .toEqual(JSON.parse(pmDoc(kind)));
+    // The authored prose round-trips: the WYSIWYG editor re-renders the persisted ProseMirror body as
+    // text. Scope to the field shell's contenteditable and poll through the post-reload hydration.
+    const overrideEditor = page.locator('[data-testid="field-descriptionOverride"] [contenteditable="true"]').first();
+    await expect(overrideEditor).toBeVisible({ timeout: 15_000 });
+    await expect(overrideEditor).toContainText(overrideText(kind), { timeout: 15_000 });
 
     await page.getByRole('button', { name: 'Publish' }).click();
     await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);

@@ -357,4 +357,37 @@ describe('isRichTextEmpty', () => {
     it('returns false for a non-empty document', () => {
         expect(isRichTextEmpty(doc([{ type: 'paragraph', content: [{ type: 'text', text: 'real' }] }]))).toBe(false);
     });
+
+    it('treats an arbitrary (non-ProseMirror) body as empty', () => {
+        expect(isRichTextEmpty('{"some":"json"}' as unknown as RichTextDocument)).toBe(true);
+        expect(isRichTextEmpty({ foo: 'bar' } as unknown as RichTextDocument)).toBe(true);
+    });
+});
+
+describe('RichText arbitrary-JSON guard', () => {
+    it('renders nothing for a body that is not a ProseMirror document', () => {
+        // The frontend must never leak serialized data onto the page: a raw string, a stray object,
+        // or a non-`doc` node all render as nothing rather than as text.
+        expect(RichText({ data: '{"type":"doc"}' as unknown as RichTextDocument, locale })).toBeNull();
+        expect(RichText({ data: { foo: 'bar' } as unknown as RichTextDocument, locale })).toBeNull();
+        expect(
+            RichText({
+                data: { type: 'paragraph', content: [{ type: 'text', text: 'x' }] } as unknown as RichTextDocument,
+                locale,
+            }),
+        ).toBeNull();
+    });
+
+    it('converts and renders a legacy Lexical body instead of dropping it', () => {
+        const body = lexical([
+            { type: 'paragraph', children: [{ type: 'text', text: 'legacy prose' }] },
+        ]) as unknown as RichTextDocument;
+        const { container } = render(<RichText data={body} locale={locale} />);
+        expect(container.querySelector('p')?.textContent).toBe('legacy prose');
+    });
+
+    it('renders nothing for an unconvertible Lexical body rather than throwing', () => {
+        const body = lexical([{ type: 'not-a-real-node' }]) as unknown as RichTextDocument;
+        expect(RichText({ data: body, locale })).toBeNull();
+    });
 });
