@@ -1873,6 +1873,62 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  orgMemberships: {
+    document: {
+      clerkOrgId: string;
+      clerkUserId: string;
+      createdAt: number;
+      role: string;
+      user: Id<"users">;
+      _id: Id<"orgMemberships">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "clerkOrgId"
+      | "clerkUserId"
+      | "createdAt"
+      | "role"
+      | "user";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_clerk_org: ["clerkOrgId", "_creationTime"];
+      by_clerk_org_user: ["clerkOrgId", "user", "_creationTime"];
+      by_user: ["user", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  orgs: {
+    document: {
+      clerkOrgId: string;
+      createdAt: number;
+      imageUrl?: string;
+      name: string;
+      slug: string;
+      updatedAt: number;
+      _id: Id<"orgs">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "clerkOrgId"
+      | "createdAt"
+      | "imageUrl"
+      | "name"
+      | "slug"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_clerk_org: ["clerkOrgId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   users: {
     document: {
       avatar?: string;

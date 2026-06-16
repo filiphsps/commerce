@@ -7,6 +7,7 @@ import { cmsMediaTables } from './cms_media';
 import { cmsRichTextTables } from './cms_prosemirror';
 import { cmsReadShadowTables } from './cms_read_shadow';
 import { cmsVersionTables } from './cmsVersions';
+import { orgTables } from './orgs';
 import { reconciliationTables } from './reconciliation';
 import { revalidationTables } from './revalidation';
 import { reviewsTables } from './reviews';
@@ -58,6 +59,11 @@ import { shopTables } from './shops';
  * string tenant id the storefront holds — like `revalidationTables`, it belongs here and never joins
  * the `v.id('shops')`-keyed tenant tier.
  *
+ * `orgTables` (the Clerk-auth-migration org mirror, `orgs` + `orgMemberships`) is platform-global:
+ * Clerk owns organizations and memberships, and the webhook handler keeps these read-mirrors current.
+ * They key on Clerk `org_…`/`user_…` strings and a `v.id('users')` link, never on `v.id('shops')`, so
+ * they sit in this core slot above the tenant tier.
+ *
  * `reconciliationTables` (the PIPELINE-04 migration parity ledger, `reconciliationLedger`) is
  * platform-global migration infrastructure written only by the system tier (`convex/reconcile.ts`),
  * keyed on an opaque run id — like the other ledgers above, it belongs in this core slot and stays
@@ -70,6 +76,7 @@ export const coreTables: Record<string, TableDefinition> = {
     ...cmsReadShadowTables,
     ...cmsRichTextTables,
     ...cmsVersionTables,
+    ...orgTables,
     ...reconciliationTables,
     ...revalidationTables,
     ...reviewsTables,
