@@ -226,6 +226,18 @@ export type CollectionBlockNode = {
     /** Surface treatment. `dark` wraps the grid in the themeable `--section-dark-bg` surface and
      * applies `.on-dark` so card option/price ink flips to light; `light` (default) is the page bg. */
     colorScheme?: 'light' | 'dark';
+    /**
+     * Per-instance override of the product-card presentation for the cards this block renders — the
+     * top tier of the Setting cascade (instance → per-surface → store base → preset). Authored in the
+     * block's "Card overrides" group. Each field is optional; an absent field inherits the resolved
+     * `collection`-surface card config. See ADR 0004.
+     */
+    productCard?: {
+        layout?: 'vertical' | 'horizontal';
+        chrome?: 'boxed' | 'frameless';
+        ctaPlacement?: 'float-pill' | 'inline-button';
+        pickerPresentation?: 'auto' | 'float' | 'sheet' | 'inline';
+    };
 };
 
 /**
