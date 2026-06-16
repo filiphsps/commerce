@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { AggregatorEngine } from '@/core/engine';
-import { buildTools } from '@/mcp/server';
+import { buildMcpServer, buildTools } from '@/mcp/server';
 
 const fakeEngine = {
     findSymbol: async () => [
@@ -30,5 +30,19 @@ describe('buildTools', () => {
         const tool = buildTools(fakeEngine).find((t) => t.name === 'find_references');
         const res = await tool?.handler({ query: 'Nope' });
         expect(res?.content[0]?.text).toContain('No references');
+    });
+
+    it('find_implementations handler reports none found', async () => {
+        const tool = buildTools(fakeEngine).find((t) => t.name === 'find_implementations');
+        const res = await tool?.handler({ query: 'Nope' });
+        expect(res?.content[0]?.text).toContain('No implementations');
+    });
+});
+
+describe('buildMcpServer', () => {
+    it('builds an MCP server with the tools registered', () => {
+        const server = buildMcpServer(fakeEngine);
+        expect(server).toBeDefined();
+        expect(typeof server.connect).toBe('function');
     });
 });

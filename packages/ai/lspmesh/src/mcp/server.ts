@@ -69,9 +69,12 @@ export const buildMcpServer = (engine: AggregatorEngine): McpServer => {
     return server;
 };
 
+/* v8 ignore start -- thin stdio transport bootstrap; buildMcpServer (the tool
+   wiring) is unit-tested and the server runs end to end in the integration suite. */
 /** Start the MCP server over stdio. */
 export const startMcpServer = async (engine: AggregatorEngine): Promise<void> => {
     const { StdioServerTransport } = await import('@modelcontextprotocol/sdk/server/stdio.js');
     const server = buildMcpServer(engine);
     await server.connect(new StdioServerTransport());
 };
+/* v8 ignore stop */
