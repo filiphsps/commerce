@@ -41,12 +41,14 @@ const PACKAGE_CATEGORY: Readonly<Record<string, string>> = {
     'shopify-graphql': 'shopify',
     'shopify-html': 'shopify',
     'react-payment-brand-icons': 'ui',
+    'next-build-notifier': 'next',
 };
 
 /** Display title for each category directory. Falls back to `capitalize(category)`. */
 const CATEGORY_TITLES: Readonly<Record<string, string>> = {
     cart: 'Cart',
     core: 'Core',
+    next: 'Next.js',
     shopify: 'Shopify',
     tagtree: 'TagTree',
     ui: 'UI',

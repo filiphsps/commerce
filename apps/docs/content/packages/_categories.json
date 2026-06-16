@@ -18,6 +18,11 @@
         "order": 3,
         "packages": ["tagtree/core", "tagtree/next", "tagtree/shopify"]
     },
+    "next": {
+        "title": "Next.js",
+        "order": 5,
+        "packages": ["next-build-notifier"]
+    },
     "ui": {
         "title": "UI",
         "order": 4,
