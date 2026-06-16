@@ -50,5 +50,15 @@ export const clerkAppearance: Appearance = {
         socialButtonsIconButton: 'border-3 border-border border-solid size-12 rounded-lg hover:border-primary',
         formFieldInput: 'border-3 border-border border-solid rounded-lg bg-background/40 h-12',
         dividerLine: 'bg-border',
+        // The UserButton/OrganizationSwitcher popovers render in a portal where Clerk's
+        // `colorForeground` variable does not reach the action rows, so their labels (Manage account,
+        // Sign out, the custom theme toggle) fall back to Clerk's light-theme near-black text and turn
+        // invisible on the dark popover. Pin the action button — and its currentColor icon — to the
+        // admin foreground token. `userButtonPopoverActionButtonText` is gone since Clerk core-2 (the
+        // label renders directly inside the button), so the color must live on the button itself.
+        userButtonPopoverActionButton: 'text-foreground',
+        userButtonPopoverActionButtonIcon: 'text-foreground',
+        organizationSwitcherPopoverActionButton: 'text-foreground',
+        organizationSwitcherPopoverActionButtonIcon: 'text-foreground',
     },
 };
