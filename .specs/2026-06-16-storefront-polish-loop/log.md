@@ -146,10 +146,17 @@ Guiding principles (from the task + repo design system):
 The storefront is now free of hard-coded `text-/border-black` ink on themeable surfaces (only
 translucent `bg-black/NN` scrims remain, by design).
 
+### 12 — Ratchet the gate against bare black ink
+
+- Found one straggler the earlier sweeps missed — the empty-state cart button (`cart-button.tsx`)
+  still used `text-black`; switched it to `text-(color:var(--text))`.
+- Added `text-black` and `border-black` to the design-tokens gate's banned utilities, with a `(?!\/)`
+  lookahead so the intentional translucent `bg-black/40` scrims and `border-black/[0.06]` hairlines
+  stay exempt. The ratchet now prevents bare black ink on a themeable surface from creeping back.
+- Verified: biome clean, typecheck clean, gate 22/22 (zero violations), cart-button 5/5.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- Consider adding a `text-black` / `border-black` rule (bare, non-`/opacity`) to the design-tokens
-  gate so the ink-on-themeable-surface regression can't creep back.
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
   /products, collections, and search as the shared faceted aside (per the overhaul spec).
 - Localize the literal `aria-label="Close"` / `title="Close"` on the popover and picker-sheet.
