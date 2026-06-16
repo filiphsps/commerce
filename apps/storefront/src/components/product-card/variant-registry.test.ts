@@ -59,4 +59,26 @@ describe('tenant-aware product-card variant resolution', () => {
             expect(resolveProductCardSurface('search', { ctaPlacement: undefined })).toEqual(SURFACE_PRESETS.search);
         });
     });
+
+    describe('store-wide base tier', () => {
+        it('applies the store-wide base to a surface with no per-surface override', () => {
+            const resolved = resolveProductCardSurface('collection', undefined, { layout: 'horizontal' });
+            expect(resolved.layout).toBe('horizontal');
+            // Unset base fields still fall through to the surface preset.
+            expect(resolved.chrome).toBe(SURFACE_PRESETS.collection.chrome);
+        });
+
+        it('lets a per-surface override beat the store-wide base', () => {
+            const resolved = resolveProductCardSurface('collection', { layout: 'vertical' }, { layout: 'horizontal' });
+            expect(resolved.layout).toBe('vertical');
+        });
+
+        it('lets the store-wide base override the platform surface preset', () => {
+            // The search preset CTA is float-pill; a store-wide base value must reach it.
+            expect(SURFACE_PRESETS.search.ctaPlacement).toBe('float-pill');
+            expect(resolveProductCardSurface('search', undefined, { ctaPlacement: 'inline-button' }).ctaPlacement).toBe(
+                'inline-button',
+            );
+        });
+    });
 });

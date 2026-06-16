@@ -23,9 +23,10 @@ export function ResolvedExtensionsApi({ shop }: { shop: OnlineShop }): ResolvedE
 }
 
 /**
- * Resolves the effective product-card surface configuration for a shop, layering the store-default
- * variant selection (`extensions.productCard[surface]`) over the surface preset over the built-in
- * fallback. An absent selection resolves byte-identically to the current preset. The variant
+ * Resolves the effective product-card surface configuration for a shop, layering the per-surface
+ * store selection (`extensions.productCard[surface]`) over the store-wide `base`
+ * (`extensions.productCard.base`, applied to every surface) over the surface preset over the built-in
+ * fallback. An absent selection and base resolve byte-identically to the current preset. The variant
  * selection's open `string` names are narrowed to the surface-override shape — the
  * component-settings registry constrains the authored values to valid built-ins, and the
  * storefront variant registries degrade gracefully on any unknown name.
@@ -35,6 +36,8 @@ export function ResolvedExtensionsApi({ shop }: { shop: OnlineShop }): ResolvedE
  * @returns The fully-resolved surface configuration.
  */
 export function productCardSurfaceForShop(shop: OnlineShop, surface: string): ProductCardSurfacePreset {
-    const selection = ResolvedExtensionsApi({ shop }).productCard[surface] as ProductCardSurfaceOverride | undefined;
-    return resolveProductCardSurface(surface, selection);
+    const resolved = ResolvedExtensionsApi({ shop }).productCard;
+    const selection = resolved[surface] as ProductCardSurfaceOverride | undefined;
+    const base = resolved.base as ProductCardSurfaceOverride | undefined;
+    return resolveProductCardSurface(surface, selection, base);
 }
