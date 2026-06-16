@@ -8,7 +8,10 @@ describe('component settings registry', () => {
         const cta = pc?.settings.find((field) => field.name === 'ctaPlacement');
         expect(cta?.type).toBe('overridable');
         expect(cta?.field.type).toBe('select');
-        expect(cta?.inheritedSourceLabel).toBe('Platform default');
+        // productCard is multi-scope (store-wide `base` + per-surface), so the inherit label must NOT
+        // hardcode a single source: "Platform default" would lie in a surface scope that actually
+        // inherits the `base` value. Left generic ("Inherited"). See docs/adr/0004.
+        expect(cta?.inheritedSourceLabel).toBeUndefined();
     });
 
     it('exposes every setting as an overridable descriptor', () => {

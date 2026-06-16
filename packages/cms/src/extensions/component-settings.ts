@@ -33,7 +33,6 @@ const productCardSettings: OverridableFieldDescriptor[] = [
                 { label: 'Inline button', value: 'inline-button' },
             ],
         }),
-        { inheritedSourceLabel: 'Platform default' },
     ),
     overridable(
         selectField({
@@ -44,7 +43,6 @@ const productCardSettings: OverridableFieldDescriptor[] = [
                 { label: 'Horizontal', value: 'horizontal' },
             ],
         }),
-        { inheritedSourceLabel: 'Platform default' },
     ),
     overridable(
         selectField({
@@ -55,7 +53,6 @@ const productCardSettings: OverridableFieldDescriptor[] = [
                 { label: 'Frameless', value: 'frameless' },
             ],
         }),
-        { inheritedSourceLabel: 'Platform default' },
     ),
     overridable(
         selectField({
@@ -68,7 +65,6 @@ const productCardSettings: OverridableFieldDescriptor[] = [
                 { label: 'Inline', value: 'inline' },
             ],
         }),
-        { inheritedSourceLabel: 'Platform default' },
     ),
 ];
 
