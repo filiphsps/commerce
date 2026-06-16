@@ -31,7 +31,7 @@
         "graphql:schema": "tsx ./scripts/copy-schema.ts",
         "graphql:gen": "pnpm graphql:schema && gql.tada generate-output",
         "graphql:check": "gql.tada check",
-        "test": "vitest run",
+        "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
         "typecheck": "tsc -noEmit"
     },
     "author": {

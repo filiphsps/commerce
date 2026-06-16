@@ -1,6 +1,7 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
+import { coverageExclude } from './vitest.shared';
 
 const isGitHubActions = process.env.GITHUB_ACTIONS && process.env.GITHUB_ACTIONS === 'true';
 const isCI = process.env.CI && process.env.CI === 'true';
@@ -29,8 +30,6 @@ const exclude = [
     'vitest.config.ts',
     'vitest.workspace.ts',
 ];
-
-const coverageExclude = [...exclude, '**/scripts/**', 'scripts/**'];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -76,24 +75,9 @@ export default defineConfig({
             reportsDirectory,
             reporter: ['json', 'json-summary', ...(isCI || isGitHubActions ? [] : ['text']), 'text-summary'],
             reportOnFailure: true,
-            // Per-glob regression floors. Spec target is 80% storefront / 60% admin lines.
-            // Current achieved levels (after Wave 2): storefront ~73% lines, admin ~67% lines.
-            // The floors below act as anti-regression gates; raise toward the spec target
-            // as additional tests land.
-            thresholds: {
-                'apps/storefront/src/**': {
-                    lines: 65,
-                    branches: 50,
-                    functions: 75,
-                    statements: 60,
-                },
-                'apps/admin/src/**': {
-                    lines: 65,
-                    branches: 45,
-                    functions: 50,
-                    statements: 65,
-                },
-            },
+            // Per-glob coverage floors live in `scripts/coverage-gate.ts` (sourced from
+            // `vitest.shared.ts`), which enforces them against the MERGED per-package shards.
+            // This root config is the legacy single-process `test:all` path and no longer gates.
         },
 
         typecheck: {

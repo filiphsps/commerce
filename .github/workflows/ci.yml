@@ -73,6 +73,9 @@ jobs:
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
+              with:
+                  # turbo --affected diffs against the merge base, so it needs full history.
+                  fetch-depth: 0
 
             - name: 🚀 Bootstrap
               id: bootstrap
@@ -88,7 +91,17 @@ jobs:
               run: pnpm run build:packages
 
             - name: ✅ Typecheck
-              run: pnpm run typecheck
+              # On PRs, typecheck only packages changed (or downstream of a change); pushes to
+              # master/staging/dev run the full set to seed the turbo cache for the next PR diff.
+              env:
+                  TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
+                  TURBO_SCM_HEAD: ${{ github.event_name == 'pull_request' && github.sha || '' }}
+              run: |
+                  if [ "${{ github.event_name }}" = "pull_request" ]; then
+                      pnpm run typecheck -- --affected
+                  else
+                      pnpm run typecheck
+                  fi
 
             - name: 💾 Save bootstrap caches
               if: always()
@@ -132,11 +145,11 @@ jobs:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
             - name: 🦺 Codecov Test Results
-              if: ${{ !cancelled() && hashFiles('junit.xml') != '' }}
+              if: ${{ !cancelled() && hashFiles('apps/*/junit.xml', 'packages/*/junit.xml', 'packages/*/*/junit.xml') != '' }}
               uses: codecov/codecov-action@v6
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
-                  files: ./junit.xml
+                  files: ./apps/*/junit.xml,./packages/*/junit.xml,./packages/*/*/junit.xml
                   report_type: test_results
                   flags: unit
 
@@ -146,6 +159,7 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
+                  save-turbo: 'true'
 
     build:
         name: 🔨 Build
@@ -318,15 +332,55 @@ jobs:
                   convex-backend-cache-hit: ${{ steps.bootstrap.outputs.convex-backend-cache-hit }}
                   save-convex-backend: 'true'
 
+    changes:
+        name: 🔎 Detect app changes
+        timeout-minutes: 5
+        runs-on: ubuntu-latest
+        outputs:
+            apps: ${{ steps.apps.outputs.apps }}
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
+
+            - name: 🔎 Filter
+              id: filter
+              uses: dorny/paths-filter@v3
+              with:
+                  filters: |
+                      storefront:
+                          - 'apps/storefront/**'
+                          - 'packages/**'
+                          - 'pnpm-lock.yaml'
+                      admin:
+                          - 'apps/admin/**'
+                          - 'packages/**'
+                          - 'pnpm-lock.yaml'
+
+            - name: 🧮 Build app matrix
+              id: apps
+              # Non-PR events (master/staging/dev pushes) always run both apps. On PRs, run only the
+              # apps whose own code or any shared package changed (a shared-package change runs both).
+              run: |
+                  if [ "${{ github.event_name }}" != "pull_request" ]; then
+                      echo 'apps=["storefront","admin"]' >> "$GITHUB_OUTPUT"
+                      exit 0
+                  fi
+                  apps=()
+                  [ "${{ steps.filter.outputs.storefront }}" = "true" ] && apps+=('"storefront"')
+                  [ "${{ steps.filter.outputs.admin }}" = "true" ] && apps+=('"admin"')
+                  joined=$(IFS=,; echo "${apps[*]}")
+                  echo "apps=[${joined}]" >> "$GITHUB_OUTPUT"
+
     e2e:
         name: 🎭 E2E
-        needs: build
+        needs: [build, changes]
+        if: ${{ needs.changes.outputs.apps != '[]' }}
         timeout-minutes: 60
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
-                app: [storefront, admin]
+                app: ${{ fromJSON(needs.changes.outputs.apps) }}
         env:
             NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
             # Point the app + global-setup seed at the seeded local backend the composite boots.

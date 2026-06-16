@@ -139,7 +139,7 @@
                 "!**/playwright-report/**",
                 "!**/test-results/**"
             ],
-            "outputs": ["coverage/**"],
+            "outputs": ["coverage/**", "junit.xml"],
             "outputLogs": "new-only"
         },
         "test:watch": {

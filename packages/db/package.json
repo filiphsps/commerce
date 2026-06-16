@@ -33,7 +33,8 @@
         "format:lint": "biome lint --write .",
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
-        "typecheck": "tsc -noEmit"
+        "typecheck": "tsc -noEmit",
+        "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml"
     },
     "author": {
         "name": "Filiph Sandström",

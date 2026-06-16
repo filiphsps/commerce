@@ -1,11 +1,12 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
-import { defineProject } from 'vitest/config';
+import { defineConfig } from 'vitest/config';
+import { coverageExclude } from '../../vitest.shared';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default defineProject({
+export default defineConfig({
     root: resolve(__dirname),
     plugins: [react()],
     resolve: {
@@ -45,6 +46,13 @@ export default defineProject({
 
         setupFiles: [`${__dirname}/vitest.setup.ts`],
         exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', '**/utils/test/**/*.*'],
+
+        // Standalone coverage for the per-package turbo `test` task; mirrors the legacy root run.
+        coverage: {
+            provider: 'v8',
+            reporter: ['json'],
+            exclude: coverageExclude,
+        },
 
         globals: true,
         deps: {

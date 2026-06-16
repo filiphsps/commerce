@@ -32,7 +32,7 @@
         "clean": "rimraf -g dist coverage .turbo *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
         "format:check": "biome check --write --unsafe .",
-        "test": "vitest run",
+        "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
         "typecheck": "tsc -noEmit"
     },
     "devDependencies": {

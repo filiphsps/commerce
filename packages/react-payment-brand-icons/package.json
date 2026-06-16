@@ -38,7 +38,7 @@
         "icons:gen": "tsx scripts/generate.ts",
         "lint": "biome lint .",
         "svgs:prettify": "tsx scripts/prettify-source-svgs.ts",
-        "test": "vitest run",
+        "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
         "typecheck": "tsc -noEmit"
     },
     "files": [

@@ -1,11 +1,12 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
-import { defineProject } from 'vitest/config';
+import { defineConfig } from 'vitest/config';
+import { coverageExclude } from '../../vitest.shared';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default defineProject({
+export default defineConfig({
     root: resolve(__dirname),
     plugins: [react()],
     resolve: {
@@ -47,6 +48,15 @@ export default defineProject({
         // Playwright owns `e2e/**/*.spec.ts`; the e2e setup module's unit suite
         // (`e2e/global-setup.test.ts`) stays vitest-owned.
         exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', './e2e/**/*.spec.ts'],
+
+        // Standalone coverage for the per-package turbo `test` task. Exclude list mirrors the
+        // legacy root run so the merged shard keeps the same denominators; the gate
+        // (`scripts/coverage-gate.ts`) enforces the admin floor against the merged report.
+        coverage: {
+            provider: 'v8',
+            reporter: ['json'],
+            exclude: coverageExclude,
+        },
 
         globals: true,
         deps: {

@@ -110,7 +110,8 @@
         "format:check": "biome check --write --unsafe .",
         "typecheck": "tsc -noEmit",
         "cms:gen": "tsx scripts/cms-gen.ts",
-        "cms:gen:check": "tsx scripts/cms-gen-check.ts"
+        "cms:gen:check": "tsx scripts/cms-gen-check.ts",
+        "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml"
     },
     "files": [
         "dist"

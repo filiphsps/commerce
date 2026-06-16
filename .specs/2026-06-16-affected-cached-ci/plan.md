@@ -10,6 +10,22 @@
 
 ---
 
+## Implementation notes (as-built deviations from the task list below)
+
+The plan was streamlined during execution; the tasks below are the original blueprint. What actually shipped:
+
+- **24 vitest projects, not 16.** The root `projects` glob is recursive (`{apps,packages}/**`), so nested packages under `packages/ai`, `packages/cart`, and `packages/tagtree` are included. All globs (gate shard glob, CI junit globs) use recursive patterns.
+- **No per-config coverage/junit edits (Tasks 7 & 11 dropped).** Vitest's default `--coverage` already writes `coverage/coverage-final.json` per package, and junit is supplied on the CLI. So the 21 already-`defineConfig` packages needed **no** config edit — only a `test` script. Only the 3 `defineProject` apps were converted to `defineConfig` (+ a coverage `exclude` block for storefront/admin parity).
+- **Unified `test` script:** `vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml`.
+  - `--passWithNoTests` because standalone packages (e.g. `landing`) have no test files and the per-package configs don't set `passWithNoTests`.
+  - `--maxWorkers=2` to stop 24 concurrent vitest instances from oversubscribing CI cores (a single 5s test timeout on a dynamic `import()` under contention proved this is required). `--minWorkers` is **not** a valid vitest CLI flag.
+  - Both `coverage/` and `junit.xml` are already gitignored.
+- **`pnpm test` = `turbo run test --concurrency=50%` then `pnpm run test:coverage`.** 50% concurrency keeps `packages × workers ≈ cores`.
+- **`istanbul-lib-coverage` is CommonJS** — the gate default-imports it (`import libCoverage from …; const { createCoverageMap, createCoverageSummary } = libCoverage;`); named ESM imports throw under tsx.
+- **Validated:** merged coverage hit parity with the pre-change baseline — storefront 82.89/67.36/85.13/82.04 vs oracle 82.97/67.39/85.21/82.10; admin 85.24/70.66/80.56/83.38 vs oracle 85.24/70.67/80.56/83.39. Gate exits 0, "all floors met."
+
+---
+
 ## File map
 
 - Create `vitest.shared.ts` — single source for the coverage `exclude` list and the per-glob floors.
@@ -21,7 +37,9 @@
 - Modify `turbo.json` — `test` task outputs.
 - Modify `.github/workflows/ci.yml` — test job (gate), typecheck `--affected`, e2e path-filter.
 
-Packages and their current state:
+Packages and their current state (24 vitest projects — the root `projects` glob is
+`{apps,packages}/**/vitest.config.ts`, so nested packages under `packages/ai`, `packages/cart`,
+and `packages/tagtree` are included):
 
 | Package | has `test` script | config style | coverage floor |
 | --- | --- | --- | --- |
@@ -29,6 +47,11 @@ Packages and their current state:
 | apps/admin | no | defineProject | **yes** |
 | apps/landing | no | defineProject | no |
 | apps/docs | yes (`vitest run`) | defineConfig | no |
+| packages/ai/lspmesh | yes | defineConfig | no |
+| packages/cart/core | yes | defineConfig | no |
+| packages/cart/next | yes | defineConfig | no |
+| packages/cart/react | yes | defineConfig | no |
+| packages/cart/shopify | yes | defineConfig | no |
 | packages/cms | no | defineConfig | no |
 | packages/convex | yes | defineConfig | no |
 | packages/db | no | defineConfig | no |
@@ -38,11 +61,14 @@ Packages and their current state:
 | packages/react-payment-brand-icons | yes | defineConfig | no |
 | packages/shopify-graphql | yes | defineConfig | no |
 | packages/shopify-html | yes | defineConfig | no |
+| packages/tagtree/core | yes | defineConfig | no |
+| packages/tagtree/next | yes | defineConfig | no |
+| packages/tagtree/shopify | yes | defineConfig | no |
 | packages/test-convex | yes | defineConfig | no |
 | packages/test-viewport | yes | defineConfig | no |
 | packages/utils | no | defineConfig | no |
 
-Only `apps/storefront/src/**` and `apps/admin/src/**` are floor-gated, so only those two must hit coverage parity with today's run. Every package still runs with `--coverage` so its shard contributes to the merged Codecov report, but drift in a non-floored package cannot fail the gate.
+Only `apps/storefront/src/**` and `apps/admin/src/**` are floor-gated, so only those two must hit coverage parity with today's run. Every package still runs with `--coverage` so its shard contributes to the merged Codecov report, but drift in a non-floored package cannot fail the gate. The 3 `defineProject` apps are the only structural conversions; the other 21 are already `defineConfig`.
 
 ---
 

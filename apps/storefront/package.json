@@ -21,7 +21,8 @@
         "typegen": "next typegen",
         "typecheck": "tsc -noEmit",
         "test:e2e": "playwright test",
-        "analyze": "next experimental-analyze"
+        "analyze": "next experimental-analyze",
+        "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml"
     },
     "author": {
         "name": "Filiph Sandström",

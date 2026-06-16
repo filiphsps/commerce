@@ -29,7 +29,7 @@
         "format:lint": "biome lint --write .",
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
-        "test": "vitest run",
+        "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
         "typecheck": "tsc -noEmit"
     },
     "files": [

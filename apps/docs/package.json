@@ -23,7 +23,7 @@
         "format:check": "biome check --write --unsafe .",
         "typegen": "next typegen",
         "typecheck": "tsc -noEmit",
-        "test": "vitest run",
+        "test": "vitest run --coverage --passWithNoTests --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
         "test:watch": "vitest",
         "test:e2e": "playwright test --pass-with-no-tests",
         "test:links": "tsx scripts/validate-links.ts",
