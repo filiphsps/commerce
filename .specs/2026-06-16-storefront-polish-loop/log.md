@@ -243,6 +243,18 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   active marker).
 - Verified: biome clean, typecheck clean, product-gallery 6/6.
 
+### 20 — Quantity stepper: group the controls in a labeled fieldset
+
+- Completes the iter-5 deferral. The stepper wrapper was a bare `<section>`; the decrease/input/increase
+  controls weren't grouped, so assistive tech announced three loose controls. Converted to a
+  `<fieldset aria-label={t('quantity')}>` (the element biome's `useSemanticElements` endorses for the
+  group role) with an `m-0 min-w-0` reset so the UA fieldset margin / `min-inline-size: min-content`
+  don't break the flex cart-line layout. Prop type switched to `HTMLProps<HTMLFieldSetElement>`.
+- The group and the inner number input share the "quantity" name (group + spinbutton) — updated the
+  one test that used an ambiguous `getByLabelText` to query the spinbutton by role; restored the group
+  test.
+- Verified: biome clean, typecheck clean, quantity-selector 10/10, cart-line 11/11, add-to-cart 6/6.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Remaining literal `aria-label="Close"` in `product-options/primitives/overlay` (deep primitive, no
