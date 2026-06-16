@@ -23,7 +23,7 @@ export const COLLECTION_QUERY = graphql(
             image {
                 id
                 altText
-                url
+                url(transform: { preferredContentType: WEBP })
                 height
                 width
                 thumbhash
@@ -127,7 +127,7 @@ export const COLLECTIONS_PAGINATION_QUERY = graphql(`
                     image {
                         id
                         altText
-                        url
+                        url(transform: { preferredContentType: WEBP })
                         height
                         width
                         thumbhash

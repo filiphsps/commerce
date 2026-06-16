@@ -25,7 +25,8 @@ export type ProductGalleryLightboxProps = {
  * magnified view, clicking the surrounding area or the close control dismisses. Surface, border,
  * text, and the dark backdrop scrim resolve from P3 tokens (`--surface-*`/`--border-*`/`--text`),
  * the focus ring from the shared `focus-ring` utility, and the zoom transform is gated under
- * `motion-safe`. Imagery is unoptimized (P2-1 is off), so no blur placeholder is wired.
+ * `motion-safe`. The custom Shopify image loader serves a `sizes`-driven srcset (here `100vw` for the
+ * full-screen view); no blur placeholder is wired despite `thumbhash` being available.
  *
  * @param props.image - Image to present; `url` is the source and `altText` the accessible name.
  * @param props.open - Whether the lightbox is shown; synced to the dialog's modal state.
