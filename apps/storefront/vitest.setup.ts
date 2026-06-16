@@ -33,6 +33,8 @@ vi.mock('@/utils/build-config', () => ({
             storefront_id: 'mock-id',
         },
     },
+    // Static asset base used by the locale-flag components; a stable stub keeps flag tests renderable.
+    FLAG_IMAGES_BASE_URL: 'https://flags.test',
 }));
 
 vi.mock('@nordcom/commerce-db', async () => {

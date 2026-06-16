@@ -1,3 +1,4 @@
+import { byIso as countryLookup } from 'country-code-lookup';
 import Image from 'next/image';
 import type { ComponentProps } from 'react';
 
@@ -13,24 +14,24 @@ export type CurrentLocaleFlagProps = {
  * Flag image for the currently active locale.
  *
  * @param props.locale - Active locale whose `country` code determines the flag SVG.
- * @param props.alt - Alt text; defaults to the country code.
+ * @param props.alt - Explicit alt text; defaults to the full country name (then the ISO code).
  * @param props.className - Additional CSS class names.
  * @returns The flag image element.
  */
-export const CurrentLocaleFlag = ({
-    locale,
-    className,
-    width,
-    height,
-    alt = locale.country,
-    ...props
-}: CurrentLocaleFlagProps) => {
+export const CurrentLocaleFlag = ({ locale, className, width, height, alt, ...props }: CurrentLocaleFlagProps) => {
+    let info: ReturnType<typeof countryLookup> | null = null;
+    try {
+        info = countryLookup(locale.country!);
+    } catch {}
+
+    const accessibleName = alt || info?.country || locale.country || 'Locale flag';
+
     return (
         <Image
             {...props}
             className={cn('aspect-[3/2] h-full max-h-8 w-auto overflow-hidden object-contain object-center', className)}
-            alt={alt!}
-            aria-label={alt}
+            alt={accessibleName}
+            aria-label={accessibleName}
             width={width || '24'}
             height={height || '16'}
             priority={false}
