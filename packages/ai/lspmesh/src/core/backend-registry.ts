@@ -1,6 +1,6 @@
-import type { BackendConfig, LspMeshConfig } from '../config/types.js';
-import { BackendClient } from './backend-client.js';
-import { matchesBackend } from './routing.js';
+import type { BackendConfig, LspMeshConfig } from '@/config/types';
+import { BackendClient } from '@/core/backend-client';
+import { matchesBackend } from '@/core/routing';
 
 /** Owns one {@link BackendClient} per configured backend, respawning dead ones lazily. */
 export class BackendRegistry {

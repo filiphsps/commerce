@@ -1,6 +1,6 @@
 import { extname } from 'node:path';
 
-import type { BackendConfig } from '../config/types.js';
+import type { BackendConfig } from '@/config/types';
 
 /** Lowercased file extension including the dot, e.g. `/a/B.TSX` → `.tsx`. */
 export const extnameLower = (path: string): string => extname(path).toLowerCase();

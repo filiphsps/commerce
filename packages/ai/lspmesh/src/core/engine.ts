@@ -1,12 +1,12 @@
 import type { Location } from 'vscode-languageserver-protocol';
 
-import type { LspMeshConfig } from '../config/types.js';
-import { BackendRegistry } from './backend-registry.js';
-import { isDefinitionSnippet } from './definitions.js';
-import { gitGrepFiles } from './git-grep.js';
-import { relPath, snippet, uriToPath } from './locations.js';
-import { mergeLocations } from './merge.js';
-import { orderSeedFiles } from './seed.js';
+import type { LspMeshConfig } from '@/config/types';
+import { BackendRegistry } from '@/core/backend-registry';
+import { isDefinitionSnippet } from '@/core/definitions';
+import { gitGrepFiles } from '@/core/git-grep';
+import { relPath, snippet, uriToPath } from '@/core/locations';
+import { mergeLocations } from '@/core/merge';
+import { orderSeedFiles } from '@/core/seed';
 
 /** A symbol definition surfaced by `workspace/symbol`. */
 export interface SymbolResult {

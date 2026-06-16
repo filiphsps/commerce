@@ -8,8 +8,8 @@ import {
     StreamMessageWriter,
 } from 'vscode-jsonrpc/node';
 
-import type { BackendConfig } from '../config/types.js';
-import { languageIdFor, matchesBackend } from './routing.js';
+import type { BackendConfig } from '@/config/types';
+import { languageIdFor, matchesBackend } from '@/core/routing';
 
 const DEFAULT_TIMEOUT = 45_000;
 

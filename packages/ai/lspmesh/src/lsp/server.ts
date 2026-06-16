@@ -12,8 +12,8 @@ import {
     TextDocumentSyncKind,
 } from 'vscode-languageserver/node';
 
-import { loadConfig } from '../config/load-config.js';
-import { AggregatorEngine } from '../core/engine.js';
+import { loadConfig } from '@/config/load-config';
+import { AggregatorEngine } from '@/core/engine';
 
 /**
  * Start the lspmesh LSP server over stdio. It advertises the Claude Code op set,
@@ -21,9 +21,9 @@ import { AggregatorEngine } from '../core/engine.js';
  * `workspace/symbol` across all backends, and forwards document- and item-shaped
  * ops (documentSymbol, call hierarchy) to the backends that own the file.
  */
-export const startLspServer = (): void => {
+export const startLspServer = (root?: string): void => {
     const connection = createConnection(ProposedFeatures.all);
-    const config = loadConfig();
+    const config = loadConfig(root);
     const engine = new AggregatorEngine(config);
 
     connection.onInitialize(async (): Promise<InitializeResult> => {

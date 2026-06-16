@@ -2,8 +2,8 @@ import { fileURLToPath } from 'node:url';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import type { LspMeshConfig } from '../config/types.js';
-import { BackendRegistry } from './backend-registry.js';
+import type { LspMeshConfig } from '@/config/types';
+import { BackendRegistry } from '@/core/backend-registry';
 
 const PKG_DIR = fileURLToPath(new URL('../../', import.meta.url));
 const FIXTURE = fileURLToPath(new URL('../../tests/fixtures/echo-lsp-server.ts', import.meta.url));
