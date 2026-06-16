@@ -377,6 +377,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   added an assertion.
 - Verified: biome clean, typecheck clean, header-account-section 6/6.
 
+### 33 — Tokenize the media-grid icon tiles (shrink the color gate)
+
+- The CMS media-grid's icon tiles hard-coded `bg-gray-50` / `hover:bg-gray-100` (live + skeleton) — a
+  deferred CMS-block color migration the design-tokens gate allowlisted. No tenant theme could recolor
+  the tile surface.
+- Migrated to `bg-(--surface-2)` / `hover:bg-(--surface-1)` (a subtle darken matching the original
+  gray-50→gray-100) and removed `blocks/media-grid.tsx` from the gate allowlist — the ratchet shrinks,
+  and the stale-entry test confirms the file is now clean.
+- Verified: biome clean, typecheck clean, design-tokens gate 22/22.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
