@@ -15,7 +15,7 @@ The raw `Host` (or `x-forwarded-host`) header on an inbound request. Pre-resolut
 _Avoid_: domain (ambiguous — see flagged ambiguities), URL host
 
 **Shop domain**:
-A **Shop**'s canonical primary hostname, unique across the platform. Internal rewrites use this, never the raw **Hostname**.
+A **Shop**'s canonical primary hostname, unique across the platform. Internal rewrites use this, never the raw **Hostname**. Uniqueness is a write-time first-claim invariant (Convex indexes aren't unique) — a contested primary fails the shop write; a contested **Alternative domain** is skipped but surfaced, never silently dropped. A connected domain carries an informational **Domain verification** status.
 _Avoid_: shop URL, shop host, primary URL
 
 **Alternative domain**:
@@ -25,6 +25,10 @@ _Avoid_: alias, mirror domain
 **Service domain**:
 The global fallback host where status pages live. Not tenant-scoped; used when shop resolution fails.
 _Avoid_: status domain, error host
+
+**Domain verification**:
+A post-create, informational check that a connected **Shop domain** or **Alternative domain** actually points at the platform — at the storefront's Vercel project (provisioned via the Vercel API when admin holds creds) or, as a fallback, at the **Service domain** via a DNS-over-HTTPS check; `*.localhost` auto-verifies. Flips the domain's routing-row status `pending → verified | failed`; legacy rows (no status) read as `verified` (no migration). NEVER gates routing — hostname resolution ignores status, so verification is operator-facing reassurance only. Proves platform *connectivity*, not per-shop *ownership*, so it does not arbitrate contested claims — ownership is first-claim, and a never-verified claim is reclaimable.
+_Avoid_: domain validation, DNS check, domain activation
 
 ### Locales
 
@@ -89,9 +93,21 @@ _Avoid_: data loader, content loader
 An optional, declarative per-**Shop** config (`ShopExtensionManifest`, `@nordcom/commerce-cms/extensions`) that UNIFIES — never forks — the per-shop surfaces `resolveExtensions` composes: theme tokens (`resolveTheme`), chrome slot order (`resolveChromeLayout`), section visibility, available **Block** types (`BLOCK_TYPES` / `isBlockType`), and a **Component setting** registry of store-wide defaults (product-card variant selections, per-block defaults, and the build-notifier banner config). The registry is extensible — a new configurable component appends a `COMPONENT_SETTINGS` entry plus a `ResolvedExtensions` field, not a new manifest concept; don't hard-count the surfaces. CMS-safe — the type and its pure `resolveExtensions` composer import only the db theme leaf, the errors package, and CMS-internal schemas; never React, Shopify, the **Storefront**, or a **Provider token** — so the **Block loader** firewall holds. An absent or empty manifest composes byte-identically to today's render.
 _Avoid_: theme config, shop settings, plugin manifest
 
+**Theme token**:
+A per-**Shop** scalar *styling* value the browser applies through a CSS custom property — color, size, radius, spacing (e.g. the `cartLine` group: `imageSize`, `imageRadius`, `gap`, `paddingY`, `dividerColor`). Resolved by `resolveTheme` (`ResolvedShopTheme` over `THEME_DEFAULTS`) and edited in the Customization hub's Theme tab; cascades platform-default → per-**Shop** only (no per-**Surface** or per-instance tiers). Distinct from a **Component setting**: a token is *styling*; a setting is a structural/behavioral choice. New-knob rule: a style value → **Theme token**; a placement / visibility / variant / feature choice → **Component setting** (even when it looks visual — `layout`, `chrome` are discrete variants code branches on, not scalars CSS consumes).
+_Avoid_: theme variable, style setting
+
 **Component setting**:
-A per-**Shop** store-wide default for one configurable **Storefront** component, declared as a `COMPONENT_SETTINGS` entry (`@nordcom/commerce-cms/extensions`) and folded into `ResolvedExtensions` by `resolveExtensions`. Each setting is `overridable` — the editor renders an inherit/override control and the stored value omits inherited keys (the cascade falls through to a platform or localized default). Today: the **Product card** and the build-notifier banner. NOT a **Feature flag** — it carries no global `key` or `targeting[]`; it is per-shop presentation config layered over a default, not a globally-targeted toggle.
+A per-**Shop** default for one configurable **Storefront** component, resolved through the **Setting cascade**. Declared as a `COMPONENT_SETTINGS` entry (`@nordcom/commerce-cms/extensions`) and folded into `ResolvedExtensions` by `resolveExtensions`. Each setting is `overridable` — the editor renders an inherit/override control and the stored value omits inherited keys (absence = inherit). A multi-surface component (the **Product card**) carries a store-wide `base` plus optional per-**Surface** overrides; a single-surface component (the build-notifier banner) is store-wide only. NOT a **Feature flag** — it carries no global `key` or `targeting[]`; it is per-shop config layered over a default, not a globally-targeted toggle.
 _Avoid_: feature flag, shop setting, component config, plugin setting
+
+**Setting cascade**:
+The per-key, last-write-wins resolution of a **Component setting** or **Block** setting across tiers, lowest → highest: **platform default** (built-in baseline; for a multi-surface component this includes the per-**Surface** presets, `SURFACE_PRESETS`) → **store-wide default** (one value across every **Surface** — the manifest `base` bucket) → **per-surface override** (one **Surface**: `collection` / `search` / `recommendation`) → **per-instance override** (one **Block** on one page, stored in the page document). Each tier contributes only the keys it sets; an absent key inherits the next tier down. A store-wide value overrides the platform's per-**Surface** presets — so "change every card at once" reaches all surfaces — and the per-surface / per-instance tiers carve out exceptions. Single-surface components and **Block** defaults skip the per-surface tier.
+_Avoid_: override chain, inheritance waterfall, defaults stack
+
+**Surface**:
+A usage context a multi-presentation component renders in — for the **Product card**: `collection`, `search`, `recommendation`. The unit the **Setting cascade**'s per-surface tier and `SURFACE_PRESETS` key on. Distinct from a **Surface wrapper** (the React component composing the card for one Surface).
+_Avoid_: context, variant, placement
 
 **Extension code sandbox** (deferred):
 The future, separate security project that would load and execute untrusted third-party extension code or remote assets at runtime, layered atop the **Block loader** firewall. NOT built today: the **Shop extension manifest** is data-only, and component registration happens via statically-imported, in-repo `register*` entrypoints on the **Storefront** side (`registerProductCardPicker` / `registerProductCardCta`, surfaced by `registerExtensionComponents`). **Block** and chrome dispatch are compile-time-exhaustive records with no runtime register API.
