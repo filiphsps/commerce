@@ -520,6 +520,13 @@ html:root {
     --border-default: #ece6d4;
     --border-strong: var(--color-block-dark);
 
+    /* Product overlay-badge fills. The vegan/sale/free-shipping badges already read tokens
+     * (--state-success / sale-stripes / --primary); these promote the last two hard-coded fills
+     * (the gift-card purple, the subscription blue) to themeable tokens so a tenant can recolor
+     * every badge. White text on both defaults clears WCAG AA (pinned in the gate). */
+    --badge-gift-card-bg: #9333ea;
+    --badge-subscription-bg: #2563eb;
+
     --state-sale: var(--color-sale);
     --state-danger: var(--color-danger);
     --state-success: var(--color-block-success);

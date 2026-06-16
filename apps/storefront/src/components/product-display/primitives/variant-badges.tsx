@@ -76,15 +76,15 @@ const VariantBadges = ({ product, i18n, className }: VariantBadgesProps) => {
             )}
 
             {isGiftCard ? (
-                <div className={cn(COMMON_BADGE_STYLES, 'bg-purple-600 stroke-white text-white')}>
-                    <GiftIcon className="h-3 w-3 stroke-2" />
+                <div className={cn(COMMON_BADGE_STYLES, 'bg-(--badge-gift-card-bg) stroke-white text-white')}>
+                    <GiftIcon className="size-3 stroke-2" />
                     {capitalize(t('gift-card'))}
                 </div>
             ) : null}
 
             {isSubscription ? (
-                <div className={cn(COMMON_BADGE_STYLES, 'bg-blue-600 stroke-white text-white')}>
-                    <SubscriptionIcon className="h-3 w-3 stroke-2" />
+                <div className={cn(COMMON_BADGE_STYLES, 'bg-(--badge-subscription-bg) stroke-white text-white')}>
+                    <SubscriptionIcon className="size-3 stroke-2" />
                     {capitalize(t('subscription'))}
                 </div>
             ) : null}
