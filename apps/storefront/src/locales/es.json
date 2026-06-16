@@ -5,6 +5,8 @@
         "dismiss": "Descartar"
     },
     "cart": {
+        "active-discounts": "Descuentos activos",
+        "remove-discount": "Eliminar descuento {0}",
         "add-n-to-your-cart": "Agregar {0} a tu carrito",
         "away-from-free-shipping": "¡No te pierdas una gran oferta! Agrega artículos por un valor adicional de {0} a tu pedido y obtén envío completamente GRATIS, por cuenta de la casa.",
         "away-from-getting": "lejos de conseguir",

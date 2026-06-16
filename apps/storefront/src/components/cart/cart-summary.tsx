@@ -344,7 +344,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
             {cartReady && discountCodes.length > 0 ? (
                 <section className={cn(SECTION_STYLES, 'gap-2')}>
-                    <CartCoupons />
+                    <CartCoupons i18n={i18n} />
                 </section>
             ) : null}
 

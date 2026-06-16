@@ -5,17 +5,20 @@ import { Tag as TagIcon, X as XIcon } from 'lucide-react';
 import type { AppCartCaps } from '@/cart/caps';
 import { Button } from '@/components/actionable/button';
 import { Label } from '@/components/typography/label';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 /**
  * Displays active discount codes on the cart and provides a button to remove each one.
  *
+ * @param props.i18n - Locale dictionary for the heading and per-code remove labels.
  * @returns The coupon list section, or `null` when the cart is not ready or has no active discounts.
  */
-const CartCoupons = ({}) => {
+const CartCoupons = ({ i18n }: { i18n: LocaleDictionary }) => {
     const { discountCodes } = useCartMeta();
     const { cartReady } = useCartStatus();
     const { removeDiscountCode } = useCartActions<AppCartCaps>();
+    const { t } = getTranslations('cart', i18n);
 
     if (!cartReady || discountCodes.length <= 0) {
         return null;
@@ -23,7 +26,7 @@ const CartCoupons = ({}) => {
 
     return (
         <section className="flex flex-col items-start justify-start gap-2">
-            <Label>Active discounts</Label>
+            <Label>{t('active-discounts')}</Label>
 
             <div className={cn('flex flex-wrap gap-2')}>
                 {discountCodes.map(({ code }) => (
@@ -39,7 +42,8 @@ const CartCoupons = ({}) => {
                             styled={false}
                             className="contents"
                             type="button"
-                            title={`Remove promo code "${code}"`}
+                            aria-label={t('remove-discount', code)}
+                            title={t('remove-discount', code)}
                             onClick={() => {
                                 void removeDiscountCode(code);
                             }}

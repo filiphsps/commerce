@@ -5,6 +5,8 @@
         "dismiss": "Dismiss"
     },
     "cart": {
+        "active-discounts": "Active discounts",
+        "remove-discount": "Remove discount {0}",
         "add-n-to-your-cart": "Add {0} to your cart",
         "away-from-free-shipping": "Don't miss out on a great deal! Add items worth an additional {0} to your order and get completely FREE shipping, on the house.",
         "away-from-getting": "away from getting",

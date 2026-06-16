@@ -5,6 +5,8 @@
         "dismiss": "Lukk"
     },
     "cart": {
+        "active-discounts": "Aktive rabatter",
+        "remove-discount": "Fjern rabatt {0}",
         "add-n-to-your-cart": "Legg {0} til i handlekurven",
         "away-from-free-shipping": "Ikke gå glipp av et godt tilbud! Legg til varer verdt ytterligere {0} til bestillingen din og få helt GRATIS frakt.",
         "away-from-getting": "unna å få",
