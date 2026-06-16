@@ -3,7 +3,6 @@ import { ConvexError, v } from 'convex/values';
 import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ACTIVE_SHOP_CLAIM, AdminShopResolverErrorCode } from '../auth/admin_shop_resolver';
 import schema from '../schema';
 import { AuthErrorCode } from './auth';
 import { systemMutation } from './system';
@@ -27,23 +26,31 @@ const NOW = 1_700_000_000_000;
 /**
  * Seeds two fully isolated tenants through the system tier's raw `ctx.db` (the sanctioned unscoped path
  * for platform-global `users`/`shops`/`shopCollaborators`): operator A collaborating only on shop A and
- * operator B only on shop B, each shop owning exactly one pre-existing review. Returns both shop ids so
- * the cross-tenant assertions can name the foreign tenant whose rows must stay invisible.
+ * operator B only on shop B, each shop owning exactly one pre-existing review. Each shop is also wired
+ * into the Clerk-org tenancy graph `resolveShopAccess` authorizes against — its own owning `orgs` row,
+ * a `clerkOrgId` on the shop, a `shopDomains.by_domain` routing row, and an `orgMemberships` row
+ * joining the operator to the shop's owning org — so the `shopDomain`-selector path (routed domain →
+ * org membership → shop id) is exercisable end to end alongside the lone-membership fallback. Returns
+ * both shop ids and their primary domains so the assertions can name the foreign tenant whose rows must
+ * stay invisible and address each shop by its routed domain.
  *
- * @returns The two seeded `shops` ids keyed by operator.
+ * @returns The two seeded `shops` ids and primary domains keyed by operator.
  */
 const seedTenants = systemMutation({
     args: { emailA: v.string(), emailB: v.string() },
     handler: async (ctx, { emailA, emailB }) => {
         /**
-         * Inserts one operator user, one shop, a collaborator linking them, and a single owned review.
+         * Inserts one operator user, one shop (carrying its owning `clerkOrgId`), the org mirror row,
+         * a collaborator linking them, the shop's `shopDomains` routing row, the org-membership join,
+         * and a single owned review.
          *
          * @param email - The operator's email (the identity claim resolution keys on).
          * @param legacyId - The shop's legacy/source id and display name seed.
-         * @param domain - The shop's primary domain.
+         * @param domain - The shop's primary domain (its `shopDomains.by_domain` routing key).
+         * @param clerkOrgId - The shop's owning Clerk org id (also the org/membership mirror key).
          * @returns The created `shops` id.
          */
-        const seedTenant = async (email: string, legacyId: string, domain: string) => {
+        const seedTenant = async (email: string, legacyId: string, domain: string, clerkOrgId: string) => {
             const userId = await ctx.db.insert('users', {
                 email,
                 name: 'Operator',
@@ -52,10 +59,18 @@ const seedTenants = systemMutation({
                 createdAt: NOW,
                 updatedAt: NOW,
             });
+            await ctx.db.insert('orgs', {
+                clerkOrgId,
+                name: `${legacyId} Org`,
+                slug: `${legacyId}-org`,
+                createdAt: NOW,
+                updatedAt: NOW,
+            });
             const shopId = await ctx.db.insert('shops', {
                 legacyId,
                 name: legacyId,
                 domain,
+                clerkOrgId,
                 design: {
                     header: { logo: { width: 512, height: 512, src: 'https://cdn/logo.png', alt: legacyId } },
                     accents: [],
@@ -65,20 +80,32 @@ const seedTenants = systemMutation({
                 updatedAt: NOW,
             });
             await ctx.db.insert('shopCollaborators', { shop: shopId, user: userId, permissions: ['admin'] });
+            await ctx.db.insert('shopDomains', { shop: shopId, domain });
+            await ctx.db.insert('orgMemberships', {
+                clerkOrgId,
+                user: userId,
+                clerkUserId: `clerk_${email}`,
+                role: 'org:admin',
+                createdAt: NOW,
+            });
             await ctx.db.insert('reviews', { shopId, createdAt: NOW, updatedAt: NOW });
             return shopId;
         };
 
-        const shopAId = await seedTenant(emailA, 'shop_a', 'a.example.com');
-        const shopBId = await seedTenant(emailB, 'shop_b', 'b.example.com');
-        return { shopAId, shopBId };
+        const shopAId = await seedTenant(emailA, 'shop_a', 'a.example.com', 'org_a');
+        const shopBId = await seedTenant(emailB, 'shop_b', 'b.example.com', 'org_b');
+        return { shopAId, shopBId, domainA: 'a.example.com', domainB: 'b.example.com' };
     },
 });
 
 /**
- * Adds a `shopCollaborators` row linking an existing operator (by email) to an existing shop (by
- * `legacyId`), turning a single-shop fixture into the multi-shop-operator shape the active-shop
- * selection path exists for.
+ * Joins an existing operator (by email) to an existing shop (by `legacyId`) on BOTH membership planes,
+ * turning a single-shop fixture into the multi-shop-operator shape the selector path exists for: a
+ * `shopCollaborators` row (the lone-membership fallback's `AMBIGUOUS_SHOP_MEMBERSHIP` trigger) plus the
+ * `orgMemberships` join to the shop's owning `clerkOrgId` (what `resolveShopAccess` re-checks when the
+ * routed `shopDomain` selector picks that shop). Both are required so the same operator can be a true
+ * multi-ORG, multi-SHOP operator — the case the routed selector disambiguates that the org `org_id`
+ * claim alone cannot.
  */
 const linkCollaborator = systemMutation({
     args: { email: v.string(), shopLegacyId: v.string() },
@@ -95,6 +122,16 @@ const linkCollaborator = systemMutation({
             throw new ConvexError({ code: 'FIXTURE_SEED_MISSING', message: 'Seed the operator and shop first.' });
         }
         await ctx.db.insert('shopCollaborators', { shop: shop._id, user: user._id, permissions: ['admin'] });
+        const { clerkOrgId } = shop;
+        if (clerkOrgId) {
+            await ctx.db.insert('orgMemberships', {
+                clerkOrgId,
+                user: user._id,
+                clerkUserId: `clerk_${email}`,
+                role: 'org:admin',
+                createdAt: NOW,
+            });
+        }
     },
 });
 
@@ -190,45 +227,119 @@ describe('tenantQuery / tenantMutation (server-trusted shopId provenance)', () =
         expect(seenByA.reviewShopIds).toEqual([shopAId, shopAId]);
     });
 
-    it('scopes a multi-shop operator per the signed active-shop selection, refusing none and foreign', async () => {
+    it('rejects a selector-less multi-shop operator as AMBIGUOUS_SHOP_MEMBERSHIP (the fallback)', async () => {
         const t = convexTest(schema, modules);
-        const { shopAId, shopBId } = await t.mutation(seedTenantsRef, {
+        await t.mutation(seedTenantsRef, {
             emailA: 'op-a@example.com',
             emailB: 'op-b@example.com',
         });
-        // Operator A now collaborates on BOTH shops — the AMBIGUOUS_SHOP_MEMBERSHIP shape pre-selection.
+        // Operator A now collaborates on BOTH shops; with no routed `shopDomain` selector the
+        // lone-membership fallback cannot disambiguate and refuses, exactly as before — the routed
+        // selector path is what resolves this case (the `routed shopDomain selector` suite below).
         await t.mutation(linkCollaboratorRef, { email: 'op-a@example.com', shopLegacyId: 'shop_b' });
         const base = { issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' };
 
         await expect(t.withIdentity(base).query(listReviewsRef, {})).rejects.toMatchObject({
             data: { code: AuthErrorCode.AMBIGUOUS_SHOP_MEMBERSHIP },
         });
+    });
+});
 
-        const asShopA = t.withIdentity({ ...base, [ACTIVE_SHOP_CLAIM]: 'shop_a' });
-        const asShopB = t.withIdentity({ ...base, [ACTIVE_SHOP_CLAIM]: 'shop_b' });
-
-        // The SAME operator authors against shop A then shop B; each write pins to the selected
-        // tenant and stays invisible to the other scope.
-        await asShopA.mutation(addReviewRef, {});
-        const seenAsA = await asShopA.query(listReviewsRef, {});
-        expect(seenAsA.resolvedShopId).toBe(shopAId);
-        expect(seenAsA.reviewShopIds).toEqual([shopAId, shopAId]);
-
-        await asShopB.mutation(addReviewRef, {});
-        const seenAsB = await asShopB.query(listReviewsRef, {});
-        expect(seenAsB.resolvedShopId).toBe(shopBId);
-        expect(seenAsB.reviewShopIds).toEqual([shopBId, shopBId]);
-
-        // Operator B forges a claim for shop A — a real shop B does not collaborate on. The
-        // selection picks among the operator's own tenants; it can never escalate to a foreign one.
-        const asForeign = t.withIdentity({
-            issuer: CLERK_ISSUER,
-            subject: 'github|b',
-            email: 'op-b@example.com',
-            [ACTIVE_SHOP_CLAIM]: 'shop_a',
+describe('tenantQuery / tenantMutation (routed shopDomain selector)', () => {
+    it('scopes a multi-shop operator to the routed shopDomain, resolving the RIGHT shop', async () => {
+        const t = convexTest(schema, modules);
+        const { shopAId, shopBId, domainA, domainB } = await t.mutation(seedTenantsRef, {
+            emailA: 'op-a@example.com',
+            emailB: 'op-b@example.com',
         });
-        await expect(asForeign.query(listReviewsRef, {})).rejects.toMatchObject({
-            data: { code: AdminShopResolverErrorCode.ACTIVE_SHOP_FORBIDDEN },
+        // Operator A now belongs to BOTH shops' owning orgs — the multi-org, multi-shop shape the
+        // routed selector exists to disambiguate (the org `org_id` claim alone cannot, since an org
+        // owns many shops). Without a selector this same operator is AMBIGUOUS_SHOP_MEMBERSHIP.
+        await t.mutation(linkCollaboratorRef, { email: 'op-a@example.com', shopLegacyId: 'shop_b' });
+        const base = { issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' };
+
+        const seenA = await t.withIdentity(base).query(listReviewsRef, { shopDomain: domainA });
+        expect(seenA.resolvedShopId).toBe(shopAId);
+        expect(seenA.reviewShopIds).toEqual([shopAId]);
+
+        const seenB = await t.withIdentity(base).query(listReviewsRef, { shopDomain: domainB });
+        expect(seenB.resolvedShopId).toBe(shopBId);
+        expect(seenB.reviewShopIds).toEqual([shopBId]);
+    });
+
+    it('strips shopDomain from the handler args, leaving the inner validator unchanged', async () => {
+        const t = convexTest(schema, modules);
+        const { shopAId, domainA } = await t.mutation(seedTenantsRef, {
+            emailA: 'op-a@example.com',
+            emailB: 'op-b@example.com',
         });
+
+        const asOperatorA = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' });
+        // The constructor consumes `shopDomain`: the handler that reads `args.shopId` never sees it,
+        // so the echoed requestedShopId stays null even though shopDomain travelled on the wire.
+        const result = await asOperatorA.query(listReviewsRef, { shopDomain: domainA });
+
+        expect(result.resolvedShopId).toBe(shopAId);
+        expect(result.requestedShopId).toBeNull();
+    });
+
+    it('routes a write through the routed shopDomain, isolating it to that tenant', async () => {
+        const t = convexTest(schema, modules);
+        const { shopAId, shopBId, domainA, domainB } = await t.mutation(seedTenantsRef, {
+            emailA: 'op-a@example.com',
+            emailB: 'op-b@example.com',
+        });
+        await t.mutation(linkCollaboratorRef, { email: 'op-a@example.com', shopLegacyId: 'shop_b' });
+        const base = { issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' };
+
+        // The SAME operator authors under shop A (routed), and the write stays invisible to shop B.
+        await t.withIdentity(base).mutation(addReviewRef, { shopDomain: domainA });
+
+        const seenA = await t.withIdentity(base).query(listReviewsRef, { shopDomain: domainA });
+        expect(seenA.resolvedShopId).toBe(shopAId);
+        expect(seenA.reviewShopIds).toEqual([shopAId, shopAId]);
+
+        const seenB = await t.withIdentity(base).query(listReviewsRef, { shopDomain: domainB });
+        expect(seenB.resolvedShopId).toBe(shopBId);
+        expect(seenB.reviewShopIds).toEqual([shopBId]);
+    });
+
+    it('rejects a routed shopDomain whose owning org the operator does not belong to (NO_ORG_MEMBERSHIP)', async () => {
+        const t = convexTest(schema, modules);
+        const { domainB } = await t.mutation(seedTenantsRef, {
+            emailA: 'op-a@example.com',
+            emailB: 'op-b@example.com',
+        });
+
+        // Operator A is a member of shop A's org only; routing to shop B (which A's orgs do not own)
+        // is refused. The selector re-checks owning-org membership, so a spoofed domain cannot reach
+        // a foreign tenant — the org-tenancy analogue of the active-shop FORBIDDEN guard.
+        const asOperatorA = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' });
+        await expect(asOperatorA.query(listReviewsRef, { shopDomain: domainB })).rejects.toMatchObject({
+            data: { code: AuthErrorCode.NO_ORG_MEMBERSHIP },
+        });
+    });
+
+    it('rejects a routed shopDomain claimed by no shop as UNKNOWN_SHOP', async () => {
+        const t = convexTest(schema, modules);
+        await t.mutation(seedTenantsRef, { emailA: 'op-a@example.com', emailB: 'op-b@example.com' });
+
+        const asOperatorA = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' });
+        await expect(asOperatorA.query(listReviewsRef, { shopDomain: 'unclaimed.example.com' })).rejects.toMatchObject({
+            data: { code: AuthErrorCode.UNKNOWN_SHOP },
+        });
+    });
+
+    it('falls back to lone membership when no shopDomain is supplied (single-shop operator)', async () => {
+        const t = convexTest(schema, modules);
+        const { shopAId } = await t.mutation(seedTenantsRef, {
+            emailA: 'op-a@example.com',
+            emailB: 'op-b@example.com',
+        });
+
+        // No selector: a single-shop operator still resolves through the lone-membership fallback.
+        const asOperatorA = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' });
+        const result = await asOperatorA.query(listReviewsRef, {});
+        expect(result.resolvedShopId).toBe(shopAId);
     });
 });

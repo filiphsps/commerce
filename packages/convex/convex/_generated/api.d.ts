@@ -40,25 +40,25 @@ export declare const api: {
       bulkDelete: FunctionReference<
         "mutation",
         "public",
-        { documentIds: Array<Id<"cmsDocuments">> },
+        { documentIds: Array<Id<"cmsDocuments">>; shopDomain?: string },
         any
       >;
       bulkPublish: FunctionReference<
         "mutation",
         "public",
-        { documentIds: Array<Id<"cmsDocuments">> },
+        { documentIds: Array<Id<"cmsDocuments">>; shopDomain?: string },
         any
       >;
       create: FunctionReference<
         "mutation",
         "public",
-        { collection: string; data: any },
+        { collection: string; data: any; shopDomain?: string },
         any
       >;
       deleteDocument: FunctionReference<
         "mutation",
         "public",
-        { documentId: Id<"cmsDocuments"> },
+        { documentId: Id<"cmsDocuments">; shopDomain?: string },
         any
       >;
       publish: FunctionReference<
@@ -70,13 +70,14 @@ export declare const api: {
           documentId?: string;
           keyField?: string;
           keyValue?: string;
+          shopDomain?: string;
         },
         any
       >;
       restoreVersion: FunctionReference<
         "mutation",
         "public",
-        { versionId: Id<"cmsVersions"> },
+        { versionId: Id<"cmsVersions">; shopDomain?: string },
         any
       >;
       saveDraft: FunctionReference<
@@ -89,6 +90,7 @@ export declare const api: {
           documentId?: string;
           keyField?: string;
           keyValue?: string;
+          shopDomain?: string;
         },
         any
       >;
@@ -102,6 +104,7 @@ export declare const api: {
           documentId?: string;
           keyField?: string;
           keyValue?: string;
+          shopDomain?: string;
         },
         any
       >;
@@ -113,6 +116,7 @@ export declare const api: {
           collection: string;
           data: any;
           documentId?: Id<"cmsDocuments">;
+          shopDomain?: string;
           status: "draft" | "published";
         },
         any
@@ -122,12 +126,22 @@ export declare const api: {
       list: FunctionReference<
         "query",
         "public",
-        { collection: string; page?: number; pageSize?: number },
+        {
+          collection: string;
+          page?: number;
+          pageSize?: number;
+          shopDomain?: string;
+        },
         any
       >;
     };
     media: {
-      byId: FunctionReference<"query", "public", { mediaId: string }, any>;
+      byId: FunctionReference<
+        "query",
+        "public",
+        { mediaId: string; shopDomain?: string },
+        any
+      >;
       finalizeUpload: FunctionReference<
         "mutation",
         "public",
@@ -137,16 +151,27 @@ export declare const api: {
           filename: string;
           focal?: { x: number; y: number };
           mimeType: string;
+          shopDomain?: string;
           storageId: Id<"_storage">;
         },
         any
       >;
-      generateUploadUrl: FunctionReference<"mutation", "public", {}, any>;
-      list: FunctionReference<"query", "public", { limit?: number }, any>;
+      generateUploadUrl: FunctionReference<
+        "mutation",
+        "public",
+        { shopDomain?: string },
+        any
+      >;
+      list: FunctionReference<
+        "query",
+        "public",
+        { limit?: number; shopDomain?: string },
+        any
+      >;
       page: FunctionReference<
         "query",
         "public",
-        { page?: number; pageSize?: number },
+        { page?: number; pageSize?: number; shopDomain?: string },
         any
       >;
       updateMediaMetadata: FunctionReference<
@@ -157,6 +182,7 @@ export declare const api: {
           caption?: string | null;
           focal?: { x: number; y: number };
           mediaId: string;
+          shopDomain?: string;
         },
         any
       >;
@@ -165,7 +191,7 @@ export declare const api: {
       byMedia: FunctionReference<
         "query",
         "public",
-        { mediaId: Id<"cmsMedia"> },
+        { mediaId: Id<"cmsMedia">; shopDomain?: string },
         any
       >;
       saveDerivatives: FunctionReference<
@@ -181,6 +207,7 @@ export declare const api: {
           focal?: { x: number; y: number };
           mediaId: Id<"cmsMedia">;
           original: { height: number; width: number };
+          shopDomain?: string;
         },
         any
       >;
@@ -311,19 +338,24 @@ export declare const api: {
       >;
     };
     secrets: {
-      readMaskedShop: FunctionReference<"query", "public", {}, any>;
+      readMaskedShop: FunctionReference<
+        "query",
+        "public",
+        { shopDomain?: string },
+        any
+      >;
     };
     versions: {
       list: FunctionReference<
         "query",
         "public",
-        { documentId: Id<"cmsDocuments"> },
+        { documentId: Id<"cmsDocuments">; shopDomain?: string },
         any
       >;
       restore: FunctionReference<
         "mutation",
         "public",
-        { versionId: Id<"cmsVersions"> },
+        { versionId: Id<"cmsVersions">; shopDomain?: string },
         any
       >;
     };

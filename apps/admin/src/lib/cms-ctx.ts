@@ -7,6 +7,8 @@ import { Error as CommerceError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
+import { setActiveShopDomain } from './active-shop';
+
 /**
  * Bundled per-request context for the co-located CMS routes:
  *
@@ -67,6 +69,12 @@ function hasAdminPermission(shop: OnlineShop, userId: string): boolean {
  * @returns A bundle of the projected user principal and the resolved tenant (null when domain is omitted).
  */
 export async function getAuthedCmsCtx(domain?: string): Promise<AuthedCmsCtx> {
+    // Pin the routed domain into the request-scoped slot BEFORE any tenant Convex call: the editor
+    // bridge's tenant-call wrappers inject it as `shopDomain`, the selector Convex's `resolveShopAccess`
+    // authorizes. A cross-tenant admin route (no `domain`) leaves it unset, so those calls keep falling
+    // back to the lone-membership resolution.
+    setActiveShopDomain(domain);
+
     const { userId } = await auth();
     if (!userId) {
         redirect('/auth/sign-in/' as Route);
