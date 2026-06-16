@@ -40,6 +40,13 @@ interface RawSymbol {
     location: { uri: string; range: { start: { line: number; character: number } } };
 }
 
+const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
+
+// tsserver loads each seeded project lazily, so workspace/symbol returns empty
+// until indexing completes — poll up to ~30s before giving up.
+const WORKSPACE_SYMBOL_ATTEMPTS = 30;
+const WORKSPACE_SYMBOL_POLL_MS = 1000;
+
 /** Shared aggregator core behind both the LSP and MCP front-ends. */
 export class AggregatorEngine {
     readonly #config: LspMeshConfig;
@@ -109,21 +116,10 @@ export class AggregatorEngine {
         return replies.filter((r) => r != null);
     }
 
-    /** Aggregate `workspace/symbol` across ALL backends, seeding TS projects first. */
-    async workspaceSymbol(query: string, opts: { definitionsOnly?: boolean } = {}): Promise<SymbolResult[]> {
-        // Seed: open the definition-likely files so lazy TS projects load.
-        const files = await gitGrepFiles(query, this.#config.root);
-        const { ordered } = orderSeedFiles(files, query);
-        for (const rel of ordered) {
-            const abs = `${this.#config.root}/${rel}`;
-            for (const b of this.#registry.backendsFor(abs)) b.open(abs);
-        }
-
-        const replies = await Promise.all(
-            this.#registry.all().map((b) => b.request<RawSymbol[]>('workspace/symbol', { query }).catch(() => null)),
-        );
+    /** Collect + dedupe matching symbols from a batch of backend replies. */
+    #collectSymbols(replies: (RawSymbol[] | null)[], query: string): SymbolResult[] {
         const seen = new Set<string>();
-        let results: SymbolResult[] = [];
+        const results: SymbolResult[] = [];
         for (const reply of replies) {
             for (const s of reply ?? []) {
                 if (!(s.name === query || s.name.endsWith(`.${query}`) || s.name.endsWith(`::${query}`))) continue;
@@ -141,6 +137,33 @@ export class AggregatorEngine {
                 });
             }
         }
+        return results;
+    }
+
+    /** Aggregate `workspace/symbol` across ALL backends, seeding TS projects first. */
+    async workspaceSymbol(query: string, opts: { definitionsOnly?: boolean } = {}): Promise<SymbolResult[]> {
+        // Seed: open the definition-likely files so lazy TS projects load.
+        const files = await gitGrepFiles(query, this.#config.root);
+        const { ordered } = orderSeedFiles(files, query);
+        for (const rel of ordered) {
+            const abs = `${this.#config.root}/${rel}`;
+            for (const b of this.#registry.backendsFor(abs)) b.open(abs);
+        }
+
+        // tsserver's navto stays empty until the seeded project finishes indexing,
+        // so poll until a matching symbol appears or we exhaust the budget.
+        let results: SymbolResult[] = [];
+        for (let attempt = 0; attempt < WORKSPACE_SYMBOL_ATTEMPTS; attempt++) {
+            const replies = await Promise.all(
+                this.#registry
+                    .all()
+                    .map((b) => b.request<RawSymbol[]>('workspace/symbol', { query }).catch(() => null)),
+            );
+            results = this.#collectSymbols(replies, query);
+            if (results.length) break;
+            await sleep(WORKSPACE_SYMBOL_POLL_MS);
+        }
+
         if (opts.definitionsOnly) results = results.filter((r) => isDefinitionSnippet(r.snippet));
         else
             results.sort((a, b) => (isDefinitionSnippet(b.snippet) ? 1 : 0) - (isDefinitionSnippet(a.snippet) ? 1 : 0));
