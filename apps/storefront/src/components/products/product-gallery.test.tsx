@@ -48,14 +48,25 @@ describe('components/products/product-gallery', () => {
         expect(zoom.className).toContain('focus-ring');
         expect(firstThumb.className).toContain('focus-ring');
         expect(screen.getByRole('button', { name: 'View image 2' })).toBeInTheDocument();
+        // Every image keeps a stable thumbnail (the active one is no longer filtered out), so a
+        // three-image gallery always exposes three numbered thumbnails.
+        expect(screen.getByRole('button', { name: 'View image 3' })).toBeInTheDocument();
+    });
+
+    it('keeps all thumbnails visible and marks the active one', () => {
+        render(<ProductGallery {...defaultProps} />);
+
+        // Image 1 is the initial primary; its thumbnail stays in the strip, marked current.
+        expect(screen.getByRole('button', { name: 'View image 1' })).toHaveAttribute('aria-current', 'true');
+        expect(screen.getByRole('button', { name: 'View image 2' })).not.toHaveAttribute('aria-current');
     });
 
     it('promotes a thumbnail to the primary image and replays the CSS fade without a JS timer', () => {
         const timeout = vi.spyOn(globalThis, 'setTimeout');
         render(<ProductGallery {...defaultProps} />);
 
-        // The first thumbnail is the second image (the primary one is filtered out of the strip).
-        fireEvent.click(screen.getByRole('button', { name: 'View image 1' }));
+        // Thumbnails are numbered by stable position now; "View image 2" promotes the second image.
+        fireEvent.click(screen.getByRole('button', { name: 'View image 2' }));
 
         // Scope to the primary control: the (closed) lightbox renders the same image in the DOM too.
         const primary = screen.getByRole('button', { name: 'Zoom image' });
