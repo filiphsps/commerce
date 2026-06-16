@@ -7,7 +7,6 @@
             "@/components/*": ["./src/components/*"],
             "@/hooks/*": ["./src/hooks/*"],
             "@/api/*": ["./src/api/*"],
-            "@/auth": ["./src/utils/auth.ts"],
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/utils/*"],
             "@/lib/*": ["./src/lib/*"],

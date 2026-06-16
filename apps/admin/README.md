@@ -10,7 +10,7 @@ This is the back-office surface. The customer-facing storefront lives in
 ## Stack
 
 -   **Framework:** Next.js 16 (App Router, Turbopack), React 19
--   **Auth:** NextAuth v5 (`@auth/core`) with GitHub provider
+-   **Auth:** Clerk (`@clerk/nextjs`) — operators sign in via Clerk; the server mints a Convex token from Clerk's `convex` JWT template
 -   **Data:** `@nordcom/commerce-db` for shops and users (Convex-backed services)
 -   **Shopify integration:** `@shopify/shopify-api` (Admin API)
 -   **UI:** [Nordstar](https://www.npmjs.com/package/@nordcom/nordstar), Radix UI primitives,

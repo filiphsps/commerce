@@ -1,43 +1,26 @@
 import 'server-only';
 
+import { auth, currentUser } from '@clerk/nextjs/server';
 import type { OnlineShop, UserBase } from '@nordcom/commerce-db';
 import { Shop, User } from '@nordcom/commerce-db';
 import { Error as CommerceError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { auth } from '@/auth';
-import { setActiveShopSelection } from './active-shop';
-
-/**
- * The NextAuth session shape the authed context narrows to. `auth()` is
- * NextAuth's overloaded helper — its return type union includes the
- * middleware-wrapper form, so `ReturnType<typeof auth>` widens beyond the
- * no-args call's session shape; this is what we actually receive.
- */
-export type AuthedSession = {
-    user: { email?: string | null; name?: string | null; image?: string | null; id?: string };
-    expires: string;
-};
 
 /**
  * Bundled per-request context for the co-located CMS routes:
  *
- * - `session`: the NextAuth session — guaranteed non-null after this call.
- * - `user`: the platform `users` document the NextAuth email maps to,
- *   projected to the editor seam's principal shape. `role` derives from the
- *   `shopCollaborators` join (an `'admin'` permission on any collaboration),
- *   the same provenance Convex's `resolveAdminShopId` enforces server-side;
- *   `tenants` lists the shop ids the user collaborates on.
- * - `tenant`: resolved from `domain` via `Shop.findByDomain` (shop == tenant
- *   post-unification). `null` only when `domain` was omitted (admin routes
- *   that operate cross-tenant).
+ * - `user`: the platform `users` document the Clerk operator's email maps to, projected to the
+ *   editor seam's principal shape. `role` derives from the `shopCollaborators` join (an `'admin'`
+ *   permission on any collaboration), the same provenance Convex's `resolveShopAccess` enforces
+ *   server-side; `tenants` lists the shop ids the user collaborates on.
+ * - `tenant`: resolved from `domain` via `Shop.findByDomain` (shop == tenant post-unification).
+ *   `null` only when `domain` was omitted (admin routes that operate cross-tenant).
  *
- * This context only GATES routes (redirect/notFound + the manifests' UI access
- * predicates); every write and shell read re-enforces access inside Convex
- * from the operator's validated identity.
+ * This context only GATES routes (redirect/notFound + the manifests' UI access predicates); every
+ * write and shell read re-enforces access inside Convex from the operator's validated Clerk identity.
  */
 export type AuthedCmsCtx = {
-    session: AuthedSession;
     user: {
         id: string;
         email: string;
@@ -69,40 +52,48 @@ function hasAdminPermission(shop: OnlineShop, userId: string): boolean {
 }
 
 /**
- * Authenticates the current NextAuth session and resolves the platform user and tenant context.
+ * Authenticates the current Clerk session and resolves the platform user and tenant context.
  *
- * Redirects to /auth/login/ when no valid session or platform user exists.
- * Calls notFound() when the domain resolves to an unknown shop, or when an
- * editor accesses a tenant they are not a collaborator on (admins are not
- * gated — cross-tenant operator access by design, matching the manifests'
- * `adminOnly`/`tenantMember` short-circuits).
+ * Redirects to /auth/sign-in/ when no valid Clerk session, no operator email, or no platform user
+ * exists. Calls notFound() when the domain resolves to an unknown shop, or when an editor accesses a
+ * tenant they are not a collaborator on (admins are not gated — cross-tenant operator access by
+ * design, matching the manifests' `adminOnly`/`tenantMember` short-circuits).
+ *
+ * The operator's email comes from Clerk (`currentUser().primaryEmailAddress`), the same email the
+ * `convex` JWT template carries, so this app-layer principal stays aligned with the identity Convex
+ * resolves server-side.
  *
  * @param domain - Tenant domain for the request; omit on admin-only cross-tenant routes.
- * @returns A bundle of the session, the projected user principal, and the resolved tenant (null when domain is omitted).
+ * @returns A bundle of the projected user principal and the resolved tenant (null when domain is omitted).
  */
 export async function getAuthedCmsCtx(domain?: string): Promise<AuthedCmsCtx> {
-    const session = await auth();
-    if (!session?.user?.email) {
-        redirect('/auth/login/' as Route);
+    const { userId } = await auth();
+    if (!userId) {
+        redirect('/auth/sign-in/' as Route);
     }
-    const email = session.user.email;
+
+    const operator = await currentUser();
+    const email = operator?.primaryEmailAddress?.emailAddress?.trim().toLowerCase();
+    if (!email) {
+        redirect('/auth/sign-in/' as Route);
+    }
 
     let userDoc: UserBase;
     try {
         userDoc = await User.find({ filter: { email }, count: 1 });
     } catch (err) {
         if (CommerceError.isNotFound(err)) {
-            // Logged into NextAuth but no platform user exists yet. Punt to
-            // login so the operator sees the failure instead of silently
+            // Signed into Clerk but no platform user exists yet (the webhook/lazy provisioning has
+            // not landed). Punt to sign-in so the operator sees the failure instead of silently
             // provisioning a collaborator-less account on every request.
-            redirect('/auth/login/' as Route);
+            redirect('/auth/sign-in/' as Route);
         }
         throw err;
     }
 
-    const userId = String(userDoc.id);
-    const collaborations = await Shop.findByCollaborator({ collaboratorId: userId });
-    const role: 'admin' | 'editor' = collaborations.some((shop) => hasAdminPermission(shop, userId))
+    const platformUserId = String(userDoc.id);
+    const collaborations = await Shop.findByCollaborator({ collaboratorId: platformUserId });
+    const role: 'admin' | 'editor' = collaborations.some((shop) => hasAdminPermission(shop, platformUserId))
         ? 'admin'
         : 'editor';
 
@@ -126,26 +117,17 @@ export async function getAuthedCmsCtx(domain?: string): Promise<AuthedCmsCtx> {
         };
 
         if (role !== 'admin' && !collaborations.some((collaborated) => String(collaborated.id) === tenant?.id)) {
-            // Editors must explicitly collaborate on the resolved tenant.
-            // Without this check an editor with access to shop A could
-            // navigate to shop B's domain and the `user.tenants` list below
-            // would never gate them at the route level. Admins are NOT gated
-            // here — matching `tenantMember`'s early-return-true for the
-            // admin role.
+            // Editors must explicitly collaborate on the resolved tenant. Without this check an
+            // editor with access to shop A could navigate to shop B's domain and the `user.tenants`
+            // list below would never gate them at the route level. Admins are NOT gated here —
+            // matching `tenantMember`'s early-return-true for the admin role.
             notFound();
         }
     }
 
-    // Record the route's tenant as the request's active-shop selection so the per-call Convex
-    // token mint can stamp it as the active-shop claim — what disambiguates a multi-shop operator
-    // server-side. Cross-tenant routes (no domain) record no selection, keeping the claim-less
-    // single-membership fallback.
-    setActiveShopSelection(tenant?.id);
-
     return {
-        session: session as AuthedSession,
         user: {
-            id: userId,
+            id: platformUserId,
             email: userDoc.email,
             name: userDoc.name,
             role,

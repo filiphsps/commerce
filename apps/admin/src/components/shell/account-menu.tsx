@@ -1,5 +1,6 @@
 'use client';
 
+import { SignOutButton } from '@clerk/nextjs';
 import { DropdownMenu } from '@nordcom/nordstar';
 import { LogOut } from 'lucide-react';
 import type { Route } from 'next';
@@ -27,9 +28,11 @@ function initialsOf(user: AccountMenuUser): string {
 }
 
 /**
- * Dropdown account menu in the shell header; shows the user's avatar and a sign-out link.
+ * Dropdown account menu in the shell header; shows the user's avatar plus an account link and a Clerk
+ * sign-out action.
  *
  * @param props.user - Authenticated user whose name, email, and image are displayed.
+ * @returns The account dropdown menu element.
  */
 export function AccountMenu({ user }: AccountMenuProps) {
     return (
@@ -53,12 +56,12 @@ export function AccountMenu({ user }: AccountMenuProps) {
                 <DropdownMenu.Item asChild>
                     <Link href={'/accounts' as Route}>Account</Link>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item asChild>
-                    <Link href={'/auth/logout' as Route} className="flex items-center gap-2">
-                        <LogOut className="h-4 w-4" />
+                <SignOutButton>
+                    <DropdownMenu.Item className="flex items-center gap-2">
+                        <LogOut className="size-4" />
                         Sign out
-                    </Link>
-                </DropdownMenu.Item>
+                    </DropdownMenu.Item>
+                </SignOutButton>
             </DropdownMenu.Content>
         </DropdownMenu>
     );

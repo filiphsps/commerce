@@ -26,8 +26,8 @@ const PICKER_PAGE_SIZE = 60;
  * behind the upload widget's "choose existing" panel. Reuses the editor bridge's `cms/media:page`
  * route (the same paginated `cmsMedia` read the media settings list rides), so the picker pages the
  * library exactly like the settings surface. The admin-only/tenant gate mirrors the upload and
- * metadata actions: `getAuthedCmsCtx` both enforces the role and records the active-shop selection
- * the bridge's operator token is minted from, so it MUST run before the bridge call.
+ * metadata actions: `getAuthedCmsCtx` enforces the role and tenant access, so it MUST run before the
+ * bridge call (which authenticates against Convex with the operator's Clerk-issued token).
  *
  * @param domain - Tenant domain resolving the route-level access context (`null` refuses — media is
  *   tenant-scoped).

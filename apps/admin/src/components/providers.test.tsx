@@ -35,6 +35,13 @@ vi.mock('sonner', () => ({
     Toaster: () => null,
 }));
 
+// `ClerkConvexProvider` instantiates a `ConvexReactClient` at module load and throws without a live
+// `NEXT_PUBLIC_CONVEX_URL`/Clerk env. This unit pins the provider COMPOSITION (children render
+// through the tree), not Convex/Clerk wiring, so stub it to a passthrough.
+vi.mock('@/components/providers/clerk-convex-provider', () => ({
+    ClerkConvexProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 describe('Providers', () => {
     // The Payload-era faceless-ui ModalProvider fallback is gone (TEARDOWN-02);
     // the provider tree's remaining contract is that children render inside it.

@@ -1,9 +1,9 @@
 import 'server-only';
 
+import { auth } from '@clerk/nextjs/server';
 import type { Metadata, Route } from 'next';
 import { redirect } from 'next/navigation';
 
-import { auth } from '@/auth';
 import { NewShopWizard } from './wizard';
 
 export const metadata: Metadata = {
@@ -19,9 +19,9 @@ export const metadata: Metadata = {
  * @returns The new-shop wizard for an authenticated operator.
  */
 export default async function SetupNewPage(): Promise<React.JSX.Element> {
-    const session = await auth();
-    if (!session?.user) {
-        redirect('/auth/login/' as Route);
+    const { userId } = await auth();
+    if (!userId) {
+        redirect('/auth/sign-in/' as Route);
     }
 
     return <NewShopWizard serviceDomain={process.env.SERVICE_DOMAIN} />;

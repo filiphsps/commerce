@@ -88,8 +88,7 @@ vi.mock('@/components/shell/empty-state', () => ({ EmptyState: vi.fn() }));
 // Session/Payload seams the runtime touches but this gate replaces with act-as
 // context (the authoritative enforcement is the Convex side, driven for real).
 vi.mock('./cms-ctx', () => ({ getAuthedCmsCtx: vi.fn() }));
-vi.mock('./convex-auth', () => ({ authenticateConvexClient: vi.fn(async () => 'operator-bearer-token') }));
-vi.mock('./convex-token', () => ({ mintConvexOperatorToken: vi.fn(async () => 'operator-bearer-token') }));
+vi.mock('./clerk-convex-token', () => ({ getAuthenticatedConvexClient: vi.fn(async () => ({ setAuth: () => {} })) }));
 
 // The identity-client transport — the ONLY substituted layer between the real
 // bridge module and the real Convex functions: route each call into the

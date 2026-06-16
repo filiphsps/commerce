@@ -1,10 +1,9 @@
 import type { Media } from '@nordcom/commerce-cms/types';
 import { describe, expect, it, vi } from 'vitest';
 
-// The bridge module's transport imports drag the NextAuth session stack onto the import graph;
-// the mapper under test is pure, so the auth seams are stubbed away.
-vi.mock('./convex-auth', () => ({ authenticateConvexClient: vi.fn() }));
-vi.mock('./convex-token', () => ({ mintConvexOperatorToken: vi.fn() }));
+// The bridge module's transport imports drag the Clerk server SDK onto the import graph; the mapper
+// under test is pure, so the auth seam is stubbed away.
+vi.mock('./clerk-convex-token', () => ({ getAuthenticatedConvexClient: vi.fn() }));
 
 import { mediaToEditorDocument } from './editor-convex-bridge';
 

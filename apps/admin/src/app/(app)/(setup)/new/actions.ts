@@ -2,13 +2,13 @@
 
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
+import { auth, currentUser } from '@clerk/nextjs/server';
+import { Shop, User } from '@nordcom/commerce-db';
 import { Error as CommerceError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { auth } from '@/auth';
 import { PROVIDER_MAPPERS } from '@/lib/commerce-providers/mappers';
 import { DEFAULT_SHOP_ACCENTS, DEFAULT_SHOP_LOCALE, DEFAULT_SHOP_LOGO } from '@/lib/new-shop/defaults';
 import type { CreateShopInput, CreateShopResult } from '@/lib/new-shop/types';
@@ -51,10 +51,29 @@ export async function checkDomainAvailability(domain: string): Promise<{ availab
  * @returns `{ ok: false, error }` on failure; never resolves on success (it redirects).
  */
 export async function createShop(input: CreateShopInput): Promise<CreateShopResult> {
-    const session = await auth();
-    const userId = session?.user?.id;
-    if (!userId) {
+    const { userId: clerkUserId } = await auth();
+    if (!clerkUserId) {
         return { ok: false, error: 'You must be signed in to create a shop.' };
+    }
+
+    // The shop's creator collaborator is keyed on the platform `users.id`, not the Clerk subject.
+    // Resolve it from the operator's Clerk email (the `convex` JWT template's email claim), the same
+    // email-keyed mapping `cms-ctx.ts` and the Convex resolver use.
+    const operator = await currentUser();
+    const email = operator?.primaryEmailAddress?.emailAddress?.trim().toLowerCase();
+    if (!email) {
+        return { ok: false, error: 'You must be signed in to create a shop.' };
+    }
+
+    let userId: string;
+    try {
+        const userDoc = await User.find({ filter: { email }, count: 1 });
+        userId = String(userDoc.id);
+    } catch (error) {
+        if (CommerceError.isNotFound(error)) {
+            return { ok: false, error: 'Your operator account is not provisioned yet — try again shortly.' };
+        }
+        throw error;
     }
 
     const mapper = PROVIDER_MAPPERS[input.provider.type];

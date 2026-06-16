@@ -4,11 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Hoisted mock fns (must be declared before vi.mock calls)
 // ------------------------------------------------------------------
 
-const { mockRedirect, mockAuth, mockGetShopsForUser } = vi.hoisted(() => ({
+const { mockRedirect, mockAuth, mockCurrentUser, mockGetShopsForUser } = vi.hoisted(() => ({
     mockRedirect: vi.fn((url: string): never => {
         throw new Error(`NEXT_REDIRECT:${url}`);
     }),
     mockAuth: vi.fn(),
+    mockCurrentUser: vi.fn(),
     mockGetShopsForUser: vi.fn(),
 }));
 
@@ -25,7 +26,10 @@ vi.mock('next/navigation', () => ({
     }),
 }));
 
-vi.mock('@/auth', () => ({ auth: mockAuth }));
+vi.mock('@clerk/nextjs/server', () => ({ auth: mockAuth, currentUser: mockCurrentUser }));
+vi.mock('@clerk/nextjs', () => ({
+    SignOutButton: ({ children }: { children?: React.ReactNode }) => <>{children ?? <button type="button" />}</>,
+}));
 vi.mock('@/utils/fetchers', () => ({ getShopsForUser: mockGetShopsForUser }));
 
 vi.mock('next/image', () => ({
@@ -61,55 +65,47 @@ import { renderRSC } from '@/utils/test/rsc';
 import Overview from './page';
 
 describe('app/page (root Overview)', () => {
-    const mockUser = { id: 'u1', name: 'Alice Smith', email: 'alice@example.com' };
+    const CLERK_USER = {
+        firstName: 'Alice',
+        fullName: 'Alice Smith',
+        primaryEmailAddress: { emailAddress: 'alice@example.com' },
+    };
 
     beforeEach(() => {
         mockAuth.mockReset();
+        mockCurrentUser.mockReset();
         mockGetShopsForUser.mockReset();
         mockRedirect.mockClear();
+
+        mockAuth.mockResolvedValue({ userId: 'user_clerk_1' });
+        mockCurrentUser.mockResolvedValue(CLERK_USER);
     });
 
     it('is an async function (server component)', () => {
         expect(typeof Overview).toBe('function');
     });
 
-    it('redirects to /auth/login/ when unauthenticated', async () => {
-        mockAuth.mockResolvedValue(null);
-        await expect(Overview()).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
+    it('redirects to /auth/sign-in/ when unauthenticated', async () => {
+        mockAuth.mockResolvedValue({ userId: null });
+        await expect(Overview()).rejects.toThrow('NEXT_REDIRECT:/auth/sign-in/');
     });
 
-    it('redirects to /auth/login/ when session has no user', async () => {
-        mockAuth.mockResolvedValue({ user: undefined });
-        await expect(Overview()).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
-    });
-
-    it('throws MissingSessionUserIdError when session.user has no id', async () => {
-        const { MissingSessionUserIdError } = await import('@nordcom/commerce-errors');
-        mockAuth.mockResolvedValue({ user: { name: 'No Id', email: 'noid@example.com' } });
-        mockGetShopsForUser.mockResolvedValue([]);
-
-        await expect(Overview()).rejects.toMatchObject({
-            name: 'MissingSessionUserIdError',
-            code: (await import('@nordcom/commerce-errors')).GenericErrorKind.MISSING_SESSION_USER_ID,
-        });
-        // Sanity check the import works (the package's prototype-resetting
-        // base class makes `instanceof` unreliable — see errors index.test.ts).
-        expect(MissingSessionUserIdError).toBeDefined();
+    it('redirects to /auth/sign-in/ when the Clerk user has no primary email', async () => {
+        mockCurrentUser.mockResolvedValue({ primaryEmailAddress: null });
+        await expect(Overview()).rejects.toThrow('NEXT_REDIRECT:/auth/sign-in/');
     });
 
     it('renders a greeting with the user first name when authenticated', async () => {
-        mockAuth.mockResolvedValue({ user: mockUser });
         mockGetShopsForUser.mockResolvedValue([]);
 
         const { container } = await renderRSC(() => Overview());
         const q = within(container as HTMLElement);
 
-        // The page renders "Hi <Accented>Alice</Accented> Smith" — find the Accented span.
+        // The page renders "Hi <Accented>Alice</Accented>" — find the Accented span.
         expect(q.getByTestId('accented')).toHaveTextContent('Alice');
     });
 
     it('renders shop buttons for each shop returned by getShopsForUser', async () => {
-        mockAuth.mockResolvedValue({ user: mockUser });
         mockGetShopsForUser.mockResolvedValue([
             { id: 's1', domain: 'shop-a.myshopify.com', name: 'Shop A' },
             { id: 's2', domain: 'shop-b.myshopify.com', name: 'Shop B' },
@@ -122,13 +118,12 @@ describe('app/page (root Overview)', () => {
         expect(q.getByText('Shop B')).toBeInTheDocument();
     });
 
-    it('fetches shops using the authenticated user id and email', async () => {
-        mockAuth.mockResolvedValue({ user: mockUser });
+    it('fetches shops using the operator email as the stable key', async () => {
         mockGetShopsForUser.mockResolvedValue([]);
 
         await renderRSC(() => Overview());
 
-        expect(mockGetShopsForUser).toHaveBeenCalledWith('u1', 'alice@example.com');
+        expect(mockGetShopsForUser).toHaveBeenCalledWith('alice@example.com', 'alice@example.com');
     });
 
     it('exports metadata with title "Your Shops"', async () => {

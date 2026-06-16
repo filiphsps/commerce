@@ -124,6 +124,20 @@ const config = {
                 destination: '/:domain/settings/shop/',
                 permanent: false,
             },
+            // Legacy `/cms/*` paths (the long-retired CMS-framework admin shell) bounce to the
+            // dashboard root so bookmarks and muscle-memory resolve to a usable page rather than a
+            // 404. No domain context survives the legacy URL, so the user re-navigates from `/`.
+            // Handled here at the config layer so the Clerk proxy stays a thin no-handler shim.
+            {
+                source: '/cms',
+                destination: '/',
+                permanent: true,
+            },
+            {
+                source: '/cms/:path*',
+                destination: '/',
+                permanent: true,
+            },
         ];
     },
 };

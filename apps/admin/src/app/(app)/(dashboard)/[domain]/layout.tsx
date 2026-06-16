@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { auth } from '@clerk/nextjs/server';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import {
@@ -7,7 +8,6 @@ import {
     Building2,
     ImageIcon,
     Images,
-    LogOut,
     MessageCircleHeart,
     Plus,
     Settings,
@@ -20,7 +20,6 @@ import type { Metadata, Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
-import { auth } from '@/auth';
 import type { CommandPaletteItem } from '@/components/shell/command-palette';
 import type { IconRailGroup, IconRailItem } from '@/components/shell/icon-rail';
 import { MobileNav } from '@/components/shell/mobile-nav';
@@ -38,8 +37,8 @@ export type ShopLayoutProps = {
 };
 
 export async function generateMetadata({ params }: ShopLayoutProps): Promise<Metadata> {
-    const session = await auth();
-    if (!session?.user) redirect('/auth/login/' as Route);
+    const { userId } = await auth();
+    if (!userId) redirect('/auth/sign-in/' as Route);
     const { domain } = await params;
     try {
         const shop = await Shop.findByDomain(domain, { convert: true });
@@ -54,8 +53,8 @@ export async function generateMetadata({ params }: ShopLayoutProps): Promise<Met
 }
 
 export default async function ShopLayout({ children, subnav, inspector, params }: ShopLayoutProps) {
-    const session = await auth();
-    if (!session?.user) redirect('/auth/login/' as Route);
+    const { userId } = await auth();
+    if (!userId) redirect('/auth/sign-in/' as Route);
     const { domain } = await params;
 
     let shop: Awaited<ReturnType<typeof Shop.findByDomain>>;
@@ -119,14 +118,6 @@ export default async function ShopLayout({ children, subnav, inspector, params }
             group: 'Actions',
             icon: <Plus className="h-4 w-4" />,
             keywords: ['add', 'store', 'tenant'],
-        },
-        {
-            id: 'action:sign-out',
-            label: 'Sign out',
-            href: '/auth/logout' as Route,
-            group: 'Actions',
-            icon: <LogOut className="h-4 w-4" />,
-            keywords: ['logout', 'exit'],
         },
     ];
     const navigateCommands: CommandPaletteItem[] = navItems.map((item) => ({
