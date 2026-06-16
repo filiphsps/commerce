@@ -2,9 +2,8 @@
 
 import { UserButton } from '@clerk/nextjs';
 import { SunMoon } from 'lucide-react';
-
-import { clerkAppearance } from '@/lib/clerk-appearance';
 import { useTheme } from '@/components/theme/theme-provider';
+import { clerkAppearance } from '@/lib/clerk-appearance';
 
 /**
  * Account control in the shell header: Clerk's `<UserButton>` themed to the admin tokens. It supplies

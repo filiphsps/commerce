@@ -64,12 +64,7 @@ export interface ClerkBackendClient {
      * @param params - The org id, the invitee email, the inviting user, and the role to grant on accept.
      * @returns `true` when an invitation was newly created; `false` when one already existed.
      */
-    invite(params: {
-        organizationId: string;
-        email: string;
-        inviterUserId: string;
-        role: string;
-    }): Promise<boolean>;
+    invite(params: { organizationId: string; email: string; inviterUserId: string; role: string }): Promise<boolean>;
 }
 
 /** Raw Clerk organization shape (only the fields read here). */
@@ -132,14 +127,22 @@ export function createClerkBackendClient(secretKey: string): ClerkBackendClient 
                 return { id: found.id, name: found.name, slug: found.slug };
             }
             if (probe.status !== 404) {
-                throw new ConvexError({ code: CLERK_BACKEND_ERROR, message: `Clerk findOrCreateOrg probe failed: ${probe.status} ${probe.body}`, status: probe.status });
+                throw new ConvexError({
+                    code: CLERK_BACKEND_ERROR,
+                    message: `Clerk findOrCreateOrg probe failed: ${probe.status} ${probe.body}`,
+                    status: probe.status,
+                });
             }
             const created = await call('/organizations', {
                 method: 'POST',
                 body: JSON.stringify({ name, slug, created_by: createdByUserId }),
             });
             if (!created.ok) {
-                throw new ConvexError({ code: CLERK_BACKEND_ERROR, message: `Clerk create organization failed: ${created.status} ${created.body}`, status: created.status });
+                throw new ConvexError({
+                    code: CLERK_BACKEND_ERROR,
+                    message: `Clerk create organization failed: ${created.status} ${created.body}`,
+                    status: created.status,
+                });
             }
             const org = JSON.parse(created.body) as RawOrg;
             return { id: org.id, name: org.name, slug: org.slug };
@@ -157,7 +160,11 @@ export function createClerkBackendClient(secretKey: string): ClerkBackendClient 
             if (firstErrorCode(result.body) === 'already_a_member_in_organization') {
                 return false;
             }
-            throw new ConvexError({ code: CLERK_BACKEND_ERROR, message: `Clerk add member failed: ${result.status} ${result.body}`, status: result.status });
+            throw new ConvexError({
+                code: CLERK_BACKEND_ERROR,
+                message: `Clerk add member failed: ${result.status} ${result.body}`,
+                status: result.status,
+            });
         },
 
         async invite({ organizationId, email, inviterUserId, role }) {
@@ -172,7 +179,11 @@ export function createClerkBackendClient(secretKey: string): ClerkBackendClient 
             if (firstErrorCode(result.body) === 'duplicate_record') {
                 return false;
             }
-            throw new ConvexError({ code: CLERK_BACKEND_ERROR, message: `Clerk org invitation failed: ${result.status} ${result.body}`, status: result.status });
+            throw new ConvexError({
+                code: CLERK_BACKEND_ERROR,
+                message: `Clerk org invitation failed: ${result.status} ${result.body}`,
+                status: result.status,
+            });
         },
     };
 }

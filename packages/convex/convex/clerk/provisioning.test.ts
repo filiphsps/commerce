@@ -4,9 +4,9 @@ import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Id } from '../_generated/dataModel';
-import schema from '../schema';
 import { AuthErrorCode } from '../lib/auth';
 import { systemMutation, systemQuery } from '../lib/system';
+import schema from '../schema';
 import * as provisioning from './provisioning';
 
 /**
@@ -69,12 +69,12 @@ const modules = {
 const ensureCurrentUserRef = makeFunctionReference<'mutation', Record<string, never>, provisioning.EnsuredUser>(
     'clerk/provisioning:ensureCurrentUser',
 );
-const seedUserRef = makeFunctionReference<'mutation', { email: string; name: string; clerkUserId?: string }, Id<'users'>>(
-    'clerk/provisioning.test:seedUser',
-);
-const readUserRef = makeFunctionReference<'query', { userId: Id<'users'> }>(
-    'clerk/provisioning.test:readUser',
-);
+const seedUserRef = makeFunctionReference<
+    'mutation',
+    { email: string; name: string; clerkUserId?: string },
+    Id<'users'>
+>('clerk/provisioning.test:seedUser');
+const readUserRef = makeFunctionReference<'query', { userId: Id<'users'> }>('clerk/provisioning.test:readUser');
 const readUsersByEmailRef = makeFunctionReference<'query', { email: string }>(
     'clerk/provisioning.test:readUsersByEmail',
 );

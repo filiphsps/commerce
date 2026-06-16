@@ -27,9 +27,7 @@ test.describe('storefront chooser', () => {
         await page.goto('/');
         await expect(page.getByRole('heading', { name: 'Choose a storefront' })).toBeVisible({ timeout: 30_000 });
 
-        const card = page
-            .getByRole('link', { name: new RegExp(E2E_SHOP_DOMAIN.replace(/\./g, '\\.')) })
-            .first();
+        const card = page.getByRole('link', { name: new RegExp(E2E_SHOP_DOMAIN.replace(/\./g, '\\.')) }).first();
         await card.click();
 
         await expect(page).toHaveURL(new RegExp(`/${E2E_SHOP_DOMAIN.replace(/\./g, '\\.')}/`), { timeout: 30_000 });

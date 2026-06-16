@@ -4,16 +4,16 @@ import { convexTest } from 'convex-test';
 import { describe, expect, it } from 'vitest';
 
 import type { Doc } from '../_generated/dataModel';
-import schema from '../schema';
 import { systemMutation, systemQuery } from '../lib/system';
-import * as syncModule from './sync';
+import schema from '../schema';
 import {
     applyShopOrgBackfill,
+    type PendingBackfillShop,
     pendingOrgBackfill,
     planShopOrgBackfill,
     stampShopClerkOrg,
-    type PendingBackfillShop,
 } from './backfill';
+import * as syncModule from './sync';
 
 /** Fixed epoch-ms stamp shared by every seeded row so the seeds are deterministic across cases. */
 const SEED_NOW = 1_700_000_000_000;
@@ -59,7 +59,12 @@ const seedShop = systemMutation({
  * @returns The inserted `users` row id.
  */
 const seedCollaborator = systemMutation({
-    args: { email: v.string(), shop: v.id('shops'), clerkUserId: v.optional(v.string()), permissions: v.optional(v.array(v.string())) },
+    args: {
+        email: v.string(),
+        shop: v.id('shops'),
+        clerkUserId: v.optional(v.string()),
+        permissions: v.optional(v.array(v.string())),
+    },
     handler: async (ctx, { email, shop, clerkUserId, permissions }) => {
         const userId = await ctx.db.insert('users', {
             email,
@@ -264,7 +269,11 @@ describe('clerk/backfill — applyShopOrgBackfill (idempotent mirror writer)', (
     it('does NOT stamp clerkOrgId when an unlinked collaborator remains (no lockout), but still mirrors the org + linked member', async () => {
         const t = convexTest(schema, modules);
         const shop = await t.mutation(seedShopRef, { key: 'acme' });
-        const linkedUser = await t.mutation(seedCollaboratorRef, { email: 'linked@acme.com', shop, clerkUserId: 'user_a' });
+        const linkedUser = await t.mutation(seedCollaboratorRef, {
+            email: 'linked@acme.com',
+            shop,
+            clerkUserId: 'user_a',
+        });
         await t.mutation(seedCollaboratorRef, { email: 'unlinked@acme.com', shop });
 
         await t.mutation(applyRef, {
@@ -290,7 +299,11 @@ describe('clerk/backfill — applyShopOrgBackfill (idempotent mirror writer)', (
     it('is idempotent — a second apply adds no duplicate org, membership, or collaborator rows', async () => {
         const t = convexTest(schema, modules);
         const shop = await t.mutation(seedShopRef, { key: 'acme' });
-        const linkedUser = await t.mutation(seedCollaboratorRef, { email: 'linked@acme.com', shop, clerkUserId: 'user_a' });
+        const linkedUser = await t.mutation(seedCollaboratorRef, {
+            email: 'linked@acme.com',
+            shop,
+            clerkUserId: 'user_a',
+        });
 
         const args = {
             shopId: shop,
@@ -311,7 +324,11 @@ describe('clerk/backfill — applyShopOrgBackfill (idempotent mirror writer)', (
     it('preserves access for a Clerk-account collaborator: the projected shopCollaborators row survives', async () => {
         const t = convexTest(schema, modules);
         const shop = await t.mutation(seedShopRef, { key: 'acme' });
-        const linkedUser = await t.mutation(seedCollaboratorRef, { email: 'linked@acme.com', shop, clerkUserId: 'user_a' });
+        const linkedUser = await t.mutation(seedCollaboratorRef, {
+            email: 'linked@acme.com',
+            shop,
+            clerkUserId: 'user_a',
+        });
 
         await t.mutation(applyRef, {
             shopId: shop,
@@ -333,7 +350,11 @@ describe('clerk/backfill — stampShopClerkOrg (deferred completion)', () => {
     it('stamps a previously-deferred shop once its operators are all linked, with no duplicate org row', async () => {
         const t = convexTest(schema, modules);
         const shop = await t.mutation(seedShopRef, { key: 'acme' });
-        const linkedUser = await t.mutation(seedCollaboratorRef, { email: 'linked@acme.com', shop, clerkUserId: 'user_a' });
+        const linkedUser = await t.mutation(seedCollaboratorRef, {
+            email: 'linked@acme.com',
+            shop,
+            clerkUserId: 'user_a',
+        });
 
         // First pass deferred (unlinked collaborator present): org mirrored, NOT stamped.
         await t.mutation(applyRef, {

@@ -376,7 +376,7 @@ export async function resolveShopAccess(ctx: AuthReadCtx, domain: string): Promi
     if (!membership) {
         throw new ConvexError({
             code: AuthErrorCode.NO_ORG_MEMBERSHIP,
-            message: 'Operator is not a member of the shop\'s owning org.',
+            message: "Operator is not a member of the shop's owning org.",
         });
     }
 

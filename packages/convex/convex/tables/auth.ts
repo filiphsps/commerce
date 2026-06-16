@@ -95,9 +95,7 @@ export type UserBase = Infer<typeof userValidator>;
  * backs Clerk identity resolution during and after the auth migration. `email` uniqueness has no
  * equivalent unique index in Convex and is enforced in the mutation layer.
  */
-const usersTable = defineTable(userValidator)
-    .index('by_email', ['email'])
-    .index('by_clerk_user_id', ['clerkUserId']);
+const usersTable = defineTable(userValidator).index('by_email', ['email']).index('by_clerk_user_id', ['clerkUserId']);
 
 /**
  * Platform-global auth tables (just `users`). NOT tenant-scoped: a user exists above any single shop,

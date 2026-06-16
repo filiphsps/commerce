@@ -2,9 +2,8 @@ import { makeFunctionReference } from 'convex/server';
 import { v } from 'convex/values';
 import { convexTest } from 'convex-test';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import schema from '../schema';
 import { systemMutation } from '../lib/system';
+import schema from '../schema';
 import * as chooser from './chooser';
 
 /**
@@ -72,7 +71,10 @@ const seedShop = systemMutation({
             name,
             domain,
             clerkOrgId,
-            design: { header: { logo: { width: 512, height: 512, src: 'https://cdn/logo.png', alt: name } }, accents: [] },
+            design: {
+                header: { logo: { width: 512, height: 512, src: 'https://cdn/logo.png', alt: name } },
+                accents: [],
+            },
             commerceProvider: { type: 'stripe', authentication: {} },
             createdAt: SEED_NOW,
             updatedAt: SEED_NOW,
@@ -141,7 +143,11 @@ describe('listForOperator', () => {
         const user = await t.mutation(seedUserRef, { email: 'early@example.com', clerkUserId: 'user_early' });
         // Membership arrives before the org webhook — no `orgs` row exists for `org_pending`.
         await t.mutation(seedMembershipRef, { clerkOrgId: 'org_pending', user, clerkUserId: 'user_early' });
-        await t.mutation(seedShopRef, { clerkOrgId: 'org_pending', name: 'Pending Shop', domain: 'pending.example.com' });
+        await t.mutation(seedShopRef, {
+            clerkOrgId: 'org_pending',
+            name: 'Pending Shop',
+            domain: 'pending.example.com',
+        });
 
         const asOp = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_early', email: 'early@example.com' });
         const result = await asOp.query(listForOperatorRef, {});
@@ -165,13 +171,17 @@ describe('listForOperator', () => {
 
     it('still rejects a forged (wrong-issuer) identity rather than masking it as empty', async () => {
         const t = convexTest(schema, modules);
-        const asForged = t.withIdentity({ issuer: 'https://evil.example.com', subject: 'user_x', email: 'x@example.com' });
+        const asForged = t.withIdentity({
+            issuer: 'https://evil.example.com',
+            subject: 'user_x',
+            email: 'x@example.com',
+        });
         await expect(asForged.query(listForOperatorRef, {})).rejects.toMatchObject({
             data: { code: 'FORGED_IDENTITY' },
         });
     });
 
-    it('does not leak another operator\'s orgs', async () => {
+    it("does not leak another operator's orgs", async () => {
         const t = convexTest(schema, modules);
         const mine = await t.mutation(seedUserRef, { email: 'mine@example.com', clerkUserId: 'user_mine' });
         const other = await t.mutation(seedUserRef, { email: 'other@example.com', clerkUserId: 'user_other' });

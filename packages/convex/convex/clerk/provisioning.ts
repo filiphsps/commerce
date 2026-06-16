@@ -1,7 +1,6 @@
 import { ConvexError } from 'convex/values';
-
-import type { Id } from '../_generated/dataModel';
 import { clerkMutation } from '../_constructors';
+import type { Id } from '../_generated/dataModel';
 import { AuthErrorCode } from '../lib/auth';
 
 /**
@@ -10,7 +9,9 @@ import { AuthErrorCode } from '../lib/auth';
  * raw `ctx.db`) and the system-tier context satisfy it, and so this helper is usable in both the
  * webhook internal mutations and the public `ensureCurrentUser`.
  */
-type ProvisioningCtx = { db: import('convex/server').GenericDatabaseWriter<import('../_generated/dataModel').DataModel> };
+type ProvisioningCtx = {
+    db: import('convex/server').GenericDatabaseWriter<import('../_generated/dataModel').DataModel>;
+};
 
 /**
  * The reserved domain `webhooks.ts` provisions a synthetic placeholder email under when a membership
@@ -30,8 +31,15 @@ export const SYNTHETIC_EMAIL_DOMAIN = '@clerk.invalid';
  * @param email - The already-resolved email, used for the fallback display name.
  * @returns A non-empty display name.
  */
-export function displayName(firstName: string | null | undefined, lastName: string | null | undefined, email: string): string {
-    const joined = [firstName, lastName].filter((part): part is string => Boolean(part)).join(' ').trim();
+export function displayName(
+    firstName: string | null | undefined,
+    lastName: string | null | undefined,
+    email: string,
+): string {
+    const joined = [firstName, lastName]
+        .filter((part): part is string => Boolean(part))
+        .join(' ')
+        .trim();
     if (joined.length > 0) {
         return joined;
     }
@@ -77,8 +85,7 @@ export async function upsertUserByClerkIdentity(
         .first();
 
     if (bySubject) {
-        const subjectIsPlaceholder =
-            bySubject.email.endsWith(SYNTHETIC_EMAIL_DOMAIN) && bySubject.email !== email;
+        const subjectIsPlaceholder = bySubject.email.endsWith(SYNTHETIC_EMAIL_DOMAIN) && bySubject.email !== email;
         if (subjectIsPlaceholder) {
             const emailRow = await ctx.db
                 .query('users')
@@ -166,11 +173,7 @@ export const ensureCurrentUser = clerkMutation({
 
         // The Clerk `convex` JWT template does not carry first/last name claims by default.
         // `identity.name` is available when the template declares it; fall back to local-part.
-        const name = displayName(
-            identity.givenName ?? (identity.name ?? null),
-            identity.familyName ?? null,
-            email,
-        );
+        const name = displayName(identity.givenName ?? identity.name ?? null, identity.familyName ?? null, email);
 
         const userId = await upsertUserByClerkIdentity(ctx, identity.subject, email, name, undefined);
 

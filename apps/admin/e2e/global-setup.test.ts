@@ -17,7 +17,11 @@ const EMAIL = 'e2e-test+clerk_test@example.com';
  */
 function mockDeps() {
     const ensureUser: ClerkSetupDeps['ensureUser'] = vi.fn(async () => ({ id: USER_ID, primaryEmail: EMAIL }));
-    const ensureOrg: ClerkSetupDeps['ensureOrg'] = vi.fn(async () => ({ id: ORG_ID, name: 'Nordcom E2E', slug: 'nordcom-e2e' }));
+    const ensureOrg: ClerkSetupDeps['ensureOrg'] = vi.fn(async () => ({
+        id: ORG_ID,
+        name: 'Nordcom E2E',
+        slug: 'nordcom-e2e',
+    }));
     const seedShop: ClerkSetupDeps['seedShop'] = vi.fn(async () => SHOP_ID);
     // The mock echoes the org id it was handed and resolves the shop id from the canonical SHOP_ID, so
     // the assertions can prove the harness forwards the deployment URL + the resolved org through.

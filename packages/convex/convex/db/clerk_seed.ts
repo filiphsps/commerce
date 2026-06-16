@@ -3,7 +3,7 @@ import { ConvexError, v } from 'convex/values';
 import { serverMutation } from '../_constructors';
 import type { Doc, Id } from '../_generated/dataModel';
 import type { MutationCtx } from '../_generated/server';
-import { desiredCollaboratorRows, reconcileCollaboratorRows, type CollaboratorRow } from '../clerk/sync';
+import { type CollaboratorRow, desiredCollaboratorRows, reconcileCollaboratorRows } from '../clerk/sync';
 import { shopByPublicId } from './shops';
 
 /**

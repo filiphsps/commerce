@@ -309,7 +309,11 @@ describe('resolveUserFromIdentity (Clerk operator resolution)', () => {
         // Seed WITHOUT a clerkUserId so the subject lookup misses and the email fallback resolves.
         await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 1 });
 
-        const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_unmapped', email: 'operator@example.com' });
+        const asOperator = t.withIdentity({
+            issuer: CLERK_ISSUER,
+            subject: 'user_unmapped',
+            email: 'operator@example.com',
+        });
         const result = await asOperator.query(resolveOperatorRef, {});
 
         expect(result.email).toBe('operator@example.com');
@@ -412,7 +416,7 @@ describe('resolveAdminShopId', () => {
 describe('resolveShopAccess', () => {
     const DOMAIN = 'acme-shop.example.com';
 
-    it('authorizes an operator who is a member of the shop\'s owning org', async () => {
+    it("authorizes an operator who is a member of the shop's owning org", async () => {
         const t = convexTest(schema, modules);
         const { shopId } = await t.mutation(seedShopAccessRef, {
             email: 'operator@example.com',
@@ -427,7 +431,7 @@ describe('resolveShopAccess', () => {
         expect(resolved).toBe(shopId);
     });
 
-    it('rejects an operator with no membership in the shop\'s owning org as NO_ORG_MEMBERSHIP', async () => {
+    it("rejects an operator with no membership in the shop's owning org as NO_ORG_MEMBERSHIP", async () => {
         const t = convexTest(schema, modules);
         await t.mutation(seedShopAccessRef, {
             email: 'operator@example.com',
@@ -455,9 +459,11 @@ describe('resolveShopAccess', () => {
 
         const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
 
-        await expect(asOperator.query(resolveShopAccessRef, { domain: 'unclaimed.example.com' })).rejects.toMatchObject({
-            data: { code: AuthErrorCode.UNKNOWN_SHOP },
-        });
+        await expect(asOperator.query(resolveShopAccessRef, { domain: 'unclaimed.example.com' })).rejects.toMatchObject(
+            {
+                data: { code: AuthErrorCode.UNKNOWN_SHOP },
+            },
+        );
     });
 
     it('rejects a routing row whose shop FK dangles as SHOP_ORPHANED', async () => {

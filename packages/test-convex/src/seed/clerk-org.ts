@@ -62,7 +62,10 @@ export interface SeedClerkOperatorOptions {
  * @throws {ConvexError} When `CONVEX_SERVER_SECRET` is unset, or the mutation rejects (e.g. the shop is
  *   missing — run the canonical seed first).
  */
-export async function seedClerkOperatorLive(url: string, opts: SeedClerkOperatorOptions): Promise<SeedClerkOperatorView> {
+export async function seedClerkOperatorLive(
+    url: string,
+    opts: SeedClerkOperatorOptions,
+): Promise<SeedClerkOperatorView> {
     const serverSecret = process.env.CONVEX_SERVER_SECRET;
     if (!serverSecret) {
         throw new ConvexError(

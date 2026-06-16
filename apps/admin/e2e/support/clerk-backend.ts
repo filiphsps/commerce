@@ -36,7 +36,10 @@ export interface ClerkBackendOrg {
 function requireSecretKey(): string {
     const key = process.env.CLERK_SECRET_KEY;
     if (!key) {
-        throw new MissingEnvironmentVariableError('CLERK_SECRET_KEY', 'Run via `pnpm test:e2e` so root .env.local loads.');
+        throw new MissingEnvironmentVariableError(
+            'CLERK_SECRET_KEY',
+            'Run via `pnpm test:e2e` so root .env.local loads.',
+        );
     }
     return key;
 }
@@ -62,13 +65,20 @@ async function clerkFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
     });
     const text = await response.text();
     if (!response.ok) {
-        throw new ApiError(`Clerk Backend API ${init.method ?? 'GET'} ${path} failed: ${response.status} ${text}`, response.status);
+        throw new ApiError(
+            `Clerk Backend API ${init.method ?? 'GET'} ${path} failed: ${response.status} ${text}`,
+            response.status,
+        );
     }
     return (text ? JSON.parse(text) : {}) as T;
 }
 
 /** Raw Clerk user shape (only the fields read here). */
-type RawUser = { id: string; email_addresses?: Array<{ id: string; email_address: string }>; primary_email_address_id?: string | null };
+type RawUser = {
+    id: string;
+    email_addresses?: Array<{ id: string; email_address: string }>;
+    primary_email_address_id?: string | null;
+};
 /** Raw Clerk organization shape (only the fields read here). */
 type RawOrg = { id: string; name: string; slug: string };
 

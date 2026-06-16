@@ -228,7 +228,9 @@ describe('resolveActiveAdminShopId', () => {
 
         const asOperator = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'user_1', email: 'operator@example.com' });
 
-        await expect(asOperator.query(resolveActiveShopIdRef, { domain: 'unclaimed.example.com' })).rejects.toMatchObject({
+        await expect(
+            asOperator.query(resolveActiveShopIdRef, { domain: 'unclaimed.example.com' }),
+        ).rejects.toMatchObject({
             data: { code: AuthErrorCode.UNKNOWN_SHOP },
         });
     });

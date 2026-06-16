@@ -1,11 +1,11 @@
-import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
-import { DEFAULT_SHOP_LEGACY_ID, seedCanonical, type SeedClerkOperatorView } from '@nordcom/commerce-test-convex';
 import { clerk, clerkSetup } from '@clerk/testing/playwright';
+import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
+import { DEFAULT_SHOP_LEGACY_ID, type SeedClerkOperatorView, seedCanonical } from '@nordcom/commerce-test-convex';
 import { type Browser, chromium, expect } from '@playwright/test';
 
 import { STORAGE_STATE_PATH } from './fixtures/storage-state';
-import { type ClerkBackendOrg, type ClerkBackendUser, ensureClerkOrg, ensureClerkUser } from './support/clerk-backend';
 import { E2E_OPERATOR_EMAIL } from './support/clerk';
+import { type ClerkBackendOrg, type ClerkBackendUser, ensureClerkOrg, ensureClerkUser } from './support/clerk-backend';
 
 /** Stable slug for the primary e2e operator's org (the idempotency key for the find-or-create in Clerk). */
 const E2E_ORG_SLUG = 'nordcom-e2e';

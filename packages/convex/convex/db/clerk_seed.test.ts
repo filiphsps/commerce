@@ -64,7 +64,12 @@ const baseShop = {
 async function harnessWithShop(): Promise<ReturnType<typeof convexTest>> {
     process.env.CONVEX_SERVER_SECRET = SERVER_SECRET;
     const t = convexTest(schema, modules);
-    await t.mutation(upsertShopRef, { serverSecret: SERVER_SECRET, legacyId: SHOP_LEGACY_ID, upsert: true, shop: baseShop });
+    await t.mutation(upsertShopRef, {
+        serverSecret: SERVER_SECRET,
+        legacyId: SHOP_LEGACY_ID,
+        upsert: true,
+        shop: baseShop,
+    });
     return t;
 }
 

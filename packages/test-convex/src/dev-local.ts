@@ -321,7 +321,12 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
     // fetched, matches no token) — the right posture for the storefront/integration backends. The webhook
     // secret is set only when present, since `auth.config.ts` does not reference it (only the httpAction).
     const clerkAuth = resolveClerkBackendEnv();
-    convexEnvSet(url, adminKey, 'CLERK_FRONTEND_API_URL', clerkAuth.frontendApiUrl || PLACEHOLDER_CLERK_FRONTEND_API_URL);
+    convexEnvSet(
+        url,
+        adminKey,
+        'CLERK_FRONTEND_API_URL',
+        clerkAuth.frontendApiUrl || PLACEHOLDER_CLERK_FRONTEND_API_URL,
+    );
     convexEnvSet(
         url,
         adminKey,

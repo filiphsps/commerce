@@ -1,13 +1,12 @@
-import { ConvexError, v } from 'convex/values';
-
-import { internal } from '../_generated/api';
 import type { GenericMutationCtx } from 'convex/server';
+import { ConvexError, v } from 'convex/values';
+import { internal } from '../_generated/api';
 import type { DataModel, Id } from '../_generated/dataModel';
 import { internalAction } from '../_generated/server';
 import { getServerEnv } from '../lib/env';
 import { systemMutation, systemQuery } from '../lib/system';
 import { createClerkBackendClient } from './backend_client';
-import { desiredCollaboratorRows, reconcileCollaboratorRows, type CollaboratorRow } from './sync';
+import { type CollaboratorRow, desiredCollaboratorRows, reconcileCollaboratorRows } from './sync';
 
 /**
  * The baseline Clerk role every backfilled collaborator is granted on their shop's owning org —
@@ -131,7 +130,11 @@ export function planShopOrgBackfill(params: {
     const invites: PlannedInvite[] = [];
     for (const collaborator of params.collaborators) {
         if (collaborator.clerkUserId) {
-            members.push({ userId: collaborator.userId, email: collaborator.email, clerkUserId: collaborator.clerkUserId });
+            members.push({
+                userId: collaborator.userId,
+                email: collaborator.email,
+                clerkUserId: collaborator.clerkUserId,
+            });
         } else {
             invites.push({ userId: collaborator.userId, email: collaborator.email });
         }
@@ -442,12 +445,15 @@ type ResolvedMember = { userId: Id<'users'>; clerkUserId: string; email: string 
  */
 export const run = internalAction({
     args: {},
-    handler: async (ctx): Promise<{ processed: number; backfilled: number; deferred: number; outcomes: ShopBackfillOutcome[] }> => {
+    handler: async (
+        ctx,
+    ): Promise<{ processed: number; backfilled: number; deferred: number; outcomes: ShopBackfillOutcome[] }> => {
         const secretKey = getServerEnv('CLERK_SECRET_KEY');
         if (!secretKey) {
             throw new ConvexError({
                 code: BackfillErrorCode.SECRET_KEY_UNCONFIGURED,
-                message: 'CLERK_SECRET_KEY is not set on this deployment; the backfill cannot call the Clerk Backend API.',
+                message:
+                    'CLERK_SECRET_KEY is not set on this deployment; the backfill cannot call the Clerk Backend API.',
             });
         }
         const client = createClerkBackendClient(secretKey);
@@ -498,7 +504,11 @@ export const run = internalAction({
             });
 
             for (const member of members) {
-                await client.addMember({ organizationId: org.id, clerkUserId: member.clerkUserId, role: BACKFILL_ROLE });
+                await client.addMember({
+                    organizationId: org.id,
+                    clerkUserId: member.clerkUserId,
+                    role: BACKFILL_ROLE,
+                });
             }
             for (const invite of plan.invites) {
                 await client.invite({
@@ -514,7 +524,11 @@ export const run = internalAction({
                 clerkOrgId: org.id,
                 orgName: org.name,
                 orgSlug: org.slug,
-                members: members.map((member) => ({ userId: member.userId, clerkUserId: member.clerkUserId, role: BACKFILL_ROLE })),
+                members: members.map((member) => ({
+                    userId: member.userId,
+                    clerkUserId: member.clerkUserId,
+                    role: BACKFILL_ROLE,
+                })),
                 stampClerkOrgId: plan.stampClerkOrgId,
             });
 

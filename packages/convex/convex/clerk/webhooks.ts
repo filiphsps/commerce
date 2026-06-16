@@ -9,7 +9,7 @@ import { httpAction } from '../_generated/server';
 import { getServerEnv } from '../lib/env';
 import { systemMutation } from '../lib/system';
 import { displayName, SYNTHETIC_EMAIL_DOMAIN, upsertUserByClerkIdentity } from './provisioning';
-import { desiredCollaboratorRows, reconcileCollaboratorRows, type CollaboratorRow } from './sync';
+import { type CollaboratorRow, desiredCollaboratorRows, reconcileCollaboratorRows } from './sync';
 
 /**
  * The subset of a Clerk webhook event this module reads. Clerk's envelope is `{ type, data }`; the
@@ -280,11 +280,7 @@ type MemberSnapshot = {
  * @param toUserId - The surviving real-email row the memberships move onto.
  * @returns Resolves once every membership has been re-pointed or de-duplicated.
  */
-async function repointMemberships(
-    ctx: ProjectionCtx,
-    fromUserId: Id<'users'>,
-    toUserId: Id<'users'>,
-): Promise<void> {
+async function repointMemberships(ctx: ProjectionCtx, fromUserId: Id<'users'>, toUserId: Id<'users'>): Promise<void> {
     const memberships = await ctx.db
         .query('orgMemberships')
         .withIndex('by_user', (q) => q.eq('user', fromUserId))
@@ -406,8 +402,7 @@ export const upsertUserFromClerk = systemMutation({
             .withIndex('by_clerk_user_id', (q) => q.eq('clerkUserId', clerkUserId))
             .first();
         const placeholderId =
-            bySubjectBefore?.email.endsWith(SYNTHETIC_EMAIL_DOMAIN) === true &&
-            bySubjectBefore.email !== email
+            bySubjectBefore?.email.endsWith(SYNTHETIC_EMAIL_DOMAIN) === true && bySubjectBefore.email !== email
                 ? bySubjectBefore._id
                 : undefined;
 

@@ -292,9 +292,7 @@ export type FeatureFlagBase = Infer<typeof featureFlagValidator>;
  * `by_clerk_org` backs the Clerk webhook upsert and the org→shop resolution used by the admin
  * shop-picker once a Clerk org is the owning identity of a shop.
  */
-const shopsTable = defineTable(shopValidator)
-    .index('by_legacy_id', ['legacyId'])
-    .index('by_clerk_org', ['clerkOrgId']);
+const shopsTable = defineTable(shopValidator).index('by_legacy_id', ['legacyId']).index('by_clerk_org', ['clerkOrgId']);
 
 /**
  * Split-out credentials table (1:1 per shop). `by_shop` is the only access path; the public shop read

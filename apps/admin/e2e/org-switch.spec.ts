@@ -25,7 +25,9 @@ test.describe('active-org / routed-shop reconciliation', () => {
         await expect(page.getByRole('heading', { name: 'Home' })).toBeVisible({ timeout: 30_000 });
 
         // The OrganizationSwitcher — the active-org UI the ActiveOrgSync keeps aligned — is mounted.
-        await expect(page.locator('.cl-organizationSwitcher-root, .cl-organizationSwitcherTrigger').first()).toBeVisible({
+        await expect(
+            page.locator('.cl-organizationSwitcher-root, .cl-organizationSwitcherTrigger').first(),
+        ).toBeVisible({
             timeout: 30_000,
         });
     });

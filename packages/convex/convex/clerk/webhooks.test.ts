@@ -2,18 +2,17 @@ import { makeFunctionReference } from 'convex/server';
 import { v } from 'convex/values';
 import { convexTest } from 'convex-test';
 import { assert, describe, expect, it } from 'vitest';
-
-import schema from '../schema';
 import { systemMutation, systemQuery } from '../lib/system';
+import schema from '../schema';
 import {
-    deleteOrg,
+    type ClerkWebhookEvent,
     deleteMembership,
+    deleteOrg,
     deleteUser,
     planWebhookActions,
     upsertMembership,
     upsertOrg,
     upsertUserFromClerk,
-    type ClerkWebhookEvent,
 } from './webhooks';
 
 /** Fixed epoch-ms stamp shared by every seeded row so the seeds are deterministic across cases. */
@@ -230,7 +229,8 @@ function membershipEvent(overrides: {
     imageUrl?: string;
     type?: 'organizationMembership.created' | 'organizationMembership.updated' | 'organizationMembership.deleted';
 }): ClerkWebhookEvent {
-    const identifier = overrides.identifier === null ? undefined : (overrides.identifier ?? `${overrides.clerkUserId}@b.com`);
+    const identifier =
+        overrides.identifier === null ? undefined : (overrides.identifier ?? `${overrides.clerkUserId}@b.com`);
     return {
         type: overrides.type ?? 'organizationMembership.created',
         data: {
@@ -300,7 +300,12 @@ describe('planWebhookActions', () => {
 
     it('dispatches a membership with no identifier carrying an undefined email/name', () => {
         const actions = planWebhookActions(
-            membershipEvent({ orgId: 'org_1', clerkUserId: 'user_1', identifier: null, imageUrl: 'https://img/u1.png' }),
+            membershipEvent({
+                orgId: 'org_1',
+                clerkUserId: 'user_1',
+                identifier: null,
+                imageUrl: 'https://img/u1.png',
+            }),
         );
         expect(actions).toEqual([
             {
@@ -439,7 +444,7 @@ describe('membership projection into shopCollaborators', () => {
         expect(await t.query(readCollaboratorShopsRef, { userId })).toEqual([shopA, shopB].sort());
     });
 
-    it('membership.deleted removes that org\'s shops while keeping the user\'s other orgs', async () => {
+    it("membership.deleted removes that org's shops while keeping the user's other orgs", async () => {
         const t = convexTest(schema, modules);
         const userId = await t.mutation(seedUserRef, { email: 'op@b.com', name: 'Op', clerkUserId: 'user_1' });
         await t.mutation(seedOrgShopRef, { clerkOrgId: 'org_1', key: 'a' });
