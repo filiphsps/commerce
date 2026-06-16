@@ -943,6 +943,39 @@ export declare const api: {
  */
 export declare const internal: {
   clerk: {
+    backfill: {
+      applyShopOrgBackfill: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          clerkOrgId: string;
+          members: Array<{
+            clerkUserId: string;
+            role: string;
+            userId: Id<"users">;
+          }>;
+          orgName: string;
+          orgSlug: string;
+          shopId: Id<"shops">;
+          stampClerkOrgId: boolean;
+        },
+        any
+      >;
+      pendingOrgBackfill: FunctionReference<"query", "internal", {}, any>;
+      resolveLinkedMembers: FunctionReference<
+        "query",
+        "internal",
+        { userIds: Array<Id<"users">> },
+        any
+      >;
+      run: FunctionReference<"action", "internal", {}, any>;
+      stampShopClerkOrg: FunctionReference<
+        "mutation",
+        "internal",
+        { clerkOrgId: string; members?: Array<Id<"users">>; shopId: Id<"shops"> },
+        any
+      >;
+    };
     webhooks: {
       deleteMembership: FunctionReference<
         "mutation",

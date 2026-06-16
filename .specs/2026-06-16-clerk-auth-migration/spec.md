@@ -299,6 +299,41 @@ Linked the project to the **existing** Clerk app **"Nordcom Commerce"** (user's 
   These happen when a deployed Convex URL exists (e2e/CI/prod). The Convex auth provider only needs
   `CLERK_FRONTEND_API_URL` set on whatever deployment serves a given env.
 
+### Existing-shop org backfill (Task 7.1) — runbook
+
+A one-time migration gives every EXISTING shop a Clerk Organization + links its collaborators, so
+multi-shop operators aren't locked out once `resolveShopAccess` requires org membership. Lives in
+`packages/convex/convex/clerk/backfill.ts` (planning query `pendingOrgBackfill`, idempotent mirror
+mutations `applyShopOrgBackfill`/`stampShopClerkOrg`, the `internalAction` `run`) + the Clerk Backend
+client `clerk/backend_client.ts`. **NOT client-callable** (internal-only).
+
+- **Lockout-safe rule (why the backfill defers some shops):** `resolveShopAccess` HARD-FAILS for a
+  shop — `SHOP_WITHOUT_ORG` when `clerkOrgId` is unset, `NO_ORG_MEMBERSHIP` when set but the operator
+  has no `orgMemberships` row — there is **no legacy `shopCollaborators` fallback**. So stamping
+  `shops.clerkOrgId` is only safe once EVERY collaborator who can be a member already is one. A
+  collaborator with **no Clerk account yet** cannot be an `orgMemberships` row (the mirror needs a
+  Clerk subject), so the backfill **does NOT stamp `clerkOrgId` on a shop that still has un-provisioned
+  collaborators** — it creates the org, adds the linked members, **invites** the rest by email, and
+  leaves the shop un-stamped (its current, access-equivalent pre-Clerk state — so the backfill never
+  regresses access). Re-run after the invited users accept to complete (stamp) those shops. Shops with
+  no linked operator at all are reported deferred with no org created (Clerk's create-org needs a
+  `created_by`); link/invite an operator and re-run.
+- **Idempotency:** keyed two ways so a re-run never duplicates. (1) A fully-completed shop carries
+  `shops.clerkOrgId` and is skipped by `pendingOrgBackfill`. (2) For a shop whose org was created on a
+  prior deferred pass but not stamped, the org **slug is deterministic from the domain**
+  (`orgSlugFromDomain`), so `findOrCreateOrg` probes `GET /organizations/{slug}` and **reuses** the
+  existing org. The `orgs`/`orgMemberships` mirror upserts and the `shopCollaborators` projection are
+  themselves idempotent (patch-in-place + reconcile-to-desired). The Clerk Backend calls tolerate
+  `already_a_member_in_organization` (membership) and `duplicate_record` (invitation) as no-ops.
+- **Prereqs:** the Convex deployment env has `CLERK_SECRET_KEY` set (dev or prod Clerk instance — the
+  action reads it via `getServerEnv`). Run `convex codegen` first so `_generated/` matches the live
+  schema (the `clerk/backfill` internal entries are hand-synced in this worktree; see risk #8).
+- **Invocation** (from `packages/convex`, against the target deployment):
+  `pnpm --filter @nordcom/commerce-convex convex:backfill clerk/backfill:run`
+  (the `convex:backfill` script is `convex run`; this resolves to `convex run clerk/backfill:run`).
+  The action returns `{ processed, backfilled, deferred, outcomes[] }` — per-shop `{ orgCreated,
+  membersAdded, invitationsSent, deferred }`. Re-run until `deferred` is 0 (after invited users accept).
+
 ## E2E harness
 
 - Add `@clerk/testing`. `global-setup.ts`: `clerkSetup()` (Testing Token via `CLERK_SECRET_KEY`),
@@ -337,8 +372,11 @@ Linked the project to the **existing** Clerk app **"Nordcom Commerce"** (user's 
 1. **CLI CI-auth mechanism** — verify exact command (see Open item above).
 2. **Active-org SSR staleness** — first paint after an org switch may lag the token; the
    server sync-redirect (decision 12) must cover it. Validate with an org-switch e2e.
-3. **Existing-operator org backfill** — one-time migration must create a Clerk org per
-   current shop membership without duplicating on re-run (idempotent by `shops.clerkOrgId`).
+3. **Existing-operator org backfill** — IMPLEMENTED (Task 7.1, `clerk/backfill.ts`). One-time migration
+   creates a Clerk org per shop without duplicating on re-run (idempotent by `shops.clerkOrgId` for
+   completed shops + a deterministic domain-derived org slug for find-or-create on partial re-runs).
+   Lockout-safe: a shop with un-provisioned collaborators is NOT stamped (the rest are invited; re-run
+   to complete). See the "Existing-shop org backfill — runbook" section above.
 4. **Webhook eventual consistency** — membership/shop changes have a sync window; the lazy
    `ensureCurrentUser` and server-side mirror checks must tolerate it.
 5. **Convex schema drop** — `sessions`/`identities` removal is a migration; confirm no
