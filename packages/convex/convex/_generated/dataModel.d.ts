@@ -1876,6 +1876,7 @@ export type DataModel = {
   users: {
     document: {
       avatar?: string;
+      clerkUserId?: string;
       createdAt: number;
       email: string;
       emailVerified: number | null;
@@ -1901,6 +1902,7 @@ export type DataModel = {
       | "_creationTime"
       | "_id"
       | "avatar"
+      | "clerkUserId"
       | "createdAt"
       | "email"
       | "emailVerified"
@@ -1913,6 +1915,7 @@ export type DataModel = {
     indexes: {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
+      by_clerk_user_id: ["clerkUserId", "_creationTime"];
       by_email: ["email", "_creationTime"];
     };
     searchIndexes: {};
