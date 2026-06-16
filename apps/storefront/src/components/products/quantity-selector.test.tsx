@@ -49,7 +49,9 @@ describe('components', () => {
         it('renders the quantity selector with initial value', () => {
             render(<QuantitySelector i18n={{} as any} update={() => {}} value={3} />);
 
-            const quantityInput = screen.getByLabelText('quantity');
+            // The fieldset group and the number input share the "quantity" name, so scope to the
+            // spinbutton (type=number) rather than an ambiguous label lookup.
+            const quantityInput = screen.getByRole('spinbutton', { name: 'quantity' });
             expect(quantityInput).toHaveValue(3);
         });
 
@@ -112,6 +114,13 @@ describe('components', () => {
             expect(screen.getByTestId('quantity-increase')).toBeDisabled();
             // ...while decrease stays available to walk the value back down.
             expect(screen.getByTestId('quantity-decrease')).not.toBeDisabled();
+        });
+
+        it('groups the stepper controls in a labeled fieldset', () => {
+            render(<QuantitySelector i18n={{} as any} update={() => {}} value={3} />);
+
+            // With an empty dictionary the key resolves to itself; the point is the group exists.
+            expect(screen.getByRole('group', { name: 'quantity' })).toBeInTheDocument();
         });
 
         it('applies a motion-safe tactile scale to the enabled stepper buttons', () => {

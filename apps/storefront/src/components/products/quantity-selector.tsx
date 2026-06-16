@@ -53,13 +53,14 @@ export type QuantitySelectorProps = {
     allowDecreaseToZero?: boolean;
     buttonClassName?: string;
     inputClassName?: string;
-} & HTMLProps<HTMLDivElement>;
+} & HTMLProps<HTMLFieldSetElement>;
 
 /**
  * Stepper control for entering a purchase quantity, with decrease/increase buttons and a validated
  * text input. The decrease button disables at the lower bound (0 or 1, per `allowDecreaseToZero`) and
  * the increase button disables once the value reaches the shop's `maxQuantity`, so each control gives
- * a clear bound signal instead of silently no-opping.
+ * a clear bound signal instead of silently no-opping. The three controls are grouped in a `<fieldset>`
+ * under one accessible name so assistive tech announces them as a single quantity control.
  *
  * @param props.i18n - Locale dictionary for button and input accessible labels.
  * @param props.value - Controlled quantity value; defaults to 0.
@@ -173,10 +174,14 @@ const QuantitySelector = ({
     const increaseDisabled = disabled || quantity >= maxQuantity;
 
     return (
-        <section
+        // A `<fieldset>` groups the decrease/input/increase controls under one accessible name; the
+        // `m-0 min-w-0` reset clears the UA fieldset margin and `min-inline-size: min-content` so it
+        // still shrinks inside the flex cart-line layout.
+        <fieldset
             {...props}
+            aria-label={t('quantity')}
             className={cn(
-                'flex h-12 min-h-fit w-full overflow-hidden rounded-lg border-(--surface-0) border-2 border-solid bg-(--surface-0) p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
+                'm-0 flex h-12 min-h-fit w-full min-w-0 overflow-hidden rounded-lg border-(--surface-0) border-2 border-solid bg-(--surface-0) p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
                 !disabled && 'opacity-100 focus-within:border-(--border-strong) hover:border-primary',
                 className,
             )}
@@ -247,7 +252,7 @@ const QuantitySelector = ({
             >
                 {'+'}
             </Button>
-        </section>
+        </fieldset>
     );
 };
 
