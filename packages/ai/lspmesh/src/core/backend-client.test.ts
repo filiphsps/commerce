@@ -1,12 +1,13 @@
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { PassThrough } from 'node:stream';
 import { fileURLToPath } from 'node:url';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
 import type { BackendConfig } from '@/config/types';
-import { BackendClient } from '@/core/backend-client';
+import { BackendClient, dropWritesAfterDestroy } from '@/core/backend-client';
 
 const PKG_DIR = fileURLToPath(new URL('../../', import.meta.url));
 const FIXTURE = fileURLToPath(new URL('../../tests/fixtures/echo-lsp-server.ts', import.meta.url));
@@ -56,5 +57,28 @@ describe('BackendClient', () => {
         const pending = client.request('$/never', {}, 60_000);
         await client.dispose();
         await expect(pending).rejects.toThrow();
+    });
+});
+
+describe('dropWritesAfterDestroy', () => {
+    it('forwards writes while the underlying stream is open', async () => {
+        const underlying = new PassThrough();
+        const chunks: Buffer[] = [];
+        underlying.on('data', (c: Buffer) => chunks.push(c));
+        const safe = dropWritesAfterDestroy(underlying);
+        await new Promise<void>((resolve, reject) =>
+            safe.write('hello', (err?: Error | null) => (err ? reject(err) : resolve())),
+        );
+        expect(Buffer.concat(chunks).toString()).toBe('hello');
+    });
+
+    it('silently drops a write issued after the underlying stream is destroyed', async () => {
+        const underlying = new PassThrough();
+        underlying.destroy();
+        const safe = dropWritesAfterDestroy(underlying);
+        // Without the guard, writing to a destroyed pipe rejects with ERR_STREAM_DESTROYED — the
+        // unhandled rejection that crashes the full test run. The callback must fire with no error.
+        const err = await new Promise<Error | null | undefined>((resolve) => safe.write('late', resolve));
+        expect(err == null).toBe(true);
     });
 });

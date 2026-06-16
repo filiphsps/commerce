@@ -1,5 +1,6 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { readFileSync, statSync } from 'node:fs';
+import { Writable } from 'node:stream';
 
 import {
     createMessageConnection,
@@ -12,6 +13,28 @@ import type { BackendConfig } from '@/config/types';
 import { languageIdFor, matchesBackend } from '@/core/routing';
 
 const DEFAULT_TIMEOUT = 45_000;
+
+/**
+ * Wraps a child's stdin so a write issued after the pipe is destroyed (during teardown) resolves
+ * silently instead of rejecting with `ERR_STREAM_DESTROYED`. vscode-jsonrpc serializes writes on an
+ * internal promise chain whose eventual rejection has no catch, so a queued write landing after the
+ * child is killed surfaces as an unhandled rejection that fails the whole test run. Dropping
+ * post-destroy writes (and swallowing any write-callback error) keeps that chain from ever rejecting.
+ *
+ * @param stream - The child's stdin pipe.
+ * @returns A Writable that forwards to `stream` while open and drops writes once it is destroyed or ended.
+ */
+export function dropWritesAfterDestroy(stream: Writable): Writable {
+    return new Writable({
+        write(chunk, encoding, callback) {
+            if (stream.destroyed || stream.writableEnded) {
+                callback();
+                return;
+            }
+            stream.write(chunk, encoding, () => callback());
+        },
+    });
+}
 
 /**
  * A single backend LSP server fronted by lspmesh. Owns the child process and a
@@ -44,7 +67,10 @@ export class BackendClient {
         // bubble up as unhandled rejections.
         stdin.on('error', () => {});
         stdout.on('error', () => {});
-        this.#conn = createMessageConnection(new StreamMessageReader(stdout), new StreamMessageWriter(stdin));
+        this.#conn = createMessageConnection(
+            new StreamMessageReader(stdout),
+            new StreamMessageWriter(dropWritesAfterDestroy(stdin)),
+        );
         this.#conn.onError(() => {});
         this.#conn.onClose(() => this.#die('connection closed'));
         this.#proc.on('exit', (code) => this.#die(`backend "${config.name}" exited (${code})`));
