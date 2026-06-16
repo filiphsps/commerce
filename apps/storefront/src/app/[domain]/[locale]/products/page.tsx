@@ -7,6 +7,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import PageContent from '@/components/page-content';
+import CollectionBlock from '@/components/products/collection-block';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
@@ -104,7 +105,13 @@ async function ProductsShell({ params, children }: { params: ProductsPageParams;
 
             <PageContent>
                 <Heading title={t('products')} titleClassName="capitalize" />
-                {children}
+                {/* The dynamic child (faceted toolbar + filtered grid) depends on the request's facet
+                 * params, so it MUST sit behind a Suspense boundary inside this cached shell — without
+                 * it PPR can't isolate the dynamic hole and the prerendered shell + dynamic resume both
+                 * land in the DOM, duplicating the sort control and breaking its hydration. */}
+                <Suspense key="products.content" fallback={<CollectionBlock.skeleton length={12} />}>
+                    {children}
+                </Suspense>
             </PageContent>
         </>
     );
