@@ -187,11 +187,12 @@ describe('cms access guards (throwing enforcement)', () => {
 });
 
 /**
- * The trusted NextAuth issuer the tenant constructors assert against (via `resolveAdminShopId`).
- * Stubbed for every wiring case so the issuer check is active under `convex-test`, whose
- * `withIdentity` fakes identities WITHOUT Convex's real signature/issuer validation.
+ * The trusted Clerk operator issuer the tenant constructors assert against (via the Clerk-based
+ * operator resolution in `resolveAdminShopId`). Stubbed for every wiring case so the issuer check is
+ * active under `convex-test`, whose `withIdentity` fakes identities WITHOUT Convex's real
+ * signature/issuer validation. Operators authenticate through Clerk after the auth migration.
  */
-const TRUSTED_ISSUER = 'https://admin.test.nordcom.io';
+const CLERK_ISSUER = 'https://clerk.test.nordcom.io';
 
 /** Fixed epoch-ms stamp for seeded rows' managed timestamps; its value is irrelevant to the assertions. */
 const NOW = 1_700_000_000_000;
@@ -284,11 +285,11 @@ const seedOperatorsRef = makeFunctionReference<'mutation'>('cms/access.test:seed
 const guardedWriteRef = makeFunctionReference<'mutation'>('cms/access.test:guardedWriteFixture');
 
 const asOperator = (t: ReturnType<typeof convexTest>, email: string, subject: string) =>
-    t.withIdentity({ issuer: TRUSTED_ISSUER, subject, email });
+    t.withIdentity({ issuer: CLERK_ISSUER, subject, email });
 
 describe('cms access wiring over the tenant deny-default', () => {
     beforeEach(() => {
-        vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+        vi.stubEnv('CLERK_FRONTEND_API_URL', CLERK_ISSUER);
     });
     afterEach(() => {
         vi.unstubAllEnvs();

@@ -8,11 +8,13 @@ import schema from '../schema';
 import { ACTIVE_SHOP_CLAIM, AdminShopResolverErrorCode, resolveActiveAdminShopId } from './admin_shop_resolver';
 
 /**
- * The trusted NextAuth issuer the inherited `lib/auth.ts` identity check asserts against. Stubbed into
- * `CONVEX_AUTH_ISSUER` for every case so `getTrustedIdentity`'s issuer check is active under
- * `convex-test`, whose `withIdentity` fakes identities WITHOUT Convex's real signature/issuer validation.
+ * The trusted Clerk operator issuer the inherited `lib/auth.ts` operator identity check asserts
+ * against. Stubbed into `CLERK_FRONTEND_API_URL` for every case so the Clerk-issuer check is active
+ * under `convex-test`, whose `withIdentity` fakes identities WITHOUT Convex's real signature/issuer
+ * validation. Admin operators authenticate through Clerk after the auth migration, so the resolution
+ * chain validates THIS issuer (not the customer `CONVEX_AUTH_ISSUER`).
  */
-const TRUSTED_ISSUER = 'https://admin.test.nordcom.io';
+const CLERK_ISSUER = 'https://clerk.test.nordcom.io';
 
 /**
  * Seeds a platform user plus `shopCount` shops, each with a `shopCollaborators` row linking the user to
@@ -111,7 +113,7 @@ const resolveActiveShopIdRef = makeFunctionReference<'query'>(
 );
 
 beforeEach(() => {
-    vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+    vi.stubEnv('CLERK_FRONTEND_API_URL', CLERK_ISSUER);
 });
 afterEach(() => {
     vi.unstubAllEnvs();
@@ -123,7 +125,7 @@ describe('resolveActiveAdminShopId', () => {
         const { shops } = await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 1 });
 
         const asOperator = t.withIdentity({
-            issuer: TRUSTED_ISSUER,
+            issuer: CLERK_ISSUER,
             subject: 'github|1',
             email: 'operator@example.com',
         });
@@ -136,7 +138,7 @@ describe('resolveActiveAdminShopId', () => {
         await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 2 });
 
         const asOperator = t.withIdentity({
-            issuer: TRUSTED_ISSUER,
+            issuer: CLERK_ISSUER,
             subject: 'github|1',
             email: 'operator@example.com',
         });
@@ -151,7 +153,7 @@ describe('resolveActiveAdminShopId', () => {
         const { shops } = await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 3 });
 
         const asOperator = t.withIdentity({
-            issuer: TRUSTED_ISSUER,
+            issuer: CLERK_ISSUER,
             subject: 'github|1',
             email: 'operator@example.com',
             [ACTIVE_SHOP_CLAIM]: 'shop_1',
@@ -166,7 +168,7 @@ describe('resolveActiveAdminShopId', () => {
         const foreignLegacyId = await t.mutation(seedForeignShopRef, { legacyId: 'foreign_shop' });
 
         const asOperator = t.withIdentity({
-            issuer: TRUSTED_ISSUER,
+            issuer: CLERK_ISSUER,
             subject: 'github|1',
             email: 'operator@example.com',
             [ACTIVE_SHOP_CLAIM]: foreignLegacyId,
@@ -182,7 +184,7 @@ describe('resolveActiveAdminShopId', () => {
         await t.mutation(seedCollaboratorRef, { email: 'operator@example.com', shopCount: 1 });
 
         const asOperator = t.withIdentity({
-            issuer: TRUSTED_ISSUER,
+            issuer: CLERK_ISSUER,
             subject: 'github|1',
             email: 'operator@example.com',
             [ACTIVE_SHOP_CLAIM]: 'does_not_exist',

@@ -10,11 +10,13 @@ import { systemMutation } from './system';
 import { tenantMutation, tenantQuery } from './tenant';
 
 /**
- * The trusted NextAuth issuer the tenant constructors assert against (via `resolveAdminShopId`). Set into
- * `CONVEX_AUTH_ISSUER` for every case so the issuer check is active under `convex-test`, whose
- * `withIdentity` fakes identities WITHOUT Convex's real signature/issuer validation.
+ * The trusted Clerk operator issuer the tenant constructors assert against (via the Clerk-based
+ * operator resolution in `resolveAdminShopId`). Set into `CLERK_FRONTEND_API_URL` for every case so
+ * the issuer check is active under `convex-test`, whose `withIdentity` fakes identities WITHOUT
+ * Convex's real signature/issuer validation. Operators authenticate through Clerk after the auth
+ * migration, so the tenant resolution chain validates THIS issuer, not `CONVEX_AUTH_ISSUER`.
  */
-const TRUSTED_ISSUER = 'https://admin.test.nordcom.io';
+const CLERK_ISSUER = 'https://clerk.test.nordcom.io';
 
 /**
  * A fixed epoch-ms stamp for seeded rows' managed `createdAt`/`updatedAt`. Its exact value is irrelevant
@@ -142,7 +144,7 @@ const listReviewsRef = makeFunctionReference<'query'>('lib/tenant.test:listRevie
 const addReviewRef = makeFunctionReference<'mutation'>('lib/tenant.test:addReviewFixture');
 
 beforeEach(() => {
-    vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+    vi.stubEnv('CLERK_FRONTEND_API_URL', CLERK_ISSUER);
 });
 afterEach(() => {
     vi.unstubAllEnvs();
@@ -156,7 +158,7 @@ describe('tenantQuery / tenantMutation (server-trusted shopId provenance)', () =
             emailB: 'op-b@example.com',
         });
 
-        const asOperatorA = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op-a@example.com' });
+        const asOperatorA = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' });
         // Operator A passes shop B's id as a spoof — the constructor must pin shop A from the identity.
         const result = await asOperatorA.query(listReviewsRef, { shopId: shopBId });
 
@@ -173,8 +175,8 @@ describe('tenantQuery / tenantMutation (server-trusted shopId provenance)', () =
             emailB: 'op-b@example.com',
         });
 
-        const asOperatorA = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op-a@example.com' });
-        const asOperatorB = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|b', email: 'op-b@example.com' });
+        const asOperatorA = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' });
+        const asOperatorB = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'github|b', email: 'op-b@example.com' });
 
         await asOperatorA.mutation(addReviewRef, {});
 
@@ -196,7 +198,7 @@ describe('tenantQuery / tenantMutation (server-trusted shopId provenance)', () =
         });
         // Operator A now collaborates on BOTH shops — the AMBIGUOUS_SHOP_MEMBERSHIP shape pre-selection.
         await t.mutation(linkCollaboratorRef, { email: 'op-a@example.com', shopLegacyId: 'shop_b' });
-        const base = { issuer: TRUSTED_ISSUER, subject: 'github|a', email: 'op-a@example.com' };
+        const base = { issuer: CLERK_ISSUER, subject: 'github|a', email: 'op-a@example.com' };
 
         await expect(t.withIdentity(base).query(listReviewsRef, {})).rejects.toMatchObject({
             data: { code: AuthErrorCode.AMBIGUOUS_SHOP_MEMBERSHIP },
@@ -220,7 +222,7 @@ describe('tenantQuery / tenantMutation (server-trusted shopId provenance)', () =
         // Operator B forges a claim for shop A — a real shop B does not collaborate on. The
         // selection picks among the operator's own tenants; it can never escalate to a foreign one.
         const asForeign = t.withIdentity({
-            issuer: TRUSTED_ISSUER,
+            issuer: CLERK_ISSUER,
             subject: 'github|b',
             email: 'op-b@example.com',
             [ACTIVE_SHOP_CLAIM]: 'shop_a',
