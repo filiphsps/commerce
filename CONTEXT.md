@@ -86,8 +86,12 @@ A Shopify-aware data fetcher injected at the **Storefront** boundary so the **CM
 _Avoid_: data loader, content loader
 
 **Shop extension manifest**:
-An optional, declarative per-**Shop** config (`ShopExtensionManifest`, `@nordcom/commerce-cms/extensions`) that UNIFIES — never forks — the five existing per-shop composition surfaces: theme tokens (`resolveTheme`), chrome slot order (`resolveChromeLayout`), section visibility, available **Block** types (`BLOCK_TYPES` / `isBlockType`), and product-card variant selections. CMS-safe — the type and its pure `resolveExtensions` composer import only the db theme leaf, the errors package, and CMS-internal schemas; never React, Shopify, the **Storefront**, or a **Provider token** — so the **Block loader** firewall holds. An absent or empty manifest composes byte-identically to today's render.
+An optional, declarative per-**Shop** config (`ShopExtensionManifest`, `@nordcom/commerce-cms/extensions`) that UNIFIES — never forks — the per-shop surfaces `resolveExtensions` composes: theme tokens (`resolveTheme`), chrome slot order (`resolveChromeLayout`), section visibility, available **Block** types (`BLOCK_TYPES` / `isBlockType`), and a **Component setting** registry of store-wide defaults (product-card variant selections, per-block defaults, and the build-notifier banner config). The registry is extensible — a new configurable component appends a `COMPONENT_SETTINGS` entry plus a `ResolvedExtensions` field, not a new manifest concept; don't hard-count the surfaces. CMS-safe — the type and its pure `resolveExtensions` composer import only the db theme leaf, the errors package, and CMS-internal schemas; never React, Shopify, the **Storefront**, or a **Provider token** — so the **Block loader** firewall holds. An absent or empty manifest composes byte-identically to today's render.
 _Avoid_: theme config, shop settings, plugin manifest
+
+**Component setting**:
+A per-**Shop** store-wide default for one configurable **Storefront** component, declared as a `COMPONENT_SETTINGS` entry (`@nordcom/commerce-cms/extensions`) and folded into `ResolvedExtensions` by `resolveExtensions`. Each setting is `overridable` — the editor renders an inherit/override control and the stored value omits inherited keys (the cascade falls through to a platform or localized default). Today: the **Product card** and the build-notifier banner. NOT a **Feature flag** — it carries no global `key` or `targeting[]`; it is per-shop presentation config layered over a default, not a globally-targeted toggle.
+_Avoid_: feature flag, shop setting, component config, plugin setting
 
 **Extension code sandbox** (deferred):
 The future, separate security project that would load and execute untrusted third-party extension code or remote assets at runtime, layered atop the **Block loader** firewall. NOT built today: the **Shop extension manifest** is data-only, and component registration happens via statically-imported, in-repo `register*` entrypoints on the **Storefront** side (`registerProductCardPicker` / `registerProductCardCta`, surfaced by `registerExtensionComponents`). **Block** and chrome dispatch are compile-time-exhaustive records with no runtime register API.
@@ -106,7 +110,7 @@ _Avoid_: plain Error, custom Error, exception
 ### Configuration
 
 **Feature flag**:
-A globally-defined named toggle with a `key`, `defaultValue`, optional `options[]`, and `targeting[]` rules. A **Shop** opts in by storing a ref to a flag.
+A globally-defined named toggle with a `key`, `defaultValue`, optional `options[]`, and `targeting[]` rules. A **Shop** opts in by storing a ref to a flag. Distinct from a **Component setting**: a flag is global + targeted; a setting is per-shop component config with no key/targeting.
 _Avoid_: flag, switch, toggle, A/B variant
 
 **Collaborator**:
