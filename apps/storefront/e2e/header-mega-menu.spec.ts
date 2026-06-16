@@ -48,6 +48,21 @@ test.describe('Header mega-menu — responsive', () => {
         });
     }
 
+    test('hovering a trigger does not shift the page horizontally at 1280px', async ({ page }) => {
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await page.goto('/');
+        const trigger = page.locator('nav button[aria-haspopup="menu"]').first();
+        await expect(trigger).toBeVisible({ timeout: 30_000 });
+
+        // The desktop nav is `md:overflow-visible`; a stray `scrollIntoView` would bubble to
+        // <body> (`overflow-x: hidden`, a silent x-scroll container) and lurch the page sideways.
+        const before = await page.evaluate(() => ({ win: window.scrollX, body: document.body.scrollLeft }));
+        await trigger.hover();
+        await page.waitForTimeout(500);
+        const after = await page.evaluate(() => ({ win: window.scrollX, body: document.body.scrollLeft }));
+        expect(after).toEqual(before);
+    });
+
     test('opening a trailing trigger scrolls the nav into view at 375px', async ({ page }) => {
         await page.setViewportSize({ width: 375, height: 667 });
         await page.goto('/');

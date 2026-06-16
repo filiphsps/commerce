@@ -173,7 +173,17 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
     const scrollTriggerIntoView = useCallback(() => {
         const el = triggerRef.current;
         if (!el) return;
-        el.scrollIntoView({ block: 'nearest', inline: 'start', behavior: 'smooth' });
+        // Only the mobile nav (`max-md:overflow-x-auto`) is a horizontal scroller, where an
+        // opened trigger may sit off-screen. `el.scrollIntoView({ inline: 'start' })` is NOT
+        // used: the desktop nav is `md:overflow-visible`, so the scroll bubbles past it to
+        // <body>, whose `overflow-x: hidden` is still a programmatic x-scroll container — the
+        // whole page lurches sideways on hover. Scroll the nav box directly, and only when it
+        // actually overflows, so desktop hover is a no-op.
+        const nav = el.closest('nav');
+        if (!nav || nav.scrollWidth <= nav.clientWidth) return;
+        const elRect = el.getBoundingClientRect();
+        const navRect = nav.getBoundingClientRect();
+        nav.scrollBy({ left: elRect.left - navRect.left, behavior: 'smooth' });
     }, []);
 
     const wasOpenRef = useRef(false);
