@@ -23,6 +23,7 @@ const PACKAGE_CATEGORY: Readonly<Record<string, string>> = {
     'shopify-graphql': 'shopify',
     'shopify-html': 'shopify',
     'react-payment-brand-icons': 'ui',
+    'next-build-notifier': 'next',
 };
 
 type PackageEntry = { slug: string; root: string; type: 'app' | 'package' };

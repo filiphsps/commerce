@@ -8,6 +8,8 @@ content/apps/*/
 content/packages/applications/
 content/packages/cart/
 content/packages/core/
+content/packages/next/
+content/packages/next-build-notifier/
 content/packages/shopify/
 content/packages/tagtree/
 content/packages/ui/
