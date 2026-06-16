@@ -321,11 +321,24 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   arrow labels (one `getDictionary` call covers both).
 - Verified: six locale JSONs valid, biome clean, typecheck clean, CMS collection block 6/6.
 
-#### Candidate slices for future iterations (audit backlog)
+### 27 — Extract the shared option-overflow button class
 
-- Remaining literal `aria-label="Close"` / `Show all … options` in
-  `product-options/primitives/overlay` — the product-options Root/context carry no i18n, so this needs
-  threading i18n through the whole option system (sizeable; deferred).
+- The long `product-options-more …` button className was duplicated byte-for-byte across four call
+  sites — `More` plus the `Overlay`'s SSR / desktop / mobile "show all" triggers — so the chassis
+  could silently drift apart.
+- Extracted it to a single exported `MORE_BUTTON_CLASS` in `more.tsx` (the control's canonical home)
+  and consumed it from `overlay.tsx`'s three triggers. Byte-identical render; one source of truth.
+- Verified: biome clean, typecheck clean, product-options + picker 109/109.
+
+#### Notes / deferred
+
+- Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
+  693-line stateful client component — decomposition is high-risk for a single loop pass.
+- `FilterValues` BOOLEAN/PRICE_RANGE stubs are unused in production (the live filter is
+  `ProductFilters`, which already has availability + price); not worth implementing.
+- Product-options overlay/more aria-labels (`Close`, `Show all … options`) stay English: the
+  product-options Root/context carry no i18n and it's SR-only text on an overflow control — touching
+  the core context for every PDP/card isn't worth it. Logged, not done.
 - `theme.ts` serializer only emits `--color-accent-*` `if (branding)`, and the `@theme inline`
   `--color-{primary,secondary}-*` mappings have no `var(…, fallback)` — a truly branding-less shop
   would have unresolved `bg-primary`/`bg-secondary-light`. Needs verifying whether `branding` is ever
