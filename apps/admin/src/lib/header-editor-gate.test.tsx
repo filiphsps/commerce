@@ -54,7 +54,6 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/gate-shop.example.com/content/header/',
     useParams: () => ({ domain: 'gate-shop.example.com' }),
     useSearchParams: () => new URLSearchParams('locale=en-US'),
-    useParams: () => ({ domain: 'gate-shop.example.com' }),
 }));
 vi.mock('next/link', () => ({
     default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
