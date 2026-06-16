@@ -1,5 +1,6 @@
 import type { FieldRegistry } from '@nordcom/commerce-cms/editor/form';
 
+import { AdminUploadField } from './media-picker-field';
 import {
     AdminCheckboxField,
     AdminDateField,
@@ -11,11 +12,12 @@ import {
 
 /**
  * Overrides the library's bare scalar leaf widgets with the admin's
- * design-system controls. Passed to `<EditorFields>` via the
- * `FieldWidgetsProvider` seam, so registration runs AFTER the built-ins
- * (last-write-wins) and only the kinds listed here are replaced — composites
- * (`group`/`array`/`blocks`), the rich-text `json` claim, and the data-bound
- * relationship/upload widgets keep their library renderers.
+ * design-system controls, plus the `upload` widget with the Shopify-style media
+ * picker. Passed to `<EditorFields>` via the `FieldWidgetsProvider` seam, so
+ * registration runs AFTER the built-ins (last-write-wins) and only the kinds
+ * listed here are replaced — composites (`group`/`array`/`blocks`), the
+ * rich-text `json` claim, and the data-bound `relationship` widget keep their
+ * library renderers.
  *
  * The `select` kind is intentionally NOT overridden: it keeps the library's
  * native `<select>` (restyled via the shared field-control chrome) so it stays a
@@ -35,4 +37,5 @@ export function registerAdminFieldWidgets(registry: FieldRegistry): void {
     registry.register('email', AdminEmailField);
     registry.register('date', AdminDateField);
     registry.register('checkbox', AdminCheckboxField);
+    registry.register('upload', AdminUploadField);
 }
