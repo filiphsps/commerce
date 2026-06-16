@@ -64,6 +64,25 @@ export type ResolvedExtensions = {
      * defaults. Empty when the manifest carries no block defaults.
      */
     blockDefaults: Record<string, Record<string, unknown>>;
+    /**
+     * Fully-resolved per-shop build-notifier config: each field is the store's manifest override layered
+     * over the platform default, so every field is populated. The storefront renders the banner straight
+     * from this. With an absent/empty manifest it equals the platform defaults
+     * (`enabled` on, `position` `bottom`, `autoReload` off, `dismissable` on); `copy` stays undefined and
+     * the storefront falls back to its localized default copy.
+     */
+    buildNotifier: {
+        /** Whether the notifier is shown. */
+        enabled: boolean;
+        /** Resolved banner placement. */
+        position: 'top' | 'bottom';
+        /** Resolved banner text, or undefined to use the storefront's localized default copy. */
+        copy?: string;
+        /** Whether a new build reloads the page automatically. */
+        autoReload: boolean;
+        /** Whether the visitor can dismiss the banner. */
+        dismissable: boolean;
+    };
 };
 
 /**
@@ -165,6 +184,15 @@ export function resolveExtensions(input: ResolveExtensionsInput): ResolvedExtens
         }
     }
 
+    const bn = manifest?.buildNotifier;
+    const buildNotifier = {
+        enabled: bn?.enabled ?? true,
+        position: bn?.position ?? 'bottom',
+        copy: bn?.copy,
+        autoReload: bn?.autoReload ?? false,
+        dismissable: bn?.dismissable ?? true,
+    } satisfies ResolvedExtensions['buildNotifier'];
+
     return {
         theme,
         chrome,
@@ -172,5 +200,6 @@ export function resolveExtensions(input: ResolveExtensionsInput): ResolvedExtens
         blocks: { available, isAvailable: isBlockAvailable },
         productCard,
         blockDefaults,
+        buildNotifier,
     };
 }
