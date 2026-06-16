@@ -7,7 +7,10 @@ import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';
 
 /**
- * Renders the interactive value list for a single Shopify collection filter.
+ * Renders the interactive value list for a single Shopify collection filter. `LIST` values are
+ * URL-driven toggles: selecting a value sets the filter query param, and clicking the already-active
+ * value clears it (the active value is marked `aria-current` / `data-active`). `BOOLEAN` and
+ * `PRICE_RANGE` are not yet implemented.
  *
  * @param props.id - Filter identifier used as the URL query key.
  * @param props.type - Shopify filter type (`LIST`, `BOOLEAN`, `PRICE_RANGE`, etc.).
@@ -33,16 +36,26 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
                 <div className={cn('flex flex-wrap gap-1')}>
                     {values.map(({ label, id: _id, count, swatch }) => {
                         const id = _id.split('.').at(-1)!;
-                        const active = searchParams.has(filterId) && searchParams.get(filterId) === id;
+                        const active = searchParams.get(filterId) === id;
 
-                        searchParams.delete(filterId);
-                        searchParams.set(filterId, id);
+                        // Toggle semantics: an active value links to clearing itself so a shopper can
+                        // deselect a facet by clicking it again. Build each href from a fresh copy so
+                        // one value's mutation never leaks into the next iteration.
+                        const params = new URLSearchParams(searchParams);
+                        if (active) {
+                            params.delete(filterId);
+                        } else {
+                            params.set(filterId, id);
+                        }
+                        const query = params.toString();
 
                         return (
                             <Link
                                 key={id}
                                 data-value={id}
-                                href={`${baseUrl}${searchParams.size > 0 ? `?${searchParams.toString()}` : ''}`}
+                                data-active={active || undefined}
+                                aria-current={active ? 'true' : undefined}
+                                href={`${baseUrl}${query ? `?${query}` : ''}`}
                                 replace={true}
                                 shallow={true}
                                 prefetch={false}
@@ -54,7 +67,7 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
                                 {swatch?.color ? (
                                     <span
                                         aria-hidden={true}
-                                        className="inline-block h-3 w-3 rounded-full border border-(--border-default) border-solid"
+                                        className="inline-block size-3 rounded-full border border-(--border-default) border-solid"
                                         style={{ backgroundColor: swatch.color }}
                                     />
                                 ) : null}

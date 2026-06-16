@@ -1,11 +1,17 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FilterValues } from '@/components/actionable/filter-values';
 import { render } from '@/utils/test/react';
 
+// `mock`-prefixed so the hoisted vi.mock factory may reference it; reset before each test.
+let mockSearchParams = new URLSearchParams();
 vi.mock('next/navigation', () => ({
     usePathname: () => '/en-US/products',
-    useSearchParams: () => new URLSearchParams(),
+    useSearchParams: () => mockSearchParams,
 }));
+
+beforeEach(() => {
+    mockSearchParams = new URLSearchParams();
+});
 
 describe('components', () => {
     describe('FilterValues', () => {
@@ -90,6 +96,39 @@ describe('components', () => {
                 />,
             );
             expect(container.textContent).toContain('(42)');
+        });
+
+        it('links an inactive LIST value to setting its filter param', () => {
+            const { container } = render(
+                <FilterValues
+                    id={'size'}
+                    type={'LIST'}
+                    values={[{ id: 'size.s', label: 'Small', count: 2, input: {} } as any]}
+                />,
+            );
+            const link = container.querySelector('a[data-value="s"]')!;
+            expect(link.getAttribute('href')).toBe('/en-US/products?size=s');
+            expect(link.getAttribute('aria-current')).toBeNull();
+        });
+
+        it('toggles an active LIST value off by clearing its filter param', () => {
+            mockSearchParams = new URLSearchParams('size=s');
+            const { container } = render(
+                <FilterValues
+                    id={'size'}
+                    type={'LIST'}
+                    values={[
+                        { id: 'size.s', label: 'Small', count: 2, input: {} } as any,
+                        { id: 'size.m', label: 'Medium', count: 5, input: {} } as any,
+                    ]}
+                />,
+            );
+            const active = container.querySelector('a[data-value="s"]')!;
+            // Clicking the active value removes it entirely — the deselect path.
+            expect(active.getAttribute('href')).toBe('/en-US/products');
+            expect(active.getAttribute('aria-current')).toBe('true');
+            // A sibling value swaps the selection rather than stacking.
+            expect(container.querySelector('a[data-value="m"]')!.getAttribute('href')).toBe('/en-US/products?size=m');
         });
 
         it('parses and renders a PRICE_RANGE type', () => {
