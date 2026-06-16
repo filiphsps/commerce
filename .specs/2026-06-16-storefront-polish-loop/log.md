@@ -107,8 +107,21 @@ Guiding principles (from the task + repo design system):
   landmark, and a single current marker.
 - Verified: biome clean, typecheck clean, breadcrumbs 3/3.
 
+### 9 — Input primitive: restore the keyboard focus indicator
+
+- The shared `Input` / `MultilineInput` primitives did `focus:outline-none focus:ring-0` with **no
+  replacement**, removing the keyboard focus indicator on every input that uses them (WCAG 2.4.7).
+- Swapped both for the shared, tenant-themeable `focus-ring` utility (token `--focus-ring`, keyboard-
+  only via `:focus-visible`). Removed the now-redundant focus suppression from the quantity-selector
+  input so the indicator applies cleanly (the box keeps its `focus-within` border as a mouse affordance).
+- Added input tests (focus-ring present, no `focus:outline-none`, className merge); quantity-selector
+  suite still green.
+- Verified: biome clean, typecheck clean, input + quantity 13/13.
+
 #### Candidate slices for future iterations (audit backlog)
 
+- Audit remaining `focus:outline-none` without a replacement ring across the storefront (header search,
+  cart inputs, links) — same WCAG 2.4.7 class of issue.
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
   /products, collections, and search as the shared faceted aside (per the overhaul spec).
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
