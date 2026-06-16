@@ -46,7 +46,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 'group grid h-10 grid-cols-[auto_1fr] grid-rows-[1fr] items-center justify-center gap-0 overflow-clip rounded-none bg-transparent p-0 py-0 text-center leading-none transition-all duration-250 *:leading-snug',
                 totalQuantity &&
                     'gap-2 rounded-3xl bg-primary fill-primary-foreground stroke-primary-foreground px-4 text-primary-foreground shadow',
-                !totalQuantity && 'text-base text-black shadow-none hover:shadow-none',
+                !totalQuantity && 'text-(color:var(--text)) text-base shadow-none hover:shadow-none',
             )}
             data-items={totalQuantity || 0}
             title={capitalize(t('view-cart'))}

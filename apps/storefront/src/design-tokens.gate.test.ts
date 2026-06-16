@@ -36,6 +36,11 @@ const BANNED_UTILITIES: ReadonlyArray<{ readonly name: string; readonly pattern:
     { name: 'text-amber-*', pattern: /\btext-amber-\d/ },
     { name: 'bg-white', pattern: /\bbg-white\b/ },
     { name: 'text-white', pattern: /\btext-white\b/ },
+    // Bare black ink on a themeable surface (no tenant theme can recolor it, illegible on dark
+    // surfaces). The `(?!\/)` exempts translucent `bg-black/40` scrims and `border-black/[0.06]`
+    // hairlines, which are intentional overlays rather than theme ink.
+    { name: 'text-black', pattern: /\btext-black\b(?!\/)/ },
+    { name: 'border-black', pattern: /\bborder-black\b(?!\/)/ },
 ];
 
 // Reasons a file may retain a banned utility. Each maps to a genuine gap, not an unmigrated oversight
