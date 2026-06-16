@@ -1,7 +1,7 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
     "name": "@tagtree/core",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "private": false,
     "sideEffects": false,
     "type": "module",

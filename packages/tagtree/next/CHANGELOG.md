@@ -1,5 +1,14 @@
 # @tagtree/next
 
+## 0.0.5
+
+### Patch Changes
+
+- [`67e3ee6`](https://github.com/filiphsps/commerce/commit/67e3ee60dd18f26aae86341286b902e0cfc6e18c) Thanks [@filiphsps](https://github.com/filiphsps)! - Run unit tests per-package through turbo so an unchanged package restores its result from the build cache instead of re-running; coverage is merged across packages and floor-gated as before. Tooling-only — no change to published output.
+
+- Updated dependencies [[`67e3ee6`](https://github.com/filiphsps/commerce/commit/67e3ee60dd18f26aae86341286b902e0cfc6e18c)]:
+  - @tagtree/core@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
