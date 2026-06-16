@@ -395,3 +395,22 @@ client `clerk/backend_client.ts`. **NOT client-callable** (internal-only).
    `packages/convex/convex/_generated/dataModel.d.ts` is hand-synced as the schema evolves
    (Tasks 1.1–1.4, 3.x). **Deploy checklist:** run real `convex codegen` against the
    deployment before/at deploy and confirm `_generated/` matches the live schema (no drift).
+9. **Rebase-surfaced fixes to clear before merge** (CI is red on these by design; intentionally
+   deferred — re-rebased onto master without touching them):
+   - **`packages/test-convex/src/unit.test.ts`** (`FORGED_IDENTITY`) — the round-trip exercises the
+     tenant tier, which now validates a **Clerk** operator, but the test still stubs
+     `CONVEX_AUTH_ISSUER` and feeds a NextAuth-shaped identity. Fix: `vi.stubEnv('CLERK_FRONTEND_API_URL', …)`
+     instead, and a Clerk-shaped `subject` (`user_…`). Latent until now because test-convex's turbo
+     `test` cache key excludes `packages/convex/**`, so the source change never invalidated its shard —
+     the rebase forced a fresh run that surfaced it.
+   - **Storefront `search/search-content-gate.test.tsx`** (3 fails) — **master-introduced**, not this
+     migration. `SearchContentGate` is an `async` server component (`await SearchApi(...)`) that the
+     test sync-`render`s without mocking `@/api/_loaders`, so the promise never resolves and nothing
+     renders (`[data-testid="search-content"]` missing). Arrives with master's search-singleton feature;
+     fix by mocking `SearchApi` (or awaiting the rendered output) in that spec.
+   - **CI convex auth-config env** — the `convex` CLI statically scans `auth.config.ts` for
+     `process.env.*` refs and hard-errors when they are unset on the target backend:
+     `CONVEX_AUTH_ISSUER` and now `CLERK_FRONTEND_API_URL_PROD`. Fix: set BOTH (plus the existing
+     `CLERK_FRONTEND_API_URL`) on the ephemeral local backend CI boots via the `startConvex()` harness,
+     so codegen / `deploy --dry-run` validation passes against a local convex db rather than a
+     misconfigured remote.
