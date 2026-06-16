@@ -1126,6 +1126,7 @@ export type DataModel = {
   shops: {
     document: {
       alternativeDomains?: Array<string>;
+      clerkOrgId?: string;
       commerce?: { maxQuantity?: number; processingTimeInDays?: number };
       commerceProvider:
         | {
@@ -1501,6 +1502,7 @@ export type DataModel = {
       | "_creationTime"
       | "_id"
       | "alternativeDomains"
+      | "clerkOrgId"
       | "commerce"
       | "commerce.maxQuantity"
       | "commerce.processingTimeInDays"
@@ -1868,6 +1870,7 @@ export type DataModel = {
     indexes: {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
+      by_clerk_org: ["clerkOrgId", "_creationTime"];
       by_legacy_id: ["legacyId", "_creationTime"];
     };
     searchIndexes: {};

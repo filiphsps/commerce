@@ -1,6 +1,11 @@
+import { makeFunctionReference } from 'convex/server';
+import { v } from 'convex/values';
 import { validate } from 'convex-helpers/validators';
+import { convexTest } from 'convex-test';
 import { describe, expect, it } from 'vitest';
 
+import { systemMutation, systemQuery } from '../_constructors';
+import schema from '../schema';
 import {
     featureFlagValidator,
     shopCollaboratorValidator,
@@ -189,5 +194,98 @@ describe('featureFlagValidator', () => {
             updatedAt: 1_700_000_100_000,
         };
         expect(validate(featureFlagValidator, flag)).toBe(true);
+    });
+});
+
+/**
+ * A fixed epoch-ms timestamp used wherever `createdAt`/`updatedAt` are required. The exact
+ * value is irrelevant; it only satisfies the required numeric timestamp validators.
+ */
+const NOW = 1_700_000_000_000;
+
+/**
+ * Minimal `shops` row: only the required leaves are present. The optional groups
+ * (`i18n`, `commerce`, `icons`, `integrations`, `thirdParty`, `alternativeDomains`,
+ * `description`, `showProductVendor`, `theme`, `extensions`) are all absent so the fixture
+ * stays as slim as possible while still satisfying `shopValidator`.
+ */
+const insertShop = systemMutation({
+    args: { clerkOrgId: v.optional(v.string()) },
+    handler: async (ctx, { clerkOrgId }) =>
+        ctx.db.insert('shops', {
+            legacyId: 'aabbccddee1122334455aabb',
+            name: 'Test Shop',
+            domain: 'test.example.com',
+            design: {
+                header: { logo: { width: 64, height: 64, src: 'https://cdn/logo.png', alt: 'Test' } },
+                accents: [{ type: 'primary', color: '#000000', foreground: '#ffffff' }],
+            },
+            commerceProvider: { type: 'stripe', authentication: {} },
+            createdAt: NOW,
+            updatedAt: NOW,
+            clerkOrgId,
+        }),
+});
+
+/**
+ * Queries `shops` via the `by_clerk_org` index and returns the `clerkOrgId` of the first
+ * matching row, or `null` if no row matches.
+ */
+const findShopByClerkOrg = systemQuery({
+    args: { clerkOrgId: v.string() },
+    handler: async (ctx, { clerkOrgId }) => {
+        const row = await ctx.db
+            .query('shops')
+            .withIndex('by_clerk_org', (q) => q.eq('clerkOrgId', clerkOrgId))
+            .first();
+        if (row === null) return null;
+        return row.clerkOrgId ?? null;
+    },
+});
+
+/**
+ * Hand-built module map for `convex-test`. The `_generated/server.js` key is required so
+ * `convex-test`'s module-root detection can derive the shared `/convex/` prefix. The fixtures
+ * are mapped to this module's path so they resolve by `FunctionReference`.
+ */
+const modules = {
+    '/convex/_generated/server.js': () => Promise.resolve({}),
+    '/convex/tables/shops.test.ts': () =>
+        Promise.resolve({
+            insertShop,
+            findShopByClerkOrg,
+        }),
+};
+
+const insertShopRef = makeFunctionReference<'mutation'>('tables/shops.test:insertShop');
+const findShopByClerkOrgRef = makeFunctionReference<'query'>('tables/shops.test:findShopByClerkOrg');
+
+describe('shops.clerkOrgId + by_clerk_org index', () => {
+    it('inserts a shop with clerkOrgId and resolves it via the by_clerk_org index', async () => {
+        const t = convexTest(schema, modules);
+
+        await t.mutation(insertShopRef, { clerkOrgId: 'org_1' });
+
+        const found = await t.query(findShopByClerkOrgRef, { clerkOrgId: 'org_1' });
+
+        expect(found).toBe('org_1');
+    });
+
+    it('returns null from by_clerk_org when no shop carries that clerkOrgId', async () => {
+        const t = convexTest(schema, modules);
+
+        const found = await t.query(findShopByClerkOrgRef, { clerkOrgId: 'org_missing' });
+
+        expect(found).toBeNull();
+    });
+
+    it('accepts a shop row where clerkOrgId is absent (existing rows without an owner)', async () => {
+        const t = convexTest(schema, modules);
+
+        await t.mutation(insertShopRef, {});
+
+        const found = await t.query(findShopByClerkOrgRef, { clerkOrgId: 'org_1' });
+
+        expect(found).toBeNull();
     });
 });
