@@ -65,6 +65,14 @@ const PRODUCTS_PAGINATION_COUNT_QUERY = graphql(`
                 cursor
                 node {
                     id
+                    vendor
+                    productType
+                    availableForSale
+                    priceRange {
+                        minVariantPrice {
+                            amount
+                        }
+                    }
                 }
             }
             pageInfo {
@@ -76,6 +84,68 @@ const PRODUCTS_PAGINATION_COUNT_QUERY = graphql(`
         }
     }
 `);
+
+/** Facet data aggregated across the products-count traversal, used to synthesize the listing filters. */
+type FacetAggregation = {
+    vendors: Map<string, number>;
+    productTypes: Map<string, number>;
+    anyAvailable: boolean;
+    minPrice: number;
+    maxPrice: number;
+};
+
+/**
+ * Synthesizes the `Filter[]` the listing UI consumes from facet data aggregated across the
+ * products-count walk. The Storefront API only returns faceted `filters` for `Collection.products`
+ * and `search`, never the root `products` connection, so the all-products page would otherwise have no
+ * facets and its filter control stays disabled. Vendor and product-type groups carry per-value counts;
+ * availability and price are emitted as control-only groups (the UI renders a checkbox and a min/max
+ * range for those, ignoring `values`). Ids embed the substrings (`vendor`, `product_type`,
+ * `availability`, `price`) the UI's `facetKind` classifier maps on.
+ *
+ * @param aggregation - Vendor/type counts, availability flag, and price bounds from the walk.
+ * @returns The synthesized facet filters, omitting any group with no data.
+ */
+const buildFacetFilters = ({ vendors, productTypes, anyAvailable, minPrice, maxPrice }: FacetAggregation): Filter[] => {
+    const filters: Filter[] = [];
+
+    if (anyAvailable) {
+        filters.push({ id: 'filter.v.availability', label: 'Availability', type: 'BOOLEAN', values: [] });
+    }
+
+    const toValues = (counts: Map<string, number>, prefix: string) =>
+        [...counts.entries()]
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([label, count]) => ({ id: `${prefix}.${label}`, label, count, input: '' }));
+
+    const vendorValues = toValues(vendors, 'filter.p.vendor');
+    if (vendorValues.length > 0) {
+        filters.push({
+            id: 'filter.p.vendor',
+            label: 'Vendor',
+            type: 'LIST',
+            presentation: 'TEXT',
+            values: vendorValues,
+        });
+    }
+
+    const typeValues = toValues(productTypes, 'filter.p.product_type');
+    if (typeValues.length > 0) {
+        filters.push({
+            id: 'filter.p.product_type',
+            label: 'Product type',
+            type: 'LIST',
+            presentation: 'TEXT',
+            values: typeValues,
+        });
+    }
+
+    if (Number.isFinite(minPrice) && Number.isFinite(maxPrice)) {
+        filters.push({ id: 'filter.v.price', label: 'Price', type: 'PRICE_RANGE', values: [] });
+    }
+
+    return filters;
+};
 
 export type ProductsFilters = {
     after?: Nullable<string>;
@@ -95,7 +165,8 @@ export type ProductsOptions = ApiOptions & {
  * @param options - Storefront API client and pagination/sorting constraints for the count traversal.
  * @param options.api - Storefront API client.
  * @param options.filters - Pagination and sorting constraints.
- * @returns Object with total `pages`, total `products`, and `cursors` for cursor-based navigation.
+ * @returns Object with total `pages`, total `products`, `cursors` for cursor-based navigation, and the
+ *   synthesized facet `filters` for the result set (the root `products` connection returns none).
  * @throws {ProviderFetchError} When the Shopify query returns errors.
  */
 export const ProductsPaginationCountApi = async ({
@@ -105,6 +176,7 @@ export const ProductsPaginationCountApi = async ({
     pages: number;
     products: number;
     cursors: string[];
+    filters: Filter[];
 }> => {
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as ProductsFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
@@ -114,6 +186,16 @@ export const ProductsPaginationCountApi = async ({
     // cursor from a wide walk reconstructs the narrow per-page boundaries while issuing ~7x fewer
     // serial round-trips (a 35/page display no longer forces ceil(N/35) blocking calls).
     const TRAVERSAL_PAGE_SIZE = 250;
+
+    // Aggregated from the same walk so the synthesized facet filters cover the entire matching set,
+    // not just the displayed page.
+    const aggregation: FacetAggregation = {
+        vendors: new Map<string, number>(),
+        productTypes: new Map<string, number>(),
+        anyAvailable: false,
+        minPrice: Number.POSITIVE_INFINITY,
+        maxPrice: Number.NEGATIVE_INFINITY,
+    };
 
     const collectCursors = async (allCursors: string[] = [], after: string | null = null): Promise<string[]> => {
         const { data, errors } = await api.query(
@@ -147,7 +229,24 @@ export const ProductsPaginationCountApi = async ({
             return allCursors;
         }
 
-        for (const edge of edges) allCursors.push(edge.cursor ?? '');
+        for (const edge of edges) {
+            allCursors.push(edge.cursor ?? '');
+
+            const node = edge.node;
+            if (node.vendor) aggregation.vendors.set(node.vendor, (aggregation.vendors.get(node.vendor) ?? 0) + 1);
+            if (node.productType) {
+                aggregation.productTypes.set(
+                    node.productType,
+                    (aggregation.productTypes.get(node.productType) ?? 0) + 1,
+                );
+            }
+            if (node.availableForSale) aggregation.anyAvailable = true;
+            const price = Number(node.priceRange.minVariantPrice.amount);
+            if (Number.isFinite(price)) {
+                aggregation.minPrice = Math.min(aggregation.minPrice, price);
+                aggregation.maxPrice = Math.max(aggregation.maxPrice, price);
+            }
+        }
 
         if (products.pageInfo.hasNextPage) {
             return collectCursors(allCursors, edges.at(-1)?.cursor ?? '');
@@ -174,6 +273,7 @@ export const ProductsPaginationCountApi = async ({
         pages,
         cursors,
         products,
+        filters: buildFacetFilters(aggregation),
     };
 };
 

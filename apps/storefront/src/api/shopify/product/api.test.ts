@@ -1,7 +1,7 @@
 import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { describe, expect, it, vi } from 'vitest';
 
-import { ProductApi, ProductHandlesApi, ProductsApi, ProductsPaginationApi } from './index';
+import { ProductApi, ProductHandlesApi, ProductsApi, ProductsPaginationApi, ProductsPaginationCountApi } from './index';
 
 vi.mock('@apollo/client', () => ({
     gql: vi.fn(),
@@ -217,6 +217,82 @@ describe('api', () => {
                     await expect(ProductsPaginationApi({ api: api as any, filters: {} })).rejects.toMatchObject({
                         name: ProviderFetchError.name,
                     });
+                });
+            });
+
+            describe('ProductsPaginationCountApi', () => {
+                const makeApi = (queryMock: ReturnType<typeof vi.fn>) => ({
+                    shop: vi.fn(() => ({ id: 'mock-shop-id' })),
+                    query: queryMock,
+                    locale: vi.fn(() => ({ code: 'en-US' })),
+                });
+
+                it('synthesizes facet filters from the walk the root products connection omits', async () => {
+                    const api = makeApi(
+                        vi.fn().mockResolvedValue({
+                            data: {
+                                products: {
+                                    edges: [
+                                        {
+                                            cursor: 'c1',
+                                            node: {
+                                                id: 'p1',
+                                                vendor: 'Acme',
+                                                productType: 'Shoes',
+                                                availableForSale: true,
+                                                priceRange: { minVariantPrice: { amount: '10.0' } },
+                                            },
+                                        },
+                                        {
+                                            cursor: 'c2',
+                                            node: {
+                                                id: 'p2',
+                                                vendor: 'Globex',
+                                                productType: '',
+                                                availableForSale: false,
+                                                priceRange: { minVariantPrice: { amount: '50.0' } },
+                                            },
+                                        },
+                                    ],
+                                    pageInfo: {
+                                        startCursor: 'c1',
+                                        endCursor: 'c2',
+                                        hasNextPage: false,
+                                        hasPreviousPage: false,
+                                    },
+                                },
+                            },
+                            errors: null,
+                        }),
+                    );
+
+                    const result = await ProductsPaginationCountApi({ api: api as any, filters: { first: 35 } });
+
+                    expect(result.products).toBe(2);
+
+                    const ids = result.filters.map((filter) => filter.id);
+                    expect(ids).toContain('filter.v.availability');
+                    expect(ids).toContain('filter.p.vendor');
+                    expect(ids).toContain('filter.p.product_type');
+                    expect(ids).toContain('filter.v.price');
+
+                    const vendor = result.filters.find((filter) => filter.id === 'filter.p.vendor');
+                    expect(vendor?.values.map((value) => value.label)).toEqual(['Acme', 'Globex']);
+                    expect(vendor?.values.every((value) => value.count === 1)).toBe(true);
+
+                    // An empty productType (p2) is dropped, so only the populated type surfaces as a facet.
+                    const type = result.filters.find((filter) => filter.id === 'filter.p.product_type');
+                    expect(type?.values.map((value) => value.label)).toEqual(['Shoes']);
+                });
+
+                it('throws ProviderFetchError when errors are present', async () => {
+                    const api = makeApi(
+                        vi.fn().mockResolvedValue({ data: null, errors: [{ message: 'bad request' }] }),
+                    );
+
+                    await expect(
+                        ProductsPaginationCountApi({ api: api as any, filters: { first: 35 } }),
+                    ).rejects.toMatchObject({ name: ProviderFetchError.name });
                 });
             });
         });

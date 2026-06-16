@@ -12,7 +12,7 @@ import { cn } from '@/utils/tailwind';
 // without blocking on six locale files.
 const SORT_OPTIONS = [
     { value: 'BEST_SELLING', label: 'Best selling' },
-    { value: 'CREATED', label: 'Newest' },
+    { value: 'CREATED_AT', label: 'Newest' },
     { value: 'PRICE', label: 'Price' },
     { value: 'TITLE', label: 'Alphabetical' },
 ] as const;

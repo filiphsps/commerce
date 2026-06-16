@@ -42,6 +42,33 @@ const numericParam = (raw: string | undefined): number | undefined => {
     return Number.isFinite(value) ? value : undefined;
 };
 
+/** Every valid Shopify `ProductSortKeys` value the root `products` connection accepts. */
+const VALID_SORTING = new Set<ProductSorting>([
+    'BEST_SELLING',
+    'CREATED_AT',
+    'ID',
+    'PRICE',
+    'PRODUCT_TYPE',
+    'RELEVANCE',
+    'TITLE',
+    'UPDATED_AT',
+    'VENDOR',
+]);
+
+/**
+ * Maps a raw `sorting` query param to a valid `ProductSortKeys`, falling back to `BEST_SELLING` for an
+ * absent or unrecognized value. Guards the GraphQL `sortKey` argument: an arbitrary param (e.g. a stale
+ * `CREATED`) would otherwise reach Shopify as an invalid enum literal and crash the page with a
+ * `ProviderFetchError`.
+ *
+ * @param raw - The raw `sorting` query-param string.
+ * @returns A valid sort key.
+ */
+const resolveSorting = (raw: string | undefined): ProductSorting => {
+    const candidate = raw?.toUpperCase() as ProductSorting | undefined;
+    return candidate && VALID_SORTING.has(candidate) ? candidate : 'BEST_SELLING';
+};
+
 /**
  * Server component that fetches and renders a paginated, faceted product grid for the all-products
  * page. The facet params (`vendor`, `type`, `available`, `minPrice`, `maxPrice`, `sorting`) compile
@@ -60,7 +87,7 @@ export default async function ProductsContent({ domain, locale, searchParams = {
 
     const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
     const limit = 35; // TODO.
-    const sorting = (searchParams.sorting?.toUpperCase() || 'BEST_SELLING') as ProductSorting;
+    const sorting = resolveSorting(searchParams.sorting);
     const facets = {
         vendor: searchParams.vendor || undefined,
         productType: searchParams.type || undefined,
@@ -73,6 +100,7 @@ export default async function ProductsContent({ domain, locale, searchParams = {
         cursors,
         pages,
         products: total,
+        filters,
     } = await ProductsPaginationCountApi({ api, filters: { first: limit, ...facets } });
     // Only 404 a genuinely out-of-range page; a filter that matches nothing (pages <= 0) falls through
     // to the empty state below instead of a hard not-found.
@@ -82,7 +110,7 @@ export default async function ProductsContent({ domain, locale, searchParams = {
 
     const after = page > 1 ? cursors[page - 2] : undefined;
 
-    const { products, filters } = await ProductsPaginationApi({
+    const { products } = await ProductsPaginationApi({
         api,
         filters: { limit, sorting, after, ...facets },
     });
