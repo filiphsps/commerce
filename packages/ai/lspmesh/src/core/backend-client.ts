@@ -39,7 +39,13 @@ export class BackendClient {
         const stdout = this.#proc.stdout;
         const stdin = this.#proc.stdin;
         if (!stdout || !stdin) throw new Error(`lspmesh: backend "${config.name}" has no stdio pipes.`);
+        // Swallow raw pipe failures (EPIPE / ERR_STREAM_DESTROYED) that occur when
+        // the child is killed mid-write; they're expected on dispose and must not
+        // bubble up as unhandled rejections.
+        stdin.on('error', () => {});
+        stdout.on('error', () => {});
         this.#conn = createMessageConnection(new StreamMessageReader(stdout), new StreamMessageWriter(stdin));
+        this.#conn.onError(() => {});
         this.#conn.onClose(() => this.#die('connection closed'));
         this.#proc.on('exit', (code) => this.#die(`backend "${config.name}" exited (${code})`));
         this.#proc.on('error', (err) => this.#die(`backend "${config.name}" failed: ${err.message}`));
@@ -71,6 +77,12 @@ export class BackendClient {
         }
     }
 
+    /** Fire-and-forget notification that never rejects, even if the pipe is gone. */
+    #notify(method: string, params: unknown): void {
+        if (this.#dead) return;
+        void Promise.resolve(this.#conn.sendNotification(method, params as object)).catch(() => {});
+    }
+
     async #initialize(): Promise<void> {
         await this.#conn.sendRequest('initialize', {
             processId: process.pid,
@@ -78,7 +90,7 @@ export class BackendClient {
             workspaceFolders: [{ uri: `file://${this.#root}`, name: 'lspmesh' }],
             capabilities: {},
         });
-        this.#conn.sendNotification('initialized', {});
+        this.#notify('initialized', {});
     }
 
     whenReady(): Promise<void> {
@@ -110,13 +122,13 @@ export class BackendClient {
         const languageId = languageIdFor(this.config, path) ?? 'plaintext';
         if (!prev) {
             this.#opened.set(path, { version: 1, mtimeMs });
-            this.#conn.sendNotification('textDocument/didOpen', {
+            this.#notify('textDocument/didOpen', {
                 textDocument: { uri, languageId, version: 1, text },
             });
         } else {
             const version = prev.version + 1;
             this.#opened.set(path, { version, mtimeMs });
-            this.#conn.sendNotification('textDocument/didChange', {
+            this.#notify('textDocument/didChange', {
                 textDocument: { uri, version },
                 contentChanges: [{ text }],
             });
