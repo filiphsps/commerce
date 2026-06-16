@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { docToIdentity, docToOnlineShop, docToSession, docToUser, stripInternals } from './doc-to-shape';
+import { docToIdentity, docToOnlineShop, docToUser, stripInternals } from './doc-to-shape';
 
 const NOW = 1_700_000_000_000;
 
@@ -156,18 +156,5 @@ describe('docToIdentity', () => {
         expect(identity.id).toBe('idn-1');
         expect(identity.expiresAt).toEqual(new Date(NOW));
         expect(identity).not.toHaveProperty('_id');
-    });
-});
-
-describe('docToSession', () => {
-    it('replaces the stored user reference with the populated UserBase', () => {
-        const session = docToSession({
-            session: { _id: 'ses-1', user: 'usr-1', token: 't', expiresAt: NOW, createdAt: NOW, updatedAt: NOW },
-            user: { _id: 'usr-1', email: 'a@b.c', name: 'A', emailVerified: null, identities: [] },
-        });
-
-        expect(session.id).toBe('ses-1');
-        expect(session.expiresAt).toEqual(new Date(NOW));
-        expect(session.user).toMatchObject({ id: 'usr-1', email: 'a@b.c' });
     });
 });

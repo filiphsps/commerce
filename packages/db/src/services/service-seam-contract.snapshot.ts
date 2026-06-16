@@ -4,20 +4,18 @@
 // artifact.
 
 import type { BaseDocument } from '../db';
-import type { FeatureFlagBase, IdentityBase, OnlineShop, ReviewBase, SessionBase, ShopBase, UserBase } from '../models';
+import type { FeatureFlagBase, OnlineShop, ReviewBase, ShopBase, UserBase } from '../models';
 import type { ProjectionType, QueryFilter, QueryOptions, UpdateQuery } from '../models/query-types';
 import type { FeatureFlag } from './feature-flag';
-import type { Identity } from './identity';
 import type { Review } from './review';
-import type { Session } from './session';
 import type { FindOptions, Shop } from './shop';
 import type { User } from './user';
 
 /**
  * SFREAD-02 — hand-written type-level snapshot of the `packages/db` service
- * seam: the 6 exported service singletons (`Identity`, `Session`, `User`,
- * `Shop`, `Review`, `FeatureFlag`) plus the public `OnlineShop` / `ShopBase` /
- * `ReviewBase` shapes they return. This module declares only `type` aliases; it
+ * seam: the 4 exported service singletons (`User`, `Shop`, `Review`,
+ * `FeatureFlag`) plus the public `OnlineShop` / `ShopBase` / `ReviewBase` shapes
+ * they return. This module declares only `type` aliases; it
  * carries no runtime code. It asserts, at compile time, that every public
  * service method still matches the frozen signature below. ~183 importers
  * depend on this surface; before its Mongoose backing is re-homed on Convex
@@ -68,64 +66,15 @@ type Expect<T extends true> = T;
  * otherwise reject standalone assertion aliases.
  */
 export type ServiceSeamContractSnapshot = [
-    // --- Base `Service` contract, applied to the three thin singletons
-    // (`Identity`, `Session`, `User`) that are plain `Service<DocType, Model>`
-    // instances with no overrides. `create` strips `BaseDocument`-managed
-    // fields from its input; `find`'s single-doc overload (`{ id }` or
-    // `count: 1`) returns `Promise<DocType>` and throws `NotFoundError` on an
-    // empty match (pinned at runtime), while the visible array overload (the
-    // last public signature, which `ReturnType` resolves to — the union-typed
-    // implementation signature is not part of the method's public type) returns
-    // `Promise<DocType[]>`; `findById`/`findOneAndUpdate` resolve to
+    // --- Base `Service` contract, applied to the thin `User` singleton — a plain
+    // `Service<DocType, Model>` instance with no overrides. `create` strips
+    // `BaseDocument`-managed fields from its input; `find`'s single-doc overload
+    // (`{ id }` or `count: 1`) returns `Promise<DocType>` and throws
+    // `NotFoundError` on an empty match (pinned at runtime), while the visible
+    // array overload (the last public signature, which `ReturnType` resolves to —
+    // the union-typed implementation signature is not part of the method's public
+    // type) returns `Promise<DocType[]>`; `findById`/`findOneAndUpdate` resolve to
     // `DocType | null`.
-    Expect<
-        Equal<(typeof Identity)['create'], (input: Omit<IdentityBase, keyof BaseDocument>) => Promise<IdentityBase>>
-    >,
-    Expect<(typeof Identity)['find'] extends (args: { id: string }) => Promise<IdentityBase> ? true : false>,
-    Expect<Equal<Awaited<ReturnType<(typeof Identity)['find']>>, IdentityBase[]>>,
-    Expect<
-        Equal<
-            (typeof Identity)['findById'],
-            (
-                id: string,
-                projection?: ProjectionType<IdentityBase> | null,
-                options?: QueryOptions<IdentityBase> | null,
-            ) => Promise<IdentityBase | null>
-        >
-    >,
-    Expect<
-        Equal<
-            (typeof Identity)['findOneAndUpdate'],
-            (
-                filter: QueryFilter<IdentityBase>,
-                update?: UpdateQuery<IdentityBase>,
-                options?: QueryOptions<IdentityBase>,
-            ) => Promise<IdentityBase | null>
-        >
-    >,
-    Expect<Equal<(typeof Session)['create'], (input: Omit<SessionBase, keyof BaseDocument>) => Promise<SessionBase>>>,
-    Expect<(typeof Session)['find'] extends (args: { id: string }) => Promise<SessionBase> ? true : false>,
-    Expect<Equal<Awaited<ReturnType<(typeof Session)['find']>>, SessionBase[]>>,
-    Expect<
-        Equal<
-            (typeof Session)['findById'],
-            (
-                id: string,
-                projection?: ProjectionType<SessionBase> | null,
-                options?: QueryOptions<SessionBase> | null,
-            ) => Promise<SessionBase | null>
-        >
-    >,
-    Expect<
-        Equal<
-            (typeof Session)['findOneAndUpdate'],
-            (
-                filter: QueryFilter<SessionBase>,
-                update?: UpdateQuery<SessionBase>,
-                options?: QueryOptions<SessionBase>,
-            ) => Promise<SessionBase | null>
-        >
-    >,
     Expect<Equal<(typeof User)['create'], (input: Omit<UserBase, keyof BaseDocument>) => Promise<UserBase>>>,
     Expect<(typeof User)['find'] extends (args: { id: string }) => Promise<UserBase> ? true : false>,
     Expect<Equal<Awaited<ReturnType<(typeof User)['find']>>, UserBase[]>>,
@@ -159,7 +108,7 @@ export type ServiceSeamContractSnapshot = [
     // `findOneAndUpdate` is inherited unchanged from the base `Service`. Pin it
     // explicitly here too: `ShopService` is re-homed independently in
     // SFREAD-03/05/06, so a Shop-only override would otherwise slip past the
-    // base-contract assertions (which run against Identity/Session/User).
+    // base-contract assertions (which run against User).
     Expect<
         Equal<
             (typeof Shop)['findOneAndUpdate'],

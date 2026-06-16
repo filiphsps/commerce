@@ -24,8 +24,7 @@ const listSources = (): string[] =>
 // The TEARDOWN-04 invariant, half one: the package's SOURCES carry zero Mongo module references —
 // runtime AND type-level, now that the frozen query-type vocabulary lives in `models/query-types`.
 // (Half two — every write is a single Convex mutation — is `single-mutation-gate.test.ts`; the
-// behavioral Convex-only proofs are `services/identity-session-user.test.ts` here and
-// `apps/admin/src/utils/auth.adapter.test.ts` for the Auth.js adapter on top of this seam.)
+// behavioral Convex-only proof is `services/identity-session-user.test.ts` here.)
 describe('mongo-free runtime gate', () => {
     it('no source in the package references a Mongo driver module', () => {
         const sources = listSources();

@@ -24,9 +24,9 @@ describe('single-mutation-per-write gate', () => {
         const offending = `
             const backend = {
                 create: async (input) => {
-                    const identity = await convexServerMutation('db/identities:upsertByProviderIdentity', input);
-                    await convexServerMutation('db/users:pushIdentity', { identity });
-                    return identity;
+                    const user = await convexServerMutation('db/users:create', input);
+                    await convexServerMutation('db/users:pushIdentity', { userId: user._id });
+                    return user;
                 },
             };
         `;
@@ -64,7 +64,7 @@ describe('single-mutation-per-write gate', () => {
     it('does not flag two writes that live in separate async bodies', () => {
         const compliant = `
             const a = async () => convexServerMutation('db/users:create', {});
-            const b = async () => convexServerMutation('db/sessions:create', {});
+            const b = async () => convexServerMutation('db/users:pushIdentity', {});
         `;
         expect(findMultiMutationWrites(compliant)).toEqual([]);
     });
