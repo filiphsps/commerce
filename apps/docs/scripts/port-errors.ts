@@ -169,7 +169,7 @@ function convertOne(code: string, src: string, related: string[]): string {
     // enrichment file still gets a meaningful summary.
     const description = sections.documentation || lookup?.description || lookup?.details || `Error ${code}.`;
 
-    const frontmatter = ['---', `title: ${code}`, `description: ${escapeYaml(description)}`, '---', ''].join('\n');
+    const frontmatter = ['---', `title: ${code}`, `description: ${yamlScalar(description)}`, '---', ''].join('\n');
 
     const heroProps: string[] = [`code="${code}"`, `description=${jsxAttr(description)}`];
     if (lookup) {
@@ -253,16 +253,22 @@ function parseSections(src: string): ErrorSections {
 }
 
 /**
- * Render a string value as a JSX attribute. Uses single quotes when the value
- * contains a double quote, otherwise wraps in double quotes. Escapes braces
- * so MDX does not interpret them as JSX expressions.
+ * Render a string value as a double-quoted JSX attribute. JSX/MDX attribute
+ * strings have no backslash escaping, so a value carrying both quote styles
+ * cannot be made safe by switching delimiters — every reserved character is
+ * emitted as an HTML character reference instead. `&` is encoded first so the
+ * brace and quote references below are not themselves double-encoded; MDX
+ * decodes all four back to their literal characters.
  *
  * @param value - The raw attribute value.
- * @returns A JSX-attribute literal including the surrounding quotes.
+ * @returns A double-quoted JSX-attribute literal including the surrounding quotes.
  */
 function jsxAttr(value: string): string {
-    const escaped = value.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;');
-    if (escaped.includes('"')) return `'${escaped.replace(/'/g, "\\'")}'`;
+    const escaped = value
+        .replace(/&/g, '&amp;')
+        .replace(/\{/g, '&#123;')
+        .replace(/\}/g, '&#125;')
+        .replace(/"/g, '&quot;');
     return `"${escaped}"`;
 }
 
@@ -487,14 +493,16 @@ function kebab(code: string): string {
 }
 
 /**
- * Escape double-quote characters in a YAML scalar value so the resulting
- * description field is safely embeddable in unquoted YAML frontmatter.
+ * Render a string as a double-quoted YAML scalar safe for frontmatter. Wrapping
+ * in quotes (escaping `\` then `"`) keeps values carrying YAML indicators — a
+ * mid-string `: `, a leading backtick, `#`, etc. — from being misparsed as a
+ * nested mapping, which js-yaml reports as "bad indentation of a mapping entry".
  *
  * @param s - Raw description string.
- * @returns Escaped string safe for YAML scalar context.
+ * @returns A double-quoted, escaped YAML scalar including the surrounding quotes.
  */
-function escapeYaml(s: string): string {
-    return s.replace(/"/g, '\\"');
+function yamlScalar(s: string): string {
+    return `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
