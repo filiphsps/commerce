@@ -52,6 +52,7 @@ vi.mock('next/navigation', () => ({
     },
     useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
     usePathname: () => '/gate-shop.example.com/content/header/',
+    useParams: () => ({ domain: 'gate-shop.example.com' }),
     useSearchParams: () => new URLSearchParams('locale=en-US'),
     useParams: () => ({ domain: 'gate-shop.example.com' }),
 }));
@@ -121,7 +122,18 @@ import { getAuthedCmsCtx } from './cms-ctx';
 import { editorConvexBridge } from './editor-convex-bridge';
 import { editorRuntime } from './editor-runtime';
 
-const TRUSTED_ISSUER = 'https://admin.gate.nordcom.io';
+/**
+ * The trusted Clerk operator issuer the Convex tenant tier asserts against (the operator path
+ * validates `CLERK_FRONTEND_API_URL`, not the customer `CONVEX_AUTH_ISSUER`). Stubbed into
+ * `CLERK_FRONTEND_API_URL` for every case and used as every act-as identity's `issuer`, so the
+ * Clerk-issuer re-assertion in `getClerkOperatorIdentity` passes under convex-test, whose
+ * `withIdentity` fakes identities WITHOUT Convex's real signature/issuer validation.
+ */
+const CLERK_ISSUER = 'https://admin.gate.nordcom.io';
+/** The operator's Clerk subject (`user_…`), matched by the seeded `users.clerkUserId` so `by_clerk_user_id` resolves. */
+const OPERATOR_CLERK_SUBJECT = 'user_gate_operator';
+/** The outsider's Clerk subject — a real Clerk identity that maps to a user carrying NO collaborator row. */
+const OUTSIDER_CLERK_SUBJECT = 'user_gate_outsider';
 const OPERATOR_EMAIL = 'gate-operator@example.com';
 const OUTSIDER_EMAIL = 'gate-outsider@example.com';
 const DOMAIN = 'gate-shop.example.com';
@@ -160,6 +172,7 @@ async function seedTenant(): Promise<SeededTenant> {
             email: OPERATOR_EMAIL,
             name: 'Gate Operator',
             emailVerified: null,
+            clerkUserId: OPERATOR_CLERK_SUBJECT,
             identities: [],
             createdAt: NOW,
             updatedAt: NOW,
@@ -168,6 +181,7 @@ async function seedTenant(): Promise<SeededTenant> {
             email: OUTSIDER_EMAIL,
             name: 'Gate Outsider',
             emailVerified: null,
+            clerkUserId: OUTSIDER_CLERK_SUBJECT,
             identities: [],
             createdAt: NOW,
             updatedAt: NOW,
@@ -197,7 +211,7 @@ async function seedTenant(): Promise<SeededTenant> {
  * @param shopId - The seeded tenant's shop id.
  */
 function actAsOperator(shopId: string): void {
-    h.identity = { issuer: TRUSTED_ISSUER, subject: 'github|gate-operator', email: OPERATOR_EMAIL };
+    h.identity = { issuer: CLERK_ISSUER, subject: OPERATOR_CLERK_SUBJECT, email: OPERATOR_EMAIL };
     vi.mocked(getAuthedCmsCtx).mockResolvedValue({
         user: {
             id: 'user_operator',
@@ -301,7 +315,10 @@ function controlAt(container: HTMLElement, path: string, selector: string): HTML
 }
 
 beforeEach(() => {
-    vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+    // Operators authenticate through Clerk after the auth migration: the Convex tenant tier validates
+    // the Clerk issuer (`CLERK_FRONTEND_API_URL`), and its operator identity getter FAILS CLOSED when
+    // that env is unset, so it must be stubbed for the act-as identities to authenticate at all.
+    vi.stubEnv('CLERK_FRONTEND_API_URL', CLERK_ISSUER);
     // Frozen timers keep publish's `runAfter(0)` revalidation schedule PENDING
     // (`revalidate/onPublish` is deliberately absent from the module map — the
     // gate asserts WHAT was armed, never runs it) and drive the 2s autosave.
@@ -485,7 +502,7 @@ describe('CMSGATE-01 — header editor end to end (real engine, real Convex func
         };
         const { makeFunctionReference } = await import('convex/server');
         await t
-            .withIdentity({ issuer: TRUSTED_ISSUER, subject: 'github|gate-operator', email: OPERATOR_EMAIL })
+            .withIdentity({ issuer: CLERK_ISSUER, subject: OPERATOR_CLERK_SUBJECT, email: OPERATOR_EMAIL })
             .mutation(makeFunctionReference<'mutation'>('cms/actions:saveDraft'), {
                 collection: 'header',
                 data: {
@@ -544,7 +561,7 @@ describe('CMSGATE-01 — header editor end to end (real engine, real Convex func
 
         // Route layer: an editor with no tenant membership fails the manifest's
         // `tenantMember` read gate and the page 404s.
-        h.identity = { issuer: TRUSTED_ISSUER, subject: 'github|gate-outsider', email: OUTSIDER_EMAIL };
+        h.identity = { issuer: CLERK_ISSUER, subject: OUTSIDER_CLERK_SUBJECT, email: OUTSIDER_EMAIL };
         vi.mocked(getAuthedCmsCtx).mockResolvedValue({
             user: {
                 id: 'user_outsider',
