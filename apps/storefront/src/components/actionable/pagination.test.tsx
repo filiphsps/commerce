@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Pagination } from '@/components/actionable/pagination';
+import { Pagination, resolveCurrentPage } from '@/components/actionable/pagination';
 import { render } from '@/utils/test/react';
 
 describe('components', () => {
@@ -15,6 +15,24 @@ describe('components', () => {
             const wrapper = render(<Pagination i18n={i18n} knownFirstPage={1} knownLastPage={1} />);
             expect(wrapper.container).toBeEmptyDOMElement();
             expect(() => wrapper.unmount()).not.toThrow();
+        });
+    });
+
+    describe('resolveCurrentPage', () => {
+        it('parses a valid in-range page', () => {
+            expect(resolveCurrentPage('3', 1, 5)).toBe(3);
+        });
+
+        it('falls back to the first page when the param is absent or non-numeric', () => {
+            expect(resolveCurrentPage(null, 1, 5)).toBe(1);
+            expect(resolveCurrentPage('', 1, 5)).toBe(1);
+            // The old Number.isSafeInteger(string) guard let this through as NaN.
+            expect(resolveCurrentPage('abc', 1, 5)).toBe(1);
+        });
+
+        it('clamps an out-of-range page into the known bounds', () => {
+            expect(resolveCurrentPage('999', 1, 5)).toBe(5);
+            expect(resolveCurrentPage('-2', 1, 5)).toBe(1);
         });
     });
 });

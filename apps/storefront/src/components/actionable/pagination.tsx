@@ -17,6 +17,27 @@ const ACTION_STYLES =
 const ITEM_STYLES =
     'flex h-8 min-w-8 select-none items-center justify-center rounded bg-transparent p-2 text-center text-sm font-medium text-current transition-colors hover:text-primary data-[selected]:bg-primary data-[selected]:font-bold data-[selected]:text-primary-foreground md:h-10';
 
+/**
+ * Resolves the active page from a raw `page` search-param, clamped into the known range.
+ *
+ * A malformed param (`?page=abc`, an empty string, a negative or out-of-range number) must never
+ * leak into the rendered links or the active-page highlight — the previous `Number.isSafeInteger`
+ * guard ran against a string and so was always false, letting `NaN` propagate. Parse first, fall back
+ * to `firstPage` when the result is not finite, then clamp to `[firstPage, lastPage]`.
+ *
+ * @param raw - The raw `page` query value (or `null` when absent).
+ * @param firstPage - The first valid page number.
+ * @param lastPage - The last known page number.
+ * @returns A valid page number within `[firstPage, lastPage]`.
+ */
+export function resolveCurrentPage(raw: string | null, firstPage: number, lastPage: number): number {
+    const parsed = Number.parseInt(raw ?? '', 10);
+    if (!Number.isFinite(parsed)) {
+        return firstPage;
+    }
+    return Math.min(Math.max(parsed, firstPage), lastPage);
+}
+
 export type PaginationProps = ComponentProps<'nav'> & {
     i18n: LocaleDictionary;
     knownFirstPage?: number;
@@ -47,12 +68,7 @@ export function Pagination({
 
     const { t } = getTranslations('common', i18n);
 
-    const currentPage = (() => {
-        const page = searchParams.get('page');
-        if (!page || Number.isSafeInteger(page)) return 1;
-
-        return Number.parseInt(page, 10);
-    })();
+    const currentPage = resolveCurrentPage(searchParams.get('page'), knownFirstPage, knownLastPage);
 
     const items = [];
     for (let i = knownFirstPage; i <= knownLastPage; i++) {
@@ -68,7 +84,7 @@ export function Pagination({
 
         if (i === currentPage) {
             items.push(
-                <div key={url} className={ITEM_STYLES} data-selected>
+                <div key={url} className={ITEM_STYLES} aria-current="page" data-selected>
                     {i}
                 </div>,
             );
@@ -131,7 +147,7 @@ export function Pagination({
                 {items}
 
                 {morePagesAfterKnownLastPage ? (
-                    <div className={ACTION_STYLES}>
+                    <div className={ACTION_STYLES} aria-hidden="true">
                         <EllipsisIcon />
                     </div>
                 ) : null}
