@@ -23,11 +23,18 @@ minimumReleaseAge: 0
 publicHoistPattern:
     - "@floating-ui/react"
 
+# Single source of truth for the React type packages. Root devDependencies and
+# the overrides below both pull from here via `catalog:`, replacing the
+# deprecated `$`-prefixed version references in overrides.
+catalog:
+    "@types/react": "19.2.17"
+    "@types/react-dom": "19.2.3"
+
 # Nextra 4.6.1 + nextra-theme-docs 4.6.1 are incompatible with zod >=4.4.0
 # due to stricter property iteration in `z.strictObject`. Pin to the last
 # known-good version until Nextra ships a release with shuding/nextra#4990.
 # Tracking: https://github.com/shuding/nextra/issues/4989
 overrides:
     zod@^4: "4.4.3"
-    "@types/react": "$@types/react"
-    "@types/react-dom": "$@types/react-dom"
+    "@types/react": "catalog:"
+    "@types/react-dom": "catalog:"
