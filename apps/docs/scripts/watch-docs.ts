@@ -4,10 +4,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { main as emitReference } from './emit-reference-mdx';
+import { discoverWorkspaces } from './lib/workspace-discovery.js';
 import { main as mirrorDocs } from './mirror-workspace-docs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../../..');
+const DOCS_APP = path.resolve(__dirname, '..');
 
 const DEBOUNCE_MS = 250;
 
@@ -28,30 +30,19 @@ let queued = false;
  * demand after API changes.
  */
 /**
- * Decide whether a change event under `root` (the `apps/` or `packages/`
- * directory we're watching) should trigger a mirror+reference rebuild.
- * `filename` here is RELATIVE to `root`, so we resolve it to an absolute
- * path before applying the exclusion list — otherwise the
- * `${sep}apps${sep}docs${sep}` guard never matches when the watch root is
- * already `apps/` and emitting `docs/content/.../foo.mdx` into our own tree
- * pulls the watcher into an infinite loop.
+ * Decide whether a change event under a watched workspace `docs/` directory
+ * should trigger a mirror+reference rebuild. We watch each workspace's `docs/`
+ * dir directly (never the parent `apps/`/`packages/` trees — those pull in every
+ * `node_modules`/`.next`/`.turbo`, and the resulting recursive-watch + event
+ * firehose under dev-server churn is the memory leak this avoids), so the only
+ * filter left is the file extension.
  *
- * @param root - Absolute path of the watched root.
  * @param filename - Relative filename from the fs.watch callback.
  * @returns True when the change should kick off a rebuild.
  */
-function shouldRebuild(root: string, filename: string | null): boolean {
+function shouldRebuild(filename: string | null): boolean {
     if (!filename) return false;
-    const abs = path.join(root, filename);
-    if (abs.includes('node_modules')) return false;
-    if (abs.includes('.next')) return false;
-    if (abs.includes('.turbo')) return false;
-    if (abs.includes('.typedoc-out')) return false;
-    // Our own docs app is the destination of every gen step. Listening to it
-    // creates a write-loop: gen emits .mdx → watcher fires → gen emits again.
-    if (abs.includes(`${path.sep}apps${path.sep}docs${path.sep}`)) return false;
-    if (!abs.includes(`${path.sep}docs${path.sep}`)) return false;
-    return abs.endsWith('.md') || abs.endsWith('.mdx');
+    return filename.endsWith('.md') || filename.endsWith('.mdx');
 }
 
 async function rebuild(): Promise<void> {
@@ -84,7 +75,7 @@ function watchTree(dir: string): void {
     if (!fs.existsSync(dir)) return;
     try {
         fs.watch(dir, { recursive: true }, (_event, filename) => {
-            if (shouldRebuild(dir, filename)) schedule();
+            if (shouldRebuild(filename)) schedule();
         });
     } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
@@ -93,5 +84,9 @@ function watchTree(dir: string): void {
 }
 
 console.info('[watch] watching workspace docs/ for .md(x) changes (run `pnpm gen` after API changes)');
-watchTree(path.join(REPO_ROOT, 'apps'));
-watchTree(path.join(REPO_ROOT, 'packages'));
+for (const ws of discoverWorkspaces(REPO_ROOT)) {
+    // The docs app's own gen output lands in apps/docs/content, not its docs/ dir,
+    // so it is never a mirror source — skip it to keep the watch set to true sources.
+    if (ws.rootPath === DOCS_APP) continue;
+    watchTree(ws.docsPath);
+}
