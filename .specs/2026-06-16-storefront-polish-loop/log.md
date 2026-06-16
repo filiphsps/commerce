@@ -74,11 +74,24 @@ Guiding principles (from the task + repo design system):
   deferred; the per-button `aria-label`s already name each control.
 - Verified: biome clean, typecheck clean, quantity-selector 9/9.
 
+### 6 — Pagination: fix the page-param parse bug + a11y current marker
+
+- `currentPage` guarded with `Number.isSafeInteger(page)` where `page` is a **string** — always false,
+  so a malformed `?page=abc` parsed to `NaN`, propagating into the prev/next hrefs (`?page=NaN`) and
+  killing the active-page highlight (`i === NaN` never matches).
+- Extracted a pure `resolveCurrentPage(raw, first, last)` helper: parse → finite-fallback to first →
+  clamp to `[first, last]`. Unit-tested directly (valid / null / empty / `abc` / overflow / negative).
+- A11y: marked the active page `aria-current="page"` (screen readers now announce the current page);
+  marked the decorative ellipsis `aria-hidden`.
+- Verified: biome clean, typecheck clean, pagination 5/5.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
 - Stepper grouping: revisit as a properly-styled `<fieldset>` (reset margin/min-width, div→fieldset
   prop type) so the three controls share one accessible group name.
+- Pagination disabled prev/next are non-interactive `<div>`s — consider `aria-disabled` semantics or
+  hiding them; also evaluate truncated ranges (no leading ellipsis / first-page jump).
 - Cross-engine/responsive validation (Safari + Chromium) of header mega-menu, gallery lightbox,
   rail carousel per the overhaul spec root-causes — needs a running storefront + browser.
 - Verify responsive + Safari/Chromium behavior of interactive components (header mega-menu, product
