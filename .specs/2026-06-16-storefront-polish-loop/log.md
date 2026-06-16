@@ -255,6 +255,15 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   test.
 - Verified: biome clean, typecheck clean, quantity-selector 10/10, cart-line 11/11, add-to-cart 6/6.
 
+### 21 — Localize the add-to-cart "still loading" toast
+
+- `add-to-cart.tsx` had a `// TODO: i18n` hard-coded English `toast.warning("The cart is still
+  loading…")` shown when a shopper taps add before the cart hydrates. The component already has `tCart`.
+- Added a `cart.still-loading` key across all six locales with interface-voice copy ("Your cart is
+  still loading. Try again in a moment." — active, no over-apology, says what to do) and replaced the
+  literal; added `tCart` to the callback deps.
+- Verified: six locale JSONs valid, biome clean, typecheck clean, add-to-cart 6/6.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Remaining literal `aria-label="Close"` in `product-options/primitives/overlay` (deep primitive, no
