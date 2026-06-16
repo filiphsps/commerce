@@ -177,6 +177,34 @@ describe('db/shop_write:upsertShop', () => {
         });
     });
 
+    it('rejects and rolls back a write whose PRIMARY domain is claimed by another shop', async () => {
+        const t = harness();
+
+        const a = await t.mutation(upsertShopRef, {
+            serverSecret: SERVER_SECRET,
+            shop: { ...baseShop, name: 'A', domain: 'shared.example.com', alternativeDomains: [] },
+        });
+
+        await expect(
+            t.mutation(upsertShopRef, {
+                serverSecret: SERVER_SECRET,
+                shop: { ...baseShop, name: 'B', domain: 'shared.example.com', alternativeDomains: [] },
+            }),
+        ).rejects.toThrow(/already claimed/i);
+
+        // Rolled back: the contested primary is a hard invariant, so shop B never lands and the
+        // incumbent keeps the sole routing row.
+        await t.run(async (ctx) => {
+            const shops = await ctx.db.query('shops').collect();
+            expect(shops.map((row) => row.name)).toEqual(['A']);
+            const shared = (await ctx.db.query('shopDomains').collect()).filter(
+                (row) => row.domain === 'shared.example.com',
+            );
+            expect(shared).toHaveLength(1);
+            expect(shared[0]?.shop).toBe(a?.shop._id);
+        });
+    });
+
     it('degrades corrupted duplicate domain rows to a logged first-match (.unique() never throws site-wide)', async () => {
         const t = harness();
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});

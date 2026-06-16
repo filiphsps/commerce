@@ -17,6 +17,8 @@ export const ShopWriteErrorCode = {
     INVALID_COLLABORATOR: 'SHOP_WRITE_INVALID_COLLABORATOR',
     /** A freshly-written row could not be read back inside the same transaction. */
     WRITE_READBACK_FAILED: 'SHOP_WRITE_READBACK_FAILED',
+    /** The write's PRIMARY domain is already claimed by another shop (hard invariant; rolls back). */
+    PRIMARY_DOMAIN_TAKEN: 'SHOP_WRITE_PRIMARY_DOMAIN_TAKEN',
 } as const;
 
 const shopFields = shopValidator.fields;
@@ -97,13 +99,17 @@ async function uniqueDomainRow(ctx: MutationCtx, domain: string): Promise<Doc<'s
 /**
  * Reconciles the `shopDomains` routing rows to exactly the shop's desired domain set (delete-diff):
  * stale rows (a shrunk domain set) and same-shop duplicates are deleted, missing rows are inserted.
- * A desired domain already owned by ANOTHER shop is logged and skipped (first-match-wins) rather
- * than thrown — stealing a domain or failing the whole shop write over one contested hostname would
- * both be worse than keeping the incumbent routable.
+ * A contested domain (already owned by ANOTHER shop) is handled by tier: the PRIMARY `shop.domain`
+ * is a hard invariant — it throws {@link ShopWriteErrorCode.PRIMARY_DOMAIN_TAKEN}, rolling back the
+ * whole shop write, so a shop can never be created or renamed onto a taken primary (no silent
+ * split-brain where the stored row claims the domain but routing still serves the incumbent). A
+ * contested ALTERNATIVE stays best-effort — logged and skipped (first-match-wins) rather than
+ * failing an otherwise-valid write over one additive hostname.
  *
  * @param ctx - The mutation context.
  * @param shopId - The shop whose routing rows to reconcile.
  * @param shop - The stored shop row the desired set derives from (primary + alternative domains).
+ * @throws {ConvexError} `SHOP_WRITE_PRIMARY_DOMAIN_TAKEN` when the primary domain is claimed by another shop.
  */
 async function reconcileDomains(ctx: MutationCtx, shopId: Id<'shops'>, shop: Doc<'shops'>): Promise<void> {
     const desired = new Set<string>([shop.domain, ...(shop.alternativeDomains ?? [])]);
@@ -127,8 +133,14 @@ async function reconcileDomains(ctx: MutationCtx, shopId: Id<'shops'>, shop: Doc
         }
         const owner = await uniqueDomainRow(ctx, domain);
         if (owner && owner.shop !== shopId) {
+            if (domain === shop.domain) {
+                throw new ConvexError({
+                    code: ShopWriteErrorCode.PRIMARY_DOMAIN_TAKEN,
+                    message: `Primary domain "${domain}" is already claimed by another shop.`,
+                });
+            }
             console.warn(
-                `[shop_write] domain "${domain}" is already claimed by another shop; keeping the first match.`,
+                `[shop_write] alternative domain "${domain}" is already claimed by another shop; keeping the first match.`,
             );
             continue;
         }
@@ -210,7 +222,8 @@ async function syncCollaborators(
  *   and `upsert` was not requested.
  * @throws {ConvexError} `SHOP_WRITE_INCOMPLETE` when an insert lacks required fields;
  *   `SHOP_WRITE_INVALID_COLLABORATOR` when a collaborator id does not resolve (the transaction
- *   rolls back); `SHOP_WRITE_READBACK_FAILED` when the written row cannot be read back.
+ *   rolls back); `SHOP_WRITE_PRIMARY_DOMAIN_TAKEN` when the primary domain is claimed by another
+ *   shop (rolls back); `SHOP_WRITE_READBACK_FAILED` when the written row cannot be read back.
  */
 export const upsertShop = serverMutation({
     args: {

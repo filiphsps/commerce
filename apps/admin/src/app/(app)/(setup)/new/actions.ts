@@ -87,10 +87,10 @@ export async function createShop(input: CreateShopInput): Promise<CreateShopResu
         return { ok: false, error: 'Enter a valid customer-facing domain.' };
     }
 
-    // Defense in depth: re-check availability server-side. The client gates on this, but a bypassed or
-    // raced client could submit a claimed domain — and `upsertShop` does NOT reject one. On the
-    // `Shop.create` path it inserts a fresh shop row, then `reconcileDomains` skips the contested
-    // hostname (first-match-wins), silently leaving an unroutable orphan shop. Fail fast instead.
+    // Defense in depth: re-check availability server-side for a fast, friendly rejection. `upsertShop`
+    // now also rejects a contested PRIMARY domain transactionally (`SHOP_WRITE_PRIMARY_DOMAIN_TAKEN`,
+    // rolls back — no orphan shop), so this pre-check is the friendly path and that invariant is the
+    // race backstop. The client gates on this too, but a bypassed or raced client still hits one guard.
     let domainAvailable: boolean;
     try {
         ({ available: domainAvailable } = await checkDomainAvailability(domain));
