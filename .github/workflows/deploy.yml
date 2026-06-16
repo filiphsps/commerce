@@ -28,6 +28,29 @@ jobs:
     # Deliberately NOT paths-filtered: `convex deploy` is idempotent, and always pushing on master
     # lets production converge even when an earlier push failed. The release.yml twin covers
     # release-triggered pushes; keep both jobs in sync.
+    #
+    # Clerk prod-config required GitHub secrets (set once in repo Settings → Secrets):
+    #   CLERK_SECRET_KEY_PROD         — prod Clerk instance secret key (sk_live_…)
+    #   CLERK_PUBLISHABLE_KEY_PROD    — prod Clerk instance publishable key (pk_live_…) [set on Vercel, referenced here for documentation]
+    #   CLERK_WEBHOOK_SIGNING_SECRET_PROD — svix signing secret for the prod Clerk webhook endpoint
+    #
+    # One-time human bootstrap steps (NOT automated here; do these once before first prod deploy):
+    #   1. clerk auth login  (browser OAuth; links the CLI to your Clerk account)
+    #   2. clerk deploy      (provisions DNS CNAMEs + registers the prod instance domain)
+    #   3. Create real GitHub OAuth app + Google OAuth app (prod credentials) and set client_id /
+    #      client_secret via the Clerk dashboard or `clerk api -X PATCH /beta/instance` — the
+    #      config-as-code has empty strings for both, which is fine for dev (shared OAuth) but
+    #      requires real creds for prod.
+    #   4. Register the Clerk webhook endpoint on the PROD instance in the Clerk dashboard:
+    #        URL: <prod-convex-site-url>/clerk-webhooks
+    #        Events: user.created, user.updated, user.deleted,
+    #                organization.created, organization.updated, organization.deleted,
+    #                organizationMembership.created, organizationMembership.updated, organizationMembership.deleted
+    #      Copy the signing secret into the CLERK_WEBHOOK_SIGNING_SECRET_PROD repo secret AND set it
+    #      on the prod Convex deployment (step below does that).
+    #   5. Set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY + CLERK_SECRET_KEY on the Vercel admin project for
+    #      both Production and Preview scopes (prod keys for Production; dev keys for Preview).
+    # See spec decision #14 + #15 for the full runbook.
     convex:
         if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'master' && github.repository == 'filiphsps/commerce' }}
         name: 🌐 Deploy Convex (production)
@@ -51,6 +74,54 @@ jobs:
               with:
                   turbo-cache: "false"
                   binary-caches: "false"
+
+            # Apply the committed Clerk config-as-code (clerk/clerk.config.json) + the convex JWT
+            # template (clerk/convex-jwt-template.json) to the PROD Clerk instance non-interactively
+            # via the Clerk Backend API authenticated with CLERK_SECRET_KEY_PROD.
+            # This mirrors what the agent did to the dev instance via `clerk api` and ensures the
+            # prod instance always converges to the committed config on every master push.
+            - name: 🔐 Apply Clerk config-as-code to prod instance
+              env:
+                  CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_PROD }}
+              run: |
+                  # PATCH the instance-level settings from clerk/clerk.config.json.
+                  # The Clerk Backend API /beta/instance accepts the same keys clerk config pull emits.
+                  pnpm dlx clerk@latest api -X PATCH /beta/instance \
+                      --data-raw "$(cat clerk/clerk.config.json)"
+
+            - name: 🔐 Apply convex JWT template to prod instance
+              env:
+                  CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_PROD }}
+              run: |
+                  # Upsert the `convex` JWT template (name is the stable identifier; the API creates
+                  # or replaces by name). Template carries aud: "convex" — REQUIRED for Convex's domain
+                  # provider to match tokens (validates both iss == CLERK_FRONTEND_API_URL AND aud == applicationID).
+                  # Uses `pnpm dlx clerk@latest` — npx is blocked by a repo hook.
+                  TEMPLATE_NAME="$(jq -r '.name' clerk/convex-jwt-template.json)"
+                  TEMPLATE_PAYLOAD="$(cat clerk/convex-jwt-template.json)"
+                  # Try PATCH first (template already exists); fall back to POST on 404.
+                  STATUS=$(pnpm dlx clerk@latest api -X PATCH "/jwt_templates/slug:${TEMPLATE_NAME}" \
+                      --data-raw "$TEMPLATE_PAYLOAD" \
+                      -o /dev/null -w "%{http_code}" 2>/dev/null || echo "000")
+                  if [ "$STATUS" = "404" ] || [ "$STATUS" = "000" ]; then
+                      pnpm dlx clerk@latest api -X POST /jwt_templates \
+                          --data-raw "$TEMPLATE_PAYLOAD"
+                  fi
+
+            # Seed the Clerk deployment vars onto the PROD Convex backend so auth.config.ts
+            # resolves the prod Clerk Frontend API URL and the webhook httpAction can verify svix
+            # signatures. The deployment's CONVEX_AUTH_* vars (storefront customer path) are set
+            # once in the provisioning runbook and are not overwritten here.
+            - name: 🔑 Set Clerk env vars on prod Convex deployment
+              env:
+                  CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+              run: |
+                  # CLERK_FRONTEND_API_URL: the prod Clerk instance Frontend API URL.
+                  # Hardcode the prod value here; update if the prod instance domain changes after
+                  # running `clerk deploy` (the prod Frontend API URL is not the dev shared one).
+                  # Until a prod Clerk instance exists (pre-`clerk deploy`), this is a placeholder.
+                  pnpm convex:env set CLERK_FRONTEND_API_URL "${{ vars.CLERK_FRONTEND_API_URL_PROD || 'https://clerk.nordcom.io' }}"
+                  pnpm convex:env set CLERK_WEBHOOK_SIGNING_SECRET "${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET_PROD }}"
 
             # `convex deploy --dry-run` validates codegen, bundling and the schema against the LIVE
             # production data without promoting anything — the expand/contract pre-promotion gate.

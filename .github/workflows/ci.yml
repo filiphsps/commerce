@@ -165,13 +165,17 @@ jobs:
         name: 🔨 Build
         timeout-minutes: 25
         runs-on: ubuntu-latest
-        # Bake the local Convex URL into the storefront/admin bundles (NEXT_PUBLIC_* is inlined at
-        # build time) so the e2e job's prebuilt artifacts connect to the seeded :3210 backend.
+        # Bake the local Convex URL + Clerk dev-instance key into the storefront/admin bundles
+        # (NEXT_PUBLIC_* is inlined at build time) so the e2e job's prebuilt artifacts connect
+        # to the seeded :3210 backend and the admin ClerkProvider initializes correctly.
+        # Required GitHub secrets: CLERK_PUBLISHABLE_KEY_DEV, CLERK_SECRET_KEY_DEV.
         env:
             NEXT_PUBLIC_CONVEX_URL: http://127.0.0.1:3210
             # Bake a non-dev build id so the build-notifier engine is active in the prebuilt
             # e2e bundles (Vercel deploys use VERCEL_DEPLOYMENT_ID, which takes precedence).
             NEXT_PUBLIC_BUILD_ID: ${{ github.sha }}
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY_DEV }}
+            CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_DEV }}
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
@@ -258,14 +262,21 @@ jobs:
               # The push validates every env var auth.config.ts reads against the DEPLOYMENT
               # env, and a fresh anonymous backend has none set — so the first pass only
               # provisions the pinned backend binary (its auth-config failure is expected),
-              # the CONVEX_AUTH_* placeholders are then seeded onto the ephemeral deployment
-              # (`convex env set` has no --local-backend-version flag, hence the two-pass
-              # shape), and the second pass is the real, validated push.
+              # then all required vars are seeded onto the ephemeral deployment (`convex env set`
+              # has no --local-backend-version flag, hence the two-pass shape), and the second
+              # pass is the real, validated push.
+              # CONVEX_AUTH_* are storefront-customer-path placeholders (kept per decision #16).
+              # CLERK_FRONTEND_API_URL is the Clerk dev-instance Frontend API URL — the Convex
+              # auth.config.ts `domain` field; without it Convex rejects operator tokens with
+              # NoAuthProvider. CLERK_WEBHOOK_SIGNING_SECRET is the svix signing secret for the
+              # Clerk webhook httpAction.
               run: |
                   pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION" || echo "first pass provisions the backend; auth-config env validation fails until the vars are seeded"
                   pnpm convex:env set CONVEX_AUTH_ISSUER https://ci.localhost.invalid
                   pnpm convex:env set CONVEX_AUTH_APPLICATION_ID convex
                   pnpm convex:env set CONVEX_AUTH_JWKS_URL https://ci.localhost.invalid/.well-known/jwks.json
+                  pnpm convex:env set CLERK_FRONTEND_API_URL https://internal-roughy-49.clerk.accounts.dev
+                  pnpm convex:env set CLERK_WEBHOOK_SIGNING_SECRET ${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET_DEV }}
                   pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION"
 
             - name: ⏭️ Skip Convex deploy (no packages/convex changes)
@@ -428,16 +439,11 @@ jobs:
             CONVEX_SERVER_SECRET: dev-local-secret
             CONVEX_AGENT_MODE: anonymous
             CONVEX_LOCAL_BACKEND_STARTUP_TIMEOUT_SECS: "600"
-            # Admin e2e drives the real admin app, which mints RS256 operator tokens the backend must
-            # verify. Point the minter (this admin origin) AND the deployment's customJwt provider at
-            # the same issuer/audience, and the JWKS at the running app's reachable
-            # `/.well-known/jwks.json`, so a minted token validates against the one key the app serves.
-            # `convex-local` seeds these onto the backend via `resolveBackendAuthEnv`; the admin
-            # webServer reads issuer/audience directly. Blank for storefront, whose public e2e never
-            # exercises an operator token (the backend keeps its unreachable placeholder auth).
-            CONVEX_AUTH_ISSUER: ${{ matrix.app == 'admin' && 'http://localhost:3000' || '' }}
-            CONVEX_AUTH_APPLICATION_ID: ${{ matrix.app == 'admin' && 'convex' || '' }}
-            CONVEX_AUTH_JWKS_URL: ${{ matrix.app == 'admin' && 'http://localhost:3000/.well-known/jwks.json' || '' }}
+            # Legacy storefront-customer RS256 auth vars (kept per decision #16; storefront e2e
+            # still exercises the customJwt provider). Blank for admin, which now uses Clerk.
+            CONVEX_AUTH_ISSUER: ${{ matrix.app == 'storefront' && 'http://localhost:1337' || '' }}
+            CONVEX_AUTH_APPLICATION_ID: ${{ matrix.app == 'storefront' && 'convex' || '' }}
+            CONVEX_AUTH_JWKS_URL: ${{ matrix.app == 'storefront' && 'http://localhost:1337/api/auth/convex-jwks' || '' }}
             # The runtime `/api/version` endpoint (read by `resolveBuildId` per request) must report the
             # SAME id baked into the client bundle at build time (`NEXT_PUBLIC_BUILD_ID: github.sha`).
             # Without this, the endpoint here resolves to `'development'`, so the build-notifier engine
@@ -446,6 +452,18 @@ jobs:
             # in-flight navigations (storefront), breaking otherwise-unrelated specs. The banner specs
             # stub `/api/version` to a deliberately different id, so they still exercise the live path.
             NEXT_PUBLIC_BUILD_ID: ${{ github.sha }}
+            # Clerk dev-instance keys — admin e2e uses @clerk/testing (clerkSetup + clerk.signIn)
+            # against the Clerk dev instance. NEXT_PUBLIC_ is baked into the build artifact above;
+            # CLERK_SECRET_KEY is needed here for the Backend API calls in global-setup.ts
+            # (ensure test user, ensure org + membership). Both blank for storefront e2e.
+            # CLERK_FRONTEND_API_URL is the Convex auth.config.ts `domain`; without it the
+            # Clerk auth provider is absent and e2e fails with NoAuthProvider on operator tokens.
+            # Required GitHub secrets: CLERK_PUBLISHABLE_KEY_DEV, CLERK_SECRET_KEY_DEV,
+            # CLERK_WEBHOOK_SIGNING_SECRET_DEV.
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ matrix.app == 'admin' && secrets.CLERK_PUBLISHABLE_KEY_DEV || '' }}
+            CLERK_SECRET_KEY: ${{ matrix.app == 'admin' && secrets.CLERK_SECRET_KEY_DEV || '' }}
+            CLERK_FRONTEND_API_URL: ${{ matrix.app == 'admin' && 'https://internal-roughy-49.clerk.accounts.dev' || '' }}
+            CLERK_WEBHOOK_SIGNING_SECRET: ${{ matrix.app == 'admin' && secrets.CLERK_WEBHOOK_SIGNING_SECRET_DEV || '' }}
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
@@ -456,12 +474,12 @@ jobs:
               with:
                   turbo-cache: "false"
 
-            - name: 🔑 Generate the e2e operator signing key (admin)
-              if: matrix.app == 'admin'
-              # The admin mints operator tokens from CONVEX_AUTH_PRIVATE_KEY and derives the public half
-              # its /.well-known/jwks.json serves from the same material, so a throwaway per-run PKCS8
-              # keypair is the whole chain — nothing to commit. Export it for the webServer the test step
-              # spawns; the backend never needs the private half, only the JWKS the app serves from it.
+            - name: 🔑 Generate the storefront customer signing key
+              if: matrix.app == 'storefront'
+              # The storefront mints customer RS256 tokens from CONVEX_AUTH_PRIVATE_KEY and serves the
+              # public half at /api/auth/convex-jwks/. A throwaway per-run keypair is enough — the
+              # backend reads CONVEX_AUTH_JWKS_URL (seeded above) to validate; no key is committed.
+              # Admin no longer needs this: operator tokens are minted by Clerk, not RS256.
               run: |
                   {
                       echo 'CONVEX_AUTH_PRIVATE_KEY<<__OPERATOR_PEM__'
