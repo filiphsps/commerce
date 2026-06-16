@@ -222,11 +222,23 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   localized fieldset label.
 - Verified: six locale JSONs valid, biome clean, typecheck clean, picker 10/10.
 
+### 18 — Localize the collection-rail arrows
+
+- `collection-block-arrows` hard-coded `aria-label="Previous"/"Next"`. The client component has no
+  i18n, and its server parent `collection-block` carries only `locale` (no dictionary).
+- Added optional `previousLabel`/`nextLabel` props (English defaults preserved). `collection-block`
+  now resolves the dictionary via `getDictionary({ shop, locale })` — only when arrows actually render
+  (desktop carousel) — and passes capitalized `t('previous')`/`t('next')` (existing keys, no new ones).
+  The dictionary import is bundler-cached, so multiple rails on a page stay cheap.
+- Verified: biome clean, typecheck clean, arrows 2/2, CMS collection block 6/6.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- Remaining literal `aria-label`s: `collection-block-arrows` ("Previous"/"Next" — no i18n prop, needs
-  threading from `collection-block`, which has only `locale`), the `product-options/primitives/overlay`
-  "Close" controls, and the unused `layout/popover` "Close".
+- Remaining literal `aria-label="Close"` in `product-options/primitives/overlay` (deep primitive, no
+  i18n prop) and the unused `layout/popover`. Lower priority — overlay needs i18n threading through
+  the product-options system.
+- Implement the BOOLEAN (in-stock) and PRICE_RANGE facets in `FilterValues` and wire the shared
+  `ProductFilters` into /products, collections, and search (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets in `FilterValues` and wire the
   shared `Filters`/`ProductFilters` into /products, collections, and search (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
