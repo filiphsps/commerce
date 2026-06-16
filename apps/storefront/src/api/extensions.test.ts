@@ -24,4 +24,17 @@ describe('productCardSurfaceForShop — per-instance override', () => {
             productCardSurfaceForShop(shop, 'collection'),
         );
     });
+
+    it('resolves the recommendation surface through the same cascade as collection/search', () => {
+        // Recommendation cards used to bypass the cascade (raw preset), so a tenant could not theme
+        // them; SurfaceProductCard routes every surface through the cascade. Lock that the store base
+        // and the per-surface recommendation selection both win over the preset.
+        const shop = shopWith({
+            base: { chrome: 'frameless' },
+            recommendation: { ctaPlacement: 'inline-button' },
+        });
+        const resolved = productCardSurfaceForShop(shop, 'recommendation');
+        expect(resolved.chrome).toBe('frameless'); // store-wide base applies
+        expect(resolved.ctaPlacement).toBe('inline-button'); // per-surface selection beats the preset's 'float-pill'
+    });
 });

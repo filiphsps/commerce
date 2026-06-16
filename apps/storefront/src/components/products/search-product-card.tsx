@@ -1,9 +1,8 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { productCardSurfaceForShop } from '@/api/extensions';
 import type { Product } from '@/api/product';
-import ProductCard from '@/components/product-card/product-card';
+import SurfaceProductCard from '@/components/products/surface-product-card';
 import type { Locale } from '@/utils/locale';
 
 export type SearchProductCardProps = {
@@ -15,9 +14,10 @@ export type SearchProductCardProps = {
 };
 
 /**
- * Renders a product card for the `search` surface, resolving its configuration through the
- * store-default cascade (`extensions.productCard.search` over the surface preset). A shop with no
- * override renders byte-identically to the preset.
+ * Renders a product card for the `search` surface. Delegates to {@link SurfaceProductCard}, which
+ * resolves the configuration through the store-default cascade (`extensions.productCard.search` over
+ * the store base over the surface preset). A shop with no override renders byte-identically to the
+ * preset.
  *
  * @param props.shop - Shop record; also the store-default source.
  * @param props.locale - Locale forwarded to the product card.
@@ -26,9 +26,7 @@ export type SearchProductCardProps = {
  * @param props.className - Additional CSS class names.
  * @returns The `ProductCard` element.
  */
-const SearchProductCard = async (props: SearchProductCardProps) => (
-    <ProductCard {...productCardSurfaceForShop(props.shop, 'search')} {...props} />
-);
+const SearchProductCard = (props: SearchProductCardProps) => <SurfaceProductCard surface="search" {...props} />;
 
 SearchProductCard.displayName = 'Nordcom.Products.SearchProductCard';
 export default SearchProductCard;

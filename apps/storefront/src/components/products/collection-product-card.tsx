@@ -1,10 +1,9 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { productCardSurfaceForShop } from '@/api/extensions';
 import type { Product } from '@/api/product';
 import type { ProductCardSurfaceOverride } from '@/components/product-card/presets';
-import ProductCard from '@/components/product-card/product-card';
+import SurfaceProductCard from '@/components/products/surface-product-card';
 import type { Locale } from '@/utils/locale';
 
 export type CollectionProductCardProps = {
@@ -18,9 +17,10 @@ export type CollectionProductCardProps = {
 };
 
 /**
- * Renders a product card for the `collection` surface, resolving its configuration through the
- * store-default cascade (per-instance `cardOverride` → `extensions.productCard.collection` → store
- * base → surface preset). A shop with no override renders byte-identically to the preset.
+ * Renders a product card for the `collection` surface. Delegates to {@link SurfaceProductCard}, which
+ * resolves the configuration through the store-default cascade (per-instance `cardOverride` →
+ * `extensions.productCard.collection` → store base → surface preset). A shop with no override renders
+ * byte-identically to the preset.
  *
  * @param props.shop - Shop record; also the store-default source.
  * @param props.locale - Locale forwarded to the product card.
@@ -30,8 +30,8 @@ export type CollectionProductCardProps = {
  * @param props.cardOverride - Per-instance override from the hosting collection block.
  * @returns The `ProductCard` element.
  */
-const CollectionProductCard = async ({ cardOverride, ...rest }: CollectionProductCardProps) => (
-    <ProductCard {...productCardSurfaceForShop(rest.shop, 'collection', cardOverride)} {...rest} />
+const CollectionProductCard = (props: CollectionProductCardProps) => (
+    <SurfaceProductCard surface="collection" {...props} />
 );
 
 CollectionProductCard.displayName = 'Nordcom.Products.CollectionProductCard';
