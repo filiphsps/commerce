@@ -172,6 +172,17 @@ dictionaries, so any NEW user-facing string needs a key added to all six locale 
 (en/de/es/fr/no/sv) — that's why `product-filters` ships literal sort/price labels and several generic
 primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file slice; logged below.
 
+### 14 — Harden new-tab links in the shared Link primitive
+
+- Confirmed the footer iOS safe-area gap is already fixed (folds `env(safe-area-inset-bottom)` into the
+  footer box). But the storefront's `target="_blank"` links (footer social/section/legal + ~12 sites)
+  carried no `rel` — reverse-tabnabbing exposure (the opened page can reach `window.opener`).
+- Fixed once at the source: the shared `Link` now defaults `rel="noopener noreferrer"` when
+  `target="_blank"` and no explicit `rel` is passed; callers needing a specific `rel` (rich-text
+  renderer, `nofollow`) still win. One change hardens every external new-tab link.
+- Added Link tests (new-tab default, explicit-rel preserved, same-tab unaffected).
+- Verified: biome clean, typecheck clean, link 11/11, rich-text + footer 29/29.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - i18n pass: localize `product-filters` (sort options, Min/Max, price/sort aria-labels),
