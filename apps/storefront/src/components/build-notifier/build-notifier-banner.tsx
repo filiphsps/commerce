@@ -49,8 +49,8 @@ export function BuildNotifierBanner({
             className={[
                 'fixed inset-x-0 z-50 flex justify-center px-4',
                 isBottom
-                    ? 'bottom-0 pb-4 [padding-bottom:max(1rem,env(safe-area-inset-bottom))]'
-                    : 'top-0 pt-4 [padding-top:max(1rem,env(safe-area-inset-top))]',
+                    ? 'pb-[max(1rem,env(safe-area-inset-bottom))] bottom-0'
+                    : 'top-0 pt-[max(1rem,env(safe-area-inset-top))]',
                 isBottom
                     ? 'motion-safe:animate-[nbn-in-bottom_240ms_cubic-bezier(0.22,1,0.36,1)_both]'
                     : 'motion-safe:animate-[nbn-in-top_240ms_cubic-bezier(0.22,1,0.36,1)_both]',
@@ -66,13 +66,13 @@ export function BuildNotifierBanner({
                     <span className="block size-2.5 rounded-full bg-(--accent)" />
                 </span>
 
-                <p className="flex-1 text-sm leading-snug text-(--text)">{labels.title}</p>
+                <p className="flex-1 text-(--text) text-sm leading-snug">{labels.title}</p>
 
                 <div className="flex shrink-0 items-center gap-2">
                     <button
                         type="button"
                         onClick={onReload}
-                        className="rounded-md bg-(--accent) px-3 py-1.5 text-xs font-semibold text-(--color-primary-foreground) transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--accent)"
+                        className="rounded-md bg-(--accent) px-3 py-1.5 font-semibold text-(--color-primary-foreground) text-xs transition-opacity hover:opacity-90 focus-visible:outline-(--accent) focus-visible:outline-2 focus-visible:outline-offset-2"
                     >
                         {labels.reload}
                     </button>
@@ -82,7 +82,7 @@ export function BuildNotifierBanner({
                             type="button"
                             onClick={onDismiss}
                             aria-label={labels.dismiss}
-                            className="flex size-6 items-center justify-center rounded-md text-(--text-muted) transition-colors hover:text-(--text) focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--accent)"
+                            className="flex size-6 items-center justify-center rounded-md text-(--text-muted) transition-colors hover:text-(--text) focus-visible:outline-(--accent) focus-visible:outline-2 focus-visible:outline-offset-2"
                         >
                             <svg
                                 aria-hidden="true"
