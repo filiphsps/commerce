@@ -2,6 +2,7 @@ import type { GenericQueryCtx, UserIdentity } from 'convex/server';
 import { ConvexError } from 'convex/values';
 
 import type { DataModel, Doc, Id } from '../_generated/dataModel';
+import { shopDomainRow } from '../db/shop_routing';
 import { getServerEnv } from './env';
 
 /**
@@ -38,6 +39,27 @@ export const AuthErrorCode = {
     NO_SHOP_MEMBERSHIP: 'NO_SHOP_MEMBERSHIP',
     /** The user collaborates on more than one shop; the active-tenant selection is CONVEXCORE-16's job. */
     AMBIGUOUS_SHOP_MEMBERSHIP: 'AMBIGUOUS_SHOP_MEMBERSHIP',
+    /** No `shopDomains` row claims the requested routing `domain` — the domain maps to no shop at all. */
+    UNKNOWN_SHOP: 'UNKNOWN_SHOP',
+    /**
+     * A `shopDomains` routing row claims the `domain`, but its `shop` foreign key resolves to no row — a
+     * dangling reference (shop deleted out from under a stale routing row). Distinct from `UNKNOWN_SHOP`
+     * (no routing row at all) so the dangling-FK data fault is observable rather than masked as "unknown".
+     */
+    SHOP_ORPHANED: 'SHOP_ORPHANED',
+    /**
+     * The resolved shop carries no `clerkOrgId` — an un-backfilled row from before the Clerk migration.
+     * Access cannot be decided because there is no owning org to check membership against; the backfill
+     * migration must stamp the org before the shop is reachable through the operator authorization gate.
+     */
+    SHOP_WITHOUT_ORG: 'SHOP_WITHOUT_ORG',
+    /**
+     * The operator is not a member of the shop's OWNING org: no `orgMemberships` row joins the operator
+     * to `shop.clerkOrgId` (the {@link resolveShopAccess} authorization gate). The org-tenancy analogue
+     * of `NO_SHOP_MEMBERSHIP`, kept distinct so a missing org membership is not conflated with the
+     * legacy `resolveAdminShopId` "collaborates on no shop" failure.
+     */
+    NO_ORG_MEMBERSHIP: 'NO_ORG_MEMBERSHIP',
 } as const;
 
 /**
@@ -269,4 +291,72 @@ export async function resolveAdminShopId(ctx: AuthReadCtx): Promise<Id<'shops'>>
     }
 
     return collaborator.shop;
+}
+
+/**
+ * Authorizes an admin operator for the shop addressed by a routing `domain`, returning that shop's id.
+ *
+ * The Clerk-org tenancy gate (spec Task 2.3): a Clerk org owns N shops and a user belongs to N orgs, so
+ * access to a shop = the operator is a member of the shop's OWNING org. This resolver decides that with
+ * the standard `subject` claim plus the synced `orgMemberships` mirror ONLY — it never reads the Clerk
+ * `org_id` JWT claim (whose surfacing through Convex is uncertain; the active-org concern is the app
+ * layer's, Task 5.1). The steps:
+ * 1. Resolve the operator from the validated Clerk identity ({@link resolveUserFromIdentity}).
+ * 2. Resolve the shop from `domain` through the shared `shopDomains.by_domain` routing read in
+ *    `db/shops` ({@link shopDomainRow}) — the SAME indexed lookup the storefront's {@link shopByDomain}
+ *    builds on, so the domain→shop logic lives in one place. A missing routing row is `UNKNOWN_SHOP`;
+ *    a routing row whose `shop` FK dangles is `SHOP_ORPHANED`, kept distinct rather than masked.
+ * 3. Require the shop to carry a `clerkOrgId` (its owning org); an un-backfilled row is unreachable.
+ * 4. Require an `orgMemberships` row joining `(shop.clerkOrgId, operator._id)` via `by_clerk_org_user`.
+ *
+ * Read-only: it performs no writes and is safe to call from a query context. This is ADDITIVE — it does
+ * NOT replace {@link resolveAdminShopId}; the app-wiring repoint of callers is Task 5.1.
+ *
+ * @param ctx - A Convex query or mutation context exposing `auth` and `db`.
+ * @param domain - The routing hostname (no scheme, no port) addressing the target shop.
+ * @returns The `shops` document id the operator is authorized for.
+ * @throws {ConvexError} `UNAUTHENTICATED` / `FORGED_IDENTITY` / `IDENTITY_WITHOUT_EMAIL` / `UNKNOWN_USER` from the identity → user resolution.
+ * @throws {ConvexError} `UNKNOWN_SHOP` when no `shopDomains` row claims the domain.
+ * @throws {ConvexError} `SHOP_ORPHANED` when a routing row claims the domain but its `shop` FK dangles.
+ * @throws {ConvexError} `SHOP_WITHOUT_ORG` when the resolved shop has no `clerkOrgId` (un-backfilled).
+ * @throws {ConvexError} `NO_ORG_MEMBERSHIP` when the operator is not a member of the shop's owning org.
+ */
+export async function resolveShopAccess(ctx: AuthReadCtx, domain: string): Promise<Id<'shops'>> {
+    const operator = await resolveUserFromIdentity(ctx);
+
+    const domainRow = await shopDomainRow(ctx, domain);
+    if (!domainRow) {
+        throw new ConvexError({
+            code: AuthErrorCode.UNKNOWN_SHOP,
+            message: 'No shop claims the requested domain.',
+        });
+    }
+    const shop = await ctx.db.get(domainRow.shop);
+    if (!shop) {
+        throw new ConvexError({
+            code: AuthErrorCode.SHOP_ORPHANED,
+            message: 'A routing row claims the domain but its shop no longer exists.',
+        });
+    }
+
+    const { clerkOrgId } = shop;
+    if (!clerkOrgId) {
+        throw new ConvexError({
+            code: AuthErrorCode.SHOP_WITHOUT_ORG,
+            message: 'Shop has no owning Clerk org; access cannot be authorized until it is backfilled.',
+        });
+    }
+
+    const membership = await ctx.db
+        .query('orgMemberships')
+        .withIndex('by_clerk_org_user', (q) => q.eq('clerkOrgId', clerkOrgId).eq('user', operator._id))
+        .first();
+    if (!membership) {
+        throw new ConvexError({
+            code: AuthErrorCode.NO_ORG_MEMBERSHIP,
+            message: 'Operator is not a member of the shop\'s owning org.',
+        });
+    }
+
+    return shop._id;
 }

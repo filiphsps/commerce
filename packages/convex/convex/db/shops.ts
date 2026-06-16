@@ -3,6 +3,7 @@ import { v } from 'convex/values';
 import { serverQuery } from '../_constructors';
 import type { Doc, Id } from '../_generated/dataModel';
 import type { QueryCtx } from '../_generated/server';
+import { shopByDomain } from './shop_routing';
 
 /**
  * A shop row paired with its resolved feature flags — the read unit the `packages/db` seam
@@ -33,27 +34,6 @@ export type CollaboratedShopView = {
     shop: Doc<'shops'>;
     collaborators: { user: string; permissions: string[] }[];
 };
-
-/**
- * Resolves a shop by any routable hostname through the `shopDomains.by_domain` index. The Mongo
- * `$or: [{ domain }, { alternativeDomains: domain }]` collection scan collapses into this single
- * indexed lookup because every shop's primary domain AND each alternative domain owns its own
- * `shopDomains` row.
- *
- * @param ctx - The server query context (raw cross-tenant `db`).
- * @param domain - Fully-qualified hostname (no scheme, no port).
- * @returns The owning shop row, or `null` when no shop claims the domain.
- */
-async function shopByDomain(ctx: QueryCtx, domain: string): Promise<Doc<'shops'> | null> {
-    const row = await ctx.db
-        .query('shopDomains')
-        .withIndex('by_domain', (q) => q.eq('domain', domain))
-        .first();
-    if (!row) {
-        return null;
-    }
-    return ctx.db.get(row.shop);
-}
 
 /**
  * Resolves a shop by its PUBLIC id — the migrated Mongo `ObjectId` preserved as `legacyId` (the value
