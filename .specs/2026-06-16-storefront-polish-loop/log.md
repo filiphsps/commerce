@@ -358,6 +358,15 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   input (existing key). Dropped the TODO; used a typographic ellipsis.
 - Verified: six locale JSONs valid, biome clean, typecheck clean, search 6/6.
 
+### 31 — Mark the breadcrumbs skeleton decorative
+
+- Audited search (landing/empty/count all built + localized after iter 30), product-description
+  (delegates to sanitized ShopifyContent), gallery-share + login/export buttons (clean) — no gaps.
+- One fix: the breadcrumbs loading placeholder was a bare `<section>` announced as an empty region
+  while the real `nav[aria-label="Breadcrumb"]` streams in. Switched to `<div aria-hidden="true">`
+  (decorative), removing the duplicate/empty landmark during load.
+- Verified: biome clean, typecheck clean, breadcrumbs skeleton 1/1.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
