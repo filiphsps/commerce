@@ -1,4 +1,4 @@
-import { selectField } from '../descriptors/builders';
+import { checkboxField, selectField, textField } from '../descriptors/builders';
 import { overridable } from '../descriptors/overridable';
 import type { OverridableFieldDescriptor } from '../descriptors/types';
 
@@ -72,6 +72,28 @@ const productCardSettings: OverridableFieldDescriptor[] = [
     ),
 ];
 
+const buildNotifierSettings: OverridableFieldDescriptor[] = [
+    overridable(checkboxField({ name: 'enabled', label: 'Enabled' }), { inheritedSourceLabel: 'Platform default' }),
+    overridable(
+        selectField({
+            name: 'position',
+            label: 'Position',
+            options: [
+                { label: 'Bottom', value: 'bottom' },
+                { label: 'Top', value: 'top' },
+            ],
+        }),
+        { inheritedSourceLabel: 'Platform default' },
+    ),
+    overridable(textField({ name: 'copy', label: 'Banner text' }), { inheritedSourceLabel: 'Localized default' }),
+    overridable(checkboxField({ name: 'autoReload', label: 'Auto-reload on new build' }), {
+        inheritedSourceLabel: 'Platform default',
+    }),
+    overridable(checkboxField({ name: 'dismissable', label: 'Allow dismissal' }), {
+        inheritedSourceLabel: 'Platform default',
+    }),
+];
+
 /**
  * Registry of configurable storefront components, in display order. The Customization editor renders
  * one section per entry; the storefront resolves each surface through `resolveExtensions` →
@@ -83,6 +105,11 @@ export const COMPONENT_SETTINGS: readonly ComponentSettingsEntry[] = [
         label: 'Product card',
         surfaces: ['collection', 'search', 'recommendation'],
         settings: productCardSettings,
+    },
+    {
+        id: 'buildNotifier',
+        label: 'Build notifier',
+        settings: buildNotifierSettings,
     },
 ];
 

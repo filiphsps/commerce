@@ -48,6 +48,7 @@ export type ProductCardVariantSelection = {
  *     sections: { 'info-bar': false },
  *     blocks: { available: ['banner', 'rich-text'] },
  *     productCard: { search: { layout: 'horizontal' } },
+ *     buildNotifier: { enabled: false },
  * };
  * ```
  */
@@ -94,4 +95,22 @@ export interface ShopExtensionManifest {
      * block uses its platform defaults.
      */
     blockDefaults?: Record<string, Record<string, unknown>>;
+    /**
+     * Per-shop "new build available" notifier config. The storefront shows a banner when a newer build
+     * is deployed; the fields here override the platform defaults. Every sub-field is optional and an
+     * absent field defers to the storefront platform default, so an absent `buildNotifier` renders
+     * today's behavior.
+     */
+    buildNotifier?: {
+        /** Whether the notifier is shown. Absent → the platform default (on). */
+        enabled?: boolean;
+        /** Banner placement. Absent → the platform default (`bottom`). */
+        position?: 'top' | 'bottom';
+        /** Banner text. Absent → the storefront's localized default copy. */
+        copy?: string;
+        /** Whether a new build reloads the page automatically. Absent → the platform default (off). */
+        autoReload?: boolean;
+        /** Whether the visitor can dismiss the banner. Absent → the platform default (on). */
+        dismissable?: boolean;
+    };
 }

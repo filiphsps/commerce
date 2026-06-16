@@ -130,6 +130,32 @@ describe('resolveExtensions', () => {
             // A copy, never an alias of the manifest input.
             expect(blockDefaults.collection).not.toBe(settings);
         });
+
+        it('defaults buildNotifier to enabled/bottom/dismissable when unset', () => {
+            const r = resolveExtensions({ shop: bareShop, manifest: null });
+            expect(r.buildNotifier).toEqual({
+                enabled: true,
+                position: 'bottom',
+                copy: undefined,
+                autoReload: false,
+                dismissable: true,
+            });
+        });
+
+        it('applies buildNotifier manifest overrides and fills the omitted dismissable from the default', () => {
+            const r = resolveExtensions({
+                shop: bareShop,
+                manifest: { buildNotifier: { enabled: false, position: 'top', copy: 'Update!', autoReload: true } },
+            });
+            expect(r.buildNotifier).toEqual({
+                enabled: false,
+                position: 'top',
+                copy: 'Update!',
+                autoReload: true,
+                // Omitted from the manifest → cascade fills the platform default.
+                dismissable: true,
+            });
+        });
     });
 
     describe('validation', () => {
