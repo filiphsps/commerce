@@ -20,16 +20,6 @@ import type { GenericId as Id } from "convex/values";
  * ```
  */
 export declare const api: {
-  clerk: {
-    provisioning: {
-      ensureCurrentUser: FunctionReference<
-        "mutation",
-        "public",
-        {},
-        { email: string; id: Id<"users">; name: string }
-      >;
-    };
-  };
   account: {
     profile: {
       get: FunctionReference<"query", "public", {}, any>;
@@ -45,19 +35,9 @@ export declare const api: {
       >;
     };
   };
-  orgs: {
-    chooser: {
-      listForOperator: FunctionReference<
-        "query",
-        "public",
-        {},
-        Array<{
-          clerkOrgId: string;
-          imageUrl: string | null;
-          name: string;
-          shops: Array<{ domain: string; name: string }>;
-        }>
-      >;
+  clerk: {
+    provisioning: {
+      ensureCurrentUser: FunctionReference<"mutation", "public", {}, any>;
     };
   };
   cms: {
@@ -102,7 +82,7 @@ export declare const api: {
       restoreVersion: FunctionReference<
         "mutation",
         "public",
-        { versionId: Id<"cmsVersions">; shopDomain?: string },
+        { shopDomain?: string; versionId: Id<"cmsVersions"> },
         any
       >;
       saveDraft: FunctionReference<
@@ -380,12 +360,30 @@ export declare const api: {
       restore: FunctionReference<
         "mutation",
         "public",
-        { versionId: Id<"cmsVersions">; shopDomain?: string },
+        { shopDomain?: string; versionId: Id<"cmsVersions"> },
         any
       >;
     };
   };
   db: {
+    clerk_seed: {
+      seedClerkOperator: FunctionReference<
+        "mutation",
+        "public",
+        {
+          clerkOrgId: string;
+          clerkUserId: string;
+          email: string;
+          name: string;
+          orgName: string;
+          orgSlug: string;
+          role?: string;
+          serverSecret: string;
+          shopLegacyId: string;
+        },
+        any
+      >;
+    };
     feature_flags: {
       byKey: FunctionReference<
         "query",
@@ -400,35 +398,6 @@ export declare const api: {
         any
       >;
     };
-    identities: {
-      byId: FunctionReference<
-        "query",
-        "public",
-        { id: string; serverSecret: string },
-        any
-      >;
-      byProviderIdentity: FunctionReference<
-        "query",
-        "public",
-        { identity: string; provider: string; serverSecret: string },
-        any
-      >;
-      upsertByProviderIdentity: FunctionReference<
-        "mutation",
-        "public",
-        {
-          accessToken?: string;
-          expiresAt?: number;
-          identity: string;
-          provider: string;
-          refreshToken?: string;
-          scope?: string;
-          serverSecret: string;
-          upsert?: boolean;
-        },
-        any
-      >;
-    };
     reviews: {
       byShop: FunctionReference<
         "query",
@@ -440,37 +409,6 @@ export declare const api: {
         "query",
         "public",
         { serverSecret: string },
-        any
-      >;
-    };
-    sessions: {
-      byId: FunctionReference<
-        "query",
-        "public",
-        { id: string; serverSecret: string },
-        any
-      >;
-      byToken: FunctionReference<
-        "query",
-        "public",
-        { serverSecret: string; token: string },
-        any
-      >;
-      create: FunctionReference<
-        "mutation",
-        "public",
-        {
-          expiresAt: number;
-          serverSecret: string;
-          token: string;
-          userId: string;
-        },
-        any
-      >;
-      deleteByToken: FunctionReference<
-        "mutation",
-        "public",
-        { serverSecret: string; token: string },
         any
       >;
     };
@@ -988,6 +926,11 @@ export declare const api: {
       >;
     };
   };
+  orgs: {
+    chooser: {
+      listForOperator: FunctionReference<"query", "public", {}, any>;
+    };
+  };
 };
 
 /**
@@ -1001,28 +944,22 @@ export declare const api: {
 export declare const internal: {
   clerk: {
     webhooks: {
-      upsertUserFromClerk: FunctionReference<
+      deleteMembership: FunctionReference<
         "mutation",
         "internal",
-        { avatar?: string; clerkUserId: string; email: string; name: string },
-        any
-      >;
-      deleteUser: FunctionReference<
-        "mutation",
-        "internal",
-        { clerkUserId: string },
-        any
-      >;
-      upsertOrg: FunctionReference<
-        "mutation",
-        "internal",
-        { clerkOrgId: string; imageUrl?: string; name: string; slug: string },
+        { clerkOrgId: string; clerkUserId: string },
         any
       >;
       deleteOrg: FunctionReference<
         "mutation",
         "internal",
         { clerkOrgId: string },
+        any
+      >;
+      deleteUser: FunctionReference<
+        "mutation",
+        "internal",
+        { clerkUserId: string },
         any
       >;
       upsertMembership: FunctionReference<
@@ -1038,10 +975,16 @@ export declare const internal: {
         },
         any
       >;
-      deleteMembership: FunctionReference<
+      upsertOrg: FunctionReference<
         "mutation",
         "internal",
-        { clerkOrgId: string; clerkUserId: string },
+        { clerkOrgId: string; imageUrl?: string; name: string; slug: string },
+        any
+      >;
+      upsertUserFromClerk: FunctionReference<
+        "mutation",
+        "internal",
+        { avatar?: string; clerkUserId: string; email: string; name: string },
         any
       >;
     };

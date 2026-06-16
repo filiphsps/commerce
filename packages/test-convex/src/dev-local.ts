@@ -223,6 +223,32 @@ export async function withRetry<T>(
 }
 
 /**
+ * Resolves the Clerk auth-provider config to seed onto the local backend's deployment. Convex's native
+ * Clerk provider (`auth.config.ts`) needs `CLERK_FRONTEND_API_URL` to discover Clerk's JWKS and verify
+ * the ADMIN operator tokens the admin app mints (`getToken({ template: 'convex' })`); without it every
+ * operator `getUserIdentity()` returns `null` and the chooser/cms reads fail closed. The optional
+ * `CLERK_WEBHOOK_SIGNING_SECRET` is only needed when an e2e exercises the webhook httpAction directly
+ * (the spec suite does not — the seed re-expresses the webhook writes), so it is set only when present.
+ *
+ * Unit/integration backends never mint a Clerk token, so they leave `frontendApiUrl` empty (the
+ * provider then matches no token, exactly like the unreachable customJwt placeholders). The admin e2e
+ * job sets `CLERK_FRONTEND_API_URL` to the dev Clerk instance's Frontend API origin so a real operator
+ * token validates.
+ *
+ * @param env - Environment to read overrides from; defaults to `process.env`.
+ * @returns The Clerk frontend API URL and optional webhook signing secret to seed on the deployment.
+ */
+export function resolveClerkBackendEnv(env: ProcessEnv = process.env): {
+    frontendApiUrl: string;
+    webhookSigningSecret: string;
+} {
+    return {
+        frontendApiUrl: env.CLERK_FRONTEND_API_URL?.trim() || '',
+        webhookSigningSecret: env.CLERK_WEBHOOK_SIGNING_SECRET?.trim() || '',
+    };
+}
+
+/**
  * Idempotently ensures the local-first dev backend is up, configured, and seeded:
  *   1. If `/instance_name` is already healthy, skip the boot.
  *   2. Otherwise spawn the `test-convex start` daemon DETACHED (the CLI blocks, so `pnpm dev` cannot
@@ -271,11 +297,25 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
     convexEnvSet(url, adminKey, 'CONVEX_AUTH_APPLICATION_ID', backendAuth.applicationId);
     convexEnvSet(url, adminKey, 'CONVEX_AUTH_JWKS_URL', backendAuth.jwksUrl);
 
-    // Always push, even when reusing a cached state dir: auth.config.ts captures CONVEX_AUTH_* only at
-    // push time (admin e2e overrides the issuer/JWKS per run), and the daemon's own continuous push
-    // failed before the env was set and does not retry on an env change. Retried because the backend's
-    // wait_for_schema endpoint intermittently 500s while a deployment settles; cheap when the restored
-    // state already carries the matching modules. This is the flaky-but-necessary step the seed is not.
+    // Clerk operator-token validation: the admin e2e mints Clerk `convex`-template tokens the backend
+    // must verify, so set the Frontend API origin the native Clerk provider discovers its JWKS from.
+    // ALWAYS set it (even to empty) because `auth.config.ts` REFERENCES the var and `convex dev`'s push
+    // hard-errors on a referenced-but-unset env var; an empty value fails operator tokens closed (the
+    // provider then matches no token, exactly like the unreachable customJwt placeholders) — the right
+    // posture for unit/integration backends that mint no Clerk token. The webhook secret is set only when
+    // present, since `auth.config.ts` does not reference it (only the webhook httpAction reads it).
+    const clerkAuth = resolveClerkBackendEnv();
+    convexEnvSet(url, adminKey, 'CLERK_FRONTEND_API_URL', clerkAuth.frontendApiUrl);
+    if (clerkAuth.webhookSigningSecret) {
+        convexEnvSet(url, adminKey, 'CLERK_WEBHOOK_SIGNING_SECRET', clerkAuth.webhookSigningSecret);
+    }
+
+    // Always push, even when reusing a cached state dir: auth.config.ts captures CONVEX_AUTH_* and the
+    // Clerk Frontend API URL only at push time (admin e2e overrides the issuer/JWKS and Clerk origin per
+    // run), and the daemon's own continuous push failed before the env was set and does not retry on an
+    // env change. Retried because the backend's wait_for_schema endpoint intermittently 500s while a
+    // deployment settles; cheap when the restored state already carries the matching modules. This is the
+    // flaky-but-necessary step the seed is not.
     await withRetry(() => convexDevOnce(url, adminKey), { label: 'convex dev --once (function push)' });
 
     // Skip the (expensive) canonical seed when the tenant already resolves — a restored, pre-seeded

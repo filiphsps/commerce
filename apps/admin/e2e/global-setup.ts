@@ -1,148 +1,164 @@
-import {
-    MissingEnvironmentVariableError,
-    NotFoundError,
-    TodoError,
-    UnknownShopDomainError,
-} from '@nordcom/commerce-errors';
-import { seedCanonical } from '@nordcom/commerce-test-convex';
-import { ConvexHttpClient } from 'convex/browser';
-import { type FunctionReference, makeFunctionReference } from 'convex/server';
+import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
+import { DEFAULT_SHOP_LEGACY_ID, seedCanonical, type SeedClerkOperatorView } from '@nordcom/commerce-test-convex';
+import { clerk, clerkSetup } from '@clerk/testing/playwright';
+import { type Browser, chromium, expect } from '@playwright/test';
 
-const TEST_EMAIL = 'e2e-test@example.com';
+import { STORAGE_STATE_PATH } from './fixtures/storage-state';
+import { type ClerkBackendOrg, type ClerkBackendUser, ensureClerkOrg, ensureClerkUser } from './support/clerk-backend';
+import { E2E_OPERATOR_EMAIL } from './support/clerk';
 
-/** Hostname → shop server query — the SAME `db/shops` seam the admin shell resolves tenants through. */
-export const shopByDomainRef = makeFunctionReference<'query'>('db/shops:byDomain');
-/** Email → platform-user server query; the idempotency probe for the operator upsert. */
-export const userByEmailRef = makeFunctionReference<'query'>('db/users:byEmail');
-/** Platform-user insert backing the first-run operator seed (`users.by_email` unique-enforced). */
-export const userCreateRef = makeFunctionReference<'mutation'>('db/users:create');
-/** The single atomic shop write; its `collaborators` list delete-diff-syncs the `shopCollaborators` join. */
-export const upsertShopRef = makeFunctionReference<'mutation'>('db/shop_write:upsertShop');
-
-/** The narrow `byDomain` result surface the setup consumes (the wire erases the branded ids). */
-type ShopByDomainView = { shop: { _id: string; legacyId: string } } | null;
-
-/** The narrow `users` row surface the setup consumes from `byEmail`/`create`. */
-type UserView = { _id: string };
-
-/** The narrow `upsertShop` result surface — `null` means the keyed shop row vanished mid-setup. */
-type ShopWriteView = { shop: { _id: string } } | null;
-
-/** The slice of `ConvexHttpClient` the setup needs — kept minimal so unit tests can hand in a fake. */
-export interface SetupConvexClient {
-    query(reference: FunctionReference<'query'>, args: Record<string, unknown>): Promise<unknown>;
-    mutation(reference: FunctionReference<'mutation'>, args: Record<string, unknown>): Promise<unknown>;
-}
+/** Stable slug for the primary e2e operator's org (the idempotency key for the find-or-create in Clerk). */
+const E2E_ORG_SLUG = 'nordcom-e2e';
+/** Display name for the primary e2e operator's org, mirrored into the Convex `orgs` table. */
+const E2E_ORG_NAME = 'Nordcom E2E';
+/** Display name for the seeded operator's `users` row. */
+const E2E_OPERATOR_NAME = 'E2E Test User';
 
 /**
- * The injectable substrate behind {@link seedE2eOperator}: the canonical Convex seed and a
- * server-tier client factory — so the unit suite can mock every transport and prove the seed
- * sequence without a deployment.
+ * The Clerk + Convex tier the harness provisions: the Clerk backend identities and the seed wiring,
+ * injectable so the unit suite proves the orchestration without a Clerk dev instance or a Convex
+ * deployment.
  */
-export interface GlobalSetupDeps {
-    convex: {
-        /** Seeds the canonical tenant onto the deployment; resolves to the canonical `shops` doc id. */
-        seed(url: string): Promise<string>;
-        /** Builds a (server-tier) client for the deployment. */
-        createClient(url: string): SetupConvexClient;
-    };
+export interface ClerkSetupDeps {
+    /** Find-or-create the Clerk test user for `email`. */
+    ensureUser(email: string): Promise<ClerkBackendUser>;
+    /** Find-or-create the Clerk org (`slug`/`name`) owned by `createdByUserId`. */
+    ensureOrg(slug: string, name: string, createdByUserId: string): Promise<ClerkBackendOrg>;
+    /** Seed the canonical tenant onto the deployment; resolves to the canonical shop id string. */
+    seedShop(url: string): Promise<string>;
+    /** Seed the operator's Clerk identity model (user/org/membership/collaborator) onto the deployment. */
+    seedOperator(url: string, args: ClerkSeedArgs): Promise<SeedClerkOperatorView>;
 }
 
-/** Production wiring: the real test-convex live seed plus a real `ConvexHttpClient`. */
-const defaultDeps: GlobalSetupDeps = {
-    convex: {
-        seed: (url) => seedCanonical(url),
-        createClient: (url) => new ConvexHttpClient(url),
+/** The argument bundle {@link ClerkSetupDeps.seedOperator} forwards to the deployed seed mutation. */
+export interface ClerkSeedArgs {
+    clerkUserId: string;
+    email: string;
+    name: string;
+    clerkOrgId: string;
+    orgName: string;
+    orgSlug: string;
+    shopLegacyId: string;
+}
+
+/** Production wiring: the real Clerk Backend REST helpers + the live test-convex seed runners. */
+const defaultDeps: ClerkSetupDeps = {
+    ensureUser: (email) => ensureClerkUser(email),
+    ensureOrg: (slug, name, createdByUserId) => ensureClerkOrg(slug, name, createdByUserId),
+    seedShop: (url) => seedCanonical(url),
+    seedOperator: async (url, args) => {
+        const { seedClerkOperatorLive } = await import('@nordcom/commerce-test-convex');
+        return seedClerkOperatorLive(url, { ...args, orgSlug: args.orgSlug, role: 'org:admin' });
     },
 };
 
 /**
- * The testable seed core of the Playwright globalSetup: ensures the canonical demo tenant exists on
- * the configured Convex deployment, resolves it through the `db/shops:byDomain` server seam, upserts
- * the e2e operator against the unified model (`users` keyed by `by_email`, then ONE
- * `db/shop_write:upsertShop` whose `collaborators` list syncs the `shopCollaborators` join the
- * shell's `Shop.findByCollaborator` reads). Idempotent end-to-end: the canonical seed heals
- * partial corpora, the user upsert is probe-then-create, and the collaborator sync is a
- * delete-diff.
+ * The testable orchestration core of the Playwright globalSetup's data phase: provisions the e2e Clerk
+ * operator + org in the Clerk dev instance (find-or-create), seeds the canonical tenant onto the
+ * configured Convex deployment, then seeds the operator's identity model so the org owns the canonical
+ * shop and the `shopCollaborators` projection mirrors what the Clerk webhook would have synced.
+ *
+ * Idempotent end-to-end: the Clerk find-or-create probes before creating, the canonical seed heals a
+ * partial corpus, and the operator seed upserts every row — so a re-run against the shared dev instance
+ * and deployment is safe.
  *
  * @param env - The environment to read configuration from.
- * @param deps - The transport surface (injectable for unit tests).
- * @returns The operator's Convex `users` document id.
- * @throws {MissingEnvironmentVariableError} When `CONVEX_URL`/`NEXT_PUBLIC_CONVEX_URL` or
- *   `CONVEX_SERVER_SECRET` is unset — run via `pnpm test:e2e` so root `.env.local` loads.
- * @throws {UnknownShopDomainError} When the demo shop cannot be resolved after seeding.
- * @throws {NotFoundError} When the keyed shop row vanishes between the resolve and the write.
+ * @param deps - The Clerk + Convex transport surface (injectable for unit tests).
+ * @returns The provisioned Clerk user, the Clerk org, and the Convex seed view.
+ * @throws {MissingEnvironmentVariableError} When `CONVEX_URL`/`NEXT_PUBLIC_CONVEX_URL` is unset — run
+ *   via `pnpm test:e2e` so root `.env.local` loads.
  */
-export async function seedE2eOperator(
+export async function seedE2eClerkOperator(
     env: NodeJS.ProcessEnv = process.env,
-    deps: GlobalSetupDeps = defaultDeps,
-): Promise<string> {
+    deps: ClerkSetupDeps = defaultDeps,
+): Promise<{ user: ClerkBackendUser; org: ClerkBackendOrg; seed: SeedClerkOperatorView }> {
     const url = env.CONVEX_URL || env.NEXT_PUBLIC_CONVEX_URL;
     if (!url) {
         throw new MissingEnvironmentVariableError('CONVEX_URL', 'Run via `pnpm test:e2e` so root .env.local loads.');
     }
-    const serverSecret = env.CONVEX_SERVER_SECRET;
-    if (!serverSecret) {
-        throw new MissingEnvironmentVariableError(
-            'CONVEX_SERVER_SECRET',
-            'It must match the value set on the Convex deployment under test.',
-        );
-    }
-    await deps.convex.seed(url);
 
-    const client = deps.convex.createClient(url);
-    const domain = env.E2E_SHOP_DOMAIN ?? 'nordcom-demo-shop.com';
-    const view = (await client.query(shopByDomainRef, { serverSecret, domain })) as ShopByDomainView;
-    if (!view) {
-        throw new UnknownShopDomainError(domain, 'The demo shop is missing after the canonical Convex seed.');
-    }
+    const user = await deps.ensureUser(E2E_OPERATOR_EMAIL);
+    const org = await deps.ensureOrg(E2E_ORG_SLUG, E2E_ORG_NAME, user.id);
 
-    const existing = (await client.query(userByEmailRef, { serverSecret, email: TEST_EMAIL })) as UserView | null;
-    const user =
-        existing ??
-        ((await client.mutation(userCreateRef, {
-            serverSecret,
-            email: TEST_EMAIL,
-            name: 'E2E Test User',
-            emailVerified: null,
-            identities: [],
-        })) as UserView);
+    await deps.seedShop(url);
+    const seed = await deps.seedOperator(url, {
+        clerkUserId: user.id,
+        email: user.primaryEmail,
+        name: E2E_OPERATOR_NAME,
+        clerkOrgId: org.id,
+        orgName: org.name,
+        orgSlug: org.slug,
+        shopLegacyId: DEFAULT_SHOP_LEGACY_ID,
+    });
 
-    const written = (await client.mutation(upsertShopRef, {
-        serverSecret,
-        legacyId: view.shop.legacyId,
-        shop: {},
-        collaborators: [{ user: user._id, permissions: ['admin'] }],
-    })) as ShopWriteView;
-    if (!written) {
-        throw new NotFoundError(`canonical shop (legacyId=${view.shop.legacyId})`);
-    }
-
-    return user._id;
+    return { user, org, seed };
 }
 
 /**
- * Playwright globalSetup.
+ * Drives a real Chromium page to sign the seeded operator into Clerk and persists the authenticated
+ * storage state to {@link STORAGE_STATE_PATH} (the path `playwright.config.ts` hands every project).
+ * Uses `@clerk/testing`'s `clerk.signIn({ emailAddress })`, which mints a SERVER-SIDE session and
+ * bypasses all verification (no OTP UI). Sign-in must run on a page that has loaded Clerk JS, so it
+ * navigates to the sign-in route first; then it asserts the authenticated chooser renders before
+ * saving state, so a broken token never produces a green-but-unauthenticated storage file.
  *
- * The Convex-native operator seed ({@link seedE2eOperator}) is intact, but the pre-auth session is
- * NOT yet wired: the NextAuth offline cookie-signing this used to do is gone with the dependency, and
- * the Clerk replacement (`@clerk/testing` `clerkSetup()` + `clerk.signIn()` → saved storage state) is
- * the FULL e2e harness rewrite tracked separately. Until then this throws if invoked, so an e2e run
- * fails loud with a pointer rather than silently launching unauthenticated.
+ * @param browser - The Playwright browser to open the auth page in.
+ * @param email - The operator email to sign in (the seeded `+clerk_test` identity).
+ * @returns Resolves once the authenticated storage state is written.
+ */
+async function signInAndSaveState(browser: Browser, email: string): Promise<void> {
+    const context = await browser.newContext({ baseURL: 'http://localhost:3000', ignoreHTTPSErrors: true });
+    const page = await context.newPage();
+    try {
+        // Load a page where Clerk JS is present. The unauthenticated root redirects to the sign-in
+        // route, which mounts <SignIn/> (Clerk loaded) — the surface `clerk.signIn` needs.
+        await page.goto('/auth/sign-in/');
+        await clerk.signIn({ page, emailAddress: email });
+
+        // Confirm the session is live: the authenticated chooser renders its heading.
+        await page.goto('/');
+        await expect(page.getByRole('heading', { name: 'Choose a storefront' })).toBeVisible({ timeout: 30_000 });
+
+        await context.storageState({ path: STORAGE_STATE_PATH });
+    } finally {
+        await context.close();
+    }
+}
+
+/**
+ * Playwright globalSetup for the admin e2e suite, authenticated through Clerk.
  *
- * @returns Never resolves — always throws until Task 8.1 lands.
- * @throws {TodoError} Always, pending the `@clerk/testing` e2e auth wiring.
+ * Phases: (1) `clerkSetup()` fetches a Testing Token from `CLERK_SECRET_KEY` for the whole run;
+ * (2) {@link seedE2eClerkOperator} provisions the Clerk operator/org and seeds the matching Convex
+ * tenant graph; (3) {@link signInAndSaveState} signs the operator in and writes the shared storage
+ * state every spec inherits via `use.storageState`.
+ *
+ * @returns Resolves once the operator is provisioned, seeded, signed in, and the storage state saved.
+ * @throws {MissingEnvironmentVariableError} When the Convex deployment URL is unset.
  */
 export default async function globalSetup(): Promise<void> {
-    // TODO(Task 8.1): Clerk e2e auth via @clerk/testing — `await clerkSetup()`, ensure the Clerk test
-    // user + org + membership, seed the matching Convex rows (extend `seedE2eOperator`), then
-    // `await clerk.signIn({ page, emailAddress })` and save the storage state to STORAGE_STATE_PATH.
-    throw new TodoError('admin e2e Clerk auth (the NextAuth pre-auth cookie was removed in the Clerk migration)');
+    // `clerkSetup` reads `CLERK_PUBLISHABLE_KEY` by default, but the repo's env carries the key under the
+    // Next-public name (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`); pass it (and the Frontend API URL)
+    // explicitly so the testing-token fetch works regardless of which name the loaded env used.
+    // `secretKey` is still read from `CLERK_SECRET_KEY` automatically.
+    await clerkSetup({
+        publishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+        frontendApiUrl: process.env.CLERK_FRONTEND_API_URL,
+    });
+    await seedE2eClerkOperator();
+
+    const browser = await chromium.launch();
+    try {
+        await signInAndSaveState(browser, E2E_OPERATOR_EMAIL);
+    } finally {
+        await browser.close();
+    }
 }
 
 /**
- * Playwright globalTeardown: no-op. The Convex deployment under test is owned by its launcher,
- * never by this file.
+ * Playwright globalTeardown: no-op. The Convex deployment under test is owned by its launcher, never by
+ * this file; the Clerk dev instance's test identities are reused across runs (find-or-create), not torn
+ * down here.
  *
  * @returns Immediately.
  */
