@@ -7,6 +7,9 @@ export default defineConfig({
         environment: 'happy-dom',
         globals: true,
         passWithNoTests: true,
+        typecheck: {
+            tsconfig: './tsconfig.test.json',
+        },
         include: ['src/**/*.test.{ts,tsx}'],
     },
 });
