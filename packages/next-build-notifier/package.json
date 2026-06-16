@@ -69,7 +69,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://filiphsps.github.io/commerce/docs/next-build-notifier/",
+    "homepage": "https://filiphsps.github.io/commerce/packages/next/next-build-notifier/overview/",
     "files": [
         "dist",
         "README.md"
