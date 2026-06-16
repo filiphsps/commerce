@@ -53,6 +53,7 @@
     },
     "common": {
         "accepted-payment-methods": "Accepted payment methods",
+        "search-placeholder": "Search for products, brands, categories, collections, and more…",
         "view-all-in": "View all of the products in {0}.",
         "product-options": "Product options",
         "choose-product-options": "Choose product options",

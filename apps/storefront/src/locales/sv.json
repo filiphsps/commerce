@@ -46,6 +46,7 @@
     },
     "common": {
         "accepted-payment-methods": "Accepterade betalningsmetoder",
+        "search-placeholder": "Sök efter produkter, varumärken, kategorier, kollektioner och mer…",
         "view-all-in": "Visa alla produkter i {0}.",
         "product-options": "Produktalternativ",
         "choose-product-options": "Välj produktalternativ",

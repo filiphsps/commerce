@@ -59,6 +59,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
             <input
                 ref={inputRef}
                 name="query"
+                aria-label={t('search')}
                 className="grow rounded-l-lg border-(--border-strong) border-2 border-r-0 border-solid px-4 py-2"
                 type="search"
                 value={value}
@@ -78,8 +79,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
                     performSearch();
                 }}
                 spellCheck={true}
-                /* TODO: Make this copy configurable. */
-                placeholder="Search for products, brands, categories, collections, and more..."
+                placeholder={t('search-placeholder')}
             />
 
             <Button
