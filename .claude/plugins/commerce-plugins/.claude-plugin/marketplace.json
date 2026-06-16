@@ -8,6 +8,44 @@
   },
   "plugins": [
     {
+      "name": "lspmesh",
+      "description": "LSP aggregator + MCP server - fronts TypeScript, Tailwind, and Biome behind one LSP endpoint, with by-name symbol/reference/implementation search.",
+      "version": "0.0.1",
+      "author": {
+        "name": "Filiph Sandström",
+        "email": "filfat@hotmail.se"
+      },
+      "source": "./lspmesh",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "lspmesh": {
+          "command": "pnpm",
+          "args": ["dlx", "lspmesh@latest", "lsp"],
+          "extensionToLanguage": {
+            ".ts": "typescript",
+            ".tsx": "typescriptreact",
+            ".mts": "typescript",
+            ".cts": "typescript",
+            ".js": "javascript",
+            ".jsx": "javascriptreact",
+            ".mjs": "javascript",
+            ".cjs": "javascript",
+            ".css": "css",
+            ".scss": "scss",
+            ".json": "json",
+            ".jsonc": "jsonc"
+          }
+        }
+      },
+      "mcpServers": {
+        "lspmesh": {
+          "command": "pnpm",
+          "args": ["dlx", "lspmesh@latest", "mcp"]
+        }
+      }
+    },
+    {
       "name": "tailwind-lsp-adapter",
       "description": "Tailwind CSS LSP for Claude Code - completions, hover info, and diagnostics for Tailwind classes.",
       "version": "1.0.0",
