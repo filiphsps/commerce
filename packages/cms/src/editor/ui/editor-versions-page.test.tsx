@@ -18,17 +18,17 @@ vi.mock('next/navigation', () => ({
     notFound: mockNotFound,
     redirect: mockRedirect,
     useRouter: () => ({ replace: vi.fn() }),
-    usePathname: () => '/a.test/content/business-data/',
+    usePathname: () => '/a.test/content/footer/',
     useSearchParams: () => new URLSearchParams('locale=de'),
 }));
 
 import { EditorVersionsPage } from './editor-versions-page';
 
 const manifest = defineCollectionEditor({
-    collection: 'businessData',
+    collection: 'footer',
     routes: {
-        label: { singular: 'Business data', plural: 'Business data' },
-        basePath: (d) => `/${d}/content/business-data/` as Route,
+        label: { singular: 'Footer', plural: 'Footer' },
+        basePath: (d) => `/${d}/content/footer/` as Route,
     },
     tenant: { kind: 'tenant-singleton', field: 'tenant' },
     access: { list: () => true, read: () => true, update: () => true },
@@ -46,7 +46,7 @@ const generatedActions: EditorActions = {
 
 const liveDoc: EditorCmsDocument = {
     documentId: 'd1',
-    collection: 'businessData',
+    collection: 'footer',
     data: { legalName: 'Acme' },
     status: 'draft',
     updatedAt: 1_700_000_000_000,

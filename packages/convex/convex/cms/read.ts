@@ -98,8 +98,6 @@ function resolveLocalizedFields(collection: string, data: unknown, chain: readon
  * - every `seoGroup()` collection, `articles` included: G4FIX-03 moved SEO localization from the
  *   whole group to its text leaves (`seo.title`/`seo.description`/`seo.keywords`), which sit one
  *   level below the top-level registry's reach.
- * `businessData` carries no localized fields and stays on the top-level resolver to keep the
- * collapse surface minimal.
  */
 const DEEP_LOCALIZED_COLLECTIONS = new Set([
     'header',
@@ -335,8 +333,8 @@ function docKey(doc: CmsPublishedDoc, field: string): string {
 }
 
 /**
- * Reads a tenant singleton (`header`/`footer`/`businessData`) for the storefront. The tenant's
- * single published row for the collection IS the document (mirroring the editor's singleton upsert
+ * Reads a tenant singleton (`header`/`footer`/`search`) for the storefront. The tenant's single
+ * published row for the collection IS the document (mirroring the editor's singleton upsert
  * addressing in `cms/actions.ts`). With `draft: true` (the preview seam) a draft row is served too,
  * preferred over a published sibling so the preview shows the in-flight edit.
  *
@@ -345,7 +343,7 @@ function docKey(doc: CmsPublishedDoc, field: string): string {
 export const singleton = serverQuery({
     args: {
         shopId: v.string(),
-        collection: v.union(v.literal('header'), v.literal('footer'), v.literal('search'), v.literal('businessData')),
+        collection: v.union(v.literal('header'), v.literal('footer'), v.literal('search')),
         locale: v.string(),
         draft: v.optional(v.boolean()),
     },

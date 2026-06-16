@@ -343,6 +343,36 @@ const shopsShape: ContentCollectionShape = {
             name: 'i18n',
             fields: [required(textField({ name: 'defaultLocale', defaultValue: 'en-US' }))],
         }),
+        // Folded onto the shop row from the former standalone `businessData` CMS singleton
+        // (UNIFY-SHOP). Stays a plain optional group on the read contract; the editor renders the
+        // same fields through the unified Shop settings surface.
+        groupField({
+            name: 'businessData',
+            fields: [
+                textField({ name: 'legalName' }),
+                emailField({ name: 'supportEmail' }),
+                textField({ name: 'supportPhone' }),
+                groupField({
+                    name: 'address',
+                    fields: [
+                        textField({ name: 'line1' }),
+                        textField({ name: 'line2' }),
+                        textField({ name: 'city' }),
+                        textField({ name: 'region' }),
+                        textField({ name: 'postalCode' }),
+                        textField({ name: 'country' }),
+                    ],
+                }),
+                arrayField({
+                    name: 'profiles',
+                    fields: [
+                        required(textField({ name: 'platform' })),
+                        required(textField({ name: 'handle' })),
+                        textField({ name: 'url' }),
+                    ],
+                }),
+            ],
+        }),
         groupField({
             name: 'design',
             fields: [
@@ -828,34 +858,6 @@ const searchShape: ContentCollectionShape = {
     ),
 };
 
-const businessDataShape: ContentCollectionShape = {
-    slug: 'businessData',
-    fields: shape(
-        textField({ name: 'legalName' }),
-        emailField({ name: 'supportEmail' }),
-        textField({ name: 'supportPhone' }),
-        groupField({
-            name: 'address',
-            fields: [
-                textField({ name: 'line1' }),
-                textField({ name: 'line2' }),
-                textField({ name: 'city' }),
-                textField({ name: 'region' }),
-                textField({ name: 'postalCode' }),
-                textField({ name: 'country' }),
-            ],
-        }),
-        arrayField({
-            name: 'profiles',
-            fields: [
-                required(textField({ name: 'platform' })),
-                required(textField({ name: 'handle' })),
-                textField({ name: 'url' }),
-            ],
-        }),
-    ),
-};
-
 /**
  * Every collection's emit surface, in the deleted `allCollections` order — the
  * emission order of both the content-type interfaces and the Convex table
@@ -874,5 +876,4 @@ export const allCollectionShapes: ContentCollectionShape[] = [
     headerShape,
     footerShape,
     searchShape,
-    businessDataShape,
 ];

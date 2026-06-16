@@ -5,10 +5,10 @@ import { defineCollectionEditor } from './manifest';
 describe('defineCollectionEditor', () => {
     it('returns the manifest unchanged (identity helper)', () => {
         const manifest = defineCollectionEditor({
-            collection: 'businessData',
+            collection: 'footer',
             routes: {
-                label: { singular: 'Business data', plural: 'Business data' },
-                basePath: (d) => `/${d}/content/business-data/` as Route,
+                label: { singular: 'Footer', plural: 'Footer' },
+                basePath: (d) => `/${d}/content/footer/` as Route,
             },
             tenant: { kind: 'scoped', field: 'tenant' },
             access: {
@@ -17,7 +17,7 @@ describe('defineCollectionEditor', () => {
                 update: () => true,
             },
         });
-        expect(manifest.collection).toBe('businessData');
+        expect(manifest.collection).toBe('footer');
         expect(manifest.tenant.kind).toBe('scoped');
         expect(manifest.access.read({ user: null, domain: null })).toBe(true);
     });

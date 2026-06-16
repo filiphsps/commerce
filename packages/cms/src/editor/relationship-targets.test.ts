@@ -80,7 +80,7 @@ describe('loadRelationshipOptions', () => {
     it('issues no Convex calls for a schema without relationship fields', async () => {
         const listRelationshipOptions = vi.fn();
         const bridge = { listRelationshipOptions } as unknown as EditorConvexBridge;
-        const options = await loadRelationshipOptions(bridge, editorCollectionSchema('businessData').fields);
+        const options = await loadRelationshipOptions(bridge, editorCollectionSchema('users').fields);
 
         expect(listRelationshipOptions).not.toHaveBeenCalled();
         expect(options).toEqual({});

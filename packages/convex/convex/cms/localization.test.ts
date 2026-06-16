@@ -159,7 +159,7 @@ describe('localizedPathsFor', () => {
         expect(localizedPathsFor('header').has('localeSwitcher.label')).toBe(true);
         expect(localizedPathsFor('pages').has('blocks.*.body')).toBe(true);
         expect(localizedPathsFor('pages').has('blocks.*.items.*.caption')).toBe(true);
-        expect(localizedPathsFor('businessData').size).toBe(0);
+        expect(localizedPathsFor('feature-flags').size).toBe(0);
         expect(localizedPathsFor('no-such-collection').size).toBe(0);
     });
 });

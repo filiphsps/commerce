@@ -1,13 +1,13 @@
 import type { Doc } from '../../../../convex/convex/_generated/dataModel';
 
-/** The portion of a `businessData` row the seed fixture supplies; `shop`/timestamps are stamped at insert. */
-export type BusinessDataSeed = Omit<Doc<'businessData'>, '_id' | '_creationTime' | 'shop' | 'createdAt' | 'updatedAt'>;
+/** The business-identity group folded onto the shop row (UNIFY-SHOP). */
+export type BusinessDataSeed = NonNullable<Doc<'shops'>['businessData']>;
 
 /**
- * Business-data fixture for the seeded demo tenant, ported verbatim from the Mongo seed
- * (the retired Mongo seed harness's `seed/fixtures/business-data.ts`) into the Convex-native
- * `businessData` table shape. Carries a complete mailing address and a handful of public
- * profiles so storefront SEO / structured-data renderers have real strings to interpolate.
+ * Business-data fixture for the seeded demo tenant, ported verbatim from the Mongo seed and folded
+ * onto the shop row's `businessData` group (UNIFY-SHOP). Carries a complete mailing address and a
+ * handful of public profiles so storefront SEO / structured-data renderers have real strings to
+ * interpolate.
  */
 export const businessDataFixture: BusinessDataSeed = {
     legalName: 'Nordcom Demo Shop AB',

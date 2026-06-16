@@ -333,7 +333,7 @@ export declare const api: {
         "query",
         "public",
         {
-          collection: "header" | "footer" | "businessData";
+          collection: "header" | "footer" | "search";
           draft?: boolean;
           locale: string;
           serverSecret: string;
@@ -347,6 +347,21 @@ export declare const api: {
         "query",
         "public",
         { shopDomain?: string },
+        any
+      >;
+    };
+    shop_config: {
+      connectedDomains: FunctionReference<
+        "query",
+        "public",
+        { shopDomain?: string },
+        any
+      >;
+      get: FunctionReference<"query", "public", { shopDomain?: string }, any>;
+      save: FunctionReference<
+        "mutation",
+        "public",
+        { data: any; shopDomain?: string },
         any
       >;
     };
@@ -500,6 +515,9 @@ export declare const api: {
                   imageRadius?: string;
                   imageSize?: string;
                   paddingY?: string;
+                  showSku?: boolean;
+                  showVendor?: boolean;
+                  variantStyle?: string;
                 };
                 colors?: {
                   accentPrimaryDark?: string;
@@ -515,6 +533,7 @@ export declare const api: {
                   border?: { default?: string; strong?: string };
                   focusRing?: string;
                   foreground?: string;
+                  sectionDark?: string;
                   state?: {
                     danger?: string;
                     info?: string;
@@ -598,6 +617,7 @@ export declare const api: {
                   priceWeight?: number;
                   quickAddPresentation?: string;
                   radius?: string;
+                  railEdgeStyle?: string;
                   saleBadgeAllowOverlap?: boolean;
                   saleBadgeMinDiscount?: number;
                   saleBadgePosition?: string;
@@ -670,6 +690,9 @@ export declare const api: {
                 imageRadius?: string;
                 imageSize?: string;
                 paddingY?: string;
+                showSku?: boolean;
+                showVendor?: boolean;
+                variantStyle?: string;
               };
               colors?: {
                 accentPrimaryDark?: string;
@@ -685,6 +708,7 @@ export declare const api: {
                 border?: { default?: string; strong?: string };
                 focusRing?: string;
                 foreground?: string;
+                sectionDark?: string;
                 state?: {
                   danger?: string;
                   info?: string;
@@ -764,6 +788,7 @@ export declare const api: {
                 priceWeight?: number;
                 quickAddPresentation?: string;
                 radius?: string;
+                railEdgeStyle?: string;
                 saleBadgeAllowOverlap?: boolean;
                 saleBadgeMinDiscount?: number;
                 saleBadgePosition?: string;
@@ -972,7 +997,11 @@ export declare const internal: {
       stampShopClerkOrg: FunctionReference<
         "mutation",
         "internal",
-        { clerkOrgId: string; members?: Array<Id<"users">>; shopId: Id<"shops"> },
+        {
+          clerkOrgId: string;
+          members?: Array<Id<"users">>;
+          shopId: Id<"shops">;
+        },
         any
       >;
     };

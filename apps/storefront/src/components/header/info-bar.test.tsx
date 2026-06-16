@@ -19,7 +19,7 @@ describe('<InfoBar>', () => {
     });
 
     it('renders null when both supportEmail and supportPhone are empty', async () => {
-        vi.mocked(InfoBarApi).mockResolvedValue(mockBusinessData({ supportEmail: null, supportPhone: null }));
+        vi.mocked(InfoBarApi).mockResolvedValue(mockBusinessData({ supportEmail: undefined, supportPhone: undefined }));
         const ui = await renderRSC(() =>
             InfoBar({ shop: mockShop(), locale: { code: 'en-US' } as never, i18n: {} as never }),
         );

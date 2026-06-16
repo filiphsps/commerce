@@ -78,51 +78,6 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
-  businessData: {
-    document: {
-      address?: {
-        city?: string;
-        country?: string;
-        line1?: string;
-        line2?: string;
-        postalCode?: string;
-        region?: string;
-      };
-      createdAt: number;
-      legalName?: string;
-      profiles?: Array<{ handle: string; platform: string; url?: string }>;
-      shop: string;
-      supportEmail?: string;
-      supportPhone?: string;
-      updatedAt: number;
-      _id: Id<"businessData">;
-      _creationTime: number;
-    };
-    fieldPaths:
-      | "_creationTime"
-      | "_id"
-      | "address"
-      | "address.city"
-      | "address.country"
-      | "address.line1"
-      | "address.line2"
-      | "address.postalCode"
-      | "address.region"
-      | "createdAt"
-      | "legalName"
-      | "profiles"
-      | "shop"
-      | "supportEmail"
-      | "supportPhone"
-      | "updatedAt";
-    indexes: {
-      by_id: ["_id"];
-      by_creation_time: ["_creationTime"];
-      by_shop: ["shop", "_creationTime"];
-    };
-    searchIndexes: {};
-    vectorIndexes: {};
-  };
   cms_i18n: {
     document: {
       createdAt: number;
@@ -1037,6 +992,49 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
+  search: {
+    document: {
+      blocks?: Array<any>;
+      createdAt: number;
+      heading?: string;
+      popularSearches?: Array<{ term: string }>;
+      seo?: {
+        description?: string;
+        image?: string;
+        keywords?: Array<string>;
+        noindex?: boolean;
+        title?: string;
+      };
+      shop: string;
+      subheading?: string;
+      updatedAt: number;
+      _id: Id<"search">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "blocks"
+      | "createdAt"
+      | "heading"
+      | "popularSearches"
+      | "seo"
+      | "seo.description"
+      | "seo.image"
+      | "seo.keywords"
+      | "seo.noindex"
+      | "seo.title"
+      | "shop"
+      | "subheading"
+      | "updatedAt";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      by_shop: ["shop", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
   shopCollaborators: {
     document: {
       permissions: Array<string>;
@@ -1122,6 +1120,21 @@ export type DataModel = {
   shops: {
     document: {
       alternativeDomains?: Array<string>;
+      branding?: { faviconMediaId?: string; logoMediaId?: string };
+      businessData?: {
+        address?: {
+          city?: string;
+          country?: string;
+          line1?: string;
+          line2?: string;
+          postalCode?: string;
+          region?: string;
+        };
+        legalName?: string;
+        profiles?: Array<{ handle: string; platform: string; url?: string }>;
+        supportEmail?: string;
+        supportPhone?: string;
+      };
       clerkOrgId?: string;
       commerce?: { maxQuantity?: number; processingTimeInDays?: number };
       commerceProvider:
@@ -1181,6 +1194,9 @@ export type DataModel = {
             imageRadius?: string;
             imageSize?: string;
             paddingY?: string;
+            showSku?: boolean;
+            showVendor?: boolean;
+            variantStyle?: string;
           };
           colors?: {
             accentPrimaryDark?: string;
@@ -1196,6 +1212,7 @@ export type DataModel = {
             border?: { default?: string; strong?: string };
             focusRing?: string;
             foreground?: string;
+            sectionDark?: string;
             state?: {
               danger?: string;
               info?: string;
@@ -1275,6 +1292,7 @@ export type DataModel = {
             priceWeight?: number;
             quickAddPresentation?: string;
             radius?: string;
+            railEdgeStyle?: string;
             saleBadgeAllowOverlap?: boolean;
             saleBadgeMinDiscount?: number;
             saleBadgePosition?: string;
@@ -1343,6 +1361,9 @@ export type DataModel = {
           imageRadius?: string;
           imageSize?: string;
           paddingY?: string;
+          showSku?: boolean;
+          showVendor?: boolean;
+          variantStyle?: string;
         };
         colors?: {
           accentPrimaryDark?: string;
@@ -1358,6 +1379,7 @@ export type DataModel = {
           border?: { default?: string; strong?: string };
           focusRing?: string;
           foreground?: string;
+          sectionDark?: string;
           state?: {
             danger?: string;
             info?: string;
@@ -1437,6 +1459,7 @@ export type DataModel = {
           priceWeight?: number;
           quickAddPresentation?: string;
           radius?: string;
+          railEdgeStyle?: string;
           saleBadgeAllowOverlap?: boolean;
           saleBadgeMinDiscount?: number;
           saleBadgePosition?: string;
@@ -1498,6 +1521,21 @@ export type DataModel = {
       | "_creationTime"
       | "_id"
       | "alternativeDomains"
+      | "branding"
+      | "branding.faviconMediaId"
+      | "branding.logoMediaId"
+      | "businessData"
+      | "businessData.address"
+      | "businessData.address.city"
+      | "businessData.address.country"
+      | "businessData.address.line1"
+      | "businessData.address.line2"
+      | "businessData.address.postalCode"
+      | "businessData.address.region"
+      | "businessData.legalName"
+      | "businessData.profiles"
+      | "businessData.supportEmail"
+      | "businessData.supportPhone"
       | "clerkOrgId"
       | "commerce"
       | "commerce.maxQuantity"
@@ -1548,6 +1586,9 @@ export type DataModel = {
       | "extensions.theme.cartLine.imageRadius"
       | "extensions.theme.cartLine.imageSize"
       | "extensions.theme.cartLine.paddingY"
+      | "extensions.theme.cartLine.showSku"
+      | "extensions.theme.cartLine.showVendor"
+      | "extensions.theme.cartLine.variantStyle"
       | "extensions.theme.colors"
       | "extensions.theme.colors.accentPrimaryDark"
       | "extensions.theme.colors.accentPrimaryLight"
@@ -1560,6 +1601,7 @@ export type DataModel = {
       | "extensions.theme.colors.border.strong"
       | "extensions.theme.colors.focusRing"
       | "extensions.theme.colors.foreground"
+      | "extensions.theme.colors.sectionDark"
       | "extensions.theme.colors.state"
       | "extensions.theme.colors.state.danger"
       | "extensions.theme.colors.state.info"
@@ -1645,6 +1687,7 @@ export type DataModel = {
       | "extensions.theme.productCard.priceWeight"
       | "extensions.theme.productCard.quickAddPresentation"
       | "extensions.theme.productCard.radius"
+      | "extensions.theme.productCard.railEdgeStyle"
       | "extensions.theme.productCard.saleBadgeAllowOverlap"
       | "extensions.theme.productCard.saleBadgeMinDiscount"
       | "extensions.theme.productCard.saleBadgePosition"
@@ -1714,6 +1757,9 @@ export type DataModel = {
       | "theme.cartLine.imageRadius"
       | "theme.cartLine.imageSize"
       | "theme.cartLine.paddingY"
+      | "theme.cartLine.showSku"
+      | "theme.cartLine.showVendor"
+      | "theme.cartLine.variantStyle"
       | "theme.colors"
       | "theme.colors.accentPrimaryDark"
       | "theme.colors.accentPrimaryLight"
@@ -1726,6 +1772,7 @@ export type DataModel = {
       | "theme.colors.border.strong"
       | "theme.colors.focusRing"
       | "theme.colors.foreground"
+      | "theme.colors.sectionDark"
       | "theme.colors.state"
       | "theme.colors.state.danger"
       | "theme.colors.state.info"
@@ -1811,6 +1858,7 @@ export type DataModel = {
       | "theme.productCard.priceWeight"
       | "theme.productCard.quickAddPresentation"
       | "theme.productCard.radius"
+      | "theme.productCard.railEdgeStyle"
       | "theme.productCard.saleBadgeAllowOverlap"
       | "theme.productCard.saleBadgeMinDiscount"
       | "theme.productCard.saleBadgePosition"

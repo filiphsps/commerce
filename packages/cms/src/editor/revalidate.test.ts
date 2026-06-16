@@ -8,7 +8,7 @@ import { defineCollectionEditor } from './manifest';
 import { cmsCacheSchema, cmsTenantRootTags, refreshEditorPaths } from './revalidate';
 
 const scopedManifest = defineCollectionEditor({
-    collection: 'businessData',
+    collection: 'footer',
     routes: { label: { singular: 'X', plural: 'X' }, basePath: () => '/' as Route },
     tenant: { kind: 'scoped', field: 'tenant' },
     access: { list: () => true, read: () => true, update: () => true },
@@ -26,11 +26,11 @@ describe('refreshEditorPaths', () => {
         const revalidatePath = vi.fn();
         const manifest = defineCollectionEditor({
             ...scopedManifest,
-            revalidate: ({ domain }) => [`/${domain}/content/business-data/`, `/${domain}/`],
+            revalidate: ({ domain }) => [`/${domain}/content/footer/`, `/${domain}/`],
         });
         refreshEditorPaths({ manifest, domain: 'a.test', doc: {}, status: 'published', revalidatePath });
         expect(revalidatePath).toHaveBeenCalledTimes(2);
-        expect(revalidatePath).toHaveBeenNthCalledWith(1, '/a.test/content/business-data/');
+        expect(revalidatePath).toHaveBeenNthCalledWith(1, '/a.test/content/footer/');
         expect(revalidatePath).toHaveBeenNthCalledWith(2, '/a.test/');
     });
 

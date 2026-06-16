@@ -7,7 +7,7 @@ import { computeFanout } from '@tagtree/core';
  * tags are derived where the write happened (Convex), so the revalidation bridge
  * never has to resolve a shop by domain or call back into Mongo.
  *
- * @property collection - The CMS collection that changed; one of the seven CMS entity names (`pages`, `articles`, `header`, `footer`, `businessData`, `productMetadata`, `collectionMetadata`). A value not declared in the CMS taxonomy — or omitted — is treated as a broad, tenant-wide publish.
+ * @property collection - The CMS collection that changed; one of the CMS entity names (`pages`, `articles`, `header`, `footer`, `productMetadata`, `collectionMetadata`). A value not declared in the CMS taxonomy — or omitted — is treated as a broad, tenant-wide publish.
  * @property key - The changed document's entity key (slug/handle). Omit for a collection-level publish (no leaf tag) or a broad publish.
  * @property tenantId - The Convex tenant (shop) id the event belongs to; prefixes every derived tag.
  */

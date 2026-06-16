@@ -11,17 +11,17 @@ import { deriveRevalidateTags } from './tags';
 const TENANT_ID = 'shop_123';
 
 /**
- * The seven CMS entity names, read from the shared taxonomy rather than hard-coded, so a change to
- * the declared entities surfaces here (the broad-sweep assertion pins the count to seven).
+ * The CMS entity names, read from the shared taxonomy rather than hard-coded, so a change to the
+ * declared entities surfaces here (the broad-sweep assertion pins the count).
  */
 const cmsEntityNames = Object.keys(cmsCacheSchema.schema.entities);
 
 describe('deriveRevalidateTags', () => {
-    it('declares exactly the seven CMS entities the broad sweep covers', () => {
-        expect(cmsEntityNames).toHaveLength(7);
+    it('declares exactly the six CMS entities the broad sweep covers', () => {
+        expect(cmsEntityNames).toHaveLength(6);
     });
 
-    it('derives the exact read-side fanout for each of the seven CMS entities', () => {
+    it('derives the exact read-side fanout for each of the CMS entities', () => {
         for (const entity of cmsEntityNames) {
             const key = `${entity}-doc`;
             const readSideTags = computeFanout(cmsCacheSchema.schema, {

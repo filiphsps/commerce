@@ -1,6 +1,5 @@
 import type {
     Article,
-    BusinessDatum,
     CollectionMetadatum,
     Footer,
     Header,
@@ -8,8 +7,12 @@ import type {
     Page,
     ProductMetadatum,
 } from '@nordcom/commerce-cms/types';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 const isoEpoch = new Date(0).toISOString();
+
+/** The business-identity group carried on the shop record (UNIFY-SHOP). */
+type BusinessData = NonNullable<OnlineShop['businessData']>;
 
 /**
  * Builds a minimal CMS `Media` fixture for use in tests.
@@ -91,25 +94,19 @@ export const mockFooter = (overrides?: Partial<Footer>): Footer =>
     }) as Footer;
 
 /**
- * Builds a minimal CMS `BusinessDatum` fixture for use in tests.
+ * Builds a minimal business-data fixture (the shop record's `businessData` group) for use in tests.
  *
  * @param overrides - Partial properties merged onto the base business data fixture.
- * @returns A mock `BusinessDatum` in `published` status with null contact fields.
+ * @returns A mock business-data group with unset contact fields.
  */
-export const mockBusinessData = (overrides?: Partial<BusinessDatum>): BusinessDatum =>
-    ({
-        id: 'business-mock',
-        tenant: 'tenant-mock',
-        legalName: null,
-        supportEmail: null,
-        supportPhone: null,
-        address: undefined,
-        profiles: [],
-        updatedAt: isoEpoch,
-        createdAt: isoEpoch,
-        _status: 'published',
-        ...overrides,
-    }) as BusinessDatum;
+export const mockBusinessData = (overrides?: Partial<BusinessData>): BusinessData => ({
+    legalName: undefined,
+    supportEmail: undefined,
+    supportPhone: undefined,
+    address: undefined,
+    profiles: [],
+    ...overrides,
+});
 
 /**
  * Builds a minimal CMS `Page` fixture for use in tests.

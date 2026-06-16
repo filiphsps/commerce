@@ -77,28 +77,29 @@ function renderSurface(collection: string, data: Record<string, unknown>, omitPa
 
 describe('<EditorFields>', () => {
     it('edits a scalar field through the registry widget and flips the dirty flag', () => {
-        const { container } = renderSurface('businessData', { legalName: 'Old Co' });
+        const { container } = renderSurface('shops', { name: 'Old Co' });
 
         expect(probe(container).modified).toBe(false);
 
-        fireEvent.change(controlAt(container, 'legalName', 'input'), { target: { value: 'New Co' } });
+        fireEvent.change(controlAt(container, 'name', 'input'), { target: { value: 'New Co' } });
 
         const { data, modified } = probe(container);
-        expect(data.legalName).toBe('New Co');
+        expect(data.name).toBe('New Co');
         expect(modified).toBe(true);
     });
 
     it('edits a nested (depth >= 2) field inside a group and observes the state update', () => {
-        const { container } = renderSurface('businessData', {
-            legalName: 'Acme',
-            address: { line1: '1 Main St', city: 'Oldtown' },
+        const { container } = renderSurface('shops', {
+            name: 'Acme',
+            businessData: { address: { line1: '1 Main St', city: 'Oldtown' } },
         });
 
-        fireEvent.change(controlAt(container, 'address.city', 'input'), { target: { value: 'Newtown' } });
+        fireEvent.change(controlAt(container, 'businessData.address.city', 'input'), { target: { value: 'Newtown' } });
 
         const { data, modified } = probe(container);
-        expect((data.address as Record<string, unknown>).city).toBe('Newtown');
-        expect((data.address as Record<string, unknown>).line1).toBe('1 Main St');
+        const businessData = data.businessData as { address: Record<string, unknown> };
+        expect(businessData.address.city).toBe('Newtown');
+        expect(businessData.address.line1).toBe('1 Main St');
         expect(modified).toBe(true);
     });
 
@@ -217,13 +218,14 @@ describe('<EditorFields>', () => {
     });
 
     it('drops omitPaths fields from the rendered tree while their form state stays live', () => {
-        const { container } = renderSurface('businessData', { legalName: 'Acme', address: { city: 'Town' } }, [
-            'address',
+        const { container } = renderSurface('shops', { name: 'Acme', businessData: { address: { city: 'Town' } } }, [
+            'businessData',
         ]);
 
-        expect(container.querySelector('[data-testid="field-address.city"]')).toBeNull();
+        expect(container.querySelector('[data-testid="field-businessData.address.city"]')).toBeNull();
         // The omitted subtree's paths still serialize — another surface owns the UI.
-        expect((probe(container).data.address as Record<string, unknown>).city).toBe('Town');
+        const businessData = probe(container).data.businessData as { address: Record<string, unknown> };
+        expect(businessData.address.city).toBe('Town');
     });
 
     it('renders nothing for a collection without a registered schema', () => {
@@ -346,9 +348,9 @@ describe('editorCollectionSchema', () => {
         for (const slug of [
             'pages',
             'articles',
-            'businessData',
             'footer',
             'header',
+            'search',
             'productMetadata',
             'collectionMetadata',
         ]) {

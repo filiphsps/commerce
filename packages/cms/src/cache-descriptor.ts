@@ -32,7 +32,6 @@ export const cmsCacheSchema = defineCache({
         articles: { params: { key: str } },
         header: { params: { key: str } },
         footer: { params: { key: str } },
-        businessData: { params: { key: str } },
         productMetadata: { params: { key: str } },
         collectionMetadata: { params: { key: str } },
     },

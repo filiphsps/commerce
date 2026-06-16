@@ -31,7 +31,7 @@ export const REVALIDATE_DEBOUNCE_MS = 2_000;
  * Per-collection field whose value is the cache leaf key for a published document. Keyed by the same
  * collection slugs `cms/documents.ts` writes (`tables/cms.ts`): `pages`/`articles` bust by `slug`,
  * `productMetadata`/`collectionMetadata` by `shopifyHandle`. Collections absent from the map — the
- * tenant singletons (`header`/`footer`/`businessData`) and anything outside the CMS cache taxonomy —
+ * tenant singletons (`header`/`footer`) and anything outside the CMS cache taxonomy —
  * have no per-document leaf, so they bust at the collection/tenant level only.
  */
 const LEAF_KEY_FIELD_BY_COLLECTION: Record<string, string> = {

@@ -104,7 +104,6 @@ describe('(dashboard)/[domain]/content/page', () => {
         const q = within(container as HTMLElement);
 
         expect(q.getByText('Content')).toBeInTheDocument();
-        expect(q.getByText('Business data')).toBeInTheDocument();
         expect(q.getByText('Header')).toBeInTheDocument();
         expect(q.getByText('Footer')).toBeInTheDocument();
         // Every content singleton surfaces dynamically — `search` was previously omitted.

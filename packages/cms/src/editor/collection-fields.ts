@@ -1,4 +1,5 @@
 import { allBlockDescriptors } from '../blocks';
+import { REGISTERED_LOCALE_CODES } from '../config/locale-codes';
 import {
     arrayField,
     blocksField,
@@ -9,7 +10,6 @@ import {
     groupField,
     jsonField,
     localized,
-    numberField,
     relationshipField,
     required,
     selectField,
@@ -18,6 +18,13 @@ import {
 } from '../descriptors';
 import { imageField, linkField, seoGroup, topLevelNavItemField } from '../fields';
 import { LEGACY_TENANTS_SLUG } from '../legacy-tenants-slug';
+
+/**
+ * Select options for the shop default-locale picker, derived from the registered locale-code
+ * universe so the dropdown stays in lockstep with the locales the platform can resolve. Sorted for
+ * a stable, scannable list.
+ */
+const LOCALE_OPTIONS = [...REGISTERED_LOCALE_CODES].sort().map((code) => ({ label: code, value: code }));
 
 /**
  * The editor-facing schema for one collection: the descriptor tree the native
@@ -55,29 +62,58 @@ const AUTOSAVE = { autosave: { interval: 2000 } } as const;
 const shopsFields: FieldDescriptor[] = [
     required(textField({ name: 'name' })),
     textareaField({ name: 'description' }),
-    required(textField({ name: 'domain' })),
-    textField({ name: 'alternativeDomains', hasMany: true }),
+    // The primary domain is RE-ELECTED from the shop's already-connected domains (managed on the
+    // domains settings surface), not free-typed: the `shopDomains` relationship target lists those
+    // domains, the save derives `alternativeDomains` from the leftovers.
+    required(relationshipField({ name: 'primaryDomain', label: 'Primary domain', relationTo: 'shopDomains' })),
     groupField({
         name: 'i18n',
-        fields: [required(textField({ name: 'defaultLocale', defaultValue: 'en-US' }))],
+        fields: [
+            required(
+                selectField({
+                    name: 'defaultLocale',
+                    label: 'Default locale',
+                    defaultValue: 'en-US',
+                    options: LOCALE_OPTIONS,
+                }),
+            ),
+        ],
+    }),
+    // Shop-level brand assets. The header and footer fall back to these when a surface does not set
+    // its own logo. Picked from the media library; the save resolves the pick to the stored asset.
+    imageField({ name: 'logo', label: 'Logo' }),
+    imageField({ name: 'favicon', label: 'Favicon' }),
+    groupField({
+        name: 'businessData',
+        label: 'Business data',
+        fields: [
+            textField({ name: 'legalName' }),
+            emailField({ name: 'supportEmail' }),
+            textField({ name: 'supportPhone' }),
+            groupField({
+                name: 'address',
+                fields: [
+                    textField({ name: 'line1' }),
+                    textField({ name: 'line2' }),
+                    textField({ name: 'city' }),
+                    textField({ name: 'region' }),
+                    textField({ name: 'postalCode' }),
+                    textField({ name: 'country' }),
+                ],
+            }),
+            arrayField({
+                name: 'profiles',
+                fields: [
+                    required(textField({ name: 'platform' })),
+                    required(textField({ name: 'handle' })),
+                    textField({ name: 'url' }),
+                ],
+            }),
+        ],
     }),
     groupField({
         name: 'design',
         fields: [
-            groupField({
-                name: 'header',
-                fields: [
-                    groupField({
-                        name: 'logo',
-                        fields: [
-                            required(textField({ name: 'src' })),
-                            required(textField({ name: 'alt' })),
-                            required(numberField({ name: 'width', defaultValue: 512 })),
-                            required(numberField({ name: 'height', defaultValue: 512 })),
-                        ],
-                    }),
-                ],
-            }),
             arrayField({
                 name: 'accents',
                 fields: [
@@ -134,33 +170,6 @@ const EDITOR_COLLECTION_SCHEMAS: Record<string, EditorCollectionSchema> = {
         ],
         drafts: AUTOSAVE,
         richText: true,
-    },
-    businessData: {
-        fields: [
-            textField({ name: 'legalName' }),
-            emailField({ name: 'supportEmail' }),
-            textField({ name: 'supportPhone' }),
-            groupField({
-                name: 'address',
-                fields: [
-                    textField({ name: 'line1' }),
-                    textField({ name: 'line2' }),
-                    textField({ name: 'city' }),
-                    textField({ name: 'region' }),
-                    textField({ name: 'postalCode' }),
-                    textField({ name: 'country' }),
-                ],
-            }),
-            arrayField({
-                name: 'profiles',
-                fields: [
-                    required(textField({ name: 'platform' })),
-                    required(textField({ name: 'handle' })),
-                    textField({ name: 'url' }),
-                ],
-            }),
-        ],
-        drafts: AUTOSAVE,
     },
     footer: {
         fields: [

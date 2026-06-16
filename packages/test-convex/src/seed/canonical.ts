@@ -16,8 +16,9 @@ export type SeedCanonicalOptions = SeedShopOptions;
 
 /**
  * The canonical seed orchestrator: seeds the demo tenant (`nordcom-demo-shop.com` shop row, split-out
- * credentials, per-domain routing rows) and then EVERY CMS fixture scoped to it (header/footer/
- * businessData singletons, rich-text-bearing pages/articles/productMetadata/collectionMetadata, global
+ * credentials, per-domain routing rows; business data rides on the shop row) and then EVERY CMS
+ * fixture scoped to it (header/footer singletons, rich-text-bearing
+ * pages/articles/productMetadata/collectionMetadata, global
  * feature flags plus their shop links) by composing {@link seedShopMutation} and {@link seedCmsMutation}
  * rather than duplicating their logic.
  *
