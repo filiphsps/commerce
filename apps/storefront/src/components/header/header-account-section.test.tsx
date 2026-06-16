@@ -24,7 +24,11 @@ vi.mock('@/components/informational/avatar', () => ({
 }));
 
 vi.mock('@/components/link', () => ({
-    default: ({ children, href }: any) => <a href={href}>{children}</a>,
+    default: ({ children, href, ...rest }: any) => (
+        <a href={href} {...rest}>
+            {children}
+        </a>
+    ),
 }));
 
 import { headers } from 'next/headers';
@@ -83,6 +87,23 @@ describe('components/header/header-account-section', () => {
         render(jsx as any);
         expect(screen.getByTestId('avatar')).toBeTruthy();
         expect(screen.getByTestId('avatar').textContent).toBe('Test User');
+    });
+
+    it('gives the account link an explicit accessible name (not just the avatar image)', async () => {
+        vi.mocked(accountsEnabled.evaluate).mockReturnValueOnce(true as never);
+        vi.mocked(getAuthSession).mockResolvedValue({
+            user: { name: 'Test User', image: 'https://cdn.example/a.png', email: 'test@example.com' },
+        } as any);
+
+        const jsx = await HeaderAccountSection({
+            shop: mockShop,
+            locale: Locale.default as unknown as Locale,
+            i18n: mockI18n,
+        });
+
+        const { container } = render(jsx as any);
+        // With an empty dictionary the key resolves to itself; the point is the link carries a name.
+        expect(container.querySelector('a[href="/account/"]')?.getAttribute('aria-label')).toBe('Account');
     });
 
     describe('skeleton', () => {

@@ -40,7 +40,12 @@ export async function HeaderAccountSection({ shop, i18n, className, ...props }: 
 
     return (
         <section className={cn('flex h-full items-center justify-end gap-1 empty:hidden', className)} {...props}>
-            <Link href="/account/" className="hover:brightness-75 focus-visible:brightness-75" draggable={false}>
+            <Link
+                href="/account/"
+                aria-label={capitalize(t('account'))}
+                className="hover:brightness-75 focus-visible:brightness-75"
+                draggable={false}
+            >
                 <Avatar name={session.user?.name} src={session.user?.image} title={capitalize(t('account'))} />
             </Link>
         </section>
