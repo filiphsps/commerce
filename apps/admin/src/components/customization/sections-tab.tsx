@@ -34,9 +34,11 @@ const sectionFields: OverridableFieldDescriptor[] = TOGGLEABLE_SECTIONS.map((id)
 );
 
 /**
- * Block-availability control: which block types editors may add to pages, written to
- * `extensions.blocks.available`. Inherit (no value) → every block is available; once the merchant
- * unchecks one, the value becomes the explicit subset, and re-checking all returns to inherit.
+ * Block-availability control: which block types this shop can use, written to
+ * `extensions.blocks.available`. Restricting a type both removes it from the editor's add menu and
+ * stops already-placed instances of that type rendering on the storefront. Inherit (no value) →
+ * every block is available; once the merchant unchecks one, the value becomes the explicit subset,
+ * and re-checking all returns to inherit.
  *
  * @returns The block-availability checklist.
  */
@@ -57,7 +59,8 @@ function BlockAvailability() {
                 <span className="font-mono text-muted-foreground text-xs">extensions.blocks.available</span>
             </header>
             <p className="px-4 pt-3 text-muted-foreground text-sm">
-                Which blocks editors can add to pages. All are available unless you restrict them.
+                Which block types this shop can use. Restricting a type removes it from the editor's add menu and hides
+                instances already placed on pages. All types are available unless you restrict them.
             </p>
             <div className="flex flex-wrap gap-2 p-4">
                 {BLOCK_TYPES.map((slug) => {

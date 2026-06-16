@@ -193,6 +193,9 @@ export type BannerBlockNode = {
     background?: { id: string; url?: string; alt?: string } | string | null;
     cta?: LinkRef | null;
     alignment: 'left' | 'center' | 'right';
+    /** Surface treatment. `dark` (default) keeps the accent fill with light ink (`.on-dark`); `light`
+     * renders a light banner with dark ink. A background image always reads as a dark surface. */
+    colorScheme?: 'light' | 'dark';
 };
 
 /** Whether a collection renders as a wrapping grid or a horizontal scroll rail. */
@@ -220,6 +223,9 @@ export type CollectionBlockNode = {
      * platform default. Absent → inherit the store/platform default.
      */
     defaultLayout?: CollectionLayoutMode;
+    /** Surface treatment. `dark` wraps the grid in the themeable `--section-dark-bg` surface and
+     * applies `.on-dark` so card option/price ink flips to light; `light` (default) is the page bg. */
+    colorScheme?: 'light' | 'dark';
 };
 
 /**
