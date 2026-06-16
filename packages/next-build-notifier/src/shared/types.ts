@@ -50,7 +50,11 @@ export type BuildNotifierConfig = {
 export type BuildNotificationState = {
     /** A newer build id was observed and not dismissed for that id. */
     updateAvailable: boolean;
-    /** The current update was dismissed (still tracked so a *newer* build re-surfaces). */
+    /**
+     * `true` only while `updateAvailable` is also `true` and the user dismissed *this* build id —
+     * there is nothing to dismiss otherwise. The per-id dismissal persists so a *newer* build
+     * re-surfaces (flips `dismissed` back to `false`).
+     */
     dismissed: boolean;
     /** The client's own baked build id. */
     currentBuildId: string;
