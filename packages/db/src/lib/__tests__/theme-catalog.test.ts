@@ -39,12 +39,32 @@ describe('theme-catalog', () => {
     const derivedPaths = THEME_TOKEN_CATALOG.filter((token) => token.derived).map((token) => token.path);
     const accentElementPaths = catalogPaths.filter((path) => path.startsWith(`${ACCENTS_ARRAY_PATH}[]`));
 
-    it('covers exactly 140 rows', () => {
-        expect(THEME_TOKEN_CATALOG.length).toBe(140);
-    });
-
     it('has a unique path per row', () => {
         expect(new Set(catalogPaths).size).toBe(catalogPaths.length);
+    });
+
+    it('emits a well-formed `--kebab` CSS custom property per row', () => {
+        for (const token of THEME_TOKEN_CATALOG) {
+            expect(token.cssVar, token.path).toMatch(/^--[a-z][a-z0-9-]*$/);
+        }
+    });
+
+    it('aliases a CSS property from at most the documented overlaps', () => {
+        // Most rows own a unique `cssVar`; the only sanctioned exceptions are the elevation group
+        // and the legacy productCard shadow knobs, which deliberately both drive the card-shadow
+        // properties (semantic alias over legacy knob — last-wins in the serializer). Any *other*
+        // collision is a copy-paste bug that would silently make one knob inert in the admin, so we
+        // pin the duplicate set exactly: a new accidental alias fails this, and intentionally
+        // dropping an alias updates it here on purpose.
+        const byCssVar = new Map<string, string[]>();
+        for (const token of THEME_TOKEN_CATALOG) {
+            byCssVar.set(token.cssVar, [...(byCssVar.get(token.cssVar) ?? []), token.path]);
+        }
+        const aliased = Object.fromEntries([...byCssVar].filter(([, paths]) => paths.length > 1));
+        expect(aliased).toEqual({
+            '--product-card-shadow': ['theme.elevation.card', 'theme.productCard.shadow'],
+            '--product-card-shadow-hover': ['theme.elevation.cardHover', 'theme.productCard.shadowHover'],
+        });
     });
 
     describe('bijection between THEME_DEFAULTS leaves and catalog paths', () => {
@@ -127,7 +147,7 @@ describe('theme-catalog', () => {
             expect(flattened.map((token) => token.path)).toEqual(catalogPaths);
         });
 
-        it('buckets the 94 productCard knobs across 13 clusters', () => {
+        it('buckets productCard knobs into the declared clusters in declaration order', () => {
             const productCard = grouped.get('productCard');
             expect(productCard).toBeDefined();
             expect([...productCard!.keys()]).toEqual([
@@ -145,7 +165,39 @@ describe('theme-catalog', () => {
                 'motion',
                 'sale',
             ]);
-            expect([...productCard!.values()].reduce((sum, tokens) => sum + tokens.length, 0)).toBe(94);
+            // No cluster may be empty — an empty bucket means a cluster name was declared on a row
+            // that was later removed, leaving a dead group header in the admin nav.
+            for (const [cluster, tokens] of productCard!) {
+                expect(tokens.length, cluster).toBeGreaterThan(0);
+            }
+        });
+    });
+
+    describe('enum constraints', () => {
+        const enumTokens = THEME_TOKEN_CATALOG.filter((token) => token.valueKind === 'enum');
+
+        it('declares a non-empty option list wherever enumValues is present', () => {
+            // The two font-family rows intentionally omit enumValues (the font-preview control sources
+            // FONT_FAMILIES itself); every other enum must ship its own options or the select is empty.
+            for (const token of enumTokens) {
+                if (token.enumValues) {
+                    expect(token.enumValues.length, token.path).toBeGreaterThan(0);
+                }
+            }
+        });
+
+        it('defaults every concrete enum to a value inside its own options', () => {
+            // Catches a default that drifts out of its allowed set (e.g. renaming an enum value but
+            // forgetting THEME_DEFAULTS), which would render a phantom selection in the admin and a
+            // value no storefront branch handles. Accent-element rows have no scalar default to check
+            // (the accents array defaults to empty); derived tokens have no default at all.
+            for (const token of enumTokens) {
+                if (!token.enumValues || token.derived || token.path.startsWith(`${ACCENTS_ARRAY_PATH}[]`)) {
+                    continue;
+                }
+                const value = deepGet(token.path.replace(/^theme\./, ''));
+                expect(token.enumValues, token.path).toContain(value);
+            }
         });
     });
 

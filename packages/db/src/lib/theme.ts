@@ -94,6 +94,9 @@ export interface ResolvedProductCardTokens {
     minWidth: string;
     maxWidth: string;
     gridAlign: string;
+    /** → `--product-card-rail-edge-style`. Carousel edge cue: `fade` (scroll-driven gradient mask) or
+     * `none`. Read by a CSS style query on the rail, so a tenant flips the affordance theme-wide. */
+    railEdgeStyle: string;
     searchImageWidth: string;
 
     // Image
@@ -404,6 +407,7 @@ export const THEME_DEFAULTS: ResolvedShopTheme = {
         minWidth: '200px',
         maxWidth: '240px',
         gridAlign: 'start',
+        railEdgeStyle: 'fade',
         searchImageWidth: '72px',
 
         imageRadius: '8px',

@@ -106,12 +106,17 @@
     contain-intrinsic-size: --value([*]);
 }
 
-@keyframes overflow-x-scroll-shadow {
+/* Scroll-driven edge fade for the carousel: a horizontal mask that bleeds the leading/trailing cards
+ * into the page background, cueing scrollability without JS. The two frames interpolate so the start
+ * edge is opaque at rest (nothing scrolled off the left) and the end edge is opaque once fully
+ * scrolled, with both edges softening through the middle of the range. Replaces the former inset
+ * box-shadow cue so the affordance reads as the design's gradient fade. */
+@keyframes rail-edge-fade {
     from {
-        box-shadow: inset -30px 0px 25px -30px rgb(0 0 0 / 0.75);
+        mask-image: linear-gradient(to right, #000 0, #000 calc(100% - var(--rail-fade-size)), transparent 100%);
     }
     to {
-        box-shadow: inset 30px 0px 25px -30px rgb(0 0 0 / 0.75);
+        mask-image: linear-gradient(to right, transparent 0, #000 var(--rail-fade-size), #000 100%);
     }
 }
 
@@ -164,9 +169,22 @@
     margin-block: -0.75rem;
     padding-block: 0.75rem;
 
+    --rail-fade-size: clamp(1.5rem, 4vw, 2.5rem);
+
     @supports (animation-timeline: scroll()) {
-        animation: overflow-x-scroll-shadow linear;
+        animation: rail-edge-fade linear;
         animation-timeline: scroll(self inline);
+    }
+}
+
+/* Tenant opt-out: `--product-card-rail-edge-style: none` (serialized onto `:root` by the theme
+ * editor) drops the carousel edge fade. The style query reads the value off an ancestor (`:root`);
+ * browsers without style-query support ignore this block and keep the default fade — the safe
+ * fallback, since `fade` is the platform default. */
+@container style(--product-card-rail-edge-style: none) {
+    .rail-carousel {
+        animation: none;
+        mask-image: none;
     }
 }
 
@@ -330,6 +348,7 @@ html:root {
     --product-card-min-width: 200px;
     --product-card-max-width: 240px;
     --product-card-grid-align: start;
+    --product-card-rail-edge-style: fade;
     --product-card-search-image-width: 72px;
 
     /* Image */

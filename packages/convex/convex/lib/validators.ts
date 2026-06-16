@@ -75,6 +75,7 @@ export const productCardTokensValidator = v.object({
     minWidth: v.string(),
     maxWidth: v.string(),
     gridAlign: v.string(),
+    railEdgeStyle: v.string(),
     searchImageWidth: v.string(),
 
     // Image

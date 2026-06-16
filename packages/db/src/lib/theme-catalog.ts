@@ -614,6 +614,15 @@ export const THEME_TOKEN_CATALOG = [
     {
         group: 'productCard',
         cluster: 'chassis',
+        path: 'theme.productCard.railEdgeStyle',
+        cssVar: productCardCustomProperty('railEdgeStyle'),
+        valueKind: 'enum',
+        payloadType: 'select',
+        enumValues: ['fade', 'none'],
+    },
+    {
+        group: 'productCard',
+        cluster: 'chassis',
         path: 'theme.productCard.searchImageWidth',
         cssVar: productCardCustomProperty('searchImageWidth'),
         valueKind: 'dimension',
