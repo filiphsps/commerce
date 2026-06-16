@@ -1,13 +1,12 @@
 'use client';
 
 import { useCartStatus } from '@nordcom/cart-react';
-import { useProduct } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ComponentPropsWithoutRef, HTMLProps } from 'react';
-import type { ProductVariant } from '@/api/product';
 import { transformQuantityBreaks } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { COMMON_BADGE_STYLES } from '@/components/product-display/primitives/badge-styles';
+import { useProductOptions } from '@/components/product-options/context';
 import { Price } from '@/components/products/price';
 import { useQuantity } from '@/components/products/quantity-provider';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -44,7 +43,7 @@ export function ProductQuantityBreaksItem({
 
     const { quantity, setQuantity } = useQuantity();
 
-    const { selectedVariant } = useProduct();
+    const { selectedVariant } = useProductOptions();
     if (!selectedVariant?.price) {
         return null;
     }
@@ -117,9 +116,7 @@ export function ProductQuantityBreaks({
     className = '',
     ...props
 }: ProductQuantityBreaksProps) {
-    const { selectedVariant } = useProduct() as ReturnType<typeof useProduct> & {
-        selectedVariant: ProductVariant | undefined;
-    };
+    const { selectedVariant } = useProductOptions();
     const { cartReady, status } = useCartStatus();
 
     if (!selectedVariant) {

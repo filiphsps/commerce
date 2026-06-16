@@ -1,35 +1,21 @@
 import { useCartActions, useCartStatus } from '@nordcom/cart-react';
-import { useProduct } from '@shopify/hydrogen-react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useMaybeProductOptions } from '@/components/product-options/context';
+import * as ProductOptions from '@/components/product-options';
 import { useQuantity } from '@/components/products/quantity-provider';
-import { useShop } from '@/components/shop/provider';
-import { mockLocale, mockShop } from '@/utils/test/fixtures';
-import { act, render } from '@/utils/test/react';
+import { act, fireEvent, render, screen } from '@/utils/test/react';
 import { ProductActionsContainer } from './product-actions-container';
 
-vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
-    return { ...actual, useProduct: vi.fn() };
-});
 vi.mock('@nordcom/cart-react', () => ({
     useCartActions: vi.fn(),
     useCartStatus: vi.fn(),
     useMaybeCart: vi.fn().mockReturnValue(null),
 }));
-vi.mock('@/components/product-options/context', () => ({
-    useMaybeProductOptions: vi.fn(),
-}));
 vi.mock('@/components/products/quantity-provider', () => ({
     useQuantity: vi.fn(),
 }));
-vi.mock('@/components/shop/provider', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@/components/shop/provider')>();
-    return { ...actual, useShop: vi.fn() };
-});
 vi.mock('next/navigation', () => ({
-    useRouter: () => ({ replace: vi.fn() }),
-    usePathname: () => '/en-US/products/test/',
+    useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
+    usePathname: () => '/en-US/products/tee/',
     useSearchParams: () => new URLSearchParams(),
 }));
 vi.mock('@/utils/build-config', () => ({
@@ -37,68 +23,49 @@ vi.mock('@/utils/build-config', () => ({
     COMMERCE_DEFAULTS: { maxQuantity: 99 },
 }));
 
-const selectVariant = vi.fn();
+const variant = (id: string, color: string, available = true) => ({
+    id,
+    title: color,
+    availableForSale: available,
+    selectedOptions: [{ name: 'Color', value: color }],
+    price: { amount: '29.00', currencyCode: 'USD' },
+});
 
 const product = {
+    id: 'gid://shopify/Product/1',
     handle: 'tee',
     title: 'Test Tee',
-    options: [{ name: 'Color', values: ['Red', 'Blue'], optionValues: [{ name: 'Red' }, { name: 'Blue' }] }],
+    vendor: 'Acme',
+    options: [{ name: 'Color', optionValues: [{ name: 'Red' }, { name: 'Blue' }] }],
     variants: {
-        edges: [
-            {
-                node: {
-                    id: 'v1',
-                    title: 'Red',
-                    availableForSale: true,
-                    selectedOptions: [{ name: 'Color', value: 'Red' }],
-                    price: { amount: '29.00', currencyCode: 'USD' },
-                    encodedVariantExistence: 'v1_0',
-                    encodedVariantAvailability: 'v1_0',
-                },
-            },
-            {
-                node: {
-                    id: 'v2',
-                    title: 'Blue',
-                    availableForSale: true,
-                    selectedOptions: [{ name: 'Color', value: 'Blue' }],
-                    price: { amount: '29.00', currencyCode: 'USD' },
-                    encodedVariantExistence: 'v1_1',
-                    encodedVariantAvailability: 'v1_1',
-                },
-            },
-        ],
+        edges: [{ node: variant('v1', 'Red') }, { node: variant('v2', 'Blue') }],
     },
-    encodedVariantExistence: 'v1_0-1',
-    encodedVariantAvailability: 'v1_0-1',
-    adjacentVariants: [],
-    selectedOrFirstAvailableVariant: null,
 } as never;
 
-const selectedVariant = {
-    id: 'v1',
-    title: 'Red',
-    availableForSale: true,
-    price: { amount: '29.00', currencyCode: 'USD' },
-} as never;
+/**
+ * Renders the container inside a real `ProductOptions.Root` so the swatch primitives and the
+ * container share one selection context — the same wiring as the live PDP.
+ *
+ * @param initialSelection - Selection the Root seeds with.
+ * @param seedSelection - URL-resolved selection forwarded to the container.
+ * @returns The Testing Library render result.
+ */
+const i18n = { common: { 'add-to-cart': 'Add to cart' } } as never;
+
+const renderContainer = (initialSelection: Record<string, string>, seedSelection?: Record<string, string>) =>
+    render(
+        <ProductOptions.Root product={product} initialSelection={initialSelection}>
+            <ProductActionsContainer i18n={i18n} seedSelection={seedSelection} />
+        </ProductOptions.Root>,
+    );
+
+const addLine = vi.fn().mockResolvedValue({ ok: true });
 
 beforeEach(() => {
-    selectVariant.mockClear();
-    vi.mocked(useProduct).mockReturnValue({
-        product,
-        selectedVariant,
-        selectedOptions: { Color: 'Red' },
-        setSelectedOptions: vi.fn(),
-    } as any);
-    vi.mocked(useMaybeProductOptions).mockReturnValue({ selectVariant } as any);
+    addLine.mockClear();
     vi.mocked(useQuantity).mockReturnValue({ quantity: 1, setQuantity: vi.fn() });
-    vi.mocked(useShop).mockReturnValue({
-        shop: mockShop(),
-        locale: mockLocale(),
-        currency: 'USD',
-    } as any);
-    vi.mocked(useCartActions).mockReturnValue({ addLine: vi.fn() } as any);
-    vi.mocked(useCartStatus).mockReturnValue({ cartReady: true, status: 'idle', error: null });
+    vi.mocked(useCartActions).mockReturnValue({ addLine } as never);
+    vi.mocked(useCartStatus).mockReturnValue({ cartReady: true, status: 'idle', error: null } as never);
 });
 
 afterEach(() => {
@@ -106,33 +73,43 @@ afterEach(() => {
 });
 
 describe('ProductActionsContainer', () => {
-    it('syncs ProductOptionsContext.selectVariant with Hydrogen selectedOptions on render', async () => {
-        render(<ProductActionsContainer i18n={{} as any} />);
+    it('renders a swatch group per option and reflects the active selection', async () => {
+        renderContainer({ Color: 'Red' });
         await act(async () => {});
-        expect(selectVariant).toHaveBeenCalledWith({ Color: 'Red' });
+
+        const group = screen.getByRole('group', { name: 'Color' });
+        expect(group).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Red' })).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByRole('button', { name: 'Blue' })).toHaveAttribute('aria-pressed', 'false');
     });
 
-    it('does not call selectVariant again when selectedOptions reference changes but values are identical', async () => {
-        // Hydrogen fires a useEffect on mount that calls setSelectedOptions with a new
-        // object carrying identical values (the "spurious re-render"). Without the fix,
-        // this would fire selectVariant again, causing all ProductOptionsContext consumers
-        // to re-render unnecessarily on every mount.
-        const { rerender } = render(<ProductActionsContainer i18n={{} as any} />);
+    it('selecting another value updates the active selection without leaving the page', async () => {
+        renderContainer({ Color: 'Red' });
         await act(async () => {});
-        selectVariant.mockClear();
-
-        // New object reference, same values — simulates Hydrogen's spurious re-render
-        vi.mocked(useProduct).mockReturnValue({
-            product,
-            selectedVariant,
-            selectedOptions: { Color: 'Red' },
-            setSelectedOptions: vi.fn(),
-        } as any);
 
         await act(async () => {
-            rerender(<ProductActionsContainer i18n={{} as any} />);
+            fireEvent.click(screen.getByRole('button', { name: 'Blue' }));
         });
 
-        expect(selectVariant).not.toHaveBeenCalled();
+        expect(screen.getByRole('button', { name: 'Blue' })).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByRole('button', { name: 'Red' })).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('applies the URL-resolved seed selection once on mount', async () => {
+        renderContainer({ Color: 'Red' }, { Color: 'Blue' });
+        await act(async () => {});
+
+        expect(screen.getByRole('button', { name: 'Blue' })).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('adds the selected variant to the cart', async () => {
+        renderContainer({ Color: 'Red' });
+        await act(async () => {});
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', { name: /add to cart/i }));
+        });
+
+        expect(addLine).toHaveBeenCalledWith(expect.objectContaining({ variantId: 'v1', quantity: 1 }));
     });
 });

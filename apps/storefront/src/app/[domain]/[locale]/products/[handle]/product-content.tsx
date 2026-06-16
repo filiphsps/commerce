@@ -1,10 +1,10 @@
 'use client';
 
-import { ProductProvider } from '@shopify/hydrogen-react';
-import type { ProductVariant, Product as StorefrontProduct } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import type { Product } from '@/api/product';
+import { toSelectionRecord } from '@/components/product-options/resolver';
 import { Price } from '@/components/products/price';
 import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import { QuantityProvider } from '@/components/products/quantity-provider';
@@ -12,7 +12,6 @@ import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { unsafe_cast } from '@/utils/unsafe-cast';
 
 /**
  * Determines the initial variant ID from URL search params.
@@ -55,10 +54,9 @@ export type ProductContentProps = {
     i18n: LocaleDictionary;
 };
 /**
- * Client component that wires the Hydrogen `ProductProvider` and
- * `QuantityProvider` around the product actions UI. Reads the `variant`
- * search param to pre-select a specific variant; falls back to the first
- * available variant when absent.
+ * Client component that wires the `QuantityProvider` around the product actions UI and resolves the
+ * initial variant from the `?variant=` (or option) search params, falling back to the first available
+ * variant. The resolved selection seeds the surrounding `ProductOptions.Root`, which owns variant state.
  *
  * @param product - The product data including variants and availability.
  * @param i18n - The locale dictionary for translated labels in the actions UI.
@@ -66,20 +64,18 @@ export type ProductContentProps = {
  */
 export function ProductContent({ product, i18n }: ProductContentProps) {
     const searchParams = useSearchParams();
-    const initialVariantId = useMemo(() => resolveInitialVariantId(product, searchParams), [product, searchParams]);
+    const seedSelection = useMemo(() => {
+        const initialVariantId = resolveInitialVariantId(product, searchParams);
+        const variant = product.variants.edges.find(({ node }) => node.id === initialVariantId)?.node;
+        return toSelectionRecord(variant);
+    }, [product, searchParams]);
 
     const [quantity, setQuantity] = useState(1);
 
     return (
-        // hydrogen-react's `Product` is `RecursivePartial<Product>`; our local
-        // `Product` type is a stricter superset that satisfies the runtime
-        // contract. The library types are intentionally permissive — this is
-        // the documented escape hatch.
-        <ProductProvider data={unsafe_cast<StorefrontProduct>(product)} initialVariantId={initialVariantId}>
-            <QuantityProvider quantity={quantity} setQuantity={setQuantity}>
-                <ProductActionsContainer i18n={i18n} />
-            </QuantityProvider>
-        </ProductProvider>
+        <QuantityProvider quantity={quantity} setQuantity={setQuantity}>
+            <ProductActionsContainer i18n={i18n} seedSelection={seedSelection} />
+        </QuantityProvider>
     );
 }
 

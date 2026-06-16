@@ -1,17 +1,13 @@
 'use client';
 
-import { useProduct } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
-import { Suspense, useEffect, useMemo } from 'react';
-import type { Product, ProductVariant } from '@/api/product';
-import { useMaybeProductOptions } from '@/components/product-options/context';
-import { resolvedToLegacyOptions, resolveOptions } from '@/components/product-options/resolver';
-import { ProductOptionsSelector, SizeChipRenderer } from '@/components/product-options-selector';
+import { Suspense, useEffect, useMemo, useRef } from 'react';
+import * as ProductOptions from '@/components/product-options';
+import { useProductOptions } from '@/components/product-options/context';
 import AddToCart from '@/components/products/add-to-cart';
 import { ProductQuantityBreaks } from '@/components/products/product-quantity-breaks';
 import { useQuantity } from '@/components/products/quantity-provider';
 import { QuantitySelector } from '@/components/products/quantity-selector';
-import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 import { useVariantUrlSync } from '@/hooks/useVariantUrlSync';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -20,69 +16,64 @@ import { cn } from '@/utils/tailwind';
 
 export type ProductActionsContainerProps = {
     i18n: LocaleDictionary;
+    /**
+     * URL-resolved initial selection (`?variant=` / option params) applied once on mount. The
+     * page-level `ProductOptions.Root` seeds from `firstAvailableVariant` server-side, where the
+     * search params are not in scope; this honors a deep link client-side.
+     */
+    seedSelection?: Record<string, string>;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 /**
- * Client component composing the quantity selector, option pickers, quantity breaks, and add-to-cart button.
+ * Builds a stable, order-independent key for a selection map so two maps with the same entries compare equal.
+ *
+ * @param selection - Option-name-to-value map.
+ * @returns A sorted `name=value&…` key string.
+ */
+function selectionKey(selection: Record<string, string>): string {
+    return Object.entries(selection)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([k, v]) => `${k}=${v}`)
+        .join('&');
+}
+
+/**
+ * Client component composing the quantity selector, variant swatch pickers, quantity breaks, and add-to-cart
+ * button. Selection state is driven entirely by the surrounding `ProductOptions.Root` — the same context and
+ * swatch primitives the product card and cart line render — so the PDP, card, and cart share one variant UI.
  *
  * @param props.i18n - Locale dictionary forwarded to child action components.
+ * @param props.seedSelection - URL-resolved selection applied once on mount.
  * @returns The product actions container, or `null` when product or selected variant is unavailable.
  */
-export const ProductActionsContainer = ({ className, i18n, ...props }: ProductActionsContainerProps) => {
+export const ProductActionsContainer = ({ className, i18n, seedSelection, ...props }: ProductActionsContainerProps) => {
     const { t } = getTranslations('common', i18n);
-    const { locale } = useShop();
     const { quantity, setQuantity } = useQuantity();
 
-    const { product, selectedVariant, selectedOptions, setSelectedOptions } = useProduct() as ReturnType<
-        typeof useProduct
-    > & {
-        product: Product | undefined;
-        selectedVariant: ProductVariant | undefined;
-    };
+    const { product, selection, selectedVariant, selectVariant } = useProductOptions();
+
+    // Apply the URL-resolved selection once. Guard on the ref so it never re-fires (and so a later
+    // user pick is never clobbered), and skip when it already matches to avoid a redundant URL write.
+    const seededRef = useRef(false);
+    useEffect(() => {
+        if (seededRef.current) return;
+        seededRef.current = true;
+        if (!seedSelection || Object.keys(seedSelection).length === 0) return;
+        if (selectionKey(seedSelection) !== selectionKey(selection)) {
+            selectVariant(seedSelection);
+        }
+    }, [seedSelection, selection, selectVariant]);
 
     const urlSyncOptions = useMemo(
-        () =>
-            Object.entries(selectedOptions ?? {})
-                .filter((entry): entry is [string, string] => entry[1] !== undefined)
-                .map(([name, value]) => ({ name, value })),
-        [selectedOptions],
+        () => Object.entries(selection).map(([name, value]) => ({ name, value })),
+        [selection],
     );
     useVariantUrlSync(urlSyncOptions);
 
-    const resolvedSelectedOptions = useMemo(
-        () =>
-            Object.fromEntries(
-                Object.entries(selectedOptions ?? {}).filter(
-                    (entry): entry is [string, string] => entry[1] !== undefined,
-                ),
-            ),
-        [selectedOptions],
+    const optionGroups = useMemo(
+        () => (product.options ?? []).filter((o) => o.name && o.name.toLowerCase() !== 'title'),
+        [product.options],
     );
-
-    const mappedOptions = useMemo(
-        () => (product ? resolvedToLegacyOptions(resolveOptions(product, resolvedSelectedOptions)) : []),
-        [product, resolvedSelectedOptions],
-    );
-
-    // Keep ProductOptionsContext (VariantPriceClient, VariantStockUrgencyClient) in sync with
-    // Hydrogen's selected options. Use a stable string key as the dep so the effect only fires
-    // when selection values actually change — not on every new-object-same-values re-render from
-    // Hydrogen's internal useEffect on mount. Do NOT use productOptionsCtx as a dep: selectVariant
-    // is stable (useCallback([controlled])), but the context VALUE object rebuilds after every
-    // selectVariant call, which would create an infinite loop.
-    const productOptionsCtx = useMaybeProductOptions();
-    const optionsKey = useMemo(
-        () =>
-            Object.entries(resolvedSelectedOptions)
-                .sort(([a], [b]) => a.localeCompare(b))
-                .map(([k, v]) => `${k}=${v}`)
-                .join('&'),
-        [resolvedSelectedOptions],
-    );
-    useEffect(() => {
-        productOptionsCtx?.selectVariant(resolvedSelectedOptions);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [optionsKey]);
 
     if (!product || !selectedVariant) {
         return null;
@@ -111,14 +102,18 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                 </div>
 
                 <Suspense fallback={<div className="flex" data-skeleton />}>
-                    <ProductOptionsSelector
-                        options={mappedOptions}
-                        selectedOptions={resolvedSelectedOptions}
-                        onChange={setSelectedOptions}
-                        renderers={{ Size: SizeChipRenderer }}
-                        productHandle={product.handle}
-                        locale={locale}
-                    />
+                    <div className="flex flex-col gap-(--block-spacer-small)">
+                        {optionGroups.map((option) => (
+                            <fieldset
+                                key={option.name}
+                                aria-label={option.name}
+                                className="flex flex-col gap-(--block-spacer-small)"
+                            >
+                                <Label className="text-(color:var(--text-muted)) h-fit">{option.name}</Label>
+                                <ProductOptions.Group name={option.name} density="spacious" />
+                            </fieldset>
+                        ))}
+                    </div>
                 </Suspense>
             </div>
 

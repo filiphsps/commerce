@@ -46,9 +46,13 @@ export async function addToCartFromPdp(page: Page, handle = 'hoodie-old'): Promi
     await page.goto(productPath(handle), { waitUntil: 'domcontentloaded' });
     const addToCart = page.getByRole('button', { name: /add to cart/i }).first();
     await expect(addToCart).toBeVisible({ timeout: 30_000 });
-    const size = page.locator('button[aria-label^="Size:"]');
-    if ((await size.count()) > 0) {
-        await size.first().click();
+    // The PDP renders the shared swatch picker (one role="group" per option); pick a size when present.
+    const sizeGroup = page.getByRole('group', { name: /size/i });
+    if (await sizeGroup.isVisible({ timeout: 5_000 }).catch(() => false)) {
+        const size = sizeGroup.getByRole('button').first();
+        if ((await size.count()) > 0) {
+            await size.click();
+        }
     }
     await addToCart.click();
     // Wait for the cart to register (badge off zero) before returning, so callers that navigate to

@@ -27,17 +27,21 @@ test.describe('Product detail page', () => {
         await page.goto(productPath(), { waitUntil: 'domcontentloaded' });
         // Options stream in; wait for the add-to-cart CTA (PDP options resolved) before counting.
         await expect(page.getByRole('button', { name: /add to cart/i }).first()).toBeVisible({ timeout: 30_000 });
-        const sizeOption = page.locator('button[aria-label^="Size:"]');
+        // PDP now renders the same swatch picker as the product card: one role="group" per option.
+        const sizeGroup = page.getByRole('group', { name: /size/i });
+        if (!(await sizeGroup.isVisible({ timeout: 10_000 }).catch(() => false))) {
+            test.skip(true, 'product has no size option group');
+        }
+        const sizeOption = sizeGroup.getByRole('button');
         if ((await sizeOption.count()) < 2) {
             test.skip(true, 'product has fewer than two size options');
         }
         const target = sizeOption.nth(1);
-        const label = await target.getAttribute('aria-label');
         await target.click();
-        // Selection stays on the PDP (no full navigation away) and the add-to-cart CTA remains.
+        // Selection stays on the PDP (no full navigation away) and reflects the active swatch.
         await expect(page).toHaveURL(new RegExp(productPath().replace(/\/$/, '')));
+        await expect(target).toHaveAttribute('aria-pressed', 'true');
         await expect(page.getByRole('button', { name: /add to cart/i }).first()).toBeVisible();
-        expect(label).toMatch(/^Size:/);
     });
 
     test('renders a recommendations rail of further products', async ({ page }) => {
