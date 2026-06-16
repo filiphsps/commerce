@@ -118,10 +118,25 @@ Guiding principles (from the task + repo design system):
   suite still green.
 - Verified: biome clean, typecheck clean, input + quantity 13/13.
 
+### 10 — Themeable text color on the chrome surfaces
+
+- Confirmed the `focus:outline-none` sweep is clean — every other case has a replacement
+  focus-visible ring (the `contents` variant-image link delegates its ring to the child via
+  `group-focus-visible`); no new WCAG focus gaps.
+- Found three chrome surfaces hard-coding the **primary** text color to `text-black` on a themeable
+  surface (`info-bar` on `--surface-1`, the header nav row on `--surface-0`, the geo-redirect banner
+  on `--surface-1`) — a tenant theming those surfaces dark would get illegible black text.
+  `text-black` isn't in the gate's banned set, so it slipped past.
+- Switched all three to `text-(color:var(--text))` so the chrome tracks the tenant theme (and matches
+  the #222 body ink the rest of the site uses; near-identical on the default theme).
+- Verified: biome clean, typecheck clean, header/info-bar/geo-redirect 15/15.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- Audit remaining `focus:outline-none` without a replacement ring across the storefront (header search,
-  cart inputs, links) — same WCAG 2.4.7 class of issue.
+- `hover:text-black` / `focus-within:text-black` accents (geo-redirect rows, popover/modal/sheet close
+  buttons, filter-values) are also un-themeable on dark surfaces — sweep to a token (`--text`/accent).
+  The `bg-black/NN` scrims are intentional overlays and should stay.
+- Consider adding a `text-black` rule to the design-tokens gate once the hover-black sweep lands.
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
   /products, collections, and search as the shared faceted aside (per the overhaul spec).
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
