@@ -5,15 +5,10 @@ content/errors/**
 !content/errors/_overrides.json
 !content/errors/index.mdx
 content/apps/*/
-content/packages/applications/
-content/packages/cart/
-content/packages/core/
-content/packages/next/
-content/packages/next-build-notifier/
-content/packages/shopify/
-content/packages/tagtree/
-content/packages/ui/
-content/packages/utils/
+# Every category subdir under content/packages/ is mirrored from workspace docs
+# by scripts/mirror-workspace-docs.ts (swept + regenerated each `pnpm gen`). Only
+# the hand-authored index.mdx and _categories.json at the root are tracked.
+content/packages/*/
 lib/source-meta.generated.ts
 lib/symbol-index.generated.json
 .docs-gen-report.json
