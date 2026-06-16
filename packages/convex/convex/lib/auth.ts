@@ -86,12 +86,19 @@ function getTrustedIssuer(): string | undefined {
  *
  * This is the OPERATOR-tier counterpart to {@link getTrustedIssuer}: operator tokens come from
  * Clerk (a different issuer than the customer `CONVEX_AUTH_ISSUER`), so the operator path validates
- * against this issuer and must NOT reuse the customer gate.
+ * against these issuers and must NOT reuse the customer gate.
  *
- * @returns The configured Clerk issuer, or `undefined` when the env var is unset.
+ * Returns BOTH configured Clerk issuers (`CLERK_FRONTEND_API_URL` and the optional
+ * `CLERK_FRONTEND_API_URL_PROD`), matching the two Clerk providers in `auth.config.ts`: one Convex
+ * deployment can back both a dev/preview and a production Clerk instance, so an operator token from
+ * EITHER instance is trusted. Unset entries are dropped.
+ *
+ * @returns The configured Clerk operator issuers (0, 1, or 2 entries).
  */
-function getClerkIssuer(): string | undefined {
-    return getServerEnv('CLERK_FRONTEND_API_URL');
+function getClerkIssuers(): string[] {
+    return [getServerEnv('CLERK_FRONTEND_API_URL'), getServerEnv('CLERK_FRONTEND_API_URL_PROD')].filter(
+        (value): value is string => Boolean(value),
+    );
 }
 
 /**
@@ -126,8 +133,8 @@ export async function getClerkOperatorIdentity(ctx: AuthReadCtx): Promise<UserId
         });
     }
 
-    const clerkIssuer = getClerkIssuer();
-    if (!clerkIssuer) {
+    const clerkIssuers = getClerkIssuers();
+    if (clerkIssuers.length === 0) {
         // Fail closed: with no trusted operator issuer to assert against, the privileged operator path
         // must NOT fall through to bare platform validation (which the shared customJwt provider would
         // pass). A missing env is a deployment misconfiguration, surfaced as a hard rejection.
@@ -136,10 +143,10 @@ export async function getClerkOperatorIdentity(ctx: AuthReadCtx): Promise<UserId
             message: 'Trusted Clerk operator issuer is not configured; operator identity cannot be asserted.',
         });
     }
-    if (identity.issuer !== clerkIssuer) {
+    if (!clerkIssuers.includes(identity.issuer)) {
         throw new ConvexError({
             code: AuthErrorCode.FORGED_IDENTITY,
-            message: 'Identity issuer does not match the trusted Clerk operator issuer.',
+            message: 'Identity issuer does not match a trusted Clerk operator issuer.',
         });
     }
 
