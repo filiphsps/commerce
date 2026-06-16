@@ -68,5 +68,23 @@ describe('components', () => {
                 expect(unmount).not.toThrow();
             });
         });
+
+        it('falls back to a filtered products link when the type has no collection', async () => {
+            // The CollectionApi mock throws for any handle other than `test-type`, so this type has no
+            // collection and must link to the all-products listing filtered by type, not dead-end text.
+            const { container, unmount } = render(
+                await ProductCategory({
+                    shop: {} as any,
+                    locale: Locale.default,
+                    product: { productType: 'Other Type' } as any,
+                }),
+            );
+
+            await waitFor(() => {
+                expect(container.textContent).toBe('Other Type');
+                expect(container.querySelector('a')?.getAttribute('href')).toBe('/products/?type=Other%20Type');
+                expect(unmount).not.toThrow();
+            });
+        });
     });
 });
