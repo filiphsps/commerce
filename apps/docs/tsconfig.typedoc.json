@@ -14,7 +14,11 @@
         "esModuleInterop": true,
         "isolatedModules": true,
         "noUncheckedIndexedAccess": false,
-        "types": ["node", "react", "react-dom"]
+        "types": ["node", "react", "react-dom"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["../../packages/ai/lspmesh/src/*"]
+        }
     },
     "include": ["../../packages/**/src/**/*.ts", "../../packages/**/src/**/*.tsx"],
     "exclude": ["**/node_modules", "**/dist", "**/build", "**/*.test.ts", "**/*.test.tsx"]
