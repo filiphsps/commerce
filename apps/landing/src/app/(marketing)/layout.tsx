@@ -62,9 +62,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <Providers>
                     <Header />
 
-                    <View className={cn('w-full max-w-[var(--layout-page-width)] [grid-area:content]')}>
-                        {children}
-                    </View>
+                    <View className={cn('[grid-area:content]')}>{children}</View>
 
                     <Footer />
                     <LandingBuildNotifier />

@@ -21,24 +21,20 @@ export default function Footer({ className, ...props }: FooterProps) {
                 className,
             )}
         >
-            <div className="flex max-w-full flex-col items-center justify-center bg-brand text-foreground">
-                <div className="w-full max-w-page p-4 py-6 md:py-8">
-                    <div className="grid grid-cols-[1fr_1fr] items-center justify-center gap-[0.5rem] md:grid-cols-[1fr_1fr]"></div>
+            <div className="flex max-w-full flex-col items-center justify-center bg-brand text-brand-foreground">
+                <div className="flex w-full max-w-page flex-wrap items-center justify-between gap-2 p-4 py-4 md:py-5">
+                    <span className="font-extrabold text-sm uppercase tracking-wide">Headless commerce, hosted.</span>
 
-                    <div className="flex items-center justify-between gap-x-1 leading-none">
-                        {process.env.GIT_COMMIT_SHA ? (
-                            <section className="flex h-8 items-center justify-end font-semibold text-current text-xs lowercase leading-none empty:hidden md:text-sm">
-                                <Link
-                                    href={`${getServiceUrl()}/changelog/`}
-                                    prefetch={false}
-                                    className="text-inherit transition-colors hover:text-primary-foreground hover:underline"
-                                    title={process.env.GIT_COMMIT_SHA}
-                                >
-                                    {process.env.GIT_COMMIT_SHA.slice(0, 7)}
-                                </Link>
-                            </section>
-                        ) : null}
-                    </div>
+                    {process.env.GIT_COMMIT_SHA ? (
+                        <Link
+                            href={`${getServiceUrl()}/changelog/`}
+                            prefetch={false}
+                            className="font-mono text-current text-xs lowercase leading-none transition-opacity hover:underline hover:opacity-70"
+                            title={process.env.GIT_COMMIT_SHA}
+                        >
+                            {process.env.GIT_COMMIT_SHA.slice(0, 7)}
+                        </Link>
+                    ) : null}
                 </div>
             </div>
 
