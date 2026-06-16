@@ -62,7 +62,8 @@
         "@nordcom/commerce-cms": "workspace:*",
         "@tagtree/core": "workspace:*",
         "convex": "1.41.0",
-        "convex-helpers": "0.1.119"
+        "convex-helpers": "0.1.119",
+        "svix": "^1.95.2"
     },
     "devDependencies": {
         "convex-test": "0.0.53",

@@ -941,6 +941,53 @@ export declare const api: {
  * ```
  */
 export declare const internal: {
+  clerk: {
+    webhooks: {
+      upsertUserFromClerk: FunctionReference<
+        "mutation",
+        "internal",
+        { avatar?: string; clerkUserId: string; email: string; name: string },
+        any
+      >;
+      deleteUser: FunctionReference<
+        "mutation",
+        "internal",
+        { clerkUserId: string },
+        any
+      >;
+      upsertOrg: FunctionReference<
+        "mutation",
+        "internal",
+        { clerkOrgId: string; imageUrl?: string; name: string; slug: string },
+        any
+      >;
+      deleteOrg: FunctionReference<
+        "mutation",
+        "internal",
+        { clerkOrgId: string },
+        any
+      >;
+      upsertMembership: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          avatar?: string;
+          clerkOrgId: string;
+          clerkUserId: string;
+          email?: string;
+          name?: string;
+          role: string;
+        },
+        any
+      >;
+      deleteMembership: FunctionReference<
+        "mutation",
+        "internal",
+        { clerkOrgId: string; clerkUserId: string },
+        any
+      >;
+    };
+  };
   cms: {
     actions: {
       principal: FunctionReference<
