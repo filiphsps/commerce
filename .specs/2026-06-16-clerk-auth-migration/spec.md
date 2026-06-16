@@ -227,10 +227,12 @@ Convex deployment vars set via `npx convex env set …` (dev locally; prod in CI
 - **One-time human prod bootstrap:** `clerk deploy` for DNS CNAMEs + create real GitHub/Google
   OAuth apps. Documented as a runbook in the plan.
 
-> **Open item (verify at execution):** the exact Clerk CLI non-interactive CI-auth mechanism
-> (device-flow cached credential vs. `clerk api` with `CLERK_SECRET_KEY`). Confirm via
-> `clerk auth --help` / `clerk config --help`; default to Backend-API application of config
-> if no first-class CI login token exists.
+> **Resolved (P0b, 2026-06-16):** `clerk auth login` is **browser-OAuth only** — no
+> first-class CI login token. CLI surface: `init/link/apps/env/config/enable/disable/api/deploy/whoami`.
+> **CI prod-config path = `clerk api` (or direct Clerk Backend REST) authenticated with the
+> prod `CLERK_SECRET_KEY`** GitHub secret — non-interactive, no browser. Human runs
+> `clerk auth login` + `clerk deploy` once for the prod bootstrap. **Use `pnpm dlx clerk@latest`,
+> never `npx`** (repo hook blocks npx).
 
 ## E2E harness
 
@@ -276,3 +278,7 @@ Convex deployment vars set via `npx convex env set …` (dev locally; prod in CI
    `ensureCurrentUser` and server-side mirror checks must tolerate it.
 5. **Convex schema drop** — `sessions`/`identities` removal is a migration; confirm no
    residual readers before deleting (grep + LSP find_references).
+6. **Convex `_generated` hand-edits** — offline codegen is unavailable in the worktree, so
+   `packages/convex/convex/_generated/dataModel.d.ts` is hand-synced as the schema evolves
+   (Tasks 1.1–1.4, 3.x). **Deploy checklist:** run real `convex codegen` against the
+   deployment before/at deploy and confirm `_generated/` matches the live schema (no drift).
