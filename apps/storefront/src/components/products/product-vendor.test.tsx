@@ -68,5 +68,24 @@ describe('components', () => {
                 expect(unmount).not.toThrow();
             });
         });
+
+        it('falls back to a filtered products link when the vendor has no collection', async () => {
+            // The CollectionApi mock throws for any handle other than `test-vendor`, so this vendor has
+            // no collection and must link to the all-products listing filtered by vendor rather than
+            // rendering a dead-end label.
+            const { container, unmount } = render(
+                await ProductVendor({
+                    shop: {} as any,
+                    locale: Locale.default,
+                    product: { vendor: 'Other Brand' } as any,
+                }),
+            );
+
+            await waitFor(() => {
+                expect(container.textContent).toBe('Other Brand');
+                expect(container.querySelector('a')?.getAttribute('href')).toBe('/products/?vendor=Other%20Brand');
+                expect(unmount).not.toThrow();
+            });
+        });
     });
 });
