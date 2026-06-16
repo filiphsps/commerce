@@ -1,5 +1,6 @@
 import { Error } from '@nordcom/commerce-errors';
 import { flattenConnection } from '@shopify/hydrogen-react';
+import type { ProductCollectionSortKeys } from '@shopify/hydrogen-react/storefront-api-types';
 import { PackageOpen as EmptyCollectionIcon } from 'lucide-react';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
@@ -40,6 +41,7 @@ type SearchParams = Promise<{
     available?: string;
     minPrice?: string;
     maxPrice?: string;
+    sorting?: string;
 }>;
 
 /**
@@ -53,6 +55,34 @@ const numericParam = (raw: string | undefined): number | undefined => {
     if (!raw) return undefined;
     const value = Number(raw);
     return Number.isFinite(value) ? value : undefined;
+};
+
+/**
+ * Maps the shared filter toolbar's sort param (a `ProductSortKeys`-flavored value) onto the
+ * `ProductCollectionSortKeys` the collection connection accepts, falling back to `COLLECTION_DEFAULT`
+ * for an absent or collection-invalid key so a stale param never reaches Shopify as an invalid enum.
+ *
+ * @param raw - The raw `sorting` query-param string.
+ * @returns A valid collection sort key.
+ */
+const resolveCollectionSorting = (raw: string | undefined): ProductCollectionSortKeys => {
+    switch (raw?.toUpperCase()) {
+        case 'BEST_SELLING':
+            return 'BEST_SELLING';
+        case 'PRICE':
+            return 'PRICE';
+        case 'TITLE':
+            return 'TITLE';
+        case 'RELEVANCE':
+            return 'RELEVANCE';
+        case 'ID':
+            return 'ID';
+        case 'CREATED':
+        case 'CREATED_AT':
+            return 'CREATED';
+        default:
+            return 'COLLECTION_DEFAULT';
+    }
 };
 
 async function buildMetadata(
@@ -334,11 +364,12 @@ async function CollectionDynamic({
         minPrice: numericParam(searchParams.minPrice),
         maxPrice: numericParam(searchParams.maxPrice),
     };
+    const sorting = resolveCollectionSorting(searchParams.sorting);
 
     const pagesInfo = await CollectionPaginationCountApi({
         api,
         handle,
-        filters: { first: PRODUCTS_PER_PAGE, ...facets },
+        filters: { first: PRODUCTS_PER_PAGE, sorting, ...facets },
     });
 
     const pagination = (
@@ -362,6 +393,7 @@ async function CollectionDynamic({
                         searchParams={searchParams}
                         handle={handle}
                         facets={facets}
+                        sorting={sorting}
                         pagesInfo={pagesInfo}
                     />
                     {pagination}

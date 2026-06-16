@@ -1,7 +1,7 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
+import type { ProductCollectionSortKeys } from '@shopify/hydrogen-react/storefront-api-types';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-
 import type { CollectionProductFacets } from '@/api/shopify/collection';
 import CollectionBlock from '@/components/products/collection-block';
 
@@ -33,6 +33,7 @@ export async function CollectionContent({
     handle,
     searchParams = {},
     facets,
+    sorting,
     pagesInfo: { cursors, pages },
 }: {
     shop: OnlineShop;
@@ -40,6 +41,7 @@ export async function CollectionContent({
     handle: string;
     searchParams?: SearchParams;
     facets?: CollectionProductFacets;
+    sorting?: ProductCollectionSortKeys;
     pagesInfo: { cursors: string[]; pages: number; products: number };
 }) {
     if (typeof searchParams.page !== 'undefined' && Number.isNaN(Number.parseInt(searchParams.page.toString(), 10))) {
@@ -59,7 +61,7 @@ export async function CollectionContent({
                 shop={shop}
                 locale={locale}
                 handle={handle}
-                filters={{ first: PRODUCTS_PER_PAGE, after, ...facets }}
+                filters={{ first: PRODUCTS_PER_PAGE, after, sorting, ...facets }}
                 showViewAll={false}
                 priority={true}
             />

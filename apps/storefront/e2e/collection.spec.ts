@@ -31,6 +31,25 @@ test.describe('Collection page', () => {
         await expect(page.locator('h1').first()).toBeVisible({ timeout: 30_000 });
     });
 
+    test('renders the shared faceted filter toolbar', async ({ page }) => {
+        // Collections adopt the same `ProductFilters` toolbar as /products and search, fed by Shopify's
+        // native `collection.products(filters:)` facets. The sort control mounting proves the toolbar
+        // rendered above the grid.
+        await gotoCollectionWithProducts(page);
+        await expect(page.locator('select[aria-label="Sort"]')).toBeVisible({ timeout: 30_000 });
+        await expect(page.getByTestId('product-card-root').first()).toBeVisible({ timeout: 30_000 });
+    });
+
+    test('keeps a sorting selection in the URL on a collection', async ({ page }) => {
+        await gotoCollectionWithProducts(page);
+        const sort = page.locator('select[aria-label="Sort"]');
+        await expect(sort).toBeVisible({ timeout: 30_000 });
+        await sort.selectOption('PRICE');
+        await expect(page).toHaveURL(/sorting=PRICE/);
+        // The grid re-fetches under the new sort; a card proves the filtered query resolved.
+        await expect(page.getByTestId('product-card-root').first()).toBeVisible({ timeout: 30_000 });
+    });
+
     test('an unknown collection handle resolves to the not-found surface', async ({ page }) => {
         await page.goto(collectionPath('this-collection-does-not-exist-xyz'), { waitUntil: 'domcontentloaded' });
         // No product grid for a missing collection; the not-found UI takes over.
