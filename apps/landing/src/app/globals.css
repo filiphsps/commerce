@@ -163,7 +163,7 @@
         pointer-events: none;
     }
     #nprogress .bar {
-        @apply fixed top-0 left-0 z-[1000] h-1 w-full bg-brand;
+        @apply fixed top-0 left-0 z-1000 h-1 w-full bg-brand;
     }
 }
 
