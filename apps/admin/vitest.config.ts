@@ -55,5 +55,15 @@ export default defineProject({
                 transformAssets: true,
             },
         },
+        // `next` (16.x) ships no `exports` map, so its `next/server` subpath only
+        // resolves via extension-completion — which Vite does but Node's native ESM
+        // loader (used for externalized deps) does not. next-auth's `lib/env.js`
+        // imports `next/server`; inline it so Vite resolves the subpath instead of
+        // Node failing on the extensionless specifier.
+        server: {
+            deps: {
+                inline: [/next-auth/],
+            },
+        },
     },
 });

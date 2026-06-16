@@ -66,6 +66,7 @@ vi.mock('next/navigation', () => ({
     useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
     usePathname: () => '/gate-shop.example.com/content/pages/new/',
     useSearchParams: () => new URLSearchParams('locale=en-US'),
+    useParams: () => ({ domain: 'gate-shop.example.com' }),
 }));
 vi.mock('next/link', () => ({
     default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -509,11 +510,24 @@ describe('CMSGATE-02 — pages editor end to end (real engine, real Convex funct
         await setLeaf(container, 'blocks.7.body', 'textarea', JSON.stringify(PM_DOC));
         await setLeaf(container, 'blocks.8.title', 'input', 'Gate vendors');
 
-        // ── REAL media upload through the live transport. ──
-        // media-grid (row 5) mounts its minRows-1 item row; picking a file runs
-        // EditorFields' bound action → createMediaAction → byte sink → finalize
-        // → REAL sharp pass → saveDerivatives.
-        const fileInput = controlAt(container, 'blocks.5.items.0.image', 'input[type="file"]') as HTMLInputElement;
+        // ── REAL media upload through the live media picker. ──
+        // media-grid (row 5) mounts its minRows-1 item row; opening the picker and
+        // choosing a file runs the field's bound action → createMediaAction → byte
+        // sink → finalize → REAL sharp pass → saveDerivatives. The dialog portals to
+        // document.body, so its file input lives outside the render container.
+        await act(async () => {
+            fireEvent.click(
+                controlAt(
+                    container,
+                    'blocks.5.items.0.image',
+                    '[data-testid="media-picker-open-blocks.5.items.0.image"]',
+                ),
+            );
+        });
+        const fileInput = document.body.querySelector(
+            '[data-testid="media-upload-input-blocks.5.items.0.image"]',
+        ) as HTMLInputElement | null;
+        if (!fileInput) throw new TypeError('no media upload input in the opened picker');
         const png = Uint8Array.from(atob(TINY_PNG_BASE64), (char) => char.charCodeAt(0));
         const file = new File([png], 'gate-image.png', { type: 'image/png' });
         Object.defineProperty(fileInput, 'files', { value: [file] });
@@ -528,6 +542,23 @@ describe('CMSGATE-02 — pages editor end to end (real engine, real Convex funct
                 const rows = await tableRows<DerivativeRow>('cmsMediaDerivatives');
                 return rows.length === 4 && rows.every((row) => row.status === 'ready');
             });
+        });
+
+        // The upload selected the new image; "Use image" commits its id to the
+        // field and closes the picker. Wait for the button to enable (React has
+        // flushed the refreshed selection) before clicking.
+        await act(async () => {
+            await settle(async () => {
+                const button = document.body.querySelector(
+                    '[data-testid="media-use-blocks.5.items.0.image"]',
+                ) as HTMLButtonElement | null;
+                return !!button && !button.disabled;
+            });
+        });
+        await act(async () => {
+            fireEvent.click(
+                document.body.querySelector('[data-testid="media-use-blocks.5.items.0.image"]') as HTMLButtonElement,
+            );
         });
 
         const mediaRows = await tableRows<MediaRow>('cmsMedia');
@@ -549,9 +580,11 @@ describe('CMSGATE-02 — pages editor end to end (real engine, real Convex funct
             expect({ width: row?.width, height: row?.height }).toEqual({ width: size.width, height: size.height });
         }
 
-        // The widget stored the persisted media id in form state.
-        const storedId = container.querySelector('[data-testid="upload-blocks.5.items.0.image-value"]');
-        expect(storedId?.textContent).toBe(media._id);
+        // The widget committed the upload — its summary reflects the chosen file;
+        // the persisted media id in form state is asserted on the autosaved draft
+        // below (`mediaGridItems[0].image`).
+        const storedSummary = container.querySelector('[data-testid="upload-blocks.5.items.0.image-value"]');
+        expect(storedSummary?.textContent).toBe('gate-image.png');
 
         // ── ONE 2s autosave tick creates exactly one draft document. ──
         await act(async () => {
