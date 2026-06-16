@@ -11,7 +11,7 @@
         {
             "name": "lspmesh",
             "description": "LSP aggregator + MCP server - fronts TypeScript, Tailwind, and Biome behind one LSP endpoint, with by-name symbol/reference/implementation search.",
-            "version": "0.0.2",
+            "version": "0.0.3",
             "author": {
                 "name": "Filiph Sandström",
                 "email": "filfat@hotmail.se"
