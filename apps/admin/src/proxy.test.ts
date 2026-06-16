@@ -28,10 +28,23 @@ describe('admin proxy', () => {
         expect(matcherStr).toContain('_vercel');
     });
 
-    it('matcher pattern excludes favicon.ico and static files', async () => {
+    it('matcher runs on tenant routes whose domain segment contains dots', async () => {
         const { config } = await import('./proxy');
-        const matcherStr = String(config.matcher[0]);
-        expect(matcherStr).toContain('favicon.ico');
+        const matcher = new RegExp(`^${String(config.matcher[0])}$`);
+        // Regression: a `[\w-]+\.\w+` exclusion treated `/beta.pouched.de` as a static file and skipped
+        // clerkMiddleware(), so `auth()` threw "Clerk can't detect usage of clerkMiddleware()". Tenant
+        // paths (dotted domains) MUST run the middleware.
+        expect(matcher.test('/beta.pouched.de')).toBe(true);
+        expect(matcher.test('/beta.pouched.de/content/')).toBe(true);
+        expect(matcher.test('/')).toBe(true);
+    });
+
+    it('matcher excludes real static files by known extension', async () => {
+        const { config } = await import('./proxy');
+        const matcher = new RegExp(`^${String(config.matcher[0])}$`);
+        expect(matcher.test('/favicon.ico')).toBe(false);
+        expect(matcher.test('/logo.png')).toBe(false);
+        expect(matcher.test('/styles.css')).toBe(false);
     });
 
     it('config includes missing header conditions to skip prefetch requests', async () => {
