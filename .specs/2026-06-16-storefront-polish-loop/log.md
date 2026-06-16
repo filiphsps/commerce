@@ -209,10 +209,24 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Verified: all six locale JSONs valid, biome clean, typecheck clean (keys type-checked via
   `LocaleDictionaryKey`), product-filters 1/1.
 
+### 17 — Localize the product-card variant pickers
+
+- The float/inline/sheet pickers hard-coded "Add to bag" (×3), the inline fieldset `aria-label="Product
+  options"`, and the sheet's `aria-label="Close"` + `Dialog.Description` "Choose product options".
+  `ProductCardPickerProps` already carries `i18n`, so no threading was needed beyond the inner button.
+- Unified "Add to bag" → the existing `common.add-to-cart` ("Add to Cart") so the CTA vocabulary is
+  consistent with the rest of the flow; reused `common.close`; added `common.product-options` and
+  `common.choose-product-options` across all six locales. `AddToBagButton` now takes a `label` prop
+  (kept i18n-agnostic) and a stable `data-testid="picker-add-to-cart"`.
+- Updated the float/inline tests to locate the CTA by testid (decoupled from copy) and to assert the
+  localized fieldset label.
+- Verified: six locale JSONs valid, biome clean, typecheck clean, picker 10/10.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- Finish the i18n pass on the generic primitives' literal `aria-label="Close"` / `"Previous"` /
-  `"Next"` / `"Product options"` — these primitives lack an `i18n` prop, so each needs threading.
+- Remaining literal `aria-label`s: `collection-block-arrows` ("Previous"/"Next" — no i18n prop, needs
+  threading from `collection-block`, which has only `locale`), the `product-options/primitives/overlay`
+  "Close" controls, and the unused `layout/popover` "Close".
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets in `FilterValues` and wire the
   shared `Filters`/`ProductFilters` into /products, collections, and search (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
