@@ -6,11 +6,30 @@ export { type BuildIdEnv, resolveBuildId } from './shared/resolve-build-id';
  * Options for {@link createVersionRoute}.
  */
 export type CreateVersionRouteOptions = {
-    /** Override how the runtime build id is derived. Defaults to {@link resolveBuildId}. */
+    /** Override how the runtime build id is derived. Defaults to {@link defaultResolveId}. */
     resolveId?: (env: BuildIdEnv) => string;
     /** Extra response headers merged over the defaults. */
     headers?: Record<string, string>;
 };
+
+/**
+ * Default build-id resolver for the version route. Reads `NEXT_PUBLIC_BUILD_ID` via a DIRECT member
+ * access so Next inlines the build-baked id into the server bundle, falling back to
+ * {@link resolveBuildId} for apps that don't bake one.
+ *
+ * @param env - The runtime environment bag, forwarded to the {@link resolveBuildId} fallback.
+ * @returns The resolved build id.
+ * @remarks This must read `process.env.NEXT_PUBLIC_BUILD_ID` directly — NOT through the `env` object —
+ * because Next only inlines literal `process.env.X` accesses (a `const e = process.env; e.X` read is
+ * never inlined; see the Next env-variables docs). `resolveBuildId(process.env)` passes the whole
+ * object, so at runtime the baked id is invisible there and the chain collapses to whatever ambient
+ * runtime var happens to be set (Vercel's `VERCEL_DEPLOYMENT_ID`) or `'development'`. That reports a
+ * DIFFERENT id than the client baked into `currentBuildId`, so `updateAvailable` stays true forever
+ * and the "update available" banner never clears — no reload fixes it.
+ */
+function defaultResolveId(env: BuildIdEnv): string {
+    return process.env.NEXT_PUBLIC_BUILD_ID || resolveBuildId(env);
+}
 
 /**
  * Creates a Next.js App Router route handler that serves the current deployment's build id as
@@ -37,7 +56,7 @@ export type CreateVersionRouteOptions = {
  * ```
  */
 export function createVersionRoute(options: CreateVersionRouteOptions = {}): { GET: () => Promise<Response> } {
-    const resolveId = options.resolveId ?? resolveBuildId;
+    const resolveId = options.resolveId ?? defaultResolveId;
 
     async function GET(): Promise<Response> {
         const id = resolveId(process.env as BuildIdEnv);

@@ -22,6 +22,26 @@ describe('createVersionRoute', () => {
         expect(body.ts).toBeGreaterThan(Date.now() - 1000);
     });
 
+    it('reports the build-baked NEXT_PUBLIC_BUILD_ID over a divergent runtime var', async () => {
+        // The client bakes `currentBuildId` from `NEXT_PUBLIC_BUILD_ID` (inlined at build). The endpoint
+        // must report that SAME id or the "update available" banner never clears. A runtime-only var
+        // (here a higher-priority `VERCEL_DEPLOYMENT_ID`) must not win, because the client never saw it.
+        vi.stubEnv('NEXT_PUBLIC_BUILD_ID', 'baked-sha');
+        vi.stubEnv('VERCEL_DEPLOYMENT_ID', 'dpl_runtime');
+        const { GET } = createVersionRoute();
+        const body = (await (await GET()).json()) as { id: string };
+
+        expect(body.id).toBe('baked-sha');
+    });
+
+    it('falls back to resolveBuildId when no baked id is present', async () => {
+        vi.stubEnv('VERCEL_DEPLOYMENT_ID', 'dpl_runtime');
+        const { GET } = createVersionRoute();
+        const body = (await (await GET()).json()) as { id: string };
+
+        expect(body.id).toBe('dpl_runtime');
+    });
+
     it('honors a custom resolveId and extra headers', async () => {
         const { GET } = createVersionRoute({
             resolveId: () => 'custom',
