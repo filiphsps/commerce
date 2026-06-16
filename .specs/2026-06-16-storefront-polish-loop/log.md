@@ -52,9 +52,17 @@ Guiding principles (from the task + repo design system):
   selection over the preset.
 - Verified: biome clean, typecheck clean, extensions 3/3 + presets pass.
 
+### 4 — Alert info severity gets its own surface
+
+- The `info` severity rendered on neutral `--surface-1`, visually indistinguishable from a plain card.
+- Added a light-info surface (`--color-info-light` → `--surface-info`) paired with the existing
+  dark-blue info ink (`--text-info-strong` ← `--color-block-info-dark`), so info now reads as
+  informational. Severity color system is complete: success/warning/error/info/callout each distinct.
+- Gate: pinned both tokens and asserted AA (~6.1:1).
+- Verified: biome clean, typecheck clean, gate 22/22.
+
 #### Candidate slices for future iterations (audit backlog)
 
-- `info` alert severity still uses neutral `--surface-1`; consider a dedicated info surface token.
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
 - Cross-engine/responsive validation (Safari + Chromium) of header mega-menu, gallery lightbox,
   rail carousel per the overhaul spec root-causes — needs a running storefront + browser.
