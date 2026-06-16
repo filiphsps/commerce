@@ -9,13 +9,15 @@ import * as NProgress from 'nprogress';
 import type { ReactNode } from 'react';
 import { Suspense, useEffect } from 'react';
 import { Toaster } from 'sonner';
+import { AdminBuildNotifier } from '@/components/build-notifier/build-notifier';
+
 export type ProvidersProps = {
     children: ReactNode;
 };
 /**
  * Root client provider tree for the admin shell.
  *
- * Mounts NordstarProvider, NextTopLoader, Toaster, and Google Tag Manager.
+ * Mounts NordstarProvider, NextTopLoader, Toaster, Google Tag Manager, and AdminBuildNotifier.
  *
  * @param props.children - Application tree wrapped by all providers.
  */
@@ -37,6 +39,7 @@ export function Providers({ children }: ProvidersProps) {
                     {children}
 
                     <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
+                    <AdminBuildNotifier />
                 </Suspense>
             </div>
         </NordstarProvider>
