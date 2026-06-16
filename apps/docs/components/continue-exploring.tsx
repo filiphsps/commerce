@@ -51,11 +51,11 @@ export function ContinueExploring({ items }: { items: ExploreItem[] }) {
                                     {item.eyebrow}
                                 </div>
                             ) : null}
-                            <div className="font-bold text-[1rem] text-fg tracking-tight leading-tight">
+                            <div className="font-bold text-[1rem] text-fg leading-tight tracking-tight">
                                 {item.title}
                             </div>
                             {item.description ? (
-                                <div className="mt-1.5 break-words font-medium text-[0.82rem] text-fg-mute leading-[1.5]">
+                                <div className="wrap-break-word mt-1.5 font-medium text-[0.82rem] text-fg-mute leading-normal">
                                     {item.description}
                                 </div>
                             ) : null}

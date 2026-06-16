@@ -359,7 +359,7 @@ function renderTypeAliasDefinition(symbol: TypeDocSymbol, workspaceSlug: string)
     const pkgName = `@nordcom/commerce-${workspaceSlug}`;
     const code = `type ${symbol.name} = ${typeToString(symbol.type)};`;
     const inline = escapeMdxAngles(typeToInlineMdRaw(symbol.type));
-    return ['```ts title="' + pkgName + '"', code, '```', '', inline, ''].join('\n');
+    return [`\`\`\`ts title="${pkgName}"`, code, '```', '', inline, ''].join('\n');
 }
 
 /**
@@ -433,7 +433,7 @@ function renderTagBanner(modifierTags: string[], blockTags: { tag: string; conte
  * latter three are derived from the first signature's return type and the
  * `@throws` block tag content.
  *
- * @param kind - Normalised kind label.
+ * @param kind - Normalized kind label.
  * @param slug - Workspace slug.
  * @param subpath - Subpath export key.
  * @param symbol - TypeDoc symbol providing the return type for async/null detection.
@@ -501,7 +501,7 @@ function symbolToSignatureText(
 }
 
 /**
- * Render a TypeDoc serialised type to its TypeScript source form. Covers the
+ * Render a TypeDoc serialized type to its TypeScript source form. Covers the
  * type kinds the docs generator actually encounters: intrinsic, reference
  * (with generic arguments), array, union, intersection, literal, reflection
  * (anonymous object + callable), tuple, typeOperator, indexedAccess, query,

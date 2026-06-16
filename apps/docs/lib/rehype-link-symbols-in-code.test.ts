@@ -37,7 +37,7 @@ describe('rehypeLinkSymbolsInCode', () => {
         // Inject a tiny index directly via the cache-bypass: we'd need access. Instead, mock the file.
         // Trick: use the real `loadIndex` by writing a tiny JSON to a temp file.
         const fs = require('node:fs') as typeof import('node:fs');
-        const tmp = require('node:os').tmpdir() + '/symbol-index.test.json';
+        const tmp = `${require('node:os').tmpdir()}/symbol-index.test.json`;
         fs.writeFileSync(
             tmp,
             JSON.stringify({
@@ -85,7 +85,7 @@ describe('rehypeLinkSymbolsInCode', () => {
             ],
         };
         const fs = require('node:fs') as typeof import('node:fs');
-        const tmp = require('node:os').tmpdir() + '/symbol-index.test2.json';
+        const tmp = `${require('node:os').tmpdir()}/symbol-index.test2.json`;
         fs.writeFileSync(
             tmp,
             JSON.stringify({

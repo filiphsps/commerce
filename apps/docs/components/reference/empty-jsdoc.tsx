@@ -15,8 +15,8 @@ type EmptyJSDocProps = {
  */
 export function EmptyJSDoc({ href }: EmptyJSDocProps) {
     return (
-        <div className="not-prose my-8 grid max-w-[920px] place-items-start gap-5 rounded-[0.45rem] border-[0.2rem] border-border bg-[radial-gradient(ellipse_at_center_top,var(--color-bg-1)_30%,var(--color-bg))] p-10">
-            <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-fg-mute">Reference · no JSDoc</p>
+        <div className="not-prose my-8 grid max-w-230 place-items-start gap-5 rounded-[0.45rem] border-[0.2rem] border-border bg-[radial-gradient(ellipse_at_center_top,var(--color-bg-1)_30%,var(--color-bg))] p-10">
+            <p className="font-mono text-[0.62rem] text-fg-mute uppercase tracking-[0.18em]">Reference · no JSDoc</p>
 
             <div
                 className="flex h-14 w-14 items-center justify-center rounded-full border-[0.2rem] border-brand font-mono text-2xl text-brand"
@@ -25,11 +25,11 @@ export function EmptyJSDoc({ href }: EmptyJSDocProps) {
                 {'{ }'}
             </div>
 
-            <p className="font-display text-[1.7rem] font-extrabold leading-[1.15] tracking-[-0.025em] text-fg">
+            <p className="font-display font-extrabold text-[1.7rem] text-fg leading-[1.15] tracking-tight">
                 No <span className="text-brand">JSDoc</span> for this symbol yet
             </p>
 
-            <p className="max-w-[55ch] text-[0.95rem] font-medium leading-[1.6] text-fg-mute">
+            <p className="max-w-[55ch] font-medium text-[0.95rem] text-fg-mute leading-[1.6]">
                 The TypeScript signature is available but the symbol has no{' '}
                 <code className="rounded-[3px] bg-bg-2 px-[0.3em] font-mono text-[0.85em] text-fg">@param</code>,{' '}
                 <code className="rounded-[3px] bg-bg-2 px-[0.3em] font-mono text-[0.85em] text-fg">@returns</code>, or
@@ -40,13 +40,13 @@ export function EmptyJSDoc({ href }: EmptyJSDocProps) {
             <div className="flex flex-wrap gap-2.5">
                 <a
                     href={href}
-                    className="inline-flex items-center gap-1.5 rounded-[0.3rem] border-[0.138rem] border-brand bg-brand px-4 py-2.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-black! no-underline transition-all hover:border-brand hover:bg-brand/90"
+                    className="inline-flex items-center gap-1.5 rounded-[0.3rem] border-[0.138rem] border-brand bg-brand px-4 py-2.5 font-bold font-display text-[0.7rem] text-black! uppercase tracking-[0.14em] no-underline transition-all hover:border-brand hover:bg-brand/90"
                 >
                     Edit on GitHub →
                 </a>
                 <a
                     href={href}
-                    className="inline-flex items-center gap-1.5 rounded-[0.3rem] border-[0.138rem] border-border-strong px-4 py-2.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-fg no-underline transition-all hover:border-brand hover:bg-brand/10 hover:text-brand"
+                    className="inline-flex items-center gap-1.5 rounded-[0.3rem] border-[0.138rem] border-border-strong px-4 py-2.5 font-bold font-display text-[0.7rem] text-fg uppercase tracking-[0.14em] no-underline transition-all hover:border-brand hover:bg-brand/10 hover:text-brand"
                 >
                     View source
                 </a>

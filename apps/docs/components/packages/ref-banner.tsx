@@ -82,7 +82,7 @@ export function RefBanner({ refPath, version }: RefBannerProps) {
             style={{ gridTemplateColumns: '1fr auto auto' }}
         >
             <div>
-                <div className="mb-0.5 font-sans text-[0.6rem] font-bold uppercase tracking-[0.22em] text-ref">
+                <div className="mb-0.5 font-bold font-sans text-[0.6rem] text-ref uppercase tracking-[0.22em]">
                     Reference catalog
                 </div>
                 <div className="font-mono text-[0.85rem] text-fg">
@@ -99,7 +99,7 @@ export function RefBanner({ refPath, version }: RefBannerProps) {
                 </div>
             </div>
             {version && <div className="font-mono text-[0.7rem] text-fg-mute">{version}</div>}
-            <div className="font-mono text-ref transition-transform duration-150 group-hover:translate-x-[3px]">→</div>
+            <div className="font-mono text-ref transition-transform duration-150 group-hover:translate-x-0.75">→</div>
         </Link>
     );
 }

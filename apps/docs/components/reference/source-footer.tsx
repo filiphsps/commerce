@@ -31,7 +31,7 @@ export function SourceFooter({ file, line, href, pkg, version }: SourceFooterPro
                 <a
                     href={href}
                     title={file}
-                    className="inline-flex max-w-full min-w-0 overflow-hidden w-fit items-center gap-1.5 rounded-[4px] border-[0.138rem] border-border bg-bg-1 px-2.5 py-1.5 font-mono text-[0.78rem] text-fg no-underline transition-colors duration-150 hover:border-brand hover:bg-brand/5 hover:text-brand"
+                    className="inline-flex w-fit min-w-0 max-w-full items-center gap-1.5 overflow-hidden rounded-sm border-[0.138rem] border-border bg-bg-1 px-2.5 py-1.5 font-mono text-[0.78rem] text-fg no-underline transition-colors duration-150 hover:border-brand hover:bg-brand/5 hover:text-brand"
                 >
                     <span className="sm:hidden">{filename}</span>
                     <span className="hidden sm:inline lg:hidden">{short}</span>

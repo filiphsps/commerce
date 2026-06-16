@@ -27,9 +27,9 @@ export function PropsTable({ rows }: { rows: PropRow[] }) {
 
     return (
         <div className="not-prose mb-4">
-            <div className="hidden sm:grid sm:grid-cols-[minmax(8rem,max-content)_minmax(0,1fr)_minmax(0,2fr)] gap-x-4 border-b border-border-strong pb-2">
+            <div className="hidden gap-x-4 border-border-strong border-b pb-2 sm:grid sm:grid-cols-[minmax(8rem,max-content)_minmax(0,1fr)_minmax(0,2fr)]">
                 {(['PROP', 'TYPE', 'DESCRIPTION'] as const).map((label) => (
-                    <span key={label} className="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-fg-dim">
+                    <span key={label} className="font-mono text-[0.6rem] text-fg-dim uppercase tracking-[0.16em]">
                         {label}
                     </span>
                 ))}
@@ -41,7 +41,7 @@ export function PropsTable({ rows }: { rows: PropRow[] }) {
                 {hasMore && !expanded && (
                     <div
                         aria-hidden
-                        className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-b from-transparent to-bg"
+                        className="pointer-events-none absolute right-0 bottom-0 left-0 h-10 bg-linear-to-b from-transparent to-bg"
                     />
                 )}
             </div>
@@ -49,7 +49,7 @@ export function PropsTable({ rows }: { rows: PropRow[] }) {
                 <button
                     type="button"
                     onClick={() => setExpanded((e) => !e)}
-                    className="w-full border-t border-border bg-bg-1 py-2 text-center font-mono text-[0.7rem] text-fg-mute transition-colors duration-100 hover:bg-bg-2 hover:text-fg cursor-pointer select-none"
+                    className="w-full cursor-pointer select-none border-border border-t bg-bg-1 py-2 text-center font-mono text-[0.7rem] text-fg-mute transition-colors duration-100 hover:bg-bg-2 hover:text-fg"
                 >
                     {expanded ? 'Collapse ↑' : `Show ${hiddenCount} more ↓`}
                 </button>
@@ -68,19 +68,18 @@ export function PropsTable({ rows }: { rows: PropRow[] }) {
 function PropRowItem({ row, isLast }: { row: PropRow; isLast: boolean }) {
     return (
         <div
-            className={`group grid grid-cols-[max-content_1fr] sm:grid-cols-[minmax(8rem,max-content)_minmax(0,1fr)_minmax(0,2fr)] gap-x-4 py-2.5 transition-colors duration-100 hover:bg-bg-1${isLast ? '' : ' border-b border-border'}`}
+            className={`group grid grid-cols-[max-content_1fr] gap-x-4 py-2.5 transition-colors duration-100 sm:grid-cols-[minmax(8rem,max-content)_minmax(0,1fr)_minmax(0,2fr)] hover:bg-bg-1${isLast ? '' : 'border-border border-b'}`}
         >
-            <div className="min-w-0 overflow-hidden py-0.5 self-start">
+            <div className="min-w-0 self-start overflow-hidden py-0.5">
                 <span className="font-mono font-semibold text-[0.84rem] text-fg">{row.name}</span>
                 {row.opt && <span className="font-mono text-[0.84rem] text-fg-dim">?</span>}
             </div>
-            <div className="flex flex-wrap gap-x-0.5 items-baseline min-w-0 py-0.5 self-start">
+            <div className="flex min-w-0 flex-wrap items-baseline gap-x-0.5 self-start py-0.5">
                 {row.tokens.map((token, i) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: token order is stable at gen time
                     <TokenSpan key={i} token={token} />
                 ))}
             </div>
-            <div className="col-span-2 sm:col-span-1 min-w-0 py-0.5 text-[0.85rem] text-fg-mute leading-snug">
+            <div className="col-span-2 min-w-0 py-0.5 text-[0.85rem] text-fg-mute leading-snug sm:col-span-1">
                 {row.desc || null}
             </div>
         </div>

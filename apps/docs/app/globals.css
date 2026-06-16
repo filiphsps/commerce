@@ -583,7 +583,7 @@ aside.fixed[data-state="closed"] {
 /* Zero the scroll-container padding — Fumadocs adds py-3.5 on the wrapper
  * which stacks with our pre padding to produce excess whitespace. */
 #nd-page figure.shiki .fd-scroll-container {
-    padding: 0 !important;
+    padding: 0;
 }
 
 #nd-page figure.shiki pre {
@@ -796,6 +796,7 @@ figure.shiki [role="tab"][data-state="active"] {
 }
 
 /* Prose body — Montserrat 500 weight, 1.7 leading per visual 05 */
+/* biome-ignore lint/style/noDescendingSpecificity: disjoint scope from `#nd-sidebar p` (page prose vs sidebar separators); the id selector needs its specificity to outrank Fumadocs utilities, so lowering it or reordering would break the cascade. */
 .prose p {
     font-weight: 500;
     line-height: 1.7;
@@ -917,6 +918,7 @@ figure.shiki [role="tab"][data-state="active"] {
         border-color 150ms;
 }
 
+/* biome-ignore lint/style/noDescendingSpecificity: disjoint scope from the `#nd-page` pager-card hover; both intentionally use id specificity to win over Fumadocs utilities, so reordering or lowering would break the hover. */
 #nd-toc a:hover {
     color: var(--color-fg);
     border-left-color: var(--color-border-strong);
