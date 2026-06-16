@@ -34,6 +34,8 @@ Applies to every spec-driven workflow — superpowers (`writing-plans`, `executi
 
 Group artifacts per topic under `.specs/<YYYY-MM-DD-kebab-slug>/{spec,plan,tasks}.md` — e.g. `.specs/2026-05-26-storefront-stale-times/spec.md`, `…/plan.md`, `…/tasks.md`. Never write specs/plans/tasks to `.claude/`, the tool's default location, or the project root.
 
+**Never leave specs on `master` when using worktrees or branches.** The spec/plan/tasks belong on the same branch as the work — commit them as the first commit on that branch, in the correct `.specs/<slug>/` path. Don't author them on `master` and carry them across.
+
 ## Architecture (non-obvious only)
 
 -   **Multi-tenant by hostname.** Middleware resolves hostname → shop and rewrites to `/[domain]/[locale]/…`. The App Router never sees an un-tenanted request. New tenant = a `shops` row in Convex, written through the `db/shop_write:upsertShop` mutation from the admin; no redeploy.
