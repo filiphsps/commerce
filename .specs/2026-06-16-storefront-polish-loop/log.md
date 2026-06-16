@@ -330,6 +330,17 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   and consumed it from `overlay.tsx`'s three triggers. Byte-identical render; one source of truth.
 - Verified: biome clean, typecheck clean, product-options + picker 109/109.
 
+### 28 — Localize the cart secure-checkout reassurance
+
+- The cart summary's trust blurb ("Safely complete your purchase through Nordcom AB's trusted
+  partner's PCI DSS compliant checkout powered by Stripe and/or Shopify.") was hard-coded English with
+  an inline link — untranslated on every non-English store. The dev-only discount fallback label was
+  also a literal "discount".
+- Added `cart.secure-checkout` across all six locales (the PCI-compliance link interpolated as `{0}`
+  via the ReactNode-literal `t()` form; brand names kept in the copy) and replaced the literal;
+  switched the dev label to `t('discount')` (existing key).
+- Verified: six locale JSONs valid, biome clean, typecheck clean, cart-summary 7/7.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
