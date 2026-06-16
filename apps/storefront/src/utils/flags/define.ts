@@ -54,7 +54,7 @@ export interface DefinedFlag<T> {
  *
  * Produces both the SDK-style async callable (for dynamic call sites) and a
  * sync `.evaluate(shop)` method (for cache-safe call sites). Both paths walk
- * the same MongoDB-backed targeting rules; the async path additionally consults
+ * the same Convex-backed targeting rules; the async path additionally consults
  * the toolbar overrides cookie.
  */
 export function defineFlag<T>(config: FlagDefinition<T>): DefinedFlag<T> {

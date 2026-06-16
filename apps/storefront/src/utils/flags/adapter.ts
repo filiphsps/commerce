@@ -52,7 +52,7 @@ type ShopWithFlags = FlagEntities['shop'] & {
 };
 
 /**
- * Builds the Vercel Flags SDK adapter that evaluates feature flag values against MongoDB-backed targeting rules.
+ * Builds the Vercel Flags SDK adapter that evaluates feature flag values against Convex-backed targeting rules.
  *
  * @returns An `Adapter<T, FlagEntities>` wired to the Nordcom identify function and targeting rule evaluator.
  */
