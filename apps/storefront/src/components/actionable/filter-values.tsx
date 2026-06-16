@@ -60,7 +60,7 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
                                 shallow={true}
                                 prefetch={false}
                                 className={cn(
-                                    'text-(color:var(--text-muted)) flex appearance-none flex-nowrap items-center justify-between gap-1 whitespace-nowrap rounded-xl border-(--border-strong) border-2 border-solid px-2 py-1 font-semibold text-sm leading-none transition-colors hover:border-black hover:text-black',
+                                    'text-(color:var(--text-muted)) hover:text-(color:var(--text)) flex appearance-none flex-nowrap items-center justify-between gap-1 whitespace-nowrap rounded-xl border-(--border-strong) border-2 border-solid px-2 py-1 font-semibold text-sm leading-none transition-colors hover:border-(--text)',
                                     active && 'border-primary text-primary',
                                 )}
                             >

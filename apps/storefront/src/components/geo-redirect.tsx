@@ -200,7 +200,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         <Link
                             href="/countries/"
                             className={cn(
-                                'absolute inset-x-0 top-9 -left-[2px] flex h-10 w-[calc(100%+4px)] cursor-pointer select-none gap-3 rounded-b-lg bg-(--surface-0) p-2 text-(--text-muted) text-base *:select-none focus-within:bg-(--surface-1) focus-within:text-black hover:bg-(--surface-1) hover:text-black',
+                                'focus-within:text-(color:var(--text)) hover:text-(color:var(--text)) absolute inset-x-0 top-9 -left-[2px] flex h-10 w-[calc(100%+4px)] cursor-pointer select-none gap-3 rounded-b-lg bg-(--surface-0) p-2 text-(--text-muted) text-base *:select-none focus-within:bg-(--surface-1) hover:bg-(--surface-1)',
                                 dropdownActive && 'border-2 border-primary border-t-0 border-solid shadow-xl',
                                 !dropdownActive && 'hidden',
                             )}
