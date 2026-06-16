@@ -112,7 +112,7 @@ export function CollectionTable<TRow extends { id: string | number }>({
                                 <th
                                     key={columnKey(col, colIndex)}
                                     scope="col"
-                                    className="px-4 py-3 text-left font-semibold text-muted-foreground"
+                                    className="whitespace-nowrap px-4 py-3 text-left font-semibold text-muted-foreground"
                                 >
                                     {col.label}
                                 </th>
@@ -151,7 +151,7 @@ export function CollectionTable<TRow extends { id: string | number }>({
                                             return (
                                                 <td
                                                     key={columnKey(col, colIndex)}
-                                                    className="px-4 py-3 text-foreground"
+                                                    className="whitespace-nowrap px-4 py-3 text-foreground"
                                                 >
                                                     {colIndex === 0 ? (
                                                         <Link
