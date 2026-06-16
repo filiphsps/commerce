@@ -13,23 +13,32 @@ import { resolveConvexProjectDir, type StartedConvex, startConvex } from '../sta
 const requireFromHere = createRequire(import.meta.url);
 
 /**
- * The trusted issuer the limits suites seed onto their OWN ephemeral deployment. Arbitrary but must
- * match {@link OPERATOR_IDENTITY}'s `issuer` exactly: `lib/auth.ts`'s `getTrustedIdentity` re-asserts
- * it as the forged-identity defense, and the acting-as identity below is what the tenant tier sees.
+ * The customer-tier (`customJwt`) issuer seeded as `CONVEX_AUTH_ISSUER` on the limits suites' OWN
+ * ephemeral deployment. Kept DISJOINT from {@link LIMITS_CLERK_ISSUER}: `auth.config.ts` validates the
+ * customer RS256 provider against this issuer and the Clerk operator provider against the Clerk one, and
+ * the two must never collide (production keeps them on separate origins too).
  */
 export const LIMITS_ISSUER = 'https://limits.test';
+
+/**
+ * The Clerk operator issuer seeded as `CLERK_FRONTEND_API_URL`. Must match {@link OPERATOR_IDENTITY}'s
+ * `issuer` exactly: the tenant tier resolves operators through `getClerkOperatorIdentity`, which rejects
+ * any identity whose issuer is not a trusted Clerk Frontend API origin (`FORGED_IDENTITY`).
+ */
+export const LIMITS_CLERK_ISSUER = 'https://clerk.limits.test';
 
 /**
  * The acting-as operator identity every tenant-tier call in the limits suites runs under. Applied via
  * the admin-key `setAdminAuth(adminKey, identity)` transport (the same act-as mechanism the Convex CLI
  * and dashboard use), which makes the REAL backend's `ctx.auth.getUserIdentity()` return exactly these
  * claims — so `resolveAdminShopId`'s identity → `users.by_email` → `shopCollaborators` chain runs for
- * real, without standing up the full RS256 JWKS mint.
+ * real, without standing up the full Clerk JWKS mint. The Clerk-shaped `subject` misses the
+ * `by_clerk_user_id` lookup (the seed sets no `clerkUserId`) and resolves via the `by_email` fallback.
  */
 export const OPERATOR_IDENTITY = {
-    issuer: LIMITS_ISSUER,
-    subject: 'limits-operator',
-    tokenIdentifier: `${LIMITS_ISSUER}|limits-operator`,
+    issuer: LIMITS_CLERK_ISSUER,
+    subject: 'user_limits-operator',
+    tokenIdentifier: `${LIMITS_CLERK_ISSUER}|user_limits-operator`,
     email: 'limits-operator@example.com',
 } as const;
 
@@ -152,6 +161,12 @@ export async function startLiveConvex(): Promise<LiveConvex> {
         ['CONVEX_AUTH_APPLICATION_ID', 'convex'],
         ['CONVEX_AUTH_JWKS_URL', `${LIMITS_ISSUER}/.well-known/jwks.json`],
         ['CONVEX_SERVER_SECRET', serverSecret],
+        // `auth.config.ts` REFERENCES both Clerk Frontend API origins via `getServerEnv` (push hard-errors
+        // on a referenced-but-unset var) and Convex rejects an EMPTY provider domain ("empty host"). Seed
+        // the DEV origin as the operator's issuer so `getClerkOperatorIdentity` trusts OPERATOR_IDENTITY,
+        // and the PROD origin as an unreachable placeholder (valid host, never fetched, matches no token).
+        ['CLERK_FRONTEND_API_URL', LIMITS_CLERK_ISSUER],
+        ['CLERK_FRONTEND_API_URL_PROD', 'https://clerk-limits-prod.ci.invalid'],
     ];
 
     /**

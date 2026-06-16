@@ -256,6 +256,15 @@ export function resolveClerkBackendEnv(env: ProcessEnv = process.env): {
 }
 
 /**
+ * Unreachable placeholder Clerk Frontend API origins, seeded when no real instance is configured (the
+ * storefront e2e / integration backends mint no Clerk token, and the admin e2e leaves the PROD origin
+ * unset). Convex rejects an EMPTY provider `domain` at push ("empty host"), so the seed must be a valid
+ * non-empty host; it is never fetched because no token carries it as its issuer.
+ */
+const PLACEHOLDER_CLERK_FRONTEND_API_URL = 'https://clerk-dev.e2e.invalid';
+const PLACEHOLDER_CLERK_FRONTEND_API_URL_PROD = 'https://clerk-prod.e2e.invalid';
+
+/**
  * Idempotently ensures the local-first dev backend is up, configured, and seeded:
  *   1. If `/instance_name` is already healthy, skip the boot.
  *   2. Otherwise spawn the `test-convex start` daemon DETACHED (the CLI blocks, so `pnpm dev` cannot
@@ -306,17 +315,19 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
 
     // Clerk operator-token validation: the admin e2e mints Clerk `convex`-template tokens the backend
     // must verify, so set the Frontend API origin the native Clerk provider discovers its JWKS from.
-    // ALWAYS set it (even to empty) because `auth.config.ts` REFERENCES the var and `convex dev`'s push
-    // hard-errors on a referenced-but-unset env var; an empty value fails operator tokens closed (the
-    // provider then matches no token, exactly like the unreachable customJwt placeholders) — the right
-    // posture for unit/integration backends that mint no Clerk token. The webhook secret is set only when
-    // present, since `auth.config.ts` does not reference it (only the webhook httpAction reads it).
+    // `auth.config.ts` REFERENCES both origins and `convex dev`'s push hard-errors on a referenced-but-
+    // unset var AND on an EMPTY provider domain ("empty host"). So seed each non-empty: the real value
+    // when configured (the admin e2e's dev instance), else an unreachable placeholder (valid host, never
+    // fetched, matches no token) — the right posture for the storefront/integration backends. The webhook
+    // secret is set only when present, since `auth.config.ts` does not reference it (only the httpAction).
     const clerkAuth = resolveClerkBackendEnv();
-    convexEnvSet(url, adminKey, 'CLERK_FRONTEND_API_URL', clerkAuth.frontendApiUrl);
-    // The prod Clerk provider in `auth.config.ts` references CLERK_FRONTEND_API_URL_PROD, so set it too
-    // (empty on CI/unit backends — the prod provider then matches no token) or the push hard-errors on
-    // the referenced-but-unset var.
-    convexEnvSet(url, adminKey, 'CLERK_FRONTEND_API_URL_PROD', clerkAuth.frontendApiUrlProd);
+    convexEnvSet(url, adminKey, 'CLERK_FRONTEND_API_URL', clerkAuth.frontendApiUrl || PLACEHOLDER_CLERK_FRONTEND_API_URL);
+    convexEnvSet(
+        url,
+        adminKey,
+        'CLERK_FRONTEND_API_URL_PROD',
+        clerkAuth.frontendApiUrlProd || PLACEHOLDER_CLERK_FRONTEND_API_URL_PROD,
+    );
     if (clerkAuth.webhookSigningSecret) {
         convexEnvSet(url, adminKey, 'CLERK_WEBHOOK_SIGNING_SECRET', clerkAuth.webhookSigningSecret);
     }
