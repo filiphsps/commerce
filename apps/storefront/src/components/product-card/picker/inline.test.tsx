@@ -41,7 +41,7 @@ describe('InlinePicker', () => {
             <InlinePicker
                 product={product as never}
                 locale={{ code: 'en-US' } as never}
-                i18n={{} as never}
+                i18n={{ common: { 'product-options': 'Product options' } } as never}
                 open={true}
                 onOpenChange={vi.fn()}
                 onAdd={vi.fn()}
@@ -64,7 +64,7 @@ describe('InlinePicker', () => {
                 onAdd={onAdd}
             />,
         );
-        const btn = Array.from(container.querySelectorAll('button')).find((b) => b.textContent?.match(/add to bag/i));
+        const btn = container.querySelector<HTMLButtonElement>('[data-testid="picker-add-to-cart"]');
         btn?.click();
         expect(onAdd).toHaveBeenCalledWith('v1');
     });

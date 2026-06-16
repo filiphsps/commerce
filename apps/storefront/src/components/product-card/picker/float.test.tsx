@@ -107,9 +107,7 @@ describe('FloatPicker', () => {
                 onAdd={onAdd}
             />,
         );
-        const btn = Array.from(document.body.querySelectorAll('button')).find((b) =>
-            b.textContent?.match(/add to bag/i),
-        );
+        const btn = document.body.querySelector<HTMLButtonElement>('[data-testid="picker-add-to-cart"]');
         btn?.click();
         expect(onAdd).toHaveBeenCalledWith('v2');
     });

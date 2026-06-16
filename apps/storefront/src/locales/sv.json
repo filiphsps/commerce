@@ -43,6 +43,8 @@
         "provider-error": "Fel i varukorgstjänsten. Försök igen."
     },
     "common": {
+        "product-options": "Produktalternativ",
+        "choose-product-options": "Välj produktalternativ",
         "filters": "Filter",
         "sort": "Sortera",
         "in-stock": "I lager",

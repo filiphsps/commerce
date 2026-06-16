@@ -45,6 +45,8 @@
         "provider-error": "Erreur du service de panier. Veuillez réessayer."
     },
     "common": {
+        "product-options": "Options du produit",
+        "choose-product-options": "Choisir les options du produit",
         "filters": "Filtres",
         "sort": "Trier",
         "in-stock": "En stock",

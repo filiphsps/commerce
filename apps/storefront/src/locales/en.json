@@ -50,6 +50,8 @@
         "provider-error": "Cart provider error. Try again."
     },
     "common": {
+        "product-options": "Product options",
+        "choose-product-options": "Choose product options",
         "filters": "Filters",
         "sort": "Sort",
         "in-stock": "In stock",

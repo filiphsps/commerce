@@ -50,6 +50,8 @@
         "provider-error": "Error en el servicio del carrito. Inténtalo de nuevo."
     },
     "common": {
+        "product-options": "Opciones del producto",
+        "choose-product-options": "Elegir opciones del producto",
         "filters": "Filtros",
         "sort": "Ordenar",
         "in-stock": "En stock",

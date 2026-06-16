@@ -50,6 +50,8 @@
         "provider-error": "Fehler im Warenkorb-Dienst. Bitte erneut versuchen."
     },
     "common": {
+        "product-options": "Produktoptionen",
+        "choose-product-options": "Produktoptionen wählen",
         "filters": "Filter",
         "sort": "Sortieren",
         "in-stock": "Auf Lager",

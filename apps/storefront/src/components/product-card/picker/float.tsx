@@ -6,6 +6,7 @@ import * as ProductOptions from '@/components/product-options';
 import { useMaybeProductOptions } from '@/components/product-options/context';
 import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
+import { getTranslations } from '@/utils/locale';
 import type { ProductCardPickerProps } from './types';
 
 /**
@@ -13,21 +14,23 @@ import type { ProductCardPickerProps } from './types';
  * context and calls `onAdd` with its ID when clicked.
  *
  * @param props.onAdd - Cart add callback forwarded from the picker orchestrator.
+ * @param props.label - Localized add-to-cart label resolved by the picker.
  * @returns A button element wired to the active variant selection.
  */
-const AddToBagButton = ({ onAdd }: { onAdd: (variantId: string) => void }) => {
+const AddToBagButton = ({ onAdd, label }: { onAdd: (variantId: string) => void; label: string }) => {
     const ctx = useMaybeProductOptions();
     const variantId = ctx?.selectedVariant?.id;
     return (
         <button
             type="button"
             disabled={!variantId}
+            data-testid="picker-add-to-cart"
             onClick={() => {
                 if (variantId) onAdd(variantId);
             }}
             className="cursor-pointer rounded-(--block-border-radius-small) bg-(--product-card-cta-bg) p-3 font-semibold text-(--product-card-cta-color) text-xs tabular-nums leading-none disabled:cursor-not-allowed disabled:opacity-50"
         >
-            Add to bag
+            {label}
         </button>
     );
 };
@@ -41,7 +44,8 @@ const AddToBagButton = ({ onAdd }: { onAdd: (variantId: string) => void }) => {
  * @param props.onAdd - Callback invoked with the selected variant ID when "Add to bag" is clicked.
  * @returns The Radix Popover element.
  */
-const FloatPicker = ({ product, open, onOpenChange, onAdd }: ProductCardPickerProps) => {
+const FloatPicker = ({ product, open, onOpenChange, onAdd, i18n }: ProductCardPickerProps) => {
+    const { t } = getTranslations('common', i18n);
     const seed = firstAvailableVariant(product) ?? product.variants?.edges?.[0]?.node;
     const initialSelection = useMemo(() => (seed ? toSelectionRecord(seed) : {}), [seed]);
 
@@ -65,7 +69,7 @@ const FloatPicker = ({ product, open, onOpenChange, onAdd }: ProductCardPickerPr
                                 <ProductOptions.More groupName="Size" />
                             </div>
                         </div>
-                        <AddToBagButton onAdd={onAdd} />
+                        <AddToBagButton onAdd={onAdd} label={t('add-to-cart')} />
                     </ProductOptions.Root>
                 </Popover.Content>
             </Popover.Portal>
