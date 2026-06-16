@@ -235,15 +235,22 @@ export async function withRetry<T>(
  * job sets `CLERK_FRONTEND_API_URL` to the dev Clerk instance's Frontend API origin so a real operator
  * token validates.
  *
+ * `CLERK_FRONTEND_API_URL_PROD` is the SECOND (prod) Clerk instance's origin: `auth.config.ts` also
+ * references it, so `convex dev`'s push hard-errors when it is referenced-but-unset. CI/unit backends
+ * mint no prod token and leave it empty (the prod provider then matches no token), exactly like
+ * `frontendApiUrl` above.
+ *
  * @param env - Environment to read overrides from; defaults to `process.env`.
- * @returns The Clerk frontend API URL and optional webhook signing secret to seed on the deployment.
+ * @returns The Clerk frontend API URLs (dev + prod) and optional webhook signing secret to seed.
  */
 export function resolveClerkBackendEnv(env: ProcessEnv = process.env): {
     frontendApiUrl: string;
+    frontendApiUrlProd: string;
     webhookSigningSecret: string;
 } {
     return {
         frontendApiUrl: env.CLERK_FRONTEND_API_URL?.trim() || '',
+        frontendApiUrlProd: env.CLERK_FRONTEND_API_URL_PROD?.trim() || '',
         webhookSigningSecret: env.CLERK_WEBHOOK_SIGNING_SECRET?.trim() || '',
     };
 }
@@ -306,6 +313,10 @@ export async function ensureLocalConvex(opts: { timeoutMs?: number } = {}): Prom
     // present, since `auth.config.ts` does not reference it (only the webhook httpAction reads it).
     const clerkAuth = resolveClerkBackendEnv();
     convexEnvSet(url, adminKey, 'CLERK_FRONTEND_API_URL', clerkAuth.frontendApiUrl);
+    // The prod Clerk provider in `auth.config.ts` references CLERK_FRONTEND_API_URL_PROD, so set it too
+    // (empty on CI/unit backends — the prod provider then matches no token) or the push hard-errors on
+    // the referenced-but-unset var.
+    convexEnvSet(url, adminKey, 'CLERK_FRONTEND_API_URL_PROD', clerkAuth.frontendApiUrlProd);
     if (clerkAuth.webhookSigningSecret) {
         convexEnvSet(url, adminKey, 'CLERK_WEBHOOK_SIGNING_SECRET', clerkAuth.webhookSigningSecret);
     }

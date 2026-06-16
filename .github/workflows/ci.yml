@@ -276,6 +276,7 @@ jobs:
                   pnpm convex:env set CONVEX_AUTH_APPLICATION_ID convex
                   pnpm convex:env set CONVEX_AUTH_JWKS_URL https://ci.localhost.invalid/.well-known/jwks.json
                   pnpm convex:env set CLERK_FRONTEND_API_URL https://internal-roughy-49.clerk.accounts.dev
+                  pnpm convex:env set CLERK_FRONTEND_API_URL_PROD ""
                   pnpm convex:env set CLERK_WEBHOOK_SIGNING_SECRET ${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET_DEV }}
                   pnpm convex:dev --once --local-backend-version "$CONVEX_LOCAL_BACKEND_VERSION"
 
