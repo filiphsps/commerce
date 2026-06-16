@@ -55,7 +55,9 @@
         "convex:local:reset": "tsx packages/test-convex/src/cli.ts reset --dataDir .convex-local && pnpm convex:local",
         "docs:gen:check": "pnpm --filter @nordcom/commerce-docs docs:gen:check",
         "changeset": "changeset",
-        "changeset:version": "changeset version",
+        "changeset:version": "changeset version && pnpm plugins:sync",
+        "plugins:sync": "tsx scripts/sync-plugin-version.ts",
+        "plugins:sync:check": "tsx scripts/sync-plugin-version.ts --check",
         "changeset:publish": "pnpm build:packages && changeset publish"
     },
     "author": {

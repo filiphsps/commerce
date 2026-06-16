@@ -84,6 +84,9 @@ jobs:
             - name: 🧬 CMS codegen drift gate
               run: pnpm cms:gen:check
 
+            - name: 🔌 lspmesh plugin version drift gate
+              run: pnpm plugins:sync:check
+
             - name: ✨ Generate
               run: pnpm run generate
 
