@@ -5,6 +5,7 @@
         "dismiss": "Stäng"
     },
     "cart": {
+        "still-loading": "Din varukorg laddas fortfarande. Försök igen om en stund.",
         "active-discounts": "Aktiva rabatter",
         "remove-discount": "Ta bort rabatt {0}",
         "add-n-to-your-cart": "Lägg till {0} st i din varukorg",

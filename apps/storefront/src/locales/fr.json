@@ -5,6 +5,7 @@
         "dismiss": "Ignorer"
     },
     "cart": {
+        "still-loading": "Votre panier est en cours de chargement. Réessayez dans un instant.",
         "active-discounts": "Réductions actives",
         "remove-discount": "Supprimer la réduction {0}",
         "add-n-to-your-cart": "Ajouter {0} à votre panier",

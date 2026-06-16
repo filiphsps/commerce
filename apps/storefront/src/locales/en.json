@@ -5,6 +5,7 @@
         "dismiss": "Dismiss"
     },
     "cart": {
+        "still-loading": "Your cart is still loading. Try again in a moment.",
         "active-discounts": "Active discounts",
         "remove-discount": "Remove discount {0}",
         "add-n-to-your-cart": "Add {0} to your cart",

@@ -5,6 +5,7 @@
         "dismiss": "Lukk"
     },
     "cart": {
+        "still-loading": "Handlekurven din lastes fortsatt. Prøv igjen om et øyeblikk.",
         "active-discounts": "Aktive rabatter",
         "remove-discount": "Fjern rabatt {0}",
         "add-n-to-your-cart": "Legg {0} til i handlekurven",

@@ -5,6 +5,7 @@
         "dismiss": "Descartar"
     },
     "cart": {
+        "still-loading": "Tu carrito aún se está cargando. Inténtalo de nuevo en un momento.",
         "active-discounts": "Descuentos activos",
         "remove-discount": "Eliminar descuento {0}",
         "add-n-to-your-cart": "Agregar {0} a tu carrito",

@@ -76,8 +76,7 @@ export function AddToCart({
 
     const add = useCallback(async () => {
         if (!ready || !product) {
-            // TODO: i18n.
-            toast.warning(`The cart is still loading, please try again in a few seconds!`);
+            toast.warning(tCart('still-loading'));
             return;
         }
 
@@ -159,7 +158,7 @@ export function AddToCart({
         if (redirect) {
             router.push('/cart/');
         }
-    }, [addLine, selectedVariant, quantity, ready, locale, path, postEvent, product, redirect, router]);
+    }, [addLine, selectedVariant, quantity, ready, locale, path, postEvent, product, redirect, router, tCart]);
 
     const label = (() => {
         if (children) return t('add-to-cart');
