@@ -3,6 +3,7 @@
     "version": 2,
     "trailingSlash": true,
     "framework": "nextjs",
+    "buildCommand": "pnpm --filter @nordcom/commerce-convex exec convex deploy --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL --cmd 'cd ../../ && export CONVEX_URL=$NEXT_PUBLIC_CONVEX_URL && pnpm run generate && pnpm run build:packages && pnpm run build:storefront'",
     "github": {
         "enabled": true,
         "autoJobCancelation": true
