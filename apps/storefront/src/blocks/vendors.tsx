@@ -8,8 +8,13 @@ import type { VendorsBlockNode } from './types';
 
 // Shared rail wrapper used by both the live block and its skeleton so the
 // horizontal-scroll layout never drifts between the two.
+// `min-w-screen` makes the rail full-bleed on mobile; it MUST be reset at md
+// (`md:min-w-0`) or the 100vw min-width survives the `md:w-full` switch and
+// forces the grid past the padded content band — a ~12px page-wide horizontal
+// scroll. `auto-fill` (not `auto-fit`) keeps a lone vendor chip at its track
+// width instead of stretching it edge-to-edge into a full-width bar.
 const VENDOR_RAIL_CLASS =
-    'overflow-x-shadow -my-2 -ml-2 flex w-screen min-w-screen flex-nowrap gap-2 overflow-x-auto p-2 md:mx-0 md:my-0 md:grid md:w-full md:grid-cols-[repeat(auto-fit,minmax(min(8rem,100%),1fr))] md:overflow-x-hidden md:px-0 md:py-0';
+    'overflow-x-shadow -my-2 -ml-2 flex w-screen min-w-screen flex-nowrap gap-2 overflow-x-auto p-2 md:mx-0 md:my-0 md:grid md:w-full md:min-w-0 md:grid-cols-[repeat(auto-fill,minmax(min(8rem,100%),1fr))] md:overflow-x-hidden md:px-0 md:py-0';
 
 /**
  * Renders a row of chip-sized skeleton placeholders for the vendor rail,
