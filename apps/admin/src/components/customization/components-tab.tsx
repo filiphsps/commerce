@@ -12,10 +12,13 @@ import { useState } from 'react';
 import { cn } from '@/utils/tailwind';
 
 /**
- * One configurable component's section: a heading, a surface selector for multi-surface components,
- * and the component's overridable settings rendered through the shared field registry. Settings write
- * under `extensions.<id>.<surface>.<name>` (or `extensions.<id>.<name>` when the component has a single
- * presentation), the exact path the storefront resolver reads back.
+ * One configurable component's section: a heading, a scope selector for multi-surface components,
+ * and the component's overridable settings rendered through the shared field registry. A multi-surface
+ * component authors a store-wide `base` (applies to every surface) plus optional per-surface overrides;
+ * settings write under `extensions.<id>.<base|surface>.<name>` (or `extensions.<id>.<name>` for a
+ * single-presentation component), the exact path the storefront resolver reads back. `base` leads and
+ * is selected first so the merchant sets the store-wide default before carving out per-surface
+ * exceptions.
  *
  * @param props.entry - The component-settings registry entry to render.
  * @param props.registry - The shared field registry carrying the scalar + composite (incl. overridable) widgets.
@@ -23,8 +26,9 @@ import { cn } from '@/utils/tailwind';
  */
 function ComponentSection({ entry, registry }: { entry: ComponentSettingsEntry; registry: FieldRegistry }) {
     const surfaces = entry.surfaces ?? [];
-    const [surface, setSurface] = useState(surfaces[0]);
-    const parentPath = surface ? `extensions.${entry.id}.${surface}` : `extensions.${entry.id}`;
+    const buckets = surfaces.length > 0 ? ['base', ...surfaces] : [];
+    const [bucket, setBucket] = useState(buckets[0]);
+    const parentPath = bucket ? `extensions.${entry.id}.${bucket}` : `extensions.${entry.id}`;
 
     return (
         <section aria-label={entry.label} className="rounded-xl border border-border">
@@ -33,28 +37,28 @@ function ComponentSection({ entry, registry }: { entry: ComponentSettingsEntry; 
                 <span className="font-mono text-muted-foreground text-xs">{entry.id}</span>
             </header>
 
-            {surfaces.length > 0 ? (
+            {buckets.length > 0 ? (
                 <div
                     role="group"
-                    aria-label="Surface"
+                    aria-label="Scope"
                     className="flex flex-wrap items-center gap-2 border-border border-b px-4 py-3"
                 >
-                    <span className="font-bold text-muted-foreground text-xs uppercase tracking-wide">Surface</span>
-                    {surfaces.map((value) => (
+                    <span className="font-bold text-muted-foreground text-xs uppercase tracking-wide">Scope</span>
+                    {buckets.map((value) => (
                         <button
                             key={value}
                             type="button"
                             data-testid={`surface-${entry.id}-${value}`}
-                            aria-pressed={value === surface}
-                            onClick={() => setSurface(value)}
+                            aria-pressed={value === bucket}
+                            onClick={() => setBucket(value)}
                             className={cn(
                                 'cursor-pointer rounded-full border px-3 py-1 font-semibold text-xs capitalize transition-colors',
-                                value === surface
+                                value === bucket
                                     ? 'border-primary/50 bg-primary/15 text-foreground'
                                     : 'border-border bg-card/40 text-muted-foreground hover:text-foreground',
                             )}
                         >
-                            {value}
+                            {value === 'base' ? 'Base · all surfaces' : value}
                         </button>
                     ))}
                 </div>

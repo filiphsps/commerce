@@ -20,8 +20,10 @@ test.describe('Customization — store-wide component defaults', () => {
         // The editor normalizes the URL onto the tenant's default locale.
         await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/settings/customization/\\?locale=`));
 
-        // Open the Components tab and override the collection-surface CTA placement.
+        // Open the Components tab and override the collection-surface CTA placement. `Base` is the
+        // default scope, so select the collection surface first to author its per-surface override.
         await page.getByRole('tab', { name: 'Components' }).click();
+        await page.getByTestId('surface-productCard-collection').click();
         await page.getByTestId(`override-override-${CTA_PATH}`).click();
         await fieldControl(page, CTA_PATH, 'select').selectOption('inline-button');
 
@@ -33,12 +35,43 @@ test.describe('Customization — store-wide component defaults', () => {
         // Reload → the override is durable.
         await page.reload();
         await page.getByRole('tab', { name: 'Components' }).click();
+        await page.getByTestId('surface-productCard-collection').click();
         await expect(page.getByTestId(`override-override-${CTA_PATH}`)).toHaveAttribute('aria-pressed', 'true');
         await expect(fieldControl(page, CTA_PATH, 'select')).toHaveValue('inline-button');
 
         // Reset to inherit so the shared tenant is left as it was found.
         await page.getByTestId(`override-inherit-${CTA_PATH}`).click();
         await expect(page.getByTestId(`override-inherited-${CTA_PATH}`)).toBeVisible();
+        await page.getByRole('button', { name: 'Save Draft' }).click();
+        await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
+        await waitForAutosave(page);
+    });
+
+    test('overriding the store-wide product-card base CTA persists across reload, then resets', async ({ page }) => {
+        const BASE_CTA = 'extensions.productCard.base.ctaPlacement';
+        await page.goto(`/${DOMAIN}/settings/customization/`);
+        await expect(page).toHaveURL(new RegExp(`/${DOMAIN}/settings/customization/\\?locale=`));
+
+        // The Base scope is selected by default; author the store-wide CTA placement directly.
+        await page.getByRole('tab', { name: 'Components' }).click();
+        await page.getByTestId('surface-productCard-base').click();
+        await page.getByTestId(`override-override-${BASE_CTA}`).click();
+        await fieldControl(page, BASE_CTA, 'select').selectOption('inline-button');
+
+        await page.getByRole('button', { name: 'Save Draft' }).click();
+        await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
+        await waitForAutosave(page);
+
+        // Reload → the store-wide override is durable.
+        await page.reload();
+        await page.getByRole('tab', { name: 'Components' }).click();
+        await page.getByTestId('surface-productCard-base').click();
+        await expect(page.getByTestId(`override-override-${BASE_CTA}`)).toHaveAttribute('aria-pressed', 'true');
+        await expect(fieldControl(page, BASE_CTA, 'select')).toHaveValue('inline-button');
+
+        // Reset to inherit so the shared tenant is left as it was found.
+        await page.getByTestId(`override-inherit-${BASE_CTA}`).click();
+        await expect(page.getByTestId(`override-inherited-${BASE_CTA}`)).toBeVisible();
         await page.getByRole('button', { name: 'Save Draft' }).click();
         await expect(page.getByTestId('editor-toolbar-error')).toHaveCount(0);
         await waitForAutosave(page);
