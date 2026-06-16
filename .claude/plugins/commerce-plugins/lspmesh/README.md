@@ -1,7 +1,7 @@
 # lspmesh (Claude Code plugin)
 
 Registers [`lspmesh`](https://github.com/filiphsps/commerce/tree/master/packages/ai/lspmesh)
-as both:
+for this repo as both:
 
 - an **LSP server** (`lspmesh lsp`) — aggregates TypeScript, Tailwind, and Biome
   behind one endpoint, routing each request to every backend that handles the
@@ -9,14 +9,15 @@ as both:
 - an **MCP server** (`lspmesh mcp`) — by-name `find_symbol`, `find_references`,
   and `find_implementations` for AI agents.
 
-Both launch via `pnpm dlx lspmesh@latest`, so no global install is required.
-
-## Install
+Both run from the **workspace build** (`node packages/ai/lspmesh/dist/cli.js`), so
+build the package first:
 
 ```bash
-claude plugin marketplace add filiphsps/commerce
-# then enable the "lspmesh" plugin
+pnpm --filter lspmesh build   # or: pnpm build:packages
 ```
 
-> Goes live once `lspmesh@0.0.1` is published to npm. Until then, run it from the
-> workspace build (`node packages/ai/lspmesh/dist/cli.js lsp|mcp`).
+This replaces the `typescript-lsp` and `tailwind-lsp-adapter` plugins and the old
+`lsp-symbols` MCP server.
+
+> Standalone (outside this repo): install the published package and run
+> `pnpm dlx lspmesh@latest lsp` / `mcp`.

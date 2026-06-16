@@ -1,7 +1,7 @@
 {
   "lspmesh": {
-    "command": "pnpm",
-    "args": ["dlx", "lspmesh@latest", "lsp"],
+    "command": "node",
+    "args": ["packages/ai/lspmesh/dist/cli.js", "lsp"],
     "extensionToLanguage": {
       ".ts": "typescript",
       ".tsx": "typescriptreact",
