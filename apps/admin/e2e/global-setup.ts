@@ -1,12 +1,12 @@
-import { writeFile } from 'node:fs/promises';
-
-import { MissingEnvironmentVariableError, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-errors';
+import {
+    MissingEnvironmentVariableError,
+    NotFoundError,
+    TodoError,
+    UnknownShopDomainError,
+} from '@nordcom/commerce-errors';
 import { seedCanonical } from '@nordcom/commerce-test-convex';
 import { ConvexHttpClient } from 'convex/browser';
 import { type FunctionReference, makeFunctionReference } from 'convex/server';
-import { encode } from 'next-auth/jwt';
-
-import { STORAGE_STATE_PATH } from './fixtures/storage-state';
 
 const TEST_EMAIL = 'e2e-test@example.com';
 
@@ -67,7 +67,7 @@ const defaultDeps: GlobalSetupDeps = {
  *
  * @param env - The environment to read configuration from.
  * @param deps - The transport surface (injectable for unit tests).
- * @returns The operator's Convex `users` document id — the NextAuth JWT `sub`.
+ * @returns The operator's Convex `users` document id.
  * @throws {MissingEnvironmentVariableError} When `CONVEX_URL`/`NEXT_PUBLIC_CONVEX_URL` or
  *   `CONVEX_SERVER_SECRET` is unset — run via `pnpm test:e2e` so root `.env.local` loads.
  * @throws {UnknownShopDomainError} When the demo shop cannot be resolved after seeding.
@@ -122,57 +122,22 @@ export async function seedE2eOperator(
 }
 
 /**
- * Playwright globalSetup: seeds the e2e operator (Convex-native — {@link seedE2eOperator}) and
- * writes a Next-Auth-v5 session cookie so the admin shell loads pre-authenticated. The cookie's
- * `sub` is the operator's Convex `users` id, which `auth.config.ts`'s jwt-strategy session callback
- * surfaces verbatim as `session.user.id`.
+ * Playwright globalSetup.
  *
- * @returns Resolves once seeding + storage state write complete.
- * @throws {MissingEnvironmentVariableError} When `NEXTAUTH_SECRET` / `AUTH_SECRET` (or any of the
- *   seed core's required variables) is unset.
+ * The Convex-native operator seed ({@link seedE2eOperator}) is intact, but the pre-auth session is
+ * NOT yet wired: the NextAuth offline cookie-signing this used to do is gone with the dependency, and
+ * the Clerk replacement (`@clerk/testing` `clerkSetup()` + `clerk.signIn()` → saved storage state) is
+ * the FULL e2e harness rewrite tracked separately. Until then this throws if invoked, so an e2e run
+ * fails loud with a pointer rather than silently launching unauthenticated.
+ *
+ * @returns Never resolves — always throws until Task 8.1 lands.
+ * @throws {TodoError} Always, pending the `@clerk/testing` e2e auth wiring.
  */
 export default async function globalSetup(): Promise<void> {
-    const secret = process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET;
-    if (!secret) {
-        throw new MissingEnvironmentVariableError('NEXTAUTH_SECRET', 'NEXTAUTH_SECRET / AUTH_SECRET is required.');
-    }
-
-    const userId = await seedE2eOperator();
-
-    // Mirror auth.config.ts's `IS_PROD` switch: CI's webServer is `next start`
-    // (NODE_ENV=production → `__Secure-` cookie); local uses `next dev`
-    // (NODE_ENV=development → plain cookie). The salt must equal the cookie
-    // name. See apps/admin/src/utils/auth.config.ts.
-    const isSecure = !!process.env.CI;
-    const cookieName = isSecure ? '__Secure-authjs.session-token' : 'authjs.session-token';
-
-    const token = await encode({
-        salt: cookieName,
-        secret,
-        token: {
-            sub: userId,
-            email: TEST_EMAIL,
-            name: 'E2E Test User',
-        },
-    });
-
-    const storageState = {
-        cookies: [
-            {
-                name: cookieName,
-                value: token,
-                domain: 'localhost',
-                path: '/',
-                httpOnly: true,
-                secure: isSecure,
-                sameSite: 'Lax' as const,
-                expires: Math.floor(Date.now() / 1000) + 60 * 60,
-            },
-        ],
-        origins: [],
-    };
-    await writeFile(STORAGE_STATE_PATH, JSON.stringify(storageState, null, 2));
-    console.info(`[admin global-setup] seeded operator ${TEST_EMAIL}; wrote storage state to ${STORAGE_STATE_PATH}`);
+    // TODO(Task 8.1): Clerk e2e auth via @clerk/testing — `await clerkSetup()`, ensure the Clerk test
+    // user + org + membership, seed the matching Convex rows (extend `seedE2eOperator`), then
+    // `await clerk.signIn({ page, emailAddress })` and save the storage state to STORAGE_STATE_PATH.
+    throw new TodoError('admin e2e Clerk auth (the NextAuth pre-auth cookie was removed in the Clerk migration)');
 }
 
 /**

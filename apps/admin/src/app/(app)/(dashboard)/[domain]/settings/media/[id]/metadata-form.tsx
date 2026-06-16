@@ -17,7 +17,7 @@ export type MediaMetadataFormProps = {
     focal: { x: number; y: number } | null;
     /**
      * Server action with the shop domain already bound:
-     * `updateMediaMetadataAction.bind(null, domain)`. The action authenticates via NextAuth and
+     * `updateMediaMetadataAction.bind(null, domain)`. The action authenticates via Clerk and
      * posts the update through Convex's tenant-scoped `cms/media:updateMediaMetadata`; a focal
      * move additionally re-runs the Node-side sharp regeneration pass.
      */

@@ -15,7 +15,7 @@ export type UploadFormProps = {
      *
      * The action runs the CMSGATE-02 native pipeline server-side (Convex
      * byte-sink upload → `finalizeUpload` → sharp derivative pass), with the
-     * operator's NextAuth session minting the Convex identity — the browser
+     * operator's Clerk session minting the Convex identity — the browser
      * never holds a storage credential.
      */
     createAction: (formData: FormData) => Promise<{ id: string }>;
@@ -24,7 +24,7 @@ export type UploadFormProps = {
 /**
  * Client upload form for new media files.
  *
- * Invokes a server action that authenticates via NextAuth and runs the native
+ * Invokes a server action that authenticates via Clerk and runs the native
  * Convex media pipeline with the file payload. On success it redirects to the
  * new doc's detail page (or back to the grid on failure).
  *

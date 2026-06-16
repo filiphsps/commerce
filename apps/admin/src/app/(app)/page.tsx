@@ -1,11 +1,12 @@
-import { MissingSessionUserIdError } from '@nordcom/commerce-errors';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { Accented, Button, Heading, Label } from '@nordcom/nordstar';
-import { ChevronRight, LogOut, Plus, Settings, Store } from 'lucide-react';
+import { ChevronRight, Plus, Settings, Store } from 'lucide-react';
 import type { Metadata, Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
+
+import { SignOutButton } from '@/components/sign-out-button';
 import { getShopsForUser } from '@/utils/fetchers';
 
 export const metadata: Metadata = {
@@ -14,25 +15,28 @@ export const metadata: Metadata = {
 
 /**
  * The admin landing view: an authenticated operator picks which of their shops to manage, connects a
- * new one, or signs out. Shops are scoped to the session user (id, with the email as the stable
- * fallback) via {@link getShopsForUser}; an unauthenticated visitor is redirected to login.
+ * new one, or signs out. Shops are scoped to the operator's email — the Clerk subject is not the
+ * platform `users.id`, so {@link getShopsForUser}'s email fallback is the stable key. An
+ * unauthenticated visitor is redirected to sign-in.
  *
  * @returns The shop-chooser screen for an authenticated operator.
- * @throws {MissingSessionUserIdError} When the session carries a user without an id.
  */
 export default async function OverviewPage() {
-    const session = await auth();
-    if (!session?.user) {
-        redirect('/auth/login/' as Route);
+    const { userId } = await auth();
+    if (!userId) {
+        redirect('/auth/sign-in/' as Route);
     }
 
-    const { user } = session;
-    if (!user.id) {
-        throw new MissingSessionUserIdError();
+    const operator = await currentUser();
+    const email = operator?.primaryEmailAddress?.emailAddress?.trim().toLowerCase();
+    if (!email) {
+        redirect('/auth/sign-in/' as Route);
     }
-    const shops = await getShopsForUser(user.id, user.email ?? undefined);
 
-    const firstName = user.name?.split(' ').at(0) || null;
+    // The Clerk subject does not key the platform `users` row; resolve shops by the email fallback.
+    const shops = await getShopsForUser(email, email);
+
+    const firstName = operator?.firstName || operator?.fullName?.split(' ').at(0) || null;
 
     const shopsActions = shops.map(({ id, domain, name }, index) => (
         <Link
@@ -88,14 +92,7 @@ export default async function OverviewPage() {
                                 >
                                     <Settings className="size-4" />
                                 </Link>
-                                <Link
-                                    href={'/auth/logout/' as Route}
-                                    title="Sign out"
-                                    className="flex h-9 items-center gap-2 rounded-lg border-3 border-border border-solid px-3 font-semibold text-sm transition-colors hover:border-destructive hover:text-destructive-foreground"
-                                >
-                                    <LogOut className="size-4" />
-                                    Sign out
-                                </Link>
+                                <SignOutButton />
                             </div>
                         </section>
 

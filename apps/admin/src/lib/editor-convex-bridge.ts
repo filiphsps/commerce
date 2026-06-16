@@ -8,46 +8,9 @@ import type {
     EditorRelationshipOption,
 } from '@nordcom/commerce-cms/editor';
 import type { Media } from '@nordcom/commerce-cms/types';
-import { convexIdentityMutation, convexIdentityQuery, createConvexIdentityClient } from '@nordcom/commerce-db';
-import { ConvexOperatorTokenMintError } from '@nordcom/commerce-errors';
+import { convexIdentityMutation, convexIdentityQuery } from '@nordcom/commerce-db';
 
-import { getActiveShopSelection } from './active-shop';
-import { authenticateConvexClient, type ConvexTokenMinter } from './convex-auth';
-import { isOperatorTokenMintingConfigured, mintConvexOperatorToken } from './convex-token';
-
-/**
- * Builds the {@link ConvexOperatorTokenMintError} for a failed mint, upgrading the message to an
- * actionable operations fix when the cause is an UNCONFIGURED minter (no `CONVEX_AUTH_PRIVATE_KEY`)
- * rather than an unauthenticated session — so a misconfigured deployment surfaces the remedy in the
- * server log and the dev error overlay instead of an opaque "server error".
- *
- * @param context - The Convex function path that needed the token.
- * @returns The error to throw.
- */
-function operatorTokenMintError(context: string): ConvexOperatorTokenMintError {
-    if (!isOperatorTokenMintingConfigured()) {
-        return new ConvexOperatorTokenMintError(
-            `${context} — operator token minting is not configured; set CONVEX_AUTH_PRIVATE_KEY (plus CONVEX_AUTH_ISSUER / CONVEX_AUTH_APPLICATION_ID), see apps/admin/.env.example`,
-        );
-    }
-    return new ConvexOperatorTokenMintError(context);
-}
-
-/**
- * Mints the operator token for THIS request, layering the route-resolved active-shop selection
- * (recorded by `getAuthedCmsCtx` from the `[domain]` route context, read off the request-scoped
- * `active-shop` seam) onto the session identity. The selection becomes the token's signed
- * active-shop claim — how a multi-shop operator's call disambiguates server-side, where Convex
- * re-verifies the membership before honoring it. With no selection the operator identity is passed
- * through untouched, keeping the claim-less single-membership fallback.
- *
- * @param operator - The session-derived identity `authenticateConvexClient` resolved.
- * @returns The signed compact JWT, or `null` when minting is unconfigured or fails.
- */
-const mintRequestOperatorToken: ConvexTokenMinter = (operator) => {
-    const activeShop = getActiveShopSelection();
-    return mintConvexOperatorToken(activeShop === undefined ? operator : { ...operator, activeShop });
-};
+import { getAuthenticatedConvexClient } from './clerk-convex-token';
 
 /**
  * The result shape Convex's `cms/actions.ts` save mutations return; the bridge
@@ -178,45 +141,36 @@ function toEditorDocument(row: ConvexCmsDocumentRow): EditorCmsDocument {
 }
 
 /**
- * Runs one Convex mutation on a FRESH identity-authenticated client. Per-call
- * construction is the token-hygiene contract: the operator bearer token is
- * minted from the live NextAuth session, applied via `setAuth`, and the client
- * discarded — nothing caches a token across requests and nothing ships it to
- * the browser. Tenant scope is derived entirely inside Convex from the
- * validated identity (`tenantMutation` → `resolveActiveAdminShopId`, honoring
- * the signed active-shop claim), so no tenant selector travels as an argument.
+ * Runs one Convex mutation on a FRESH Clerk-authenticated client. Per-call construction is the
+ * token-hygiene contract: the operator bearer token comes from Clerk's `convex` JWT template for the
+ * live session, is applied via `setAuth`, and the client is discarded — nothing caches a token across
+ * requests and nothing ships it to the browser. Tenant scope is derived entirely inside Convex from
+ * the validated Clerk identity (`resolveShopAccess` via the shop's owning org), so no tenant selector
+ * travels as an argument.
  *
  * @param name - The Convex function path in `module/path:function` form.
  * @param args - The mutation's args.
  * @returns The mutation's result.
- * @throws {ConvexOperatorTokenMintError} When no operator token can be minted
- *   (no authenticated session, or the RS256 material is unconfigured).
+ * @throws {ConvexOperatorTokenMintError} When no operator token can be obtained (no authenticated
+ *   Clerk operator, or Clerk could not issue a `convex`-template token).
  */
 async function operatorMutation<Result>(name: string, args: Record<string, unknown>): Promise<Result> {
-    const client = createConvexIdentityClient();
-    const token = await authenticateConvexClient(client, mintRequestOperatorToken);
-    if (!token) {
-        throw operatorTokenMintError(name);
-    }
+    const client = await getAuthenticatedConvexClient();
     return convexIdentityMutation<Result>(client, name, args);
 }
 
 /**
- * Runs one Convex query on a FRESH identity-authenticated client — the read-side companion of
+ * Runs one Convex query on a FRESH Clerk-authenticated client — the read-side companion of
  * {@link operatorMutation} with the identical token-hygiene contract (per-call client, per-request
  * bearer token, no tenant selector in the args). Backs the CMSDATA-07 editor shell reads.
  *
  * @param name - The Convex function path in `module/path:function` form.
  * @param args - The query's args.
  * @returns The query's result.
- * @throws {ConvexOperatorTokenMintError} When no operator token can be minted.
+ * @throws {ConvexOperatorTokenMintError} When no operator token can be obtained.
  */
 async function operatorQuery<Result>(name: string, args: Record<string, unknown>): Promise<Result> {
-    const client = createConvexIdentityClient();
-    const token = await authenticateConvexClient(client, mintRequestOperatorToken);
-    if (!token) {
-        throw operatorTokenMintError(name);
-    }
+    const client = await getAuthenticatedConvexClient();
     return convexIdentityQuery<Result>(client, name, args);
 }
 

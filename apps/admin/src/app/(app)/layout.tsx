@@ -1,5 +1,6 @@
 import '../globals.css';
 
+import { ClerkProvider } from '@clerk/nextjs';
 import { GeistMono } from 'geist/font/mono';
 import { cookies } from 'next/headers';
 import type { ReactNode } from 'react';
@@ -7,6 +8,7 @@ import { PreviewBanner } from '@/components/preview-banner';
 import { Providers } from '@/components/providers';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { ThemeScript } from '@/components/theme/theme-script';
+import { clerkAppearance } from '@/lib/clerk-appearance';
 import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
 import { parseThemePreference, THEME_COOKIE } from '@/utils/theme';
@@ -40,10 +42,19 @@ export default async function AppShellLayout({ children }: { children: ReactNode
                 <meta name="mobile-web-app-capable" content="yes" />
             </head>
             <body className="font-sans">
-                <ThemeProvider initialPreference={preference}>
-                    <PreviewBanner />
-                    <Providers>{children}</Providers>
-                </ThemeProvider>
+                <ClerkProvider
+                    appearance={clerkAppearance}
+                    signInUrl="/auth/sign-in"
+                    signUpUrl="/auth/sign-up"
+                    signInForceRedirectUrl="/"
+                    signUpForceRedirectUrl="/"
+                    afterSignOutUrl="/auth/sign-in"
+                >
+                    <ThemeProvider initialPreference={preference}>
+                        <PreviewBanner />
+                        <Providers>{children}</Providers>
+                    </ThemeProvider>
+                </ClerkProvider>
             </body>
         </html>
     );

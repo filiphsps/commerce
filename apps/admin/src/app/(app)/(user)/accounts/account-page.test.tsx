@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 const { getOwnAccount } = vi.hoisted(() => ({ getOwnAccount: vi.fn() }));
 
-vi.mock('@/auth', () => ({ auth: () => Promise.resolve({ user: { email: 'op@example.com' } }) }));
+vi.mock('@clerk/nextjs/server', () => ({ auth: () => Promise.resolve({ userId: 'user_clerk_1' }) }));
 vi.mock('@/lib/account-convex', () => ({ getOwnAccount }));
 vi.mock('@/utils/gravatar', () => ({ gravatarUrl: () => 'https://www.gravatar.com/avatar/abc?d=mp&s=160' }));
 vi.mock('./profile-form', () => ({

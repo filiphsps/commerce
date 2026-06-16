@@ -4,15 +4,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Hoisted mock fns
 // ------------------------------------------------------------------
 
-const { mockAuth, mockFindByDomain, mockFindByCollaborator, mockUserFind, mockSetActiveShopSelection } = vi.hoisted(
-    () => ({
-        mockAuth: vi.fn(),
-        mockFindByDomain: vi.fn(),
-        mockFindByCollaborator: vi.fn(),
-        mockUserFind: vi.fn(),
-        mockSetActiveShopSelection: vi.fn(),
-    }),
-);
+const { mockAuth, mockCurrentUser, mockFindByDomain, mockFindByCollaborator, mockUserFind } = vi.hoisted(() => ({
+    mockAuth: vi.fn(),
+    mockCurrentUser: vi.fn(),
+    mockFindByDomain: vi.fn(),
+    mockFindByCollaborator: vi.fn(),
+    mockUserFind: vi.fn(),
+}));
 
 // ------------------------------------------------------------------
 // Mocks
@@ -36,9 +34,7 @@ vi.mock('next/navigation', () => ({
     },
 }));
 
-vi.mock('@/auth', () => ({ auth: mockAuth }));
-
-vi.mock('./active-shop', () => ({ setActiveShopSelection: mockSetActiveShopSelection }));
+vi.mock('@clerk/nextjs/server', () => ({ auth: mockAuth, currentUser: mockCurrentUser }));
 
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: { findByDomain: mockFindByDomain, findByCollaborator: mockFindByCollaborator },
@@ -64,9 +60,14 @@ import { getAuthedCmsCtx } from './cms-ctx';
 // ------------------------------------------------------------------
 
 const SHOP_DOMAIN = 'acme.example.com';
-const SESSION = { user: { email: 'admin@example.com', id: 'u1' }, expires: '2099-01-01' };
+const OPERATOR_EMAIL = 'admin@example.com';
 
-const USER_DOC = { id: 'user-doc-1', email: 'admin@example.com' };
+// The Clerk session (`auth()`) carries the subject; `currentUser()` carries the operator's primary
+// email — the email the platform `users` row is keyed on.
+const CLERK_SESSION = { userId: 'user_clerk_1' };
+const CLERK_USER = { primaryEmailAddress: { emailAddress: OPERATOR_EMAIL } };
+
+const USER_DOC = { id: 'user-doc-1', email: OPERATOR_EMAIL, name: 'Admin Op' };
 
 // Post-cutover the tenant IS the shop document, resolved by domain through the
 // Convex-backed `Shop.findByDomain`; role + membership derive from the
@@ -91,35 +92,36 @@ function collaboration(shopId: string, permissions: string[]) {
 describe('getAuthedCmsCtx', () => {
     beforeEach(() => {
         mockAuth.mockReset();
+        mockCurrentUser.mockReset();
         mockFindByDomain.mockReset();
         mockFindByCollaborator.mockReset();
         mockUserFind.mockReset();
-        mockSetActiveShopSelection.mockReset();
 
-        mockAuth.mockResolvedValue(SESSION);
+        mockAuth.mockResolvedValue(CLERK_SESSION);
+        mockCurrentUser.mockResolvedValue(CLERK_USER);
         mockUserFind.mockResolvedValue(USER_DOC);
         mockFindByCollaborator.mockResolvedValue([collaboration(SHOP_DOC.id, ['admin'])]);
         mockFindByDomain.mockResolvedValue(SHOP_DOC);
     });
 
-    it('redirects unauthenticated — auth() returns null', async () => {
-        mockAuth.mockResolvedValue(null);
+    it('redirects unauthenticated — auth() carries no userId', async () => {
+        mockAuth.mockResolvedValue({ userId: null });
 
-        await expect(getAuthedCmsCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
+        await expect(getAuthedCmsCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/sign-in/');
     });
 
-    it('redirects unauthenticated — session has no email', async () => {
-        mockAuth.mockResolvedValue({ user: { id: 'u1' }, expires: '2099-01-01' });
+    it('redirects unauthenticated — Clerk user has no primary email', async () => {
+        mockCurrentUser.mockResolvedValue({ primaryEmailAddress: null });
 
-        await expect(getAuthedCmsCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
+        await expect(getAuthedCmsCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/sign-in/');
     });
 
-    it('redirects to login when no platform user exists for the session email', async () => {
+    it('redirects to sign-in when no platform user exists for the operator email', async () => {
         // The single-result `User.find({ count: 1 })` overload throws a
         // NotFoundError when no row matches — the redirect must absorb it.
         mockUserFind.mockRejectedValue(new Error('NOT_FOUND'));
 
-        await expect(getAuthedCmsCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
+        await expect(getAuthedCmsCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/sign-in/');
     });
 
     it('calls notFound() when Shop.findByDomain throws a NotFoundError', async () => {
@@ -132,10 +134,10 @@ describe('getAuthedCmsCtx', () => {
     it('returns full ctx on the happy path', async () => {
         const ctx = await getAuthedCmsCtx(SHOP_DOMAIN);
 
-        expect(ctx.session).toMatchObject(SESSION);
         expect(ctx.user).toEqual({
             id: USER_DOC.id,
             email: USER_DOC.email,
+            name: USER_DOC.name,
             role: 'admin',
             tenants: [{ tenant: SHOP_DOC.id }],
             collection: 'users',
@@ -148,7 +150,7 @@ describe('getAuthedCmsCtx', () => {
             locales: ['en-US'],
         });
         expect(mockFindByDomain).toHaveBeenCalledWith(SHOP_DOMAIN);
-        expect(mockUserFind).toHaveBeenCalledWith({ filter: { email: USER_DOC.email }, count: 1 });
+        expect(mockUserFind).toHaveBeenCalledWith({ filter: { email: OPERATOR_EMAIL }, count: 1 });
         expect(mockFindByCollaborator).toHaveBeenCalledWith({ collaboratorId: USER_DOC.id });
     });
 
@@ -176,16 +178,6 @@ describe('getAuthedCmsCtx', () => {
         // The tenants list still reflects the user's real collaborations.
         expect(ctx.user.tenants).toEqual([{ tenant: SHOP_DOC.id }]);
         expect(mockFindByDomain).not.toHaveBeenCalled();
-        // Cross-tenant routes mint claim-less tokens: no selection may linger for the request.
-        expect(mockSetActiveShopSelection).toHaveBeenCalledWith(undefined);
-    });
-
-    it('records the resolved tenant as the request active-shop selection (POLISH-03 mint seam)', async () => {
-        await getAuthedCmsCtx(SHOP_DOMAIN);
-
-        // `tenant.id` is the shop's external id (`shops.legacyId`) — exactly the selector the
-        // Convex resolver matches the token's active-shop claim against.
-        expect(mockSetActiveShopSelection).toHaveBeenCalledWith(SHOP_DOC.id);
     });
 
     // Cross-tenant write bypass prevention. See the comment block above

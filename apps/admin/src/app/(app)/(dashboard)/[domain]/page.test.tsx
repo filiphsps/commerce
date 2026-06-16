@@ -26,7 +26,7 @@ vi.mock('next/navigation', () => ({
     notFound: mockNotFound,
 }));
 
-vi.mock('@/auth', () => ({ auth: mockAuth }));
+vi.mock('@clerk/nextjs/server', () => ({ auth: mockAuth }));
 
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: { findByDomain: mockFindByDomain },
@@ -73,18 +73,13 @@ describe('(dashboard)/[domain]/page', () => {
         expect(typeof ShopPage).toBe('function');
     });
 
-    it('redirects to /auth/login/ when unauthenticated', async () => {
-        mockAuth.mockResolvedValue(null);
-        await expect(ShopPage({ params: validParams })).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
-    });
-
-    it('redirects to /auth/login/ when session has no user', async () => {
-        mockAuth.mockResolvedValue({ user: undefined });
-        await expect(ShopPage({ params: validParams })).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
+    it('redirects to /auth/sign-in/ when unauthenticated', async () => {
+        mockAuth.mockResolvedValue({ userId: null });
+        await expect(ShopPage({ params: validParams })).rejects.toThrow('NEXT_REDIRECT:/auth/sign-in/');
     });
 
     it('renders the shop name as a heading when authenticated', async () => {
-        mockAuth.mockResolvedValue({ user: { id: 'u1' } });
+        mockAuth.mockResolvedValue({ userId: 'user_1' });
         mockFindByDomain.mockResolvedValue(mockShop);
 
         const { container } = await renderRSC(() => ShopPage({ params: validParams }));
@@ -94,7 +89,7 @@ describe('(dashboard)/[domain]/page', () => {
     });
 
     it('calls notFound when shop is not found', async () => {
-        mockAuth.mockResolvedValue({ user: { id: 'u1' } });
+        mockAuth.mockResolvedValue({ userId: 'user_1' });
         const notFoundErr = new Error('NOT_FOUND');
         mockFindByDomain.mockRejectedValue(notFoundErr);
 
@@ -103,7 +98,7 @@ describe('(dashboard)/[domain]/page', () => {
     });
 
     it('fetches shop using the domain from route params', async () => {
-        mockAuth.mockResolvedValue({ user: { id: 'u1' } });
+        mockAuth.mockResolvedValue({ userId: 'user_1' });
         mockFindByDomain.mockResolvedValue(mockShop);
 
         await renderRSC(() => ShopPage({ params: validParams }));

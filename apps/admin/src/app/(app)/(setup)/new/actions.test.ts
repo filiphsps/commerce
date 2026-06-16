@@ -1,7 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { mockAuth, mockCreate, mockFindByDomain, mockRedirect, mockRevalidatePath, mockIsNotFound } = vi.hoisted(() => ({
+const {
+    mockAuth,
+    mockCurrentUser,
+    mockUserFind,
+    mockCreate,
+    mockFindByDomain,
+    mockRedirect,
+    mockRevalidatePath,
+    mockIsNotFound,
+} = vi.hoisted(() => ({
     mockAuth: vi.fn(),
+    mockCurrentUser: vi.fn(),
+    mockUserFind: vi.fn(),
     mockCreate: vi.fn(),
     mockFindByDomain: vi.fn(),
     mockRedirect: vi.fn((url: string): never => {
@@ -12,18 +23,22 @@ const { mockAuth, mockCreate, mockFindByDomain, mockRedirect, mockRevalidatePath
 }));
 
 vi.mock('server-only', () => ({}));
-vi.mock('@/auth', () => ({ auth: mockAuth }));
+vi.mock('@clerk/nextjs/server', () => ({ auth: mockAuth, currentUser: mockCurrentUser }));
 vi.mock('next/navigation', () => ({ redirect: mockRedirect }));
 vi.mock('next/cache', () => ({ revalidatePath: mockRevalidatePath }));
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: { create: mockCreate, findByDomain: mockFindByDomain },
+    User: { find: mockUserFind },
 }));
 vi.mock('@nordcom/commerce-errors', () => ({ Error: { isNotFound: mockIsNotFound } }));
 
 import { checkDomainAvailability, createShop } from './actions';
 
 beforeEach(() => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    // Signed-in Clerk operator → resolves to the platform `users` row keyed on the email claim.
+    mockAuth.mockResolvedValue({ userId: 'user_clerk_1' });
+    mockCurrentUser.mockResolvedValue({ primaryEmailAddress: { emailAddress: 'op@example.com' } });
+    mockUserFind.mockResolvedValue({ id: 'user-1', email: 'op@example.com' });
 });
 afterEach(() => {
     vi.clearAllMocks();
@@ -104,7 +119,7 @@ describe('createShop', () => {
     });
 
     it('refuses when no session user is present', async () => {
-        mockAuth.mockResolvedValue(null);
+        mockAuth.mockResolvedValue({ userId: null });
         await expect(createShop(baseInput)).resolves.toEqual({
             ok: false,
             error: 'You must be signed in to create a shop.',

@@ -8,20 +8,20 @@ const { mockAuth, mockRedirect } = vi.hoisted(() => ({
     }),
 }));
 vi.mock('server-only', () => ({}));
-vi.mock('@/auth', () => ({ auth: mockAuth }));
+vi.mock('@clerk/nextjs/server', () => ({ auth: mockAuth }));
 vi.mock('next/navigation', () => ({ redirect: mockRedirect }));
 vi.mock('./wizard', () => ({ NewShopWizard: () => <div data-testid="wizard" /> }));
 
 import SetupNewPage from './page';
 
 describe('SetupNewPage', () => {
-    it('redirects to login without a session', async () => {
-        mockAuth.mockResolvedValue(null);
-        await expect(SetupNewPage()).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
+    it('redirects to sign-in without a session', async () => {
+        mockAuth.mockResolvedValue({ userId: null });
+        await expect(SetupNewPage()).rejects.toThrow('NEXT_REDIRECT:/auth/sign-in/');
     });
 
     it('renders the wizard for an authenticated user', async () => {
-        mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+        mockAuth.mockResolvedValue({ userId: 'user_1' });
         render(await SetupNewPage());
         expect(screen.getByTestId('wizard')).toBeTruthy();
     });

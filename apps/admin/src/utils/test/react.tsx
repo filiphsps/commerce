@@ -2,13 +2,16 @@ import '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 
 import { queries, render, within } from '@testing-library/react';
-import { SessionProvider } from 'next-auth/react';
 import type { ReactElement, ReactNode } from 'react';
 
-/** Wraps children in a NextAuth SessionProvider with a null session for isolated test renders. @param props.children - The component tree to wrap. */
-const Providers = ({ children }: { children: ReactNode }) => (
-    <SessionProvider session={null}>{children}</SessionProvider>
-);
+/**
+ * Pass-through render wrapper for isolated test renders. The admin no longer needs a session
+ * provider in unit tests — components read auth through Clerk hooks/`auth()`, which specs mock
+ * directly — so this contributes no chrome.
+ *
+ * @param props.children - The component tree to wrap.
+ */
+const Providers = ({ children }: { children: ReactNode }) => <>{children}</>;
 
 const customScreen = within(document.body, queries);
 /**

@@ -1,11 +1,11 @@
 import 'server-only';
 
+import { auth } from '@clerk/nextjs/server';
 import { ExternalLink, Link2 } from 'lucide-react';
 import type { Metadata, Route } from 'next';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
-import { auth } from '@/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
 import { SettingsSection } from '@/components/settings/settings-section';
 import { getOwnAccount } from '@/lib/account-convex';
@@ -71,9 +71,9 @@ function InfoRow({ label, children }: { label: string; children: ReactNode }) {
  * @returns The account settings view.
  */
 export default async function AccountPage() {
-    const session = await auth();
-    if (!session?.user?.email) {
-        redirect('/auth/login/' as Route);
+    const { userId } = await auth();
+    if (!userId) {
+        redirect('/auth/sign-in/' as Route);
     }
 
     const account = await getOwnAccount();

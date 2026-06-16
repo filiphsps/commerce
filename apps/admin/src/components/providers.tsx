@@ -9,7 +9,9 @@ import * as NProgress from 'nprogress';
 import type { ReactNode } from 'react';
 import { Suspense, useEffect } from 'react';
 import { Toaster } from 'sonner';
+
 import { AdminBuildNotifier } from '@/components/build-notifier/build-notifier';
+import { ClerkConvexProvider } from '@/components/providers/clerk-convex-provider';
 
 export type ProvidersProps = {
     children: ReactNode;
@@ -17,7 +19,9 @@ export type ProvidersProps = {
 /**
  * Root client provider tree for the admin shell.
  *
- * Mounts NordstarProvider, NextTopLoader, Toaster, Google Tag Manager, and AdminBuildNotifier.
+ * Mounts NordstarProvider, the Clerk-aware Convex client bridge, NextTopLoader, Toaster, Google Tag
+ * Manager, and AdminBuildNotifier. The surrounding `<ClerkProvider>` lives in the server layout; this
+ * tree consumes its session through {@link ClerkConvexProvider}.
  *
  * @param props.children - Application tree wrapped by all providers.
  */
@@ -31,17 +35,19 @@ export function Providers({ children }: ProvidersProps) {
 
     return (
         <NordstarProvider theme={Theme}>
-            <div>
-                <Suspense fallback={null}>
-                    <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />
-                    <Toaster theme="dark" />
+            <ClerkConvexProvider>
+                <div>
+                    <Suspense fallback={null}>
+                        <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />
+                        <Toaster theme="dark" />
 
-                    {children}
+                        {children}
 
-                    <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
-                    <AdminBuildNotifier />
-                </Suspense>
-            </div>
+                        <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
+                        <AdminBuildNotifier />
+                    </Suspense>
+                </div>
+            </ClerkConvexProvider>
         </NordstarProvider>
     );
 }
