@@ -232,6 +232,17 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   The dictionary import is bundler-cached, so multiple rails on a page stay cheap.
 - Verified: biome clean, typecheck clean, arrows 2/2, CMS collection block 6/6.
 
+### 19 — Product gallery: stable thumbnails with an active marker
+
+- The PDP gallery filtered the active image out of the thumbnail strip, so selecting a thumbnail made
+  it vanish, reflowed the strip, shifted the `view-image` numbering per selection, and left no active
+  indicator. Standard gallery UX keeps all thumbnails and highlights the current one.
+- Render every thumbnail; mark the active one with `aria-current="true"` + an accent border; number by
+  stable array position; no-op the click on the already-active thumb (no needless fade replay).
+- Updated the gallery test (promote via stable "View image 2", assert three stable thumbnails and the
+  active marker).
+- Verified: biome clean, typecheck clean, product-gallery 6/6.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Remaining literal `aria-label="Close"` in `product-options/primitives/overlay` (deep primitive, no
