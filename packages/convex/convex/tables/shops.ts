@@ -144,6 +144,10 @@ const commerceProviderValidator = v.union(shopifyCommerceProviderValidator, stri
  *   {@link shopFeatureFlagValidator} join rows; the array of routable domains is de-embedded into
  *   {@link shopDomainValidator} (Convex cannot index array membership, the `findByDomain` hot path).
  *   The primary `domain` and `alternativeDomains` remain on the row to preserve the `ShopBase` shape.
+ *
+ * `clerkOrgId` is optional because existing rows are backfilled by a later migration task; new shops
+ * created after the Clerk migration will always carry it, but the field must be absent-safe so the
+ * schema accepts un-migrated rows without a deployment gap.
  */
 export const shopValidator = v.object({
     legacyId: v.string(),
@@ -151,6 +155,7 @@ export const shopValidator = v.object({
     description: v.optional(v.string()),
     domain: v.string(),
     alternativeDomains: v.optional(v.array(v.string())),
+    clerkOrgId: v.optional(v.string()),
     i18n: v.optional(shopI18nValidator),
     commerce: v.optional(shopCommerceValidator),
     showProductVendor: v.optional(v.boolean()),
@@ -284,8 +289,12 @@ export type FeatureFlagBase = Infer<typeof featureFlagValidator>;
 /**
  * Shop table. `by_legacy_id` resolves a shop by its external Mongo-id `shop.id`; routing-by-domain goes
  * through {@link shopDomainsTable} (`by_domain`), not this table, so the row needs no domain index.
+ * `by_clerk_org` backs the Clerk webhook upsert and the org→shop resolution used by the admin
+ * shop-picker once a Clerk org is the owning identity of a shop.
  */
-const shopsTable = defineTable(shopValidator).index('by_legacy_id', ['legacyId']);
+const shopsTable = defineTable(shopValidator)
+    .index('by_legacy_id', ['legacyId'])
+    .index('by_clerk_org', ['clerkOrgId']);
 
 /**
  * Split-out credentials table (1:1 per shop). `by_shop` is the only access path; the public shop read
