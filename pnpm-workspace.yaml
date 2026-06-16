@@ -1,5 +1,6 @@
 packages:
     - "packages/*"
+    - "packages/ai/*"
     - "packages/tagtree/*"
     - "packages/cart/*"
     - "apps/*"
