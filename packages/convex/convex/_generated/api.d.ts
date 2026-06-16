@@ -479,6 +479,13 @@ export declare const api: {
                 Record<string, string | number | boolean>
               >;
               blocks?: { available?: Array<string> };
+              buildNotifier?: {
+                autoReload?: boolean;
+                copy?: string;
+                dismissable?: boolean;
+                enabled?: boolean;
+                position?: "top" | "bottom";
+              };
               chrome?: { order?: Array<string> };
               productCard?: Record<
                 string,
