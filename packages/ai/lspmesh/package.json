@@ -31,7 +31,7 @@
     },
     "scripts": {
         "build": "tsc && vite build",
-        "postbuild": "node scripts/shebang.mjs",
+        "postbuild": "tsx scripts/shebang.ts",
         "clean": "rimraf -g dist coverage .turbo *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
@@ -53,6 +53,7 @@
         "@types/node": "25.9.3",
         "concurrently": "10.0.3",
         "rimraf": "6.1.3",
+        "tsx": "4.22.4",
         "typescript": "6.0.3",
         "unplugin-dts": "1.0.2",
         "vite": "8.0.16",
