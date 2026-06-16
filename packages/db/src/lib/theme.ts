@@ -251,6 +251,13 @@ export interface ResolvedCartLineTokens {
     paddingY: string;
     /** → `--cart-line-divider-color`. */
     dividerColor: string;
+    /** → `--cart-line-variant-style`. Base presentation for non-color variant values: `swatch`
+     * (color dot only) | `chip` | `text`. Color options always render a swatch (augmenting this). */
+    variantStyle: string;
+    /** → `--cart-line-show-vendor`. When `false`, hides the vendor name on the cart line. */
+    showVendor: boolean;
+    /** → `--cart-line-show-sku`. When `true`, shows the variant SKU on the cart line. */
+    showSku: boolean;
 }
 
 /**
@@ -511,6 +518,9 @@ export const THEME_DEFAULTS: ResolvedShopTheme = {
         gap: '1rem',
         paddingY: '1rem',
         dividerColor: '#ece6d4',
+        variantStyle: 'swatch',
+        showVendor: true,
+        showSku: false,
     },
 };
 

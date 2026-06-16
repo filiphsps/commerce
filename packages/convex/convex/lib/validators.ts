@@ -190,6 +190,9 @@ export const cartLineTokensValidator = v.object({
     gap: v.string(),
     paddingY: v.string(),
     dividerColor: v.string(),
+    variantStyle: v.string(),
+    showVendor: v.boolean(),
+    showSku: v.boolean(),
 });
 
 /**

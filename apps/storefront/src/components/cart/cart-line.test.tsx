@@ -180,20 +180,23 @@ describe('components', () => {
 
             it('gives the image square intrinsic dimensions and contains it without distortion', () => {
                 render(<CartLine i18n={{} as any} data={buildCoreCartLine()} />);
-                const img = screen.getByRole('img');
+                // Scope to the real product <img>: read-only variant swatches also carry role="img"
+                // (they're a `<span role="img">`, not an `<img>` tag), so query by element.
+                const img = screen.getByTestId('cart-line-image').querySelector('img');
 
                 // Square intrinsic ratio + object-contain keeps non-square source
                 // art letterboxed inside the uniform frame rather than stretched.
-                expect(img.getAttribute('width')).toBe('160');
-                expect(img.getAttribute('height')).toBe('160');
-                expect(img.className).toContain('object-contain');
+                expect(img).not.toBeNull();
+                expect(img!.getAttribute('width')).toBe('160');
+                expect(img!.getAttribute('height')).toBe('160');
+                expect(img!.className).toContain('object-contain');
             });
 
             it('renders a square placeholder when the variant has no image so the frame stays uniform', () => {
                 render(<CartLine i18n={{} as any} data={buildCoreCartLine({ image: null })} />);
                 const media = screen.getByTestId('cart-line-image');
 
-                expect(screen.queryByRole('img')).toBeNull();
+                expect(media.querySelector('img')).toBeNull();
                 expect(media.className).toContain('size-(--cart-line-image-size)');
                 expect(media.querySelector('svg')).not.toBeNull();
             });

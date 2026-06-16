@@ -4,19 +4,23 @@ import type { CartLine as CoreCartLine } from '@nordcom/cart-core';
 import { useCartActions, useCartStatus } from '@nordcom/cart-react';
 import { ImageOff as ImageOffIcon, Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
+import { useContext } from 'react';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
+import Chip from '@/components/product-options/primitives/chip';
+import Swatch from '@/components/product-options/primitives/swatch';
+import type { OptionValueRendererProps } from '@/components/product-options/types';
 import { Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
+import { ShopContext } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
-import { getTranslations, isColorOption, type LocaleDictionary } from '@/utils/locale';
+import { type CurrencyCode, getTranslations, isColorOption, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
 interface CartLineProps {
     i18n: LocaleDictionary;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: CoreCartLine<any>;
+    data: CoreCartLine<unknown>;
 }
 
 /**
@@ -32,6 +36,15 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const { cartReady, status } = useCartStatus();
     const { t } = getTranslations('common', i18n);
     const { t: tCart } = getTranslations('cart', i18n);
+    const { t: tProduct } = getTranslations('product', i18n);
+
+    // Read the tenant's cart-line presentation tokens off the client shop context (read gracefully so
+    // a provider-less test still renders with platform defaults). `variantStyle` augments the
+    // per-option auto-detection: color options always render a swatch; non-color options follow it.
+    const cartLineTokens = useContext(ShopContext)?.shop.theme?.cartLine;
+    const variantStyle = cartLineTokens?.variantStyle ?? 'swatch';
+    const showVendor = cartLineTokens?.showVendor ?? true;
+    const showSku = cartLineTokens?.showSku ?? false;
 
     const ready = cartReady && status !== 'mutating';
     const merch = line.merchandise;
@@ -91,8 +104,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                         amount: (
                             safeParseFloat(0, merch.compareAtUnitPrice?.amount, merch.unitPrice.amount) * line.quantity
                         ).toString(),
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        currencyCode: merch.unitPrice.currencyCode as any,
+                        currencyCode: merch.unitPrice.currencyCode as CurrencyCode,
                     }}
                 />
             ) : null}
@@ -101,8 +113,10 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                     'font-bold text-xl leading-tight',
                     discount > 0.1 && 'text-(color:var(--state-sale)) font-extrabold text-xl',
                 )}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                data={line.cost.total as any}
+                data={{
+                    amount: line.cost.total.amount,
+                    currencyCode: line.cost.total.currencyCode as CurrencyCode,
+                }}
             />
         </>
     );
@@ -143,32 +157,60 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                             data-testid="cart-line-title"
                             className="line-clamp-2 break-words font-bold text-lg leading-tight transition-colors hover:text-primary focus-visible:text-primary"
                         >
-                            {vendor ? <span className="text-(color:var(--text-muted))">{vendor}</span> : null} {title}
+                            {showVendor && vendor ? (
+                                <span className="text-(color:var(--text-muted))">{vendor}</span>
+                            ) : null}{' '}
+                            {title}
                         </Link>
 
                         {realOptions.length > 0 ? (
-                            <div className="mt-1 flex w-full min-w-0 flex-wrap items-center gap-1">
-                                {realOptions.map(({ name, value }) => (
-                                    // Read-only indicators that reuse the product-card chip token system, so the
-                                    // cart and the card speak one visual language. Color options carry a swatch dot
-                                    // (the cart line has no swatch metadata, so an unrecognized CSS color name just
-                                    // leaves the bordered dot unfilled rather than guessing).
-                                    <span
-                                        key={name}
-                                        aria-disabled={true}
-                                        className="text-(color:var(--product-card-chip-color)) inline-flex max-w-full items-center gap-1.5 overflow-hidden whitespace-nowrap rounded-md border border-(--product-card-chip-border) border-solid bg-(--product-card-chip-bg) px-2 py-1 font-semibold text-xs leading-none"
-                                    >
-                                        {isColorOption(name) ? (
-                                            <span
-                                                aria-hidden={true}
-                                                className="size-3 shrink-0 rounded-full border border-(--product-card-border-color) border-solid"
-                                                style={{ backgroundColor: value }}
-                                            />
-                                        ) : null}
-                                        <span className="overflow-hidden text-ellipsis">{value}</span>
-                                    </span>
-                                ))}
+                            <div className="mt-1 flex w-full min-w-0 flex-wrap items-center gap-1.5">
+                                {realOptions.map(({ name, value }) => {
+                                    const isColor = isColorOption(name);
+                                    // One option-value shape feeds the SHARED read-only swatch/chip primitives so the
+                                    // cart and the product picker render variants identically (one token system).
+                                    const rendererProps: OptionValueRendererProps = {
+                                        group: { name, values: [] },
+                                        value: isColor
+                                            ? {
+                                                  name: value,
+                                                  selected: false,
+                                                  available: true,
+                                                  swatch: { color: value },
+                                              }
+                                            : { name: value, selected: false, available: true },
+                                        onSelect: () => {},
+                                        density: 'compact',
+                                        readOnly: true,
+                                    };
+
+                                    // Color: always a swatch (the augment override), with the value label beside it.
+                                    if (isColor) {
+                                        return (
+                                            <span key={name} className="inline-flex items-center gap-1.5">
+                                                <Swatch {...rendererProps} />
+                                                <span className="text-(color:var(--text-muted)) text-xs">{value}</span>
+                                            </span>
+                                        );
+                                    }
+
+                                    // Non-color: `text` renders a plain label; otherwise the shared chip.
+                                    if (variantStyle === 'text') {
+                                        return (
+                                            <span key={name} className="text-(color:var(--text-muted)) text-xs">
+                                                {value}
+                                            </span>
+                                        );
+                                    }
+                                    return <Chip key={name} {...rendererProps} />;
+                                })}
                             </div>
+                        ) : null}
+
+                        {showSku && merch.sku ? (
+                            <Label className="text-(color:var(--text-muted)) mt-1 block text-xs">
+                                {tProduct('sku')}: {merch.sku}
+                            </Label>
                         ) : null}
 
                         <div className="flex items-center justify-start gap-1 gap-x-3 md:flex-col md:items-start md:pt-1">

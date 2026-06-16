@@ -474,6 +474,11 @@ html:root {
     --cart-line-gap: 1rem;
     --cart-line-padding-y: 1rem;
     --cart-line-divider-color: #ece6d4;
+    /* Render-logic knobs consumed by `cart-line.tsx` off the resolved theme (not CSS), mirrored here
+     * so the serializer override and the static base stay in lockstep with `THEME_DEFAULTS.cartLine`. */
+    --cart-line-variant-style: swatch;
+    --cart-line-show-vendor: true;
+    --cart-line-show-sku: false;
 }
 
 /* Semantic token layer (P3-3 of .specs/2026-05-28-storefront-theming/).

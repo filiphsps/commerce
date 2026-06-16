@@ -143,8 +143,8 @@ export type ThemeTokenPath = ThemePathsOf<ResolvedShopTheme, 'theme'>;
 
 /**
  * The complete, declaration-ordered token catalog. Every entry mirrors exactly one
- * {@link ResolvedShopTheme} leaf (142 rows total: colors 22, typography 11, radii 4, spacing 2,
- * elevation 3, productCard 95, cartLine 5). Structured-group `cssVar`s are hand-authored from the
+ * {@link ResolvedShopTheme} leaf (145 rows total: colors 22, typography 11, radii 4, spacing 2,
+ * elevation 3, productCard 95, cartLine 8). Structured-group `cssVar`s are hand-authored from the
  * `ResolvedShopTheme` JSDoc; `productCard` `cssVar`s are generated via {@link productCardCustomProperty}.
  * Defaults are intentionally absent — deep-get them from `THEME_DEFAULTS` at each `path`.
  */
@@ -1424,6 +1424,31 @@ export const THEME_TOKEN_CATALOG = [
         cssVar: cartLineCustomProperty('dividerColor'),
         valueKind: 'color',
         payloadType: 'text',
+    },
+    {
+        group: 'cartLine',
+        cluster: 'line',
+        path: 'theme.cartLine.variantStyle',
+        cssVar: cartLineCustomProperty('variantStyle'),
+        valueKind: 'enum',
+        payloadType: 'select',
+        enumValues: ['swatch', 'chip', 'text'],
+    },
+    {
+        group: 'cartLine',
+        cluster: 'line',
+        path: 'theme.cartLine.showVendor',
+        cssVar: cartLineCustomProperty('showVendor'),
+        valueKind: 'boolean',
+        payloadType: 'checkbox',
+    },
+    {
+        group: 'cartLine',
+        cluster: 'line',
+        path: 'theme.cartLine.showSku',
+        cssVar: cartLineCustomProperty('showSku'),
+        valueKind: 'boolean',
+        payloadType: 'checkbox',
     },
 ] as const satisfies readonly ThemeTokenMeta[];
 

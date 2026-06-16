@@ -25,6 +25,12 @@ export type OptionValueRendererProps = {
     value: ResolvedOptionValue;
     onSelect: () => void;
     density: 'compact' | 'spacious';
+    /**
+     * Renders a non-interactive indicator (a `<span>`, no button semantics or click handler) instead
+     * of the selectable control. Lets a read-only surface — the cart line — reuse the SAME swatch/chip
+     * primitive (and its tokens) as the interactive picker, so both speak one visual language.
+     */
+    readOnly?: boolean;
 };
 
 export type OptionValueRenderer = React.ComponentType<OptionValueRendererProps>;
