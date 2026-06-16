@@ -17,7 +17,13 @@ their projects) → run `workspace/symbol`.
 
 -   `find_symbol({ query })` — where a symbol is defined, by exact name. Returns
     `file:line:character` + a source snippet.
--   `find_references({ query })` — all references to a symbol, by exact name.
+-   `find_references({ query, file? })` — all references to a symbol, by exact
+    name. Resolves **every** distinct definition of the name (not just the
+    first) and unions their references; each result carries a `definedAt`
+    (`file:line`) tag for the definition it resolves to, so a name shared by two
+    unrelated symbols reports both sets, visibly separated. Pass the optional
+    `file` (repo-relative path) to restrict to the definition in one path when a
+    name collides and only one is wanted.
 
 ## Setup (per machine, opt-in)
 
@@ -41,5 +47,9 @@ session after adding.
     ~60s); subsequent queries reuse the loaded project.
 -   Results include import sites alongside definitions — the real definition is
     the entry whose snippet starts with `export`/`const`/`function`/`class`/etc.
--   `find_references` resolves the first definition of a name; for two distinct
-    symbols sharing a name it picks the first match.
+-   `find_references` filters to definition-shaped entries (dropping import/
+    re-export lines), runs a references pass per distinct definition, and merges
+    the results — so colliding names no longer silently report just one
+    symbol's references. Use `definedAt` to tell the sets apart, or `file` to
+    pin one. If no entry looks like a definition (e.g. a class member), it falls
+    back to running references across all matches.

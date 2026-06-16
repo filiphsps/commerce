@@ -209,30 +209,75 @@ const findSymbol = async (query) => {
     });
 };
 
+// An import/re-export line points at a symbol but isn't its definition; running
+// references from there just re-finds the same set the real definition yields.
+// Keep only definition-shaped snippets so two distinct symbols sharing a name
+// surface as two distinct definitions (each gets its own references pass).
+const DEFINITION_SNIPPET =
+    /^(export\s+)?(default\s+)?(declare\s+)?(abstract\s+)?(async\s+)?(public\s+|private\s+|protected\s+|static\s+|readonly\s+)*(const|let|var|function|function\*|class|interface|type|enum|namespace|module)\b/;
+
+/** @returns {boolean} whether a snippet looks like a definition, not an import/re-export. */
+const isDefinitionSnippet = (snip) => {
+    if (/^import\b/.test(snip) || /\bfrom\s+['"]/.test(snip)) return false;
+    if (/^export\s+\{/.test(snip) || /^export\s+\*/.test(snip)) return false;
+    return DEFINITION_SNIPPET.test(snip);
+};
+
 /**
- * Find all references to a symbol: resolve its definition, then ask the LSP for
- * references at that position.
- * @returns {Promise<Array<{file,line,character,snippet}>>}
+ * Find all references to a symbol across the monorepo. Resolves EVERY distinct
+ * definition of the name (not just the first) and unions their references, so a
+ * name shared by two unrelated symbols reports both — each reference tagged with
+ * the `definedAt` location it resolves to. Pass `file` to pin a single
+ * definition when a name genuinely collides and only one is wanted.
+ * @param {string} query exact symbol name.
+ * @param {string} [file] optional repo-relative path to restrict definitions to.
+ * @returns {Promise<Array<{file,line,character,snippet,definedAt}>>}
  */
-const findReferences = async (query) => {
-    const defs = await findSymbol(query);
+const findReferences = async (query, file) => {
+    const all = await findSymbol(query);
+    if (!all.length) return [];
+
+    // Prefer definition-shaped entries; fall back to all matches (e.g. class
+    // members, whose snippets don't start with a top-level keyword).
+    let defs = all.filter((d) => isDefinitionSnippet(d.snippet));
+    if (!defs.length) defs = all;
+    if (file) defs = defs.filter((d) => d.file === file);
     if (!defs.length) return [];
-    const def = defs[0];
-    const uri = `${ROOT_URI}/${def.file}`;
-    client.open(uri.replace('file://', ''));
-    await sleep(800);
-    const res = await client.request('textDocument/references', {
-        textDocument: { uri },
-        position: { line: def.line - 1, character: def.character - 1 },
-        context: { includeDeclaration: true }
+
+    // Collapse defs sharing a file:line (an import alias re-pointing at the same
+    // line) so we don't run the same references pass twice.
+    const seenDef = new Set();
+    defs = defs.filter((d) => {
+        const k = `${d.file}:${d.line}`;
+        if (seenDef.has(k)) return false;
+        seenDef.add(k);
+        return true;
     });
-    const locs = Array.isArray(res.result) ? res.result : [];
-    return locs.map((l) => ({
-        file: rel(l.uri),
-        line: l.range.start.line + 1,
-        character: l.range.start.character + 1,
-        snippet: snippet(l.uri, l.range.start.line)
-    }));
+
+    const merged = new Map();
+    for (const def of defs) {
+        const uri = `${ROOT_URI}/${def.file}`;
+        client.open(uri.replace('file://', ''));
+        await sleep(800);
+        const res = await client.request('textDocument/references', {
+            textDocument: { uri },
+            position: { line: def.line - 1, character: def.character - 1 },
+            context: { includeDeclaration: true }
+        });
+        const locs = Array.isArray(res.result) ? res.result : [];
+        const definedAt = `${def.file}:${def.line}`;
+        for (const l of locs) {
+            const f = rel(l.uri);
+            const line = l.range.start.line + 1;
+            const character = l.range.start.character + 1;
+            const key = `${f}:${line}:${character}`;
+            // First def to claim a location wins its `definedAt` tag; identical
+            // locations across defs are the same physical reference.
+            if (merged.has(key)) continue;
+            merged.set(key, { file: f, line, character, snippet: snippet(l.uri, l.range.start.line), definedAt });
+        }
+    }
+    return [...merged.values()];
 };
 
 const TOOLS = [
@@ -248,10 +293,17 @@ const TOOLS = [
     },
     {
         name: 'find_references',
-        description: 'Find all references to a symbol across the monorepo, by exact name. Returns file:line locations with snippets.',
+        description:
+            'Find all references to a symbol across the monorepo, by exact name. Resolves every distinct definition of the name and unions their references; each result is tagged with the `definedAt` location it resolves to, so a name shared by two unrelated symbols reports both. Pass `file` to restrict to the definition in one path when a name collides and you want only one.',
         inputSchema: {
             type: 'object',
-            properties: { query: { type: 'string', description: 'Exact symbol name to find references for.' } },
+            properties: {
+                query: { type: 'string', description: 'Exact symbol name to find references for.' },
+                file: {
+                    type: 'string',
+                    description: 'Optional repo-relative path; restricts references to the definition in this file when the name collides.'
+                }
+            },
             required: ['query']
         }
     }
@@ -280,7 +332,7 @@ const handle = async (msg) => {
                 return r.length ? text(r) : text(`No symbol named "${query}" found.`);
             }
             if (name === 'find_references') {
-                const r = await findReferences(query);
+                const r = await findReferences(query, args?.file);
                 return r.length ? text(r) : text(`No references found for "${query}".`);
             }
             throw new Error(`Unknown tool: ${name}`);
