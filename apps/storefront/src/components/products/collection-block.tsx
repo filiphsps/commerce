@@ -15,6 +15,7 @@ import type { Product } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import type { CollectionFilters } from '@/api/shopify/collection';
 import ProductCard from '@/components/product-card';
+import type { ProductCardSurfaceOverride } from '@/components/product-card/presets';
 import CollectionBlockArrows from '@/components/products/collection-block-arrows';
 import CollectionProductCard from '@/components/products/collection-product-card';
 import CollectionViewAllTile from '@/components/products/collection-view-all-tile';
@@ -27,6 +28,7 @@ type CardComponent = ComponentType<{
     data: Product;
     priority?: boolean;
     className?: string;
+    cardOverride?: ProductCardSurfaceOverride;
 }>;
 
 type CardSkeletonComponent = ComponentType<{ className?: string }>;
@@ -108,6 +110,7 @@ export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
 
     bare?: boolean;
     card?: CardComponent;
+    cardOverride?: ProductCardSurfaceOverride;
     cardSkeleton?: CardSkeletonComponent;
 };
 
@@ -131,6 +134,7 @@ export type CollectionBlockProps<ComponentGeneric extends ElementType> = Collect
  * @param props.priority - Passed to the first two product cards for eager image loading.
  * @param props.bare - When `true`, renders cards without a wrapper element.
  * @param props.card - Custom card component; defaults to `CollectionProductCard`.
+ * @param props.cardOverride - Per-instance product-card override forwarded to each card (highest cascade tier).
  * @param props.cardSkeleton - Custom skeleton component; defaults to a vertical boxed `ProductCard.skeleton`.
  * @param props.children - Additional content prepended inside the grid.
  * @returns The product grid element, or `null` when there are no products and no children.
@@ -152,6 +156,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
 
     bare = false,
     card,
+    cardOverride,
     cardSkeleton,
     ...props
 }: CollectionBlockProps<ComponentGeneric>) => {
@@ -175,7 +180,13 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
 
     const productCards = products.map((product, index) => (
         <Suspense key={product.id} fallback={<CardSkeleton />}>
-            <Card shop={shop} locale={locale} data={product} priority={priority && index < 2} />
+            <Card
+                shop={shop}
+                locale={locale}
+                data={product}
+                priority={priority && index < 2}
+                cardOverride={cardOverride}
+            />
         </Suspense>
     ));
 

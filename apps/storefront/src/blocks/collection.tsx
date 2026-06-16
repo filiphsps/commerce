@@ -104,6 +104,7 @@ export const CollectionBlock = ({
                     layout={layout}
                     limit={block.limit ?? 16}
                     priority={index < 3}
+                    cardOverride={block.productCard}
                     className="w-full"
                 />
             </Suspense>
