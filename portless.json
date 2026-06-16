@@ -3,7 +3,6 @@
     "apps": {
         "apps/storefront": { "name": "storefront", "script": "dev" },
         "apps/admin": { "name": "admin", "script": "dev" },
-        "apps/landing": { "name": "landing", "script": "dev" },
-        "apps/docs": { "name": "docs", "script": "dev" }
+        "apps/landing": { "name": "landing", "script": "dev" }
     }
 }
