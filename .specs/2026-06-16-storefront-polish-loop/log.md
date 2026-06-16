@@ -287,13 +287,27 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Added the component's first test asserting filtered links and zero `/collections/` hrefs.
 - Verified: biome clean, typecheck clean, vendors 1/1.
 
+### 24 — Locale flags: full-name alt + no redundant announcement
+
+- The flag images defaulted their alt/aria-label to the bare ISO code ("US"), and `LocaleFlag` with
+  `withName` announced the country twice (flag alt + adjacent visible name).
+- `LocaleFlag`: when the name is shown, render the flag decoratively (`alt=""`, `aria-hidden`);
+  otherwise default the accessible name to the full country name via `countryLookup`. Applied the same
+  full-name default to `CurrentLocaleFlag`.
+- Test-infra: the global `vitest.setup.ts` mock of `@/utils/build-config` omitted
+  `FLAG_IMAGES_BASE_URL`, so any flag-rendering test threw — added it, which unblocks flag tests
+  generally. Added the components' first tests.
+- Verified: biome clean, typecheck clean, locale-flag 3/3, flag consumers (geo-redirect/info-bar/footer) 16/16.
+
 #### Candidate slices for future iterations (audit backlog)
 
 - Remaining literal `aria-label="Close"` / `Show all … options` in
   `product-options/primitives/overlay` — the product-options Root/context carry no i18n, so this needs
   threading i18n through the whole option system (sizeable; deferred).
-- `--color-secondary-light` (used by the vendor chip `bg-secondary-light`) lacks the `var(…, fallback)`
-  its sibling accent tokens have — a theme-less shop has no chip background. Low priority.
+- `theme.ts` serializer only emits `--color-accent-*` `if (branding)`, and the `@theme inline`
+  `--color-{primary,secondary}-*` mappings have no `var(…, fallback)` — a truly branding-less shop
+  would have unresolved `bg-primary`/`bg-secondary-light`. Needs verifying whether `branding` is ever
+  null in practice before changing a shared package. Low priority.
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE facets in `FilterValues` and wire the shared
   `ProductFilters` into /products, collections, and search (per the overhaul spec).
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets in `FilterValues` and wire the
