@@ -635,7 +635,7 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
                 alt={image.alt ?? label ?? ''}
                 width={image.width ?? 640}
                 height={image.height ?? 480}
-                className="aspect-[4/3] max-h-[280px] w-full object-cover transition-transform duration-[var(--header-motion-slow)] ease-[var(--header-easing-expo)] hover:scale-[1.02]"
+                className="aspect-4/3 max-h-70 w-full object-cover transition-transform duration-(--header-motion-slow) ease-(--header-easing-expo) hover:scale-[1.02]"
                 sizes="(max-width: 768px) 90vw, 480px"
                 draggable={false}
                 loading="lazy"
@@ -645,7 +645,7 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
     ) : (
         <div
             data-header-featured-hero-fallback="true"
-            className="aspect-[4/3] max-h-[280px] w-full rounded-[calc(var(--header-panel-radius)*0.8)] bg-(--surface-2)"
+            className="aspect-4/3 max-h-70 w-full rounded-[calc(var(--header-panel-radius)*0.8)] bg-(--surface-2)"
             style={background ? { backgroundColor: background } : undefined}
         />
     );
@@ -654,7 +654,7 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
         <>
             {visual}
             {label ? (
-                <h3 className="mt-3 font-semibold text-[1.5rem] text-(--text) leading-tight tracking-tight">{label}</h3>
+                <h3 className="mt-3 font-semibold text-(--text) text-[1.5rem] leading-tight tracking-tight">{label}</h3>
             ) : null}
             {description ? <p className="mt-1.5 text-(--text-muted) text-sm leading-snug">{description}</p> : null}
             {label ? (
@@ -662,7 +662,7 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
                     {label}
                     <ChevronRightIcon
                         aria-hidden={true}
-                        className="size-3.5 stroke-2 transition-transform duration-[var(--header-motion-base)] ease-[var(--header-easing-expo)] group-hover/featured:translate-x-0.5"
+                        className="size-3.5 stroke-2 transition-transform duration-(--header-motion-base) ease-(--header-easing-expo) group-hover/featured:translate-x-0.5"
                     />
                 </span>
             ) : null}

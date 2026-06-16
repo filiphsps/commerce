@@ -65,7 +65,7 @@ export function Modal({
                                 <Dialog.Close asChild={true}>
                                     <Button
                                         title={capitalize(t('close'))}
-                                        className="flex size-5 items-center justify-end text-right text-(color:var(--text-muted)) drop-shadow transition-colors hover:text-black"
+                                        className="text-(color:var(--text-muted)) flex size-5 items-center justify-end text-right drop-shadow transition-colors hover:text-black"
                                         styled={false}
                                     >
                                         <XIcon className="size-full stroke-2 text-inherit" />

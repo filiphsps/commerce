@@ -172,7 +172,7 @@ const QuantitySelector = ({
         <section
             {...props}
             className={cn(
-                'flex h-12 min-h-fit w-full overflow-hidden rounded-lg border-2 border-(--surface-0) border-solid bg-(--surface-0) p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
+                'flex h-12 min-h-fit w-full overflow-hidden rounded-lg border-(--surface-0) border-2 border-solid bg-(--surface-0) p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
                 !disabled && 'opacity-100 focus-within:border-(--border-strong) hover:border-primary',
                 className,
             )}

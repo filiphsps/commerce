@@ -34,8 +34,8 @@ const CartLines = ({ i18n }: CartContentProps) => {
     }
 
     return (
-        <div className="flex w-full flex-col gap-[var(--block-spacer)]">
-            <div className="flex w-full items-center justify-between border-0 border-(--border-default) border-b border-solid pb-1 text-(color:var(--text-muted)) md:border-0 md:px-1 md:pb-0">
+        <div className="flex w-full flex-col gap-(--block-spacer)">
+            <div className="text-(color:var(--text-muted)) flex w-full items-center justify-between border-(--border-default) border-0 border-b border-solid pb-1 md:border-0 md:px-1 md:pb-0">
                 <Button
                     type="button"
                     variant="destructive"
@@ -49,7 +49,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
                 <ExportCartButton i18n={i18n} />
             </div>
 
-            <section className="flex h-full w-full flex-col gap-[var(--block-spacer-large)] empty:hidden md:gap-[var(--block-spacer-large)]">
+            <section className="flex h-full w-full flex-col gap-(--block-spacer-large) empty:hidden md:gap-(--block-spacer-large)">
                 {lines.map((item) => {
                     if (!item) {
                         return null;

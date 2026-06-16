@@ -44,7 +44,7 @@ export function Popover({ open, onOpenChange, title, description, children }: Po
                                 <Button
                                     aria-label="Close"
                                     title="Close"
-                                    className="flex size-6 items-center justify-center text-(color:var(--text-muted)) transition-colors hover:text-black"
+                                    className="text-(color:var(--text-muted)) flex size-6 items-center justify-center transition-colors hover:text-black"
                                     styled={false}
                                 >
                                     <XIcon className="size-full stroke-2 text-inherit" />

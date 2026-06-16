@@ -77,7 +77,7 @@ export function ProductQuantityBreaksItem({
             {...props}
             type="button"
             className={cn(
-                'flex h-16 items-center justify-between gap-2 rounded-xl border-2 border-(--surface-0) border-solid bg-(--surface-0) px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-(--border-strong) hover:border-(--border-strong)',
+                'flex h-16 items-center justify-between gap-2 rounded-xl border-(--surface-0) border-2 border-solid bg-(--surface-0) px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-(--border-strong) hover:border-(--border-strong)',
                 active && 'border-primary text-primary',
                 className,
             )}
@@ -132,7 +132,7 @@ export function ProductQuantityBreaks({
     return (
         <section
             className={cn(
-                'flex flex-col gap-[var(--block-spacer)] empty:hidden',
+                'flex flex-col gap-(--block-spacer) empty:hidden',
                 !ready && 'pointer-events-none opacity-50',
                 className,
             )}
