@@ -282,7 +282,12 @@ Linked the project to the **existing** Clerk app **"Nordcom Commerce"** (user's 
   `force_organization_selection: true`); GitHub + Google enabled with empty client creds (Clerk shared
   dev OAuth); email `email_code`/`email_link` sign-in. Multiple-orgs-per-user is Clerk default.
 - **Applied:** created the `convex` JWT template (`jtmp_3FCxnLNsVOKgodBPItEk1vfk4l9`, RS256, Clerk default
-  keys → JWKS-discoverable, claims `email` + `org_id`/`org_role`/`org_slug`); patched
+  keys → JWKS-discoverable, claims `aud: "convex"` + `email` + `org_id`/`org_role`/`org_slug`). The
+  **`aud: "convex"` claim is REQUIRED** — Convex's `domain` provider matches a token on BOTH `iss`
+  (== `CLERK_FRONTEND_API_URL`) AND `aud` (== `applicationID: 'convex'`); without it Convex rejects the
+  operator token with `NoAuthProvider: No auth provider found matching the given token` (caught during
+  the e2e run). Template-as-code committed to `clerk/convex-jwt-template.json` (applied via
+  `clerk api -X PATCH /jwt_templates/<id>`); prod must apply the same. Also patched
   `auth_access_control.block_email_subaddresses → false` so e2e `+clerk_test` emails work (dev-only;
   prod keeps it true). Account-linking by verified email is Clerk's default — no change needed.
 - **Config-as-code:** committed to `clerk/clerk.config.json` (secret-free; client secrets are empty
