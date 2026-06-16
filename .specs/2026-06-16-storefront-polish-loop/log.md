@@ -350,6 +350,14 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   lookup miss, so the category is always a working link. Added the no-collection fallback test.
 - Verified: biome clean, typecheck clean, product-category 4/4.
 
+### 30 — Search bar: localized placeholder + accessible name
+
+- The search input hard-coded its English placeholder (TODO-flagged) and had **no accessible name**
+  (placeholder-only — WCAG 3.3.2/4.1.2).
+- Added `common.search-placeholder` across all six locales and an `aria-label={t('search')}` on the
+  input (existing key). Dropped the TODO; used a typographic ellipsis.
+- Verified: six locale JSONs valid, biome clean, typecheck clean, search 6/6.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
