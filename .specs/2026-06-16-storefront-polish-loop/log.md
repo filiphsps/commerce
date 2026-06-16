@@ -131,12 +131,28 @@ Guiding principles (from the task + repo design system):
   the #222 body ink the rest of the site uses; near-identical on the default theme).
 - Verified: biome clean, typecheck clean, header/info-bar/geo-redirect 15/15.
 
+### 11 — Themeable hover/focus accents (sweep the `*-black` states)
+
+- Swept the five remaining un-themeable hover/focus `*-black` accents to tokens: the geo-redirect
+  dropdown rows (`focus-within:/hover:text-black`), the modal / popover / picker-sheet close buttons
+  (`hover:text-black`), and the filter-value chips (`hover:border-black hover:text-black`). All bases
+  were `--text-muted`, so they now hover to `--text` (the primary ink) — correct on light and dark
+  themes alike. Border accent → `hover:border-(--text)`.
+- Left the `bg-black/NN` scrims (overlay backdrops) untouched — those are intentional translucent
+  overlays, not theme ink.
+- Re-sorted the touched class lists (biome `useSortedClasses`).
+- Verified: biome clean (0 warnings), typecheck clean, filter-values + geo-redirect 17/17.
+
+The storefront is now free of hard-coded `text-/border-black` ink on themeable surfaces (only
+translucent `bg-black/NN` scrims remain, by design).
+
 #### Candidate slices for future iterations (audit backlog)
 
-- `hover:text-black` / `focus-within:text-black` accents (geo-redirect rows, popover/modal/sheet close
-  buttons, filter-values) are also un-themeable on dark surfaces — sweep to a token (`--text`/accent).
-  The `bg-black/NN` scrims are intentional overlays and should stay.
-- Consider adding a `text-black` rule to the design-tokens gate once the hover-black sweep lands.
+- Consider adding a `text-black` / `border-black` rule (bare, non-`/opacity`) to the design-tokens
+  gate so the ink-on-themeable-surface regression can't creep back.
+- Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
+  /products, collections, and search as the shared faceted aside (per the overhaul spec).
+- Localize the literal `aria-label="Close"` / `title="Close"` on the popover and picker-sheet.
 - Implement the BOOLEAN (in-stock) and PRICE_RANGE filter facets and wire `Filters` into
   /products, collections, and search as the shared faceted aside (per the overhaul spec).
 - Hard-coded-color sweep is now clean for named Tailwind utilities + raw hex in components/blocks.
