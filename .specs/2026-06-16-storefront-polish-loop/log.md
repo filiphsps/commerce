@@ -367,6 +367,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   (decorative), removing the duplicate/empty landmark during load.
 - Verified: biome clean, typecheck clean, breadcrumbs skeleton 1/1.
 
+### 32 — Account link accessible name
+
+- The header account link wrapped only an `<Avatar>` — whose `<img>` is `alt=""`/presentation when the
+  user has a profile picture, leaving the link with no reliable accessible name (just a `title`); with
+  initials it read as cryptic letters. WCAG 2.4.4 / 4.1.2.
+- Added an explicit `aria-label={capitalize(t('account'))}` to the link so its purpose ("Account") is
+  announced regardless of avatar state. Updated the Link test mock to forward arbitrary props and
+  added an assertion.
+- Verified: biome clean, typecheck clean, header-account-section 6/6.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
