@@ -547,10 +547,15 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   off-sale; `<del>` wrapping the compare-at on sale).
 - Verified: biome clean, typecheck clean, product-card-price 2/2, product-card 3/3.
 
-#### Notes / deferred
+### 49 — Consistent `<del>` sale-price semantics (cart-line, quantity-breaks)
 
-- Apply the same `<del>` sale-price semantics to the other compare-at renders (cart-line, quantity-
-  breaks) for consistency — those use a CSS `line-through` Price span; wrap in `<del>`.
+- Completed the iter-48 follow-up: wrapped the compare-at / pre-discount `Price` in both the cart line
+  and the quantity-break tiers in `<del className="no-underline">` (the inner `line-through` keeps the
+  single visual strike; `<del>` adds the superseded-price semantic for assistive tech). Sale-price
+  semantics are now consistent across product card, cart line, and bulk-pricing tiers.
+- Verified: biome clean, typecheck clean, cart-line + quantity-breaks 13/13.
+
+#### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
   693-line stateful client component — decomposition is high-risk for a single loop pass.
