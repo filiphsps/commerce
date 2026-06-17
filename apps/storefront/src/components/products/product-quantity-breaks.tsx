@@ -66,7 +66,14 @@ export function ProductQuantityBreaksItem({
                 data={discountedPrice}
             />
             {discount ? (
-                <Price className="font-semibold text-(--text-muted) text-sm leading-none line-through" data={price} />
+                // `<del>` marks the pre-discount tier price as superseded for assistive tech;
+                // `no-underline` keeps the single visual strike from the inner `line-through`.
+                <del className="no-underline">
+                    <Price
+                        className="font-semibold text-(--text-muted) text-sm leading-none line-through"
+                        data={price}
+                    />
+                </del>
             ) : null}
         </>
     );

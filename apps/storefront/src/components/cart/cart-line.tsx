@@ -98,15 +98,20 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const pricing = (
         <>
             {discount > 0.1 ? (
-                <Price
-                    className="text-(color:var(--text-muted)) font-medium text-base leading-tight line-through"
-                    data={{
-                        amount: (
-                            safeParseFloat(0, merch.compareAtUnitPrice?.amount, merch.unitPrice.amount) * line.quantity
-                        ).toString(),
-                        currencyCode: merch.unitPrice.currencyCode as CurrencyCode,
-                    }}
-                />
+                // `<del>` marks the compare-at as the superseded price for assistive tech; `no-underline`
+                // keeps the single visual strike from the inner `line-through`.
+                <del className="no-underline">
+                    <Price
+                        className="text-(color:var(--text-muted)) font-medium text-base leading-tight line-through"
+                        data={{
+                            amount: (
+                                safeParseFloat(0, merch.compareAtUnitPrice?.amount, merch.unitPrice.amount) *
+                                line.quantity
+                            ).toString(),
+                            currencyCode: merch.unitPrice.currencyCode as CurrencyCode,
+                        }}
+                    />
+                </del>
             ) : null}
             <Price
                 className={cn(
