@@ -524,6 +524,19 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Updated the three CTA tests to supply `labels` / `i18n`.
 - Verified: biome clean, typecheck clean, CTA + product-card 17/17.
 
+### 47 — Breadcrumbs as a semantic ordered list
+
+- Confirmed the i18n sweep is effectively complete: the only remaining literal `aria-label`s are the
+  "Breadcrumb" landmark term (standard), the unused `layout/popover`, and the deep deferred
+  product-options overlay "Close".
+- Converted the breadcrumb trail from `<nav>` + `<div>`s to `<nav aria-label="Breadcrumb">` wrapping a
+  real `<ol>` of `<li>` ListItems — order carries meaning (root → current), so an ordered list is the
+  semantically true structure. Separators are now `aria-hidden` spans inside each crumb `<li>`. Kept
+  the scroll/overflow on the nav and the flex track on the ol (flex hides markers; default list-style
+  preserves the Safari list role). Microdata (`BreadcrumbList`/`ListItem`/`position`) moved intact;
+  landmark, cumulative hrefs, and `aria-current` all preserved. Dropped the now-unused `Fragment`.
+- Verified: biome clean, typecheck clean, breadcrumbs 4/4.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
