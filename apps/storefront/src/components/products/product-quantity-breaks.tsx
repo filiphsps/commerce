@@ -7,7 +7,7 @@ import { transformQuantityBreaks } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { COMMON_BADGE_STYLES } from '@/components/product-display/primitives/badge-styles';
 import { useProductOptions } from '@/components/product-options/context';
-import { Price } from '@/components/products/price';
+import { CompareAtPrice, Price } from '@/components/products/price';
 import { useQuantity } from '@/components/products/quantity-provider';
 import type { LocaleDictionary } from '@/utils/locale';
 import { capitalize, getTranslations } from '@/utils/locale';
@@ -66,14 +66,7 @@ export function ProductQuantityBreaksItem({
                 data={discountedPrice}
             />
             {discount ? (
-                // `<del>` marks the pre-discount tier price as superseded for assistive tech;
-                // `no-underline` keeps the single visual strike from the inner `line-through`.
-                <del className="no-underline">
-                    <Price
-                        className="font-semibold text-(--text-muted) text-sm leading-none line-through"
-                        data={price}
-                    />
-                </del>
+                <CompareAtPrice className="font-semibold text-(--text-muted) text-sm leading-none" data={price} />
             ) : null}
         </>
     );

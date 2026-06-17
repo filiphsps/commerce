@@ -10,7 +10,7 @@ import Link from '@/components/link';
 import Chip from '@/components/product-options/primitives/chip';
 import Swatch from '@/components/product-options/primitives/swatch';
 import type { OptionValueRendererProps } from '@/components/product-options/types';
-import { Price } from '@/components/products/price';
+import { CompareAtPrice, Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { ShopContext } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
@@ -98,20 +98,15 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const pricing = (
         <>
             {discount > 0.1 ? (
-                // `<del>` marks the compare-at as the superseded price for assistive tech; `no-underline`
-                // keeps the single visual strike from the inner `line-through`.
-                <del className="no-underline">
-                    <Price
-                        className="text-(color:var(--text-muted)) font-medium text-base leading-tight line-through"
-                        data={{
-                            amount: (
-                                safeParseFloat(0, merch.compareAtUnitPrice?.amount, merch.unitPrice.amount) *
-                                line.quantity
-                            ).toString(),
-                            currencyCode: merch.unitPrice.currencyCode as CurrencyCode,
-                        }}
-                    />
-                </del>
+                <CompareAtPrice
+                    className="text-(color:var(--text-muted)) font-medium text-base leading-tight"
+                    data={{
+                        amount: (
+                            safeParseFloat(0, merch.compareAtUnitPrice?.amount, merch.unitPrice.amount) * line.quantity
+                        ).toString(),
+                        currencyCode: merch.unitPrice.currencyCode as CurrencyCode,
+                    }}
+                />
             ) : null}
             <Price
                 className={cn(
