@@ -555,6 +555,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   semantics are now consistent across product card, cart line, and bulk-pricing tiers.
 - Verified: biome clean, typecheck clean, cart-line + quantity-breaks 13/13.
 
+### 50 — Extract a CompareAtPrice primitive
+
+- Consolidated the iter-48/49 sale-price semantic into a reusable `CompareAtPrice` in
+  `products/price.tsx` (`<del className="no-underline">` + `Price` with `line-through`). Refactored the
+  cart line and quantity-break tiers to use it, so the "superseded price" semantic + single-strike
+  visual now live in one place any future compare-at render extends. (The product-card price keeps its
+  bespoke angled-strike `<del>` — different visual treatment, custom Intl formatting.)
+- Added a `CompareAtPrice` test (renders `<del>`, suppressed del underline, single `line-through`).
+- Verified: biome clean, typecheck clean, price 3/3, cart-line + quantity-breaks 13/13.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
