@@ -6,6 +6,21 @@ export type AvatarProps = {
     src?: string | null;
     name?: string | null;
 } & Omit<HTMLProps<HTMLDivElement>, 'name' | 'children' | 'src'>;
+
+/**
+ * Derives the avatar fallback initials from a display name: the first letter of the first and last
+ * words, uppercased. Capped at two so multi-word names ("Mary Jane Watson" → "MW") never overflow the
+ * fixed-size circle, and collapses runs of whitespace so stray spaces don't yield empty initials.
+ *
+ * @param name - The display name to derive initials from.
+ * @returns One or two uppercase initials, or an empty string when `name` has no word characters.
+ */
+export function getInitials(name: string): string {
+    const words = name.split(/\s+/).filter(Boolean);
+    const first = words.at(0)?.charAt(0) ?? '';
+    const last = words.length > 1 ? (words.at(-1)?.charAt(0) ?? '') : '';
+    return `${first}${last}`.toUpperCase();
+}
 /**
  * Circular avatar showing a profile image when available, otherwise initials derived from `name`.
  *
@@ -30,7 +45,7 @@ export async function Avatar({ src, name, title, className, ...props }: AvatarPr
         >
             {src ? (
                 <Image
-                    className={cn('h-full w-full object-cover object-center', className)}
+                    className="size-full object-cover object-center"
                     role="presentation"
                     alt=""
                     width={45}
@@ -42,12 +57,7 @@ export async function Avatar({ src, name, title, className, ...props }: AvatarPr
                     fetchPriority="auto"
                 />
             ) : null}
-            {!src && name
-                ? name
-                      .split(' ')
-                      .map((_) => _.slice(0, 1).toUpperCase())
-                      .join('')
-                : null}
+            {!src && name ? getInitials(name) : null}
         </div>
     );
 }
