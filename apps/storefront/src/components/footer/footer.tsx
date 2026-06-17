@@ -140,30 +140,33 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                 </section>
 
                 {social.length > 0 ? (
-                    <section className="flex flex-wrap items-center gap-3">
+                    <ul className="flex flex-wrap items-center gap-3">
                         {social.map((s, i) => {
                             const Icon = SOCIAL_ICONS[s.platform];
                             return (
-                                <Link
-                                    key={s.id ?? `so-${i}`}
-                                    href={s.url}
-                                    target="_blank"
-                                    aria-label={s.platform}
-                                    className="rounded-full p-1 transition-colors hover:bg-(--surface-0)/10 focus-visible:bg-(--surface-0)/10"
-                                >
-                                    <Icon className="h-5 w-5" />
-                                </Link>
+                                <li key={s.id ?? `so-${i}`}>
+                                    <Link
+                                        href={s.url}
+                                        target="_blank"
+                                        aria-label={s.platform}
+                                        className="block rounded-full p-1 transition-colors hover:bg-(--surface-0)/10 focus-visible:bg-(--surface-0)/10"
+                                    >
+                                        <Icon className="h-5 w-5" />
+                                    </Link>
+                                </li>
                             );
                         })}
-                    </section>
+                    </ul>
                 ) : null}
 
                 {legal.length > 0 ? (
-                    <section className="flex flex-wrap items-center gap-3 text-sm">
+                    <ul className="flex flex-wrap items-center gap-3 text-sm">
                         {legal.map((l, i) => (
-                            <FooterLegalLink key={l.id ?? `l-${i}`} item={l} locale={locale} />
+                            <li key={l.id ?? `l-${i}`}>
+                                <FooterLegalLink item={l} locale={locale} />
+                            </li>
                         ))}
-                    </section>
+                    </ul>
                 ) : null}
 
                 <section className="text-sm opacity-80">{copyrightLine}</section>
@@ -189,11 +192,13 @@ function FooterSection({ section, locale }: { section: Section; locale: Locale }
     return (
         <div className={BLOCK_STYLES} data-align="right">
             <div className="font-extrabold text-lg leading-tight md:text-xl">{section.title}</div>
-            <div className="flex flex-wrap gap-2 md:gap-y-1">
+            <ul className="flex flex-wrap gap-2 md:gap-y-1">
                 {links.map((l, i) => (
-                    <FooterLinkAnchor key={l.id ?? `sl-${i}`} item={l} locale={locale} />
+                    <li key={l.id ?? `sl-${i}`}>
+                        <FooterLinkAnchor item={l} locale={locale} />
+                    </li>
                 ))}
-            </div>
+            </ul>
         </div>
     );
 }
