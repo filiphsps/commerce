@@ -35,6 +35,7 @@ const Chip = ({ value, onSelect, readOnly }: OptionValueRendererProps) => {
             type="button"
             onClick={onSelect}
             aria-pressed={value.selected}
+            aria-disabled={!value.available}
             data-active={value.selected ? 'true' : 'false'}
             data-available={value.available ? 'true' : 'false'}
             className={`${SHARED_CHIP} hover:border-(color:var(--accent)) cursor-pointer transition-[background-color,border-color,transform] hover:bg-(--accent-soft) focus-visible:outline-none focus-visible:outline-offset-2 data-[available=false]:cursor-not-allowed data-[available=false]:line-through data-[available=false]:opacity-50 motion-safe:active:scale-[0.97] focus-visible:[outline:2px_solid_var(--focus-ring)]`}

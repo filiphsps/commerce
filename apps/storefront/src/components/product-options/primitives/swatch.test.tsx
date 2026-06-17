@@ -39,11 +39,12 @@ describe('Swatch', () => {
         expect(container.querySelector('[data-active="true"]')).toBeTruthy();
     });
 
-    it('marks the out-of-stock state when not available', () => {
-        const { container } = render(
+    it('marks the out-of-stock state when not available (visually and for assistive tech)', () => {
+        const { container, getByRole } = render(
             <Swatch group={baseGroup} value={mkValue({ available: false })} onSelect={() => {}} density="compact" />,
         );
         expect(container.querySelector('[data-available="false"]')).toBeTruthy();
+        expect(getByRole('button').getAttribute('aria-disabled')).toBe('true');
     });
 
     it('renders an image swatch when swatch.image is present', () => {

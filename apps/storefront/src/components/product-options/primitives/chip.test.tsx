@@ -24,11 +24,12 @@ describe('Chip', () => {
         expect(container.querySelector('[data-active="true"]')).toBeTruthy();
     });
 
-    it('marks out-of-stock', () => {
-        const { container } = render(
+    it('marks out-of-stock (visually and for assistive tech)', () => {
+        const { container, getByRole } = render(
             <Chip group={grp} value={mkValue({ available: false })} onSelect={() => {}} density="compact" />,
         );
         expect(container.querySelector('[data-available="false"]')).toBeTruthy();
+        expect(getByRole('button').getAttribute('aria-disabled')).toBe('true');
     });
 
     it('calls onSelect on click', () => {

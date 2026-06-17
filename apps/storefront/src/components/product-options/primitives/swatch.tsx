@@ -65,6 +65,7 @@ const Swatch = ({ value, onSelect, readOnly }: OptionValueRendererProps) => {
             onClick={onSelect}
             aria-label={value.name}
             aria-pressed={value.selected}
+            aria-disabled={!value.available}
             data-available={value.available ? 'true' : 'false'}
             data-active={value.selected ? 'true' : 'false'}
             disabled={false}
