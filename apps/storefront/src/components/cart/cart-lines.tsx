@@ -49,19 +49,27 @@ const CartLines = ({ i18n }: CartContentProps) => {
                 <ExportCartButton i18n={i18n} />
             </div>
 
-            <section className="flex h-full w-full flex-col gap-(--block-spacer-large) empty:hidden md:gap-(--block-spacer-large)">
+            {/* No `list-none`: the flex container already suppresses `<li>` markers, and keeping the
+             * default list-style preserves the list role in Safari (which drops it under
+             * `list-style: none`) — so the cart still announces as a list of N items everywhere. */}
+            <ul
+                aria-label={tCart('products')}
+                className="flex h-full w-full flex-col gap-(--block-spacer-large) empty:hidden md:gap-(--block-spacer-large)"
+            >
                 {lines.map((item) => {
                     if (!item) {
                         return null;
                     }
 
                     return (
-                        <Suspense fallback={<CartLine.skeleton />} key={item.id}>
-                            <CartLine i18n={i18n} data={item} />
-                        </Suspense>
+                        <li key={item.id}>
+                            <Suspense fallback={<CartLine.skeleton />}>
+                                <CartLine i18n={i18n} data={item} />
+                            </Suspense>
+                        </li>
                     );
                 })}
-            </section>
+            </ul>
         </div>
     );
 };
