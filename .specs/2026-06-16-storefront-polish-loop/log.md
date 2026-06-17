@@ -628,6 +628,19 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   the className-leak guard (wrapper class never appears on the `<img>`).
 - Verified: biome clean, typecheck clean, avatar 7/7.
 
+### 55 — Cart coupons: focusable remove control + fix distorted icon
+
+- Two issues in `CartCoupons`. (1) The per-code remove button was `className="contents"` (`display:
+  contents`), which erases the element's box — keyboard users got no hit area and **no visible focus
+  indicator** when tabbing to it. Rebuilt it as a small padded target carrying the shared `focus-ring`
+  plus a `--state-danger` hover/focus color (driven through `currentColor` so the icon recolors with
+  it). (2) The X icon used `h-4` with no matching width; lucide renders at a 24px default, so
+  height-only constrained it to 16 tall × 24 wide — a squashed glyph. Switched both the tag and X icons
+  to canonical `size-4` (also tokenized the tag icon to `--text-muted`). Dropped the redundant
+  single-arg `cn()` and its now-unused import.
+- Added a test asserting the remove control is no longer `display:contents` and carries `focus-ring`.
+- Verified: biome clean, typecheck clean, cart-coupons 6/6.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
