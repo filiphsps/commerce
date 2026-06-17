@@ -33,6 +33,13 @@ describe('components', () => {
                 expect(document.body.textContent).toContain('3');
             });
 
+            it('names the link with the action and item count for assistive tech', () => {
+                vi.mocked(useCartCount).mockReturnValue(3);
+                const i18n = { cart: { 'view-cart': 'View cart', 'n-items': '{0} items' } } as any;
+                render(<CartButton locale={{ code: 'en-US' } as any} i18n={i18n} />);
+                expect(screen.getByRole('link').getAttribute('aria-label')).toBe('View cart, 3 items');
+            });
+
             it('stamps the count badge when the quantity increases', () => {
                 vi.mocked(useCartCount).mockReturnValue(1);
                 const { container, rerender } = render(

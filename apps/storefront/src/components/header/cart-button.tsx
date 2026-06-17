@@ -37,11 +37,17 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
     }, [totalQuantity]);
     const clearBump = useCallback(() => setBump(false), []);
 
+    // The link's visible content is just the count number (or nothing), which alone reads as a bare
+    // "3" to a screen reader. Give it an explicit name stating the action and the item count.
+    const viewCart = capitalize(t('view-cart'));
+    const label = totalQuantity > 0 ? `${viewCart}, ${t('n-items', totalQuantity)}` : viewCart;
+
     return (
         <Button
             as={Link}
             href="/cart/"
             locale={locale}
+            aria-label={label}
             className={cn(
                 'group grid h-10 grid-cols-[auto_1fr] grid-rows-[1fr] items-center justify-center gap-0 overflow-clip rounded-none bg-transparent p-0 py-0 text-center leading-none transition-all duration-250 *:leading-snug',
                 totalQuantity &&
