@@ -33,6 +33,36 @@ const SECTION_STYLES =
     'flex flex-col p-[var(--block-padding-large)] rounded-[var(--block-border-radius)] bg-[var(--color-block)] text-[color:var(--color-dark)] transition-all duration-150 ease-in-out';
 const HEADER_STYLES = 'grid grid-cols-[1fr_auto] gap-[var(--block-spacer)]';
 
+type SummaryRowProps = {
+    label: ReactNode;
+    children: ReactNode;
+    className?: string;
+    labelClassName?: string;
+    title?: string;
+    'data-testid'?: string;
+};
+
+/**
+ * One label/value line in the order summary (shipping, subtotal, discount, promo, …). Consolidates the
+ * shared `flex justify-between` row + muted `Label` so every summary line stays visually consistent and
+ * the value (a `Price`, plain text, or `null` while loading) is passed as `children`.
+ *
+ * @param props.label - The row's leading label text.
+ * @param props.children - The trailing value, e.g. a `Price` or status text.
+ * @param props.className - Extra classes for the row wrapper.
+ * @param props.labelClassName - Extra classes merged onto the label (over the shared muted styles).
+ * @param props.title - Optional native tooltip for the row (e.g. the discount percentage).
+ * @param props.data-testid - Optional test hook forwarded to the row wrapper.
+ * @returns The summary row element.
+ */
+const SummaryRow = ({ label, children, className, labelClassName, title, 'data-testid': testId }: SummaryRowProps) => (
+    <div className={cn('flex items-center justify-between', className)} title={title} data-testid={testId}>
+        <Label className={cn(SUMMARY_LABEL_STYLES, labelClassName)}>{label}</Label>
+        {children}
+    </div>
+);
+SummaryRow.displayName = 'Nordcom.Cart.SummaryRow';
+
 // TODO: Configurable free shipping.
 
 type CartSummaryProps = {
@@ -123,13 +153,11 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 </header>
 
                 <div className="flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                        <Label className={SUMMARY_LABEL_STYLES}>{t('shipping')}</Label>
+                    <SummaryRow label={t('shipping')}>
                         <div className={PRICE_STYLES}>{'TBD*'}</div>
-                    </div>
+                    </SummaryRow>
 
-                    <div className="flex items-center justify-between">
-                        <Label className={SUMMARY_LABEL_STYLES}>{t('subtotal')}</Label>
+                    <SummaryRow label={t('subtotal')}>
                         {cost.subtotal && !noItems ? (
                             <Price
                                 className={PRICE_STYLES}
@@ -144,17 +172,16 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         ) : (
                             <div className={PRICE_STYLES}>...</div>
                         )}
-                    </div>
+                    </SummaryRow>
 
                     {totalSale ? (
                         <>
                             {sale ? (
-                                <div
-                                    className="flex items-center justify-between"
+                                <SummaryRow
+                                    label={t('discount')}
                                     data-testid="cart-summary-sale"
                                     title={`${salePercentage}% OFF`}
                                 >
-                                    <Label className={SUMMARY_LABEL_STYLES}>{t('discount')}</Label>
                                     {cartReady ? (
                                         <Price
                                             className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
@@ -164,7 +191,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                             }}
                                         />
                                     ) : null}
-                                </div>
+                                </SummaryRow>
                             ) : null}
 
                             {lines.flatMap((line) => line.discountAllocations ?? []).length > 0 ? (
@@ -192,13 +219,12 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                 }
 
                                                 return (
-                                                    <div
-                                                        className="flex items-center justify-between gap-2"
+                                                    <SummaryRow
+                                                        className="gap-2"
+                                                        labelClassName="min-w-0 truncate"
+                                                        label={title}
                                                         key={`${line.id}-${discount.discountedAmount.amount}`}
                                                     >
-                                                        <Label className={cn(SUMMARY_LABEL_STYLES, 'min-w-0 truncate')}>
-                                                            {title}
-                                                        </Label>
                                                         <Price
                                                             className={cn(
                                                                 PRICE_STYLES,
@@ -210,7 +236,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                                 amount: discount.discountedAmount.amount,
                                                             }}
                                                         />
-                                                    </div>
+                                                    </SummaryRow>
                                                 );
                                             }),
                                         )}
@@ -221,8 +247,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     ) : null}
 
                     {promos && !noItems ? (
-                        <div className="flex items-center justify-between">
-                            <Label className={SUMMARY_LABEL_STYLES}>{t('promo-codes')}</Label>
+                        <SummaryRow label={t('promo-codes')}>
                             {cartReady ? (
                                 <Price
                                     className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
@@ -232,7 +257,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     }}
                                 />
                             ) : null}
-                        </div>
+                        </SummaryRow>
                     ) : null}
 
                     <div className="mt-[var(--block-padding-small)] flex items-center justify-between pt-1 [border-top:calc(var(--block-border-width)/1.5)_dotted_var(--color-gray)]">
