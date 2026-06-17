@@ -28,13 +28,13 @@ const CartCoupons = ({ i18n }: { i18n: LocaleDictionary }) => {
         <section className="flex flex-col items-start justify-start gap-2">
             <Label>{t('active-discounts')}</Label>
 
-            <div className={cn('flex flex-wrap gap-2')}>
+            <ul aria-label={t('active-discounts')} className={cn('flex flex-wrap gap-2')}>
                 {discountCodes.map(({ code }) => (
-                    <div
+                    <li
                         key={code}
                         className="flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-(--surface-0) px-3 py-2"
                     >
-                        <TagIcon className="" />
+                        <TagIcon aria-hidden={true} />
 
                         <Label>{code}</Label>
 
@@ -53,9 +53,9 @@ const CartCoupons = ({ i18n }: { i18n: LocaleDictionary }) => {
                                 style={{ strokeWidth: 2.5 }}
                             />
                         </Button>
-                    </div>
+                    </li>
                 ))}
-            </div>
+            </ul>
         </section>
     );
 };
