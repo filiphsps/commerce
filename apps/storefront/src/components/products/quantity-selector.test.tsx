@@ -116,6 +116,18 @@ describe('components', () => {
             expect(screen.getByTestId('quantity-decrease')).not.toBeDisabled();
         });
 
+        it('drops the interactive affordance from the decrease button at the lower bound', () => {
+            // value=1 with allowDecreaseToZero off puts decrease at its bound: it must be disabled AND
+            // shed the clickable hover/scale styles (previously gated on !disabled, so a disabled-at-bound
+            // button still rendered cursor-pointer + hover:bg-primary).
+            render(<QuantitySelector i18n={{} as any} update={() => {}} value={1} />);
+
+            const decrease = screen.getByTestId('quantity-decrease');
+            expect(decrease).toBeDisabled();
+            expect(decrease.className).not.toMatch(/cursor-pointer/);
+            expect(decrease.className).not.toMatch(/motion-safe:active:scale-\[0\.97\]/);
+        });
+
         it('groups the stepper controls in a labeled fieldset', () => {
             render(<QuantitySelector i18n={{} as any} update={() => {}} value={3} />);
 

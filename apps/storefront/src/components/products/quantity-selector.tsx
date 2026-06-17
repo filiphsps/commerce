@@ -192,7 +192,7 @@ const QuantitySelector = ({
                 type="button"
                 className={cn(
                     'aspect-3/4 h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
-                    !disabled &&
+                    !decreaseDisabled &&
                         'cursor-pointer hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground motion-safe:transition-[color,background-color,transform] motion-safe:duration-(--product-card-motion-fast) motion-safe:active:scale-[0.97]',
                     buttonClassName,
                 )}
