@@ -614,6 +614,20 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   test: full-then-partial writes keep `currencyCode` and emit no merge warning.
 - Verified: biome clean, typecheck clean, quantity-selector 11/11, client 1/1.
 
+### 54 — Avatar: cap initials, stop the className leak
+
+- Two bugs in the `Avatar` fallback. (1) Initials emitted one letter **per word**
+  (`name.split(' ').map(first-letter)`), so "Mary Jane Watson" rendered "MJW" — three glyphs
+  overflowing the fixed `size-8` circle — and double-spaces yielded empty initials. Extracted a
+  testable `getInitials` that takes the first + last word initials (capped at two) and collapses
+  whitespace runs. (2) The wrapper `className` was *also* spread onto the inner `<Image>`, so a caller's
+  circle styling leaked onto the image — the blog author avatar's `-mt-1 -mb-1 size-4` landed on the img
+  inside the `overflow-hidden` circle. The image now always just fills (`size-full`); only the wrapper
+  takes `className`.
+- Added the component's first tests: `getInitials` (single / multi-word cap / whitespace / empty) and
+  the className-leak guard (wrapper class never appears on the `<img>`).
+- Verified: biome clean, typecheck clean, avatar 7/7.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
