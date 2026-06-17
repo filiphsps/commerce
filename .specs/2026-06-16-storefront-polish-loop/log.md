@@ -418,6 +418,18 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   tier, mocking the option/quantity/cart contexts).
 - Verified: biome clean, typecheck clean, quantity-breaks 2/2.
 
+### 37 — Announce unavailable option chips/swatches
+
+- The product-options `Chip` and `Swatch` selectors marked out-of-stock values only visually
+  (line-through / struck swatch + `cursor-not-allowed`), but the buttons stayed enabled with no
+  `aria-disabled` — screen readers got no "unavailable" signal. (They stay clickable by design, to view
+  the unavailable variant, so `aria-disabled` — not `disabled` — is the right semantic.)
+- Added `aria-disabled={!value.available}` to both interactive controls; extended the existing
+  out-of-stock tests to assert it.
+- Note: this iteration's base was rebased onto an updated master mid-loop (+73 commits); reset to the
+  rebased remote and re-applied the change cleanly before committing.
+- Verified: biome clean, typecheck clean, chip + swatch 10/10.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
