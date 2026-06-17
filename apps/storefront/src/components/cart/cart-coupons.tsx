@@ -6,7 +6,6 @@ import type { AppCartCaps } from '@/cart/caps';
 import { Button } from '@/components/actionable/button';
 import { Label } from '@/components/typography/label';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 
 /**
  * Displays active discount codes on the cart and provides a button to remove each one.
@@ -28,19 +27,19 @@ const CartCoupons = ({ i18n }: { i18n: LocaleDictionary }) => {
         <section className="flex flex-col items-start justify-start gap-2">
             <Label>{t('active-discounts')}</Label>
 
-            <ul aria-label={t('active-discounts')} className={cn('flex flex-wrap gap-2')}>
+            <ul aria-label={t('active-discounts')} className="flex flex-wrap gap-2">
                 {discountCodes.map(({ code }) => (
                     <li
                         key={code}
                         className="flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-(--surface-0) px-3 py-2"
                     >
-                        <TagIcon aria-hidden={true} />
+                        <TagIcon className="text-(color:var(--text-muted)) size-4" aria-hidden={true} />
 
                         <Label>{code}</Label>
 
                         <Button
                             styled={false}
-                            className="contents"
+                            className="focus-ring text-(color:var(--text-muted)) hover:text-(color:var(--state-danger)) focus-visible:text-(color:var(--state-danger)) -mr-1 flex items-center justify-center rounded-md p-1 transition-colors"
                             type="button"
                             aria-label={t('remove-discount', code)}
                             title={t('remove-discount', code)}
@@ -48,10 +47,7 @@ const CartCoupons = ({ i18n }: { i18n: LocaleDictionary }) => {
                                 void removeDiscountCode(code);
                             }}
                         >
-                            <XIcon
-                                className="h-4 text-lg transition-colors hover:fill-(--state-danger) hover:stroke-(--state-danger)"
-                                style={{ strokeWidth: 2.5 }}
-                            />
+                            <XIcon className="size-4" strokeWidth={2.5} />
                         </Button>
                     </li>
                 ))}

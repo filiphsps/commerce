@@ -78,6 +78,16 @@ describe('components', () => {
             expect(screen.getByRole('button', { name: 'Remove discount SAVE10' })).toBeTruthy();
         });
 
+        it('gives the remove control a real focusable target with a focus ring', () => {
+            setState({ cartReady: true, discountCodes: [{ applicable: true, code: 'SAVE10' }] });
+
+            render(<CartCoupons i18n={i18n} />);
+            const remove = screen.getByRole('button', { name: 'Remove discount SAVE10' });
+            // Previously `display: contents`, which erases the box and any focus indicator.
+            expect(remove.className).not.toMatch(/\bcontents\b/);
+            expect(remove.className).toMatch(/focus-ring/);
+        });
+
         it('calls removeDiscountCode with the removed code when the remove button is clicked', () => {
             removeDiscountCode.mockClear();
             setState({
