@@ -238,67 +238,72 @@ export function ProductFilters({ filters, i18n, total }: ProductFiltersProps) {
     );
 
     return (
-        <div className={cn('flex flex-col gap-3', isPending && 'pointer-events-none opacity-60')}>
-            <div className="flex items-center gap-3">
-                {typeof total === 'number' ? (
-                    <span className="mr-auto font-medium text-(--text-muted) text-sm">
-                        {total === 1 ? `1 ${t('product')}` : `${total} ${t('products')}`}
-                    </span>
-                ) : null}
-
-                <button
-                    type="button"
-                    onClick={() => setDrawerOpen(true)}
-                    disabled={recognized.length === 0}
-                    className="focus-ring inline-flex items-center gap-2 rounded-lg border border-(--border-default) border-solid px-3 py-2 font-semibold text-sm disabled:opacity-40"
-                >
-                    <FilterIcon className="size-4" aria-hidden={true} />
-                    {t('filters')}
-                    {activeChips.length > 0 ? (
-                        <span className="rounded-full bg-(--accent) px-1.5 text-(--accent-primary-text) text-xs">
-                            {activeChips.length}
+        <div className="flex flex-col gap-3">
+            {/* The pending dim is scoped to the in-flow toolbar/chips only. It must NOT wrap the fixed
+             * drawer below: `opacity < 1` creates a stacking context, which would trap the drawer's
+             * `z-50` beneath sibling page chrome on every filter commit (flicker-behind-then-return). */}
+            <div className={cn('flex flex-col gap-3', isPending && 'pointer-events-none opacity-60')}>
+                <div className="flex items-center gap-3">
+                    {typeof total === 'number' ? (
+                        <span className="mr-auto font-medium text-(--text-muted) text-sm">
+                            {total === 1 ? `1 ${t('product')}` : `${total} ${t('products')}`}
                         </span>
                     ) : null}
-                </button>
 
-                <select
-                    aria-label={t('sort')}
-                    value={searchParams.get('sorting') ?? SORT_OPTIONS[0].value}
-                    onChange={(e) =>
-                        setParam('sorting', e.target.value === SORT_OPTIONS[0].value ? null : e.target.value)
-                    }
-                    className="focus-ring rounded-lg border border-(--border-default) border-solid bg-(--surface-0) px-3 py-2 font-semibold text-sm"
-                >
-                    {SORT_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                            {t(option.labelKey)}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            {activeChips.length > 0 ? (
-                <div className="flex flex-wrap items-center gap-2">
-                    {activeChips.map((chip) => (
-                        <button
-                            key={chip.key}
-                            type="button"
-                            onClick={() => clearChip(chip.key)}
-                            className="inline-flex items-center gap-1.5 rounded-full border border-(--border-default) border-solid bg-(--surface-1) px-3 py-1 font-semibold text-sm"
-                        >
-                            {chip.label}
-                            <XIcon className="size-3.5 text-(--text-muted)" aria-hidden={true} />
-                        </button>
-                    ))}
                     <button
                         type="button"
-                        onClick={() => commit(new URLSearchParams())}
-                        className="font-semibold text-(--accent) text-sm"
+                        onClick={() => setDrawerOpen(true)}
+                        disabled={recognized.length === 0}
+                        className="focus-ring inline-flex items-center gap-2 rounded-lg border border-(--border-default) border-solid px-3 py-2 font-semibold text-sm disabled:opacity-40"
                     >
-                        {t('clear-all')}
+                        <FilterIcon className="size-4" aria-hidden={true} />
+                        {t('filters')}
+                        {activeChips.length > 0 ? (
+                            <span className="rounded-full bg-(--accent) px-1.5 text-(--accent-primary-text) text-xs">
+                                {activeChips.length}
+                            </span>
+                        ) : null}
                     </button>
+
+                    <select
+                        aria-label={t('sort')}
+                        value={searchParams.get('sorting') ?? SORT_OPTIONS[0].value}
+                        onChange={(e) =>
+                            setParam('sorting', e.target.value === SORT_OPTIONS[0].value ? null : e.target.value)
+                        }
+                        className="focus-ring rounded-lg border border-(--border-default) border-solid bg-(--surface-0) px-3 py-2 font-semibold text-sm"
+                    >
+                        {SORT_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {t(option.labelKey)}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-            ) : null}
+
+                {activeChips.length > 0 ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                        {activeChips.map((chip) => (
+                            <button
+                                key={chip.key}
+                                type="button"
+                                onClick={() => clearChip(chip.key)}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-(--border-default) border-solid bg-(--surface-1) px-3 py-1 font-semibold text-sm"
+                            >
+                                {chip.label}
+                                <XIcon className="size-3.5 text-(--text-muted)" aria-hidden={true} />
+                            </button>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={() => commit(new URLSearchParams())}
+                            className="font-semibold text-(--accent) text-sm"
+                        >
+                            {t('clear-all')}
+                        </button>
+                    </div>
+                ) : null}
+            </div>
 
             {drawerOpen ? (
                 <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
