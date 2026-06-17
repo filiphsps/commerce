@@ -641,6 +641,18 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Added a test asserting the remove control is no longer `display:contents` and carries `focus-ring`.
 - Verified: biome clean, typecheck clean, cart-coupons 6/6.
 
+### 56 — Cart summary: extract a SummaryRow building block
+
+- `CartSummary` hand-rolled the same `flex justify-between` row + muted `Label` for the shipping,
+  subtotal, discount, promo, and per-line automatic-discount rows (5 call sites, same markup). Extracted
+  a `SummaryRow` primitive that takes the `label` and renders the value (a `Price`, status text, or
+  `null` while loading) as `children`, with optional `className`/`labelClassName`/`title`/`data-testid`
+  pass-through. Every summary line now stays visually consistent and future rows extend one component
+  instead of re-deriving the layout. Preserved the `cart-summary-sale` testid, the discount-percentage
+  tooltip, and the truncate behavior on long automatic-discount titles.
+- Verified: biome clean, typecheck clean, cart-summary 7/7 (existing suite covers the sale row, the
+  100%-off guard, and long-title truncation — all green against the refactor).
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
