@@ -38,6 +38,69 @@ export function resolveCurrentPage(raw: string | null, firstPage: number, lastPa
     return Math.min(Math.max(parsed, firstPage), lastPage);
 }
 
+type PaginationActionProps = {
+    direction: 'previous' | 'next';
+    label: string;
+    href?: string;
+    prefetch?: boolean;
+};
+
+/**
+ * Previous/next pagination control rendered as a link when navigable, or a disabled marker at a bound.
+ *
+ * Threading the bound through an optional `href` keeps the enabled and disabled states in one place:
+ * an absent `href` renders a non-interactive `<span aria-disabled>` (so assistive tech announces a
+ * disabled control rather than stray text) instead of the prior bare `<div>`, while the chevron sits
+ * before the label for `previous` and after it for `next`.
+ *
+ * @param props.direction - Which bound the control steps toward; sets the chevron side.
+ * @param props.label - Localized, already-capitalized control label.
+ * @param props.href - Target URL when navigable; omit to render the disabled state.
+ * @param props.prefetch - Whether the link prefetches; ignored in the disabled state.
+ * @returns The pagination action element.
+ */
+const PaginationAction = ({ direction, label, href, prefetch = false }: PaginationActionProps) => {
+    const icon =
+        direction === 'previous' ? (
+            <ChevronLeftIcon className="stroke-2 text-inherit" />
+        ) : (
+            <ChevronRightIcon className="stroke-2 text-inherit" />
+        );
+    const content =
+        direction === 'previous' ? (
+            <>
+                {icon}
+                {label}
+            </>
+        ) : (
+            <>
+                {label}
+                {icon}
+            </>
+        );
+
+    if (!href) {
+        return (
+            <span
+                className={cn(
+                    ACTION_STYLES,
+                    'text-(color:var(--text-muted)) hover:text-(color:var(--text-muted)) cursor-not-allowed',
+                )}
+                aria-disabled="true"
+            >
+                {content}
+            </span>
+        );
+    }
+
+    return (
+        <Link className={ACTION_STYLES} href={href} prefetch={prefetch}>
+            {content}
+        </Link>
+    );
+};
+PaginationAction.displayName = 'Nordcom.Actionable.PaginationAction';
+
 export type PaginationProps = ComponentProps<'nav'> & {
     i18n: LocaleDictionary;
     knownFirstPage?: number;
@@ -126,22 +189,12 @@ export function Pagination({
             aria-label="pagination"
             className="overflow-x-shadow flex max-w-full flex-nowrap items-center gap-3 md:gap-4"
         >
-            {currentPage !== 1 ? (
-                <Link className={ACTION_STYLES} href={previousHref} prefetch={false}>
-                    <ChevronLeftIcon className="stroke-2 text-inherit" />
-                    {capitalize(t('previous'))}
-                </Link>
-            ) : (
-                <div
-                    className={cn(
-                        ACTION_STYLES,
-                        'text-(color:var(--text-muted)) hover:text-(color:var(--text-muted)) cursor-not-allowed',
-                    )}
-                >
-                    <ChevronLeftIcon className="stroke-2 text-inherit" />
-                    {capitalize(t('previous'))}
-                </div>
-            )}
+            <PaginationAction
+                direction="previous"
+                label={capitalize(t('previous'))}
+                href={currentPage !== 1 ? previousHref : undefined}
+                prefetch={false}
+            />
 
             <div className="flex items-center gap-1 md:flex-wrap">
                 {items}
@@ -153,22 +206,12 @@ export function Pagination({
                 ) : null}
             </div>
 
-            {currentPage !== knownLastPage ? (
-                <Link className={ACTION_STYLES} href={nextHref} prefetch={true}>
-                    {capitalize(t('next'))}
-                    <ChevronRightIcon className="stroke-2 text-inherit" />
-                </Link>
-            ) : (
-                <div
-                    className={cn(
-                        ACTION_STYLES,
-                        'text-(color:var(--text-muted)) hover:text-(color:var(--text-muted)) cursor-not-allowed',
-                    )}
-                >
-                    {capitalize(t('next'))}
-                    <ChevronRightIcon className="stroke-2 text-inherit" />
-                </div>
-            )}
+            <PaginationAction
+                direction="next"
+                label={capitalize(t('next'))}
+                href={currentPage !== knownLastPage ? nextHref : undefined}
+                prefetch={true}
+            />
         </nav>
     );
 }

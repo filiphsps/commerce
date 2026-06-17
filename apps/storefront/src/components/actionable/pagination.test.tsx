@@ -16,6 +16,16 @@ describe('components', () => {
             expect(wrapper.container).toBeEmptyDOMElement();
             expect(() => wrapper.unmount()).not.toThrow();
         });
+
+        it('marks the previous control aria-disabled on the first page and leaves next navigable', () => {
+            // No ?page param resolves to the first page, so "previous" is at the lower bound.
+            const wrapper = render(<Pagination i18n={i18n} knownFirstPage={1} knownLastPage={5} />);
+            const disabled = wrapper.container.querySelectorAll('[aria-disabled="true"]');
+            expect(disabled).toHaveLength(1);
+            // The disabled control is a non-interactive span, never an anchor.
+            expect(disabled[0]?.tagName).toBe('SPAN');
+            expect(wrapper.container.querySelector('a[aria-disabled]')).toBeNull();
+        });
     });
 
     describe('resolveCurrentPage', () => {
