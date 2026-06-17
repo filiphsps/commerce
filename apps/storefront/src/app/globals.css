@@ -849,6 +849,14 @@ html:root {
             backdrop-filter: blur(12px);
         }
     }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"] {
+        @apply appearance-none;
+        appearance: textfield;
+        -moz-appearance: textfield;
+    }
 }
 
 @keyframes product-card-overlay-fade-in {
