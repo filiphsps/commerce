@@ -493,6 +493,17 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   no longer dims/flickers while you toggle facets.)
 - Verified: biome clean, typecheck clean, product-filters 1/1.
 
+### 44 — Stacking-trap sweep + cart-coupons list
+
+- Swept for the iter-43 bug class (a `fixed`/`absolute z-` overlay under a conditional `opacity`/
+  `transform` wrapper): the filter drawer was the only genuine instance. The others are absolute-
+  within-card (cart-line remove button — contained, intended) or Radix portals / top-layer `<dialog>`
+  (gallery lightbox, pickers, overlay) that escape ancestor stacking by construction. No further fixes.
+- Change this iteration: the cart's active-discount chips were a flex `<div>` of `<div>`s — converted
+  to a labeled `<ul aria-label={t('active-discounts')}>` with `<li>` chips (flex hides markers, Safari
+  list role preserved), and marked the decorative tag icon `aria-hidden`.
+- Verified: biome clean, typecheck clean, cart-coupons 5/5.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
