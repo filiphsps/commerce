@@ -537,7 +537,20 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   landmark, cumulative hrefs, and `aria-current` all preserved. Dropped the now-unused `Fragment`.
 - Verified: biome clean, typecheck clean, breadcrumbs 4/4.
 
+### 48 — Semantic sale price on the product card
+
+- The product-card sale price rendered the compare-at amount as a `<span>` with a CSS-pseudo
+  (`::after`) strike — invisible to assistive tech, so a screen reader heard two bare numbers ("20
+  30") with no relationship.
+- Changed the compare-at to a `<del>` (marks it as the superseded price) with `no-underline` so the UA
+  line-through doesn't double the custom angled strike. Added the component's first test (no `<del>`
+  off-sale; `<del>` wrapping the compare-at on sale).
+- Verified: biome clean, typecheck clean, product-card-price 2/2, product-card 3/3.
+
 #### Notes / deferred
+
+- Apply the same `<del>` sale-price semantics to the other compare-at renders (cart-line, quantity-
+  breaks) for consistency — those use a CSS `line-through` Price span; wrap in `<del>`.
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
   693-line stateful client component — decomposition is high-risk for a single loop pass.
