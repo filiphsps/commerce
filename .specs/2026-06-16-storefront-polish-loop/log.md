@@ -565,6 +565,18 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Added a `CompareAtPrice` test (renders `<del>`, suppressed del underline, single `line-through`).
 - Verified: biome clean, typecheck clean, price 3/3, cart-line + quantity-breaks 13/13.
 
+### 51 — Respect reduced-motion on the picker sheet
+
+- Swept animations for `prefers-reduced-motion` compliance. Custom keyframes (`animate-mega-menu-*`,
+  product-card motion) are already either `motion-safe:`-gated or neutralized by the
+  `@media (prefers-reduced-motion: reduce)` block in globals.css. The one gap: the mobile picker
+  **sheet**'s Radix `data-[state]:animate-in/out` (slide/fade on the overlay + content) wasn't gated,
+  so it animated even under reduced-motion (the globals reset only covers `.animate-mega-menu-*`, not
+  tailwindcss-animate's `animate-in/out`).
+- Gated both with `motion-safe:` so reduced-motion users get an instant show/hide; Radix unmounts
+  immediately when there's no animation.
+- Verified: biome clean, typecheck clean, picker 10/10.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
