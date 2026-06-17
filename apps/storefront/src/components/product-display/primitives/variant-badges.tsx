@@ -42,7 +42,7 @@ const VariantBadges = ({ product, i18n, className }: VariantBadgesProps) => {
                         'h-8 rounded-t-(--product-card-image-radius) rounded-b-none bg-primary px-3 text-primary-foreground text-xs normal-case leading-none',
                     )}
                 >
-                    <PackageIcon className="text-sm leading-none" />
+                    <PackageIcon className="size-3 stroke-2" />
                     {capitalize(t('free-shipping'))}
                 </div>
             </div>
@@ -70,7 +70,7 @@ const VariantBadges = ({ product, i18n, className }: VariantBadgesProps) => {
         >
             {isVegan && (
                 <div className={cn(COMMON_BADGE_STYLES, 'bg-(--state-success) stroke-white text-white')}>
-                    <AttributeIcon data={'vegan'} className="h-4" />
+                    <AttributeIcon data={'vegan'} className="size-3" />
                     {capitalize(t('vegan'))}
                 </div>
             )}

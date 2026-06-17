@@ -57,8 +57,7 @@ const VariantTitle = ({
             <Link
                 href={href}
                 title={title}
-                className="product-card-title focus-ring text-(color:var(--product-card-title-color)) text-(length:--product-card-title-size) block cursor-text select-text font-(--product-card-title-weight) leading-tight"
-                style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                className="product-card-title focus-ring text-(color:var(--product-card-title-color)) text-(length:--product-card-title-size) line-clamp-2 block cursor-text select-text font-(--product-card-title-weight) leading-tight"
             >
                 {title}
             </Link>
