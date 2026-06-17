@@ -76,7 +76,7 @@ export async function InfoBar({ shop, locale, i18n, ...props }: InfoBarProps) {
                                 title={t('email-tooltip')}
                                 data-nosnippet={true}
                             >
-                                <MailIcon className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
+                                <MailIcon className="size-4" strokeWidth={2.5} />
                                 {capitalize(t('email'))}
                             </Link>
                         ) : null}
@@ -90,7 +90,7 @@ export async function InfoBar({ shop, locale, i18n, ...props }: InfoBarProps) {
                                 title={t('phone-tooltip')}
                                 data-nosnippet={true}
                             >
-                                <PhoneIcon className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
+                                <PhoneIcon className="size-4" strokeWidth={2.5} />
                                 {capitalize(t('phone'))}
                             </Link>
                         ) : null}

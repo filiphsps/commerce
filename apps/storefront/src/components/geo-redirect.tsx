@@ -181,7 +181,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                             onClick={() => setDropdownActive(!dropdownActive)}
                         >
                             <div className="w-5">
-                                <CheckIcon className="h-4 stroke-1 text-2xl text-inherit" />
+                                <CheckIcon className="size-4 stroke-1 text-inherit" />
                             </div>
                             <div className="flex gap-1 text-inherit">
                                 <LocaleFlag

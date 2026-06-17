@@ -353,7 +353,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 {paymentMethods || null}
 
                 <div className={'text-sm leading-snug'}>
-                    <LockIcon className="stroke -mt-1 mr-1 inline h-3 stroke-2" />
+                    <LockIcon className="-mt-1 mr-1 inline size-3 stroke-2" />
                     {t(
                         'secure-checkout',
                         <Link

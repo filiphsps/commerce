@@ -61,7 +61,7 @@ export function ExportCartButton({ i18n }: ExportCartButtonProps) {
             }}
         >
             <span className="h-4">{t('save-as-csv')}</span>
-            <DownloadIcon className="h-4 stroke-2" />
+            <DownloadIcon className="size-4 stroke-2" />
         </Button>
     );
 }
