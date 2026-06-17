@@ -27,6 +27,8 @@ function buildMessage(qty: number | null | undefined, threshold: number, i18n: L
 
 /**
  * Client component displaying a low-stock urgency message, updating when the selected variant changes.
+ * Rendered as a `role="status"` polite live region so a screen reader announces the urgency (and its
+ * updated count) when a shopper switches to a low-stock variant.
  *
  * @param props.initialMessage - Pre-computed message rendered before hydration, or `null` when not in stock urgency.
  * @param props.threshold - Quantity ceiling used to recompute the message for the selected variant.
@@ -41,6 +43,7 @@ const VariantStockUrgencyClient = ({ initialMessage, threshold, i18n, className 
     if (!message) return null;
     return (
         <span
+            role="status"
             className={
                 className ??
                 'text-(length:--product-card-vendor-size) text-(color:var(--product-card-urgency-color)) inline-flex select-text items-center gap-1 font-semibold'

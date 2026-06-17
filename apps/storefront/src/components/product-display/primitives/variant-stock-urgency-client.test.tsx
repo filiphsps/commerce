@@ -34,6 +34,11 @@ describe('VariantStockUrgencyClient', () => {
         expect(getByText(/Only 3 left/)).toBeTruthy();
     });
 
+    it('announces the urgency via a polite status live region', () => {
+        const { getByRole } = wrap({});
+        expect(getByRole('status').textContent).toMatch(/Only 3 left/);
+    });
+
     it('swaps to selected variant quantityAvailable when below threshold', () => {
         const { getByText } = wrap({ selectedVariant: { quantityAvailable: 1 } as any });
         expect(getByText(/Only 1 left/)).toBeTruthy();
