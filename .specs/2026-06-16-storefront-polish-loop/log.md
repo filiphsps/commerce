@@ -577,6 +577,24 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   immediately when there's no animation.
 - Verified: biome clean, typecheck clean, picker 10/10.
 
+### 52 — Extract a PaginationAction primitive; mark disabled prev/next aria-disabled
+
+- First: recovered the branch from a botched interactive rebase (left mid-conflict). Aborting restored
+  HEAD to the correct iter-51 work — the client-side `CollectionViewAllTile` template fix (iter 49/51)
+  that survives the page's `'use cache'` Flight boundary — while `origin` had diverged onto the older
+  server-side `<b>` ReactNode version that crashes React's dev serializer. Force-pushed (with-lease) the
+  correct local history so remote no longer carries the regression.
+- Pagination polish: the previous/next controls duplicated their chevron+label markup across four
+  enabled/disabled branches, and the disabled (at-bound) state rendered a bare `<div>` with only
+  `cursor-not-allowed` — no `aria-disabled`, so assistive tech announced stray text instead of a
+  disabled control. Extracted a `PaginationAction` building block that renders a `Link` when an `href`
+  is passed or a non-interactive `<span aria-disabled="true">` when omitted, with the chevron sided by
+  `direction`. The nav now threads each bound through an optional `href` (~30 fewer lines, one source of
+  truth for both states).
+- Added a test asserting the first page marks exactly one `aria-disabled` control, that it's a `<span>`
+  (never an anchor).
+- Verified: biome clean, typecheck clean, pagination 6/6.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
