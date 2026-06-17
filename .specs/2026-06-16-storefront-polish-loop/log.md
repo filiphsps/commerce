@@ -595,6 +595,25 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   (never an anchor).
 - Verified: biome clean, typecheck clean, pagination 6/6.
 
+### 53 — Stepper bound affordance + Apollo price-range cache merge
+
+- **Quantity stepper**: the decrease button gated its interactive hover/scale styles on `!disabled`,
+  but `disabled` here excludes the lower quantity bound (`decreaseDisabled = disabled || qty<=1`). So a
+  cart-ready stepper at quantity 1 rendered a `disabled` button that still showed `cursor-pointer`,
+  `hover:bg-primary`, and the `active:scale` tactile press — contradicting the increase button, which
+  correctly gates on `!increaseDisabled`. Gated the decrease styles on `!decreaseDisabled` to match.
+  Added a regression test (at the lower bound the decrease button is disabled and sheds the clickable
+  affordance). (The earlier-deferred fieldset grouping was already in place — note was stale.)
+- **Apollo cache (user-reported dev warning)**: `ProductPriceRange` and `MoneyV2` are embedded value
+  types with no `id`, so a partial price selection (a rail querying only `minVariantPrice.amount`)
+  landing on the same `Product.priceRange`/`compareAtPriceRange` as a fuller selection made
+  `InMemoryCache` warn about lost data and overwrite the cached object — the "could cause additional
+  network requests" warning. Set `merge: true` on both type policies (confirmed via Apollo docs: both
+  are needed so the nested `MoneyV2` merges field-by-field rather than being replaced wholesale).
+  Preserves a previously-cached `currencyCode` the partial selection omits. Added the first `client.ts`
+  test: full-then-partial writes keep `currencyCode` and emit no merge warning.
+- Verified: biome clean, typecheck clean, quantity-selector 11/11, client 1/1.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
