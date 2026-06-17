@@ -653,6 +653,17 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Verified: biome clean, typecheck clean, cart-summary 7/7 (existing suite covers the sale row, the
   100%-off guard, and long-title truncation — all green against the refactor).
 
+### 57 — Icon-distortion sweep: height-only lucide sizing
+
+- Generalized the icon-sizing bug found in iters 55 (cart X) into a repo-wide sweep: lucide renders at a
+  24px default on both axes, so a height-only utility (`h-3`/`h-4`) constrained the height but left the
+  width at 24px — a squashed glyph. Found and fixed five: the export-cart download icon, the info-bar
+  mail + phone icons, the geo-redirect check, and the cart-summary lock. All → canonical `size-*`.
+- Swept the same edits for adjacent cruft: dropped no-op `text-lg`/`text-2xl` (font-size does nothing on
+  a sized SVG) and a bare valueless `stroke` class, and moved two inline `style={{ strokeWidth }}` props
+  to lucide's native `strokeWidth` prop. (Grep confirmed no width-only icons remain.)
+- Verified: biome clean (4 files), typecheck clean, geo-redirect + cart-summary 15/15.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
