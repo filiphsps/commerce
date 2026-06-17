@@ -461,6 +461,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   the production `ProductFilters` already handles availability + price facets.)
 - Verified: typecheck clean (no dangling refs), design-tokens gate 22/22.
 
+### 41 — Cart lines as a labeled list
+
+- The cart rendered its line items as a bare `<section>` of `<div>`s — no list semantics, so a screen
+  reader didn't convey "list of N items." Converted to a `<ul aria-label={tCart('products')}>` with one
+  `<li>` per line (existing key, no new ones).
+- Deliberately omitted `list-none`: the flex container already suppresses `<li>` markers, and keeping
+  the default list-style preserves the list role in Safari (WebKit drops it under `list-style: none`).
+  This also avoids biome's `noRedundantRoles` (no explicit `role="list"` needed).
+- Verified: biome clean, typecheck clean, cart-lines 4/4.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
