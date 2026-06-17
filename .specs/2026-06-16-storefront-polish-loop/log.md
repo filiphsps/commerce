@@ -504,6 +504,14 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   list role preserved), and marked the decorative tag icon `aria-hidden`.
 - Verified: biome clean, typecheck clean, cart-coupons 5/5.
 
+### 45 — Cart button accessible name
+
+- The header cart link's only content is the count number (or nothing), so it read as a bare "3" (or
+  unnamed) to a screen reader — purpose unclear. Added `aria-label` combining the action and count:
+  "View cart" when empty, "View cart, {n} items" when populated (reuses `cart.view-cart` + `cart.n-items`).
+- Added a test asserting the composed label.
+- Verified: biome clean, typecheck clean, cart-button 6/6.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
