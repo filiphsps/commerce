@@ -167,9 +167,7 @@ describe('card variant resolution after the split', () => {
         );
 
         expect(container.querySelector('fieldset')).toBeTruthy();
-        const addButton = Array.from(container.querySelectorAll('button')).find((button) =>
-            /add to bag/i.test(button.textContent ?? ''),
-        );
+        const addButton = container.querySelector<HTMLButtonElement>('[data-testid="picker-add-to-cart"]');
         expect(addButton).toBeTruthy();
         expect(addButton?.disabled).toBe(false);
     });
@@ -203,9 +201,7 @@ describe('card variant resolution after the split', () => {
         clickChip('Blue');
         clickChip('M');
 
-        const addButton = Array.from(container.querySelectorAll('button')).find((button) =>
-            /add to bag/i.test(button.textContent ?? ''),
-        );
+        const addButton = container.querySelector<HTMLButtonElement>('[data-testid="picker-add-to-cart"]');
         expect(addButton?.disabled).toBe(false);
         if (addButton) fireEvent.click(addButton);
 

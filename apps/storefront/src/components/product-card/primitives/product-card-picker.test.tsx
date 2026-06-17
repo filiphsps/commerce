@@ -317,19 +317,11 @@ describe('ProductCardPicker — option change → variant resolution → close',
         expect(chipFor('S')).toHaveAttribute('data-active', 'true');
         expect(chipFor('M')).toHaveAttribute('data-active', 'false');
 
-        const addButton = Array.from(document.body.querySelectorAll('button')).find((b) =>
-            /add to bag/i.test(b.textContent ?? ''),
-        );
+        const addButton = document.body.querySelector<HTMLButtonElement>('[data-testid="picker-add-to-cart"]');
         await act(async () => {
             fireEvent.click(addButton as HTMLButtonElement);
         });
 
-        await waitFor(() =>
-            expect(
-                Array.from(document.body.querySelectorAll('button')).some((b) =>
-                    /add to bag/i.test(b.textContent ?? ''),
-                ),
-            ).toBe(false),
-        );
+        await waitFor(() => expect(document.body.querySelector('[data-testid="picker-add-to-cart"]')).toBeNull());
     });
 });
