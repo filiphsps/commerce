@@ -430,6 +430,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   rebased remote and re-applied the change cleanly before committing.
 - Verified: biome clean, typecheck clean, chip + swatch 10/10.
 
+### 38 — Announce low-stock urgency to screen readers
+
+- The variant stock-urgency message ("Only N left") recomputes when the shopper switches variants, but
+  rendered as a plain `<span>` — sighted-only. Added `role="status"` (polite live region) so a screen
+  reader announces the urgency and its updated count on variant change. Test asserts the status role.
+- Audit note: `product-options-selector/*` is a legacy parallel option-renderer with no live usage —
+  only a `@deprecated` adapter in `product-options/resolver.ts` references its type. Removing it is a
+  bigger refactor (touches the deprecated adapter); logged as cleanup, not done here.
+- Verified: biome clean, typecheck clean, stock-urgency 4/4.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
