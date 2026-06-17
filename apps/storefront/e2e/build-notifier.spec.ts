@@ -61,7 +61,7 @@ test.describe('Build-notifier banner', () => {
         await page.goto(`/${LOCALE}/`, { waitUntil: 'domcontentloaded' });
 
         // The banner mounts and checks on initial load; wait for it to surface.
-        const banner = page.getByRole('status');
+        const banner = page.getByTestId('build-notifier-banner');
         await expect(banner).toBeVisible({ timeout: 30_000 });
 
         // Assert the localized title text is present inside the banner.
@@ -76,7 +76,7 @@ test.describe('Build-notifier banner', () => {
         await stubVersion(page, 'e2e-build-1');
         await page.goto(`/${LOCALE}/`, { waitUntil: 'domcontentloaded' });
 
-        const banner = page.getByRole('status');
+        const banner = page.getByTestId('build-notifier-banner');
         await expect(banner).toBeVisible({ timeout: 30_000 });
 
         // Click Dismiss — the engine writes 'e2e-build-1' to sessionStorage and hides the banner.
@@ -97,7 +97,7 @@ test.describe('Build-notifier banner', () => {
         await stubVersion(page, 'e2e-build-1');
         await page.goto(`/${LOCALE}/`, { waitUntil: 'domcontentloaded' });
 
-        const banner = page.getByRole('status');
+        const banner = page.getByTestId('build-notifier-banner');
         await expect(banner).toBeVisible({ timeout: 30_000 });
         await page.getByRole('button', { name: /dismiss/i }).click();
         await expect(banner).toBeHidden();
@@ -115,7 +115,7 @@ test.describe('Build-notifier banner', () => {
         await stubVersion(page, 'e2e-build-1');
         await page.goto(`/${LOCALE}/`, { waitUntil: 'domcontentloaded' });
 
-        const banner = page.getByRole('status');
+        const banner = page.getByTestId('build-notifier-banner');
         await expect(banner).toBeVisible({ timeout: 30_000 });
 
         // Stamp a marker on the live window; a real `location.reload()` tears down the document and

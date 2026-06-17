@@ -46,10 +46,11 @@ export function BuildNotifierBanner({
             role="status"
             aria-live="polite"
             aria-atomic="true"
+            data-testid="build-notifier-banner"
             className={[
                 'fixed inset-x-0 z-50 flex justify-center px-4',
                 isBottom
-                    ? 'pb-[max(1rem,env(safe-area-inset-bottom))] bottom-0'
+                    ? 'bottom-0 pb-[max(1rem,env(safe-area-inset-bottom))]'
                     : 'top-0 pt-[max(1rem,env(safe-area-inset-top))]',
                 isBottom
                     ? 'motion-safe:animate-[nbn-in-bottom_240ms_cubic-bezier(0.22,1,0.36,1)_both]'
