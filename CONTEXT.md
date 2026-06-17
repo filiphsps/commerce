@@ -146,8 +146,51 @@ A globally-defined named toggle with a `key`, `defaultValue`, optional `options[
 _Avoid_: flag, switch, toggle, A/B variant
 
 **Collaborator**:
-A user with access to a specific **Shop**, with role-style `permissions[]`. The **CMS** mirrors this list so admin-app and CMS access predicates resolve the same source of truth.
+A user with access to a specific **Shop**, with role-style `permissions[]`. The **CMS** mirrors this list so admin-app and CMS access predicates resolve the same source of truth. Since the Clerk migration a `shopCollaborators` row is **derived, never authored** — it is the projection of an **Operator**'s **Org membership** onto the shops the org owns (see **Collaborator projection**); editing access means changing Clerk org membership, not writing this row directly.
 _Avoid_: editor, admin user, team member, member
+
+### Auth & operators
+
+The **Admin** app authenticates **Operators** through Clerk and reaches Convex over the **official** Convex↔Clerk bridge (`ConvexProviderWithClerk` from `convex/react-clerk` on the client; a Clerk provider in `packages/convex/convex/auth.config.ts` on the server). Everything below is the per-shop authorization layer the platform adds *on top* of that bridge — Convex ships no row-level security, so it is hand-built, not a substitute for the official integration.
+
+**Operator**:
+A human who administers **Shops** through the **Admin** app, authenticated by Clerk (JWT issued on the `convex` template, `iss` = `CLERK_FRONTEND_API_URL`). Maps to a platform-global `users` row, looked up subject-first (`users.by_clerk_user_id` on the Clerk `user_…` id, durable across email change) then email-fallback for pre-migration rows. Distinct from a **Collaborator** (the per-**Shop** access row an Operator projects into) and from a storefront **Buyer Identity** (a customer, different issuer entirely).
+_Avoid_: admin user, member, account, user (bare — `users` is the table, Operator is the role)
+
+**Clerk org**:
+A Clerk Organization, mirrored read-only into Convex `orgs` (`by_clerk_org`) by the **Clerk webhook**. The owner of N **Shops** (`shop.clerkOrgId`). Clerk is the source of truth; the Convex rows are a sync mirror, never authored in admin.
+_Avoid_: organization (bare — reserve for the Clerk concept), team, workspace, tenant (that's a **Shop**)
+
+**Org membership**:
+The join that grants an **Operator** access to a **Clerk org**'s shops, mirrored read-only into `orgMemberships` (`by_clerk_org_user`, `by_user`) from Clerk. The authorization primitive: access to a shop = an Org membership in that shop's **owning org** (`shop.clerkOrgId`). An Operator belongs to N orgs; an org owns N shops.
+_Avoid_: collaboration (that's the projected **Collaborator** row), seat, grant
+
+**Auth tier**:
+One of the five Convex function-constructor families exported from `packages/convex/convex/_constructors.ts`, each pinning a trusted identity and a row-access scope. Bare `query`/`mutation` are deliberately NOT exported — every call picks a tier:
+- **customer** (`authedQuery`/`authedMutation`) — storefront customer, validated on `CONVEX_AUTH_ISSUER` (RS256 customJwt, legacy); RLS scopes to the caller's own `users` row by email.
+- **operator** (`clerkQuery`/`clerkMutation`) — Clerk-validated **Operator**; raw `ctx.db`, platform-global. For paths that run *before or across* tenant selection: first-sign-in provisioning, the org/shop chooser.
+- **tenant** (`tenantQuery`/`tenantMutation`) — the DEFAULT operator surface; resolves an **active tenant** and RLS-scopes every read/write to that one `shopId`.
+- **server** (`serverQuery`/`serverMutation`) — server-trust calls carrying `CONVEX_SERVER_SECRET` (admin↔Convex back-channel).
+- **system** (`systemQuery`/`systemMutation`) — internal-only (webhooks, crons, migrations); raw `ctx.db`, no RLS.
+_Avoid_: middleware, guard, role (role is the `permissions[]`, not the tier)
+
+**Issuer re-assertion**:
+The defense-in-depth check each **Auth tier** runs after Convex's own JWT validation: it re-compares `identity.issuer` against the trusted issuer for *its* tier (Clerk issuers for operator/tenant, `CONVEX_AUTH_ISSUER` for customer). Convex's `auth.config.ts` is the PRIMARY gate; this makes forgery rejection testable under `convex-test` (whose `withIdentity` fakes an identity without signature checks) and stops a token minted for one tier slipping into another. The **operator** path **fails closed** when no Clerk issuer is configured — a missing env is a hard rejection, never a downgrade to bare platform trust.
+_Avoid_: token check, issuer guard
+
+**Active tenant selection**:
+How a multi-shop **Operator**'s request picks which **Shop** it targets — the server-side analog of an active-tenant cookie. Two paths in `packages/convex/convex/lib/auth.ts`:
+1. **Routed** — the **tenant** tier merges a reserved `shopDomain` arg (consumed before the handler, so a handler can't spoof it), routes it to a shop via `shopDomains.by_domain`, then authorizes through `resolveShopAccess` (shop must carry `clerkOrgId`; Operator must hold an **Org membership** in it).
+2. **Lone-membership fallback** — `resolveAdminShopId` succeeds only when the Operator collaborates on exactly one shop; more than one without a routed selector is rejected `AMBIGUOUS_SHOP_MEMBERSHIP`.
+_Avoid_: shop switching, current shop, tenant cookie
+
+**Clerk webhook**:
+The Svix-verified `POST /clerk-webhooks` Convex httpAction that keeps the `orgs`/`orgMemberships`/`users` mirrors and the **Collaborator projection** in sync with Clerk. Signature-verified against `CLERK_WEBHOOK_SIGNING_SECRET` (fails closed when unset); a pure `planWebhookActions()` maps each Clerk event to intent mutations, kept separately unit-testable. Handles `user.*`, `organization.*`, `organizationMembership.*`, including synthetic-placeholder merge when a membership event arrives before its user event.
+_Avoid_: clerk sync endpoint, svix handler
+
+**Collaborator projection**:
+The reconcile that derives an **Operator**'s `shopCollaborators` rows from desired state = the union of all shops owned by the orgs the Operator belongs to (`orgMemberships[user] → shops[org]`), via `clerk/sync.ts` `projectUser()`. Computes a `{ toCreate, toDelete }` delta; all projected rows get baseline `['admin']` permissions. Runs on every relevant **Clerk webhook** event AND on first-sign-in `ensureCurrentUser`, which provisions the `users` row before the `user.created` webhook lands (the sign-in race).
+_Avoid_: collaborator sync, membership reconcile
 
 ### Apps
 
@@ -261,6 +304,10 @@ _Avoid_: mutation id, request token
 - The `shopify` and CMS **Cache namespaces** are isolated — invalidating one does not touch the other.
 - A **Shop** has one **CMS tenant** key — its own id; **CMS** reads and writes are always filtered by it.
 - A **Shop** has zero or more **Collaborators**; the **CMS** mirrors them so admin-app and CMS access predicates resolve the same list.
+- An **Operator** belongs to N **Clerk orgs** (via **Org membership**); a **Clerk org** owns N **Shops** (`shop.clerkOrgId`). Access to a shop = an Org membership in that shop's owning org.
+- A **Collaborator** row is the **Collaborator projection** of `Org membership → owned shops`; it is derived by the **Clerk webhook** (and first-sign-in provisioning), never authored directly.
+- Every **Admin** Convex call goes through an **Auth tier**; the **tenant** tier is the default and resolves an **Active tenant** before any read/write. Bare `query`/`mutation` are not exported, so no call escapes a tier.
+- The **Admin** uses the official `ConvexProviderWithClerk` bridge; the **Auth tier** + **Org membership** + **Collaborator projection** layer is the platform's own per-shop authorization on top, since Convex has no built-in row-level security.
 - A Shopify-projecting **Block** requires its **Block loader** at the **Storefront** boundary.
 - A **Shop**'s index route renders the **Homepage slug** CMS page; the bare path is rewritten by middleware before the route tree is consulted.
 - The **Storefront** is the only multi-tenant app; **Admin** and **Landing** are single-tenant.
@@ -315,4 +362,8 @@ _Avoid_: mutation id, request token
 - **"the cart" pre- vs post-package-migration** — pre-migration, the cart lives in `apps/storefront/src/{api,components,utils,app/[domain]/[locale]/_actions}/cart*` and references to "cart code" mean those paths. Post-migration the canonical surface is `@nordcom/cart-{core,react,next,shopify}` and those storefront paths are deleted except for UI primitives (`cart-line.tsx`, `cart-summary.tsx`, etc.) that consume the package hooks. The new packages are the source of truth.
 - **"predictor"** — bare word is ambiguous; the cart packages ship two flavors with different semantics. **Line Predictor** synthesizes a cart line, first-non-null wins. **Cart Predictor** transforms the projected cart, all run in order. Always qualify in prose and identifiers.
 - **"cart action"** — overloaded between a **Cart Mutation** (the intent object) and a Next.js server action (the `'use server'` function exported from the host). The package's typed factories return server actions; the React side dispatches **Cart Mutations** to them. Prefer "**Cart Mutation**" for the intent and reserve "action" / "server action" for the Next.js primitive.
+- **"Operator" vs "Collaborator" vs "Org membership"** — three linked but distinct identities, easy to conflate. An **Operator** is the Clerk-authenticated human (one `users` row). An **Org membership** (`orgMemberships`) is the Clerk-sourced join granting that Operator a **Clerk org**'s shops — the *authorization* source of truth. A **Collaborator** (`shopCollaborators`) is the *derived* per-**Shop** access row, projected from membership; it carries the `permissions[]` but is not where access is granted. Grant access by changing Clerk org membership; the Collaborator row follows via the **Collaborator projection**. Editing a Collaborator row directly is a bug — the next webhook reconcile overwrites it.
+- **"official Convex+Clerk integration"** — the **Admin** ALREADY uses it (`ConvexProviderWithClerk` + the Clerk provider in `auth.config.ts`). When someone proposes "switching to the official integration," the thing they actually mean is the custom **Auth tier** / **Org membership** / **Collaborator projection** layer — which the official integration does NOT replace (Convex has no row-level security, no org→shop ownership model). The two are complementary, not alternatives.
+- **`shopDomain` (arg) vs Shop domain vs Hostname** — the **tenant** tier's reserved `shopDomain` argument is the **Active tenant selection** routing key; it is matched against `shopDomains.by_domain` and consumed before the handler runs (a handler never sees it, so it can't be spoofed). It carries a **Shop domain** value but is a function-call selector, not the persisted field and not an inbound **Hostname**.
+- **`CLERK_FRONTEND_API_URL` vs `CLERK_JWT_ISSUER_DOMAIN`** — same concept, different name. The Convex docs call the Clerk issuer env `CLERK_JWT_ISSUER_DOMAIN`; this repo names it `CLERK_FRONTEND_API_URL` (+ optional `CLERK_FRONTEND_API_URL_PROD` for a second Clerk instance behind one Convex deployment). Both the `auth.config.ts` provider `domain` and the **Issuer re-assertion** read this repo's name.
 - **"settings" vs "fields"** (CMS descriptors) — a `BlockDescriptor` carries both, and they are different things. `fields` = a **Block**'s per-instance authored *content* (title, handle, …), edited per node in the page editor. `settings` = the block's **Block setting** knobs (the store-wide default + the per-instance "Overrides" group). Separately, `COMPONENT_SETTINGS` declares **Component setting** knobs — unrelated to a block's `settings`. Bare "settings" is ambiguous between a **Block setting**, a **Component setting**, and the per-instance Overrides group; qualify it in prose.
