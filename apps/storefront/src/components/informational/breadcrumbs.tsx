@@ -1,7 +1,6 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { Fragment } from 'react/jsx-runtime';
 import type { BreadcrumbList, WithContext } from 'schema-dts';
 
 import { JsonLd } from '@/components/json-ld';
@@ -65,31 +64,44 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
             <nav
                 aria-label="Breadcrumb"
                 className={cn(
-                    '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium text-(--text-muted) leading-none md:mx-0 md:w-full md:max-w-full md:px-0',
+                    '-mx-2 w-screen overflow-hidden overflow-x-auto overscroll-x-contain rounded-lg px-2 md:mx-0 md:w-full md:max-w-full md:px-0',
                     className,
                 )}
-                itemScope
-                itemType="https://schema.org/BreadcrumbList"
             >
-                <div className={itemStyles} itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                    <Link className={linkStyles} href="/" itemType="https://schema.org/Thing" itemProp="item">
-                        <span itemProp="name">
-                            {shop.name}
-                            {locale.country ? ` (${locale.country.toUpperCase()})` : ''}
-                        </span>
-                    </Link>
-                    <meta itemProp="position" content="1" />
-                </div>
-                <span className={iconStyles}>/</span>
+                {/* Breadcrumbs are an ordered sequence (root → current), so the trail is a real
+                 * `<ol>`; the flex container hides the `<li>` markers while the default list-style is
+                 * kept so Safari preserves the list role. Separators are decorative (`aria-hidden`). */}
+                <ol
+                    className="flex flex-nowrap items-center justify-start gap-1 whitespace-nowrap font-medium text-(--text-muted) leading-none"
+                    itemScope
+                    itemType="https://schema.org/BreadcrumbList"
+                >
+                    <li
+                        className={itemStyles}
+                        itemProp="itemListElement"
+                        itemScope
+                        itemType="https://schema.org/ListItem"
+                    >
+                        <Link className={linkStyles} href="/" itemType="https://schema.org/Thing" itemProp="item">
+                            <span itemProp="name">
+                                {shop.name}
+                                {locale.country ? ` (${locale.country.toUpperCase()})` : ''}
+                            </span>
+                        </Link>
+                        <meta itemProp="position" content="1" />
+                    </li>
 
-                {path.map((entry, index) => (
-                    <Fragment key={entry}>
-                        <div
-                            className={itemStyles}
+                    {path.map((entry, index) => (
+                        <li
+                            key={entry}
+                            className={cn(itemStyles, 'gap-1')}
                             itemProp="itemListElement"
                             itemScope
                             itemType="https://schema.org/ListItem"
                         >
+                            <span aria-hidden="true" className={iconStyles}>
+                                /
+                            </span>
                             <Link
                                 className={cn(
                                     linkStyles,
@@ -103,10 +115,9 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
                                 <span itemProp="name">{index === path.length - 1 ? title || entry : entry}</span>
                             </Link>
                             <meta itemProp="position" content={`${index + 2}`} />
-                        </div>
-                        {index + 1 < path.length ? <span className={iconStyles}>/</span> : null}
-                    </Fragment>
-                ))}
+                        </li>
+                    ))}
+                </ol>
             </nav>
         </>
     );

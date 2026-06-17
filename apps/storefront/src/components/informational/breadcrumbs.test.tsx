@@ -47,5 +47,15 @@ describe('components', () => {
             expect(container.querySelector('nav[aria-label="Breadcrumb"]')).not.toBeNull();
             expect(container.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
         });
+
+        it('renders the trail as an ordered list (home + each path segment)', () => {
+            mockPathname = '/en-US/collections/mens/shirts';
+            const { container } = render(<Breadcrumbs locale={Locale.default} />);
+
+            const ol = container.querySelector('nav[aria-label="Breadcrumb"] ol');
+            expect(ol).not.toBeNull();
+            // Home crumb + the two ancestor segments (collections, mens; the leaf is dropped).
+            expect(ol?.querySelectorAll(':scope > li')).toHaveLength(3);
+        });
     });
 });
