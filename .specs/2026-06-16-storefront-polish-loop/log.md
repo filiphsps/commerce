@@ -440,6 +440,17 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   bigger refactor (touches the deprecated adapter); logged as cleanup, not done here.
 - Verified: biome clean, typecheck clean, stock-urgency 4/4.
 
+### 39 — Remove the dead legacy option-renderer system
+
+- `components/product-options-selector/*` (the pre-`ProductOptions` renderer: `ProductOptionsSelector`,
+  size/text chip renderers, chip-class, ~10 files incl. tests) had no production usage. Its only tie to
+  live code was a type consumed by `resolver.ts`'s `resolvedToLegacyOptions` `@deprecated` adapter —
+  which was itself called only by its own test, and whose JSDoc said "remove this function."
+- Removed the adapter + its `LegacyOptionShape` type + the legacy-import from `resolver.ts`, dropped
+  the adapter's test block, and deleted the entire `product-options-selector` directory. The live
+  `product-options/` primitives (Group/Value/Chip/Swatch/Overlay) are now the single option system.
+- Verified: typecheck clean (no dangling refs), biome clean, product-options 64/64.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
