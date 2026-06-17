@@ -61,7 +61,7 @@ const SheetPicker = ({ product, open, onOpenChange, onAdd, i18n }: ProductCardPi
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Portal>
-                <Dialog.Overlay className="fixed inset-0 z-20 bg-black/30 data-[state=closed]:animate-out data-[state=open]:animate-in" />
+                <Dialog.Overlay className="fixed inset-0 z-20 bg-black/30 motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=open]:animate-in" />
                 <Dialog.Content
                     aria-describedby={undefined}
                     style={
@@ -69,7 +69,7 @@ const SheetPicker = ({ product, open, onOpenChange, onAdd, i18n }: ProductCardPi
                             ? { paddingBottom: `max(1rem, env(safe-area-inset-bottom), ${keyboardInset}px)` }
                             : undefined
                     }
-                    className="fixed inset-x-0 bottom-0 z-30 flex w-full max-w-md flex-col gap-3 rounded-t-2xl border border-(--product-card-border-color) bg-(--surface-0) p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl data-[state=closed]:animate-out data-[state=open]:animate-in md:inset-x-auto md:top-1/2 md:bottom-auto md:left-1/2 md:max-w-sm md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-2xl md:p-[18px]"
+                    className="fixed inset-x-0 bottom-0 z-30 flex w-full max-w-md flex-col gap-3 rounded-t-2xl border border-(--product-card-border-color) bg-(--surface-0) p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=open]:animate-in md:inset-x-auto md:top-1/2 md:bottom-auto md:left-1/2 md:max-w-sm md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-2xl md:p-[18px]"
                 >
                     <span
                         aria-hidden
