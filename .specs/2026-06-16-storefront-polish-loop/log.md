@@ -479,6 +479,20 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   so Safari preserves the list role — same cross-engine reasoning as the cart list).
 - Verified: biome clean, typecheck clean, footer 3/3.
 
+### 43 — Fix the filter drawer flickering behind page chrome (user-reported)
+
+- Reported: the filter popup flickers and drops behind other elements on state change, then returns.
+- Root cause: the mobile filter drawer (`fixed inset-0 z-50`) was a descendant of the wrapper that
+  gets `opacity-60` while `isPending`. `opacity < 1` establishes a stacking context, so the fixed
+  drawer's `z-50` resolved relative to that wrapper, not the viewport — every facet click → transition
+  → opacity toggles → the drawer drops beneath sibling page chrome, then pops back when opacity
+  returns to 1. Classic fixed-inside-opacity stacking trap.
+- Fix: scoped the pending dim to an inner wrapper holding only the in-flow toolbar + chips; the fixed
+  drawer is now a sibling outside any `opacity < 1` ancestor, so it stays at root-level `z-50`
+  throughout. Internal to `ProductFilters`, so /products and /search both benefit. (Bonus: the drawer
+  no longer dims/flickers while you toggle facets.)
+- Verified: biome clean, typecheck clean, product-filters 1/1.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
