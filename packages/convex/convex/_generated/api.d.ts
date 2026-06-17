@@ -442,6 +442,12 @@ export declare const api: {
       >;
     };
     shop_write: {
+      deleteShop: FunctionReference<
+        "mutation",
+        "public",
+        { legacyId: string; missingOk?: boolean; serverSecret: string },
+        any
+      >;
       upsertShop: FunctionReference<
         "mutation",
         "public",

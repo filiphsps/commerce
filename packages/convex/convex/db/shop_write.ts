@@ -19,6 +19,10 @@ export const ShopWriteErrorCode = {
     WRITE_READBACK_FAILED: 'SHOP_WRITE_READBACK_FAILED',
     /** The write's PRIMARY domain is already claimed by another shop (hard invariant; rolls back). */
     PRIMARY_DOMAIN_TAKEN: 'SHOP_WRITE_PRIMARY_DOMAIN_TAKEN',
+    /** {@link deleteShop} was asked to remove a shop whose `legacyId` resolves to no row. */
+    NOT_FOUND: 'SHOP_WRITE_NOT_FOUND',
+    /** {@link deleteShop} refused because the shop still owns CMS content or reviews (purge those first). */
+    NOT_EMPTY: 'SHOP_WRITE_NOT_EMPTY',
 } as const;
 
 const shopFields = shopValidator.fields;
@@ -315,5 +319,81 @@ export const upsertShop = serverMutation({
             shop: stored,
             collaborators: memberships.map((row) => ({ user: row.user as string, permissions: row.permissions })),
         };
+    },
+});
+
+/**
+ * The content-bearing tenant tables a shop owns through its `v.id('shops')` foreign key (`shopId`,
+ * `by_shop`). {@link deleteShop} refuses to remove a shop while ANY of these hold a row, so a tenant
+ * teardown can never silently orphan editorial data — the caller must purge content first. The
+ * shop-keyed SIDE tables (routing/collaborators/credentials/flags) are NOT listed here: they are the
+ * shop's own scaffolding and are cascaded by the delete itself.
+ */
+const SHOP_CONTENT_TABLES = ['cmsDocuments', 'cmsVersions', 'cmsMedia', 'cmsMediaDerivatives', 'reviews'] as const;
+
+/**
+ * The shop-keyed SIDE tables {@link deleteShop} cascades — the routing/collaborator/credential/flag
+ * scaffolding that exists ONLY to support a shop, keyed by the `shop` foreign key (`by_shop`). Listed
+ * apart from {@link SHOP_CONTENT_TABLES} because these are deleted with the shop rather than guarding it.
+ */
+const SHOP_SIDE_TABLES = ['shopDomains', 'shopCollaborators', 'shopCredentials', 'shopFeatureFlags'] as const;
+
+/**
+ * Atomically removes a shop and cascades its scaffolding side tables (`shopDomains`,
+ * `shopCollaborators`, `shopCredentials`, `shopFeatureFlags`) in one transaction — the teardown
+ * counterpart to {@link upsertShop}, keyed by the same public `legacyId`. Deleting the routing rows
+ * with the shop is what frees the tenant's hostnames for reuse and stops the storefront resolving a
+ * half-removed tenant.
+ *
+ * It deliberately does NOT cascade content: if the shop still owns any {@link SHOP_CONTENT_TABLES} row
+ * (CMS documents/versions/media or reviews) the whole call throws {@link ShopWriteErrorCode.NOT_EMPTY}
+ * and writes nothing, so a teardown can never silently orphan editorial data — the caller purges
+ * content first. Clerk-owned org mirrors (`orgs`/`orgMemberships`) are left untouched: they belong to
+ * the Clerk webhook, are shared across a multi-shop org, and are not a shop's to delete.
+ *
+ * @returns `{ deleted: <publicId> }` with the removed shop's public id, or `null` when no shop matches
+ *   the `legacyId` and `missingOk` is set (an idempotent no-op for already-removed tenants).
+ * @throws {ConvexError} `SHOP_WRITE_NOT_FOUND` when the `legacyId` resolves to no row and `missingOk`
+ *   is not set; `SHOP_WRITE_NOT_EMPTY` when the shop still owns CMS content or reviews.
+ */
+export const deleteShop = serverMutation({
+    args: { legacyId: v.string(), missingOk: v.optional(v.boolean()) },
+    handler: async (ctx, { legacyId, missingOk }): Promise<{ deleted: string } | null> => {
+        const shop = await shopByPublicId(ctx, legacyId);
+        if (!shop) {
+            if (missingOk === true) {
+                return null;
+            }
+            throw new ConvexError({
+                code: ShopWriteErrorCode.NOT_FOUND,
+                message: `No shop matches legacyId "${legacyId}".`,
+            });
+        }
+
+        for (const table of SHOP_CONTENT_TABLES) {
+            const owned = await ctx.db
+                .query(table)
+                .withIndex('by_shop', (q) => q.eq('shopId', shop._id))
+                .first();
+            if (owned) {
+                throw new ConvexError({
+                    code: ShopWriteErrorCode.NOT_EMPTY,
+                    message: `Shop "${legacyId}" still owns ${table} rows; purge its content before deleting.`,
+                });
+            }
+        }
+
+        for (const table of SHOP_SIDE_TABLES) {
+            const rows = await ctx.db
+                .query(table)
+                .withIndex('by_shop', (q) => q.eq('shop', shop._id))
+                .collect();
+            for (const row of rows) {
+                await ctx.db.delete(row._id);
+            }
+        }
+
+        await ctx.db.delete(shop._id);
+        return { deleted: shop.legacyId || shop._id };
     },
 });

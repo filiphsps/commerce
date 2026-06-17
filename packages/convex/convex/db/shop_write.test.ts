@@ -340,3 +340,72 @@ describe('db/shop_write:upsertShop', () => {
         });
     });
 });
+
+type DeleteArgs = { serverSecret: string; legacyId: string; missingOk?: boolean };
+const deleteShopRef = makeFunctionReference<'mutation', DeleteArgs, { deleted: string } | null>(
+    'db/shop_write:deleteShop',
+);
+
+describe('db/shop_write:deleteShop', () => {
+    afterEach(() => {
+        delete process.env.CONVEX_SERVER_SECRET;
+        vi.restoreAllMocks();
+    });
+
+    it('removes the shop and cascades its routing/collaborator/credential side rows in one mutation', async () => {
+        const t = harness();
+        const userId = await seedUser(t, 'del@example.com');
+        const created = await t.mutation(upsertShopRef, {
+            serverSecret: SERVER_SECRET,
+            shop: baseShop,
+            credentials: { token: 'SECRET' },
+            collaborators: [{ user: userId, permissions: ['admin'] }],
+        });
+        const legacyId = created?.shop.legacyId as string;
+
+        const result = await t.mutation(deleteShopRef, { serverSecret: SERVER_SECRET, legacyId });
+        expect(result).toEqual({ deleted: legacyId });
+
+        await t.run(async (ctx) => {
+            expect(await ctx.db.query('shops').collect()).toHaveLength(0);
+            expect(await ctx.db.query('shopDomains').collect()).toHaveLength(0);
+            expect(await ctx.db.query('shopCollaborators').collect()).toHaveLength(0);
+            expect(await ctx.db.query('shopCredentials').collect()).toHaveLength(0);
+        });
+    });
+
+    it('refuses to delete a shop that still owns CMS content (no partial write)', async () => {
+        const t = harness();
+        const created = await t.mutation(upsertShopRef, { serverSecret: SERVER_SECRET, shop: baseShop });
+        const shopId = created?.shop._id as string;
+        const legacyId = created?.shop.legacyId as string;
+        await t.run(async (ctx) => {
+            await ctx.db.insert('cmsDocuments', {
+                shopId: shopId as never,
+                collection: 'pages',
+                data: {},
+                status: 'draft',
+                createdAt: 1,
+                updatedAt: 1,
+            });
+        });
+
+        await expect(t.mutation(deleteShopRef, { serverSecret: SERVER_SECRET, legacyId })).rejects.toThrow(
+            /SHOP_WRITE_NOT_EMPTY/,
+        );
+        // Nothing was deleted — the guard rolled the whole call back.
+        await t.run(async (ctx) => {
+            expect(await ctx.db.query('shops').collect()).toHaveLength(1);
+        });
+    });
+
+    it('throws NOT_FOUND for an unknown legacyId, but is a no-op when missingOk is set', async () => {
+        const t = harness();
+        await expect(t.mutation(deleteShopRef, { serverSecret: SERVER_SECRET, legacyId: 'nope' })).rejects.toThrow(
+            /SHOP_WRITE_NOT_FOUND/,
+        );
+        await expect(
+            t.mutation(deleteShopRef, { serverSecret: SERVER_SECRET, legacyId: 'nope', missingOk: true }),
+        ).resolves.toBeNull();
+    });
+});
