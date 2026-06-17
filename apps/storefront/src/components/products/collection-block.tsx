@@ -216,7 +216,9 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
             >
                 {children}
                 {productCards}
-                {collection && showViewAll ? <CollectionViewAllTile collection={collection} /> : null}
+                {collection && showViewAll ? (
+                    <CollectionViewAllTile collection={{ handle: collection.handle, title: collection.title }} />
+                ) : null}
             </Tag>
         </div>
     );
