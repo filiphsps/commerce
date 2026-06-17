@@ -512,6 +512,18 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
 - Added a test asserting the composed label.
 - Verified: biome clean, typecheck clean, cart-button 6/6.
 
+### 46 — Localize the product-card CTA strategies
+
+- The card CTAs hard-coded English: `inline-button` ("Add to bag") and `float-pill` aria-labels
+  ("Add to bag" / "Choose options" / "Close options"). `product-card.tsx` already resolves `i18n`
+  (and passes it to badges/picker/urgency) — only the CTA was left out.
+- Added a `labels` object to `ProductCardCtaProps` (keeps the strategies i18n-agnostic, like the
+  picker's `AddToBagButton`); `ProductCardCta` resolves it from `i18n` using existing keys
+  (`add-to-cart`, `choose-product-options`, `close`) and threads `i18n` from the card. CTA vocabulary
+  is now unified with the pickers ("Add to Cart") and localized across all six locales.
+- Updated the three CTA tests to supply `labels` / `i18n`.
+- Verified: biome clean, typecheck clean, CTA + product-card 17/17.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
