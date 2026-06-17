@@ -43,9 +43,12 @@ const ProductCardPrice = ({ seedVariant, locale, className }: ProductCardPricePr
                 {fmt.format(Number(current.amount))}
             </span>
             {onSale && compare ? (
-                <span className="relative px-0.5 font-medium text-(--product-card-compare-color) text-xs tabular-nums leading-none after:absolute after:inset-x-[calc(-1*var(--product-card-sale-strike-extend))] after:top-1/2 after:h-px after:-translate-y-1/2 after:bg-(--product-card-sale-strike-color,currentColor) after:content-[''] after:[transform:translateY(-50%)_rotate(var(--product-card-sale-strike-angle))]">
+                // `<del>` marks the compare-at as the superseded price so assistive tech conveys the
+                // current/old relationship (the CSS-pseudo strike is invisible to it). `no-underline`
+                // suppresses the UA line-through so only the custom angled strike shows.
+                <del className="relative px-0.5 font-medium text-(--product-card-compare-color) text-xs tabular-nums leading-none no-underline after:absolute after:inset-x-[calc(-1*var(--product-card-sale-strike-extend))] after:top-1/2 after:h-px after:-translate-y-1/2 after:bg-(--product-card-sale-strike-color,currentColor) after:content-[''] after:[transform:translateY(-50%)_rotate(var(--product-card-sale-strike-angle))]">
                     {fmt.format(Number(compare.amount))}
-                </span>
+                </del>
             ) : null}
         </div>
     );
