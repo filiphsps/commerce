@@ -55,6 +55,19 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
                         },
                     },
                 },
+                // `ProductPriceRange` and `MoneyV2` are embedded value types with no `id`, so the cache
+                // can't normalize them. A partial selection (e.g. a rail querying only
+                // `minVariantPrice.amount`) landing on the same `Product.priceRange`/`compareAtPriceRange`
+                // as a fuller selection would otherwise warn and discard the cached object. `merge: true`
+                // merges incoming fields over existing ones; both types need it so the nested `MoneyV2`
+                // merges field-by-field too, preserving a previously-cached `currencyCode` the partial
+                // selection omits.
+                ProductPriceRange: {
+                    merge: true,
+                },
+                MoneyV2: {
+                    merge: true,
+                },
                 Query: {
                     fields: {
                         localization: {
