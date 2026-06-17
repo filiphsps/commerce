@@ -13,7 +13,7 @@ import type { ProductCardCtaProps } from './types';
  * @param props.onAdd - Callback invoked when the fast-path add-to-bag action is triggered.
  * @returns The circular pill button element.
  */
-const FloatPill = ({ isSingleBuyable, isOpen, onActivate, onAdd }: ProductCardCtaProps) => {
+const FloatPill = ({ isSingleBuyable, isOpen, onActivate, onAdd, labels }: ProductCardCtaProps) => {
     const handleClick = () => {
         if (isOpen) {
             onActivate();
@@ -26,7 +26,7 @@ const FloatPill = ({ isSingleBuyable, isOpen, onActivate, onAdd }: ProductCardCt
         onActivate();
     };
 
-    const label = isOpen ? 'Close options' : isSingleBuyable ? 'Add to bag' : 'Choose options';
+    const label = isOpen ? labels.close : isSingleBuyable ? labels.add : labels.choose;
 
     return (
         <button

@@ -11,6 +11,7 @@ const base = {
     isOpen: false,
     onActivate: vi.fn(),
     onAdd: vi.fn(),
+    labels: { add: 'Add to bag', choose: 'Choose options', close: 'Close options' },
 };
 
 describe('inline-button CTA', () => {

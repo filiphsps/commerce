@@ -126,7 +126,7 @@ export default async function ProductCard({
                     />
                     <ProductCardBadges data={data} i18n={i18n} />
                     <ProductCardBoundary fallback={null}>
-                        <ProductCardCta placement={ctaPlacement} />
+                        <ProductCardCta placement={ctaPlacement} i18n={i18n} />
                     </ProductCardBoundary>
                 </div>
                 <div className="flex flex-col gap-1 pt-1">

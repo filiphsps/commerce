@@ -3,10 +3,12 @@
 import { useCallback } from 'react';
 import { getProductCardCta } from '@/components/product-card/cta';
 import { useAddProductCardLine } from '@/components/product-card/use-add-product-card-line';
+import { capitalize, getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { usePickerOpen, useVariantSelection } from './product-card-options-provider';
 
 export type ProductCardCtaProps = {
     placement: string;
+    i18n: LocaleDictionary;
 };
 
 /**
@@ -18,9 +20,10 @@ export type ProductCardCtaProps = {
  * @param props.placement - Registry key identifying which CTA component to render.
  * @returns The resolved CTA element, or `null` when context is unavailable.
  */
-const ProductCardCta = ({ placement }: ProductCardCtaProps) => {
+const ProductCardCta = ({ placement, i18n }: ProductCardCtaProps) => {
     const sel = useVariantSelection();
     const picker = usePickerOpen();
+    const { t } = getTranslations('common', i18n);
     const addProductCardLine = useAddProductCardLine(sel?.product);
 
     const onAdd = useCallback(async () => {
@@ -47,6 +50,11 @@ const ProductCardCta = ({ placement }: ProductCardCtaProps) => {
             isOpen={picker.open}
             onActivate={() => picker.setOpen(!picker.open)}
             onAdd={onAdd}
+            labels={{
+                add: t('add-to-cart'),
+                choose: t('choose-product-options'),
+                close: capitalize(t('close')),
+            }}
         />
     );
 };

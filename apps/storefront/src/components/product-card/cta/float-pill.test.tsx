@@ -12,6 +12,7 @@ describe('float-pill CTA', () => {
         isOpen: false,
         onActivate: vi.fn(),
         onAdd: vi.fn(),
+        labels: { add: 'Add to bag', choose: 'Choose options', close: 'Close options' },
     };
 
     it('renders icon-only with "choose options" aria-label when not single-buyable', () => {

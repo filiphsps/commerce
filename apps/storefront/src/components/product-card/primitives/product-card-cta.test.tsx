@@ -47,11 +47,15 @@ const product = {
     },
 } as never;
 
+const i18n = {
+    common: { 'add-to-cart': 'Add to bag', 'choose-product-options': 'Choose options', close: 'Close' },
+} as never;
+
 describe('ProductCardCta host', () => {
     it('renders the float-pill strategy when placement is float-pill', () => {
         const { container } = render(
             <ProductCardOptionsProvider product={product} seedVariantId="v1" isSingleBuyable={false}>
-                <ProductCardCta placement="float-pill" />
+                <ProductCardCta placement="float-pill" i18n={i18n} />
             </ProductCardOptionsProvider>,
         );
         const btn = container.querySelector('button');
@@ -61,7 +65,7 @@ describe('ProductCardCta host', () => {
     it('renders the inline-button strategy when placement is inline-button', () => {
         const { container } = render(
             <ProductCardOptionsProvider product={product} seedVariantId="v1" isSingleBuyable={false}>
-                <ProductCardCta placement="inline-button" />
+                <ProductCardCta placement="inline-button" i18n={i18n} />
             </ProductCardOptionsProvider>,
         );
         expect(container.textContent).toMatch(/add to bag/i);
@@ -70,7 +74,7 @@ describe('ProductCardCta host', () => {
     it('calls addLine with variantId when Add to bag is clicked on a single-buyable product', async () => {
         const { container } = render(
             <ProductCardOptionsProvider product={product} seedVariantId="v1" isSingleBuyable={true}>
-                <ProductCardCta placement="inline-button" />
+                <ProductCardCta placement="inline-button" i18n={i18n} />
             </ProductCardOptionsProvider>,
         );
         const btn = container.querySelector('button');
