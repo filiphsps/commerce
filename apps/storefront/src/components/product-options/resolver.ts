@@ -1,5 +1,4 @@
 import type { Product, ProductVariant } from '@/api/product';
-import type { ProductOptionsSelectorProps } from '@/components/product-options-selector';
 import type { ResolvedOption, ResolvedOptionValue, ResolvedSwatch } from './types';
 
 type RawImage = {
@@ -141,61 +140,4 @@ export function resolveOptions(product: Product, selection: Record<string, strin
 export function toSelectionRecord(variant: ProductVariant | undefined): Record<string, string> {
     if (!variant) return {};
     return Object.fromEntries((variant.selectedOptions ?? []).map((so) => [so.name, so.value]));
-}
-
-type LegacyOptionShape = ProductOptionsSelectorProps['options'];
-
-/**
- * @deprecated Adapter for the legacy ProductOptionsSelector. Migrate consumers
- * to <ProductOptions.Group/Value> primitives and remove this function.
- */
-export function resolvedToLegacyOptions(resolved: ResolvedOption[]): LegacyOptionShape {
-    return resolved.map((opt) => ({
-        name: opt.name,
-        optionValues: opt.values.map((v) => {
-            const selectedOptions = v.variant?.selectedOptions ?? [];
-            const variantUriQuery =
-                selectedOptions.length > 0
-                    ? (() => {
-                          const p = new URLSearchParams(
-                              selectedOptions.reduce<Record<string, string>>((acc, so) => {
-                                  acc[so.name] = so.value;
-                                  return acc;
-                              }, {}),
-                          );
-                          p.sort();
-                          return p.toString();
-                      })()
-                    : undefined;
-
-            return {
-                name: v.name,
-                available: v.available,
-                exists: v.variant !== undefined,
-                selected: v.selected,
-                isDifferentProduct: false,
-                variantUriQuery,
-                variant: {
-                    id: v.variant?.id,
-                    weight: v.variant?.weight ?? null,
-                    weightUnit: v.variant?.weightUnit ?? null,
-                },
-                swatch: v.swatch
-                    ? {
-                          color: v.swatch.color,
-                          image: v.swatch.image
-                              ? {
-                                    previewImage: {
-                                        url: v.swatch.image.url,
-                                        altText: v.swatch.image.altText ?? undefined,
-                                        width: v.swatch.image.width,
-                                        height: v.swatch.image.height,
-                                    },
-                                }
-                              : undefined,
-                      }
-                    : undefined,
-            };
-        }),
-    })) as LegacyOptionShape;
 }
