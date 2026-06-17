@@ -99,7 +99,7 @@ const ProductGallery = ({
              * Mobile: the rail drops below the primary image as a horizontal-scroll strip (order-2). */}
             <div className="flex w-full min-w-0 flex-col gap-2 overflow-clip md:sticky md:top-36 md:flex-row md:items-start md:gap-3">
                 {images.length > 1 ? (
-                    <aside className="order-2 -mx-1 flex shrink-0 flex-row gap-2 overflow-x-auto px-1 md:order-1 md:mx-0 md:max-h-[40rem] md:w-20 md:flex-col md:overflow-y-auto md:overflow-x-visible md:px-0 lg:w-24">
+                    <aside className="order-2 -mx-1 flex shrink-0 flex-row gap-2 overflow-x-auto px-1 md:order-1 md:mx-0 md:max-h-160 md:w-20 md:flex-col md:overflow-y-auto md:overflow-x-visible md:px-0 lg:w-24">
                         {images.map((thumbnail, index) => {
                             const isActive = image.id === thumbnail.id;
                             return (
@@ -125,7 +125,7 @@ const ProductGallery = ({
                                         width={thumbnail.width ?? 175}
                                         height={thumbnail.height ?? 175}
                                         sizes="(max-width: 920px) 75px, 120px"
-                                        loading="eager"
+                                        loading={index <= 6 ? 'eager' : 'lazy'}
                                         decoding="async"
                                         draggable={false}
                                     />
@@ -159,6 +159,7 @@ const ProductGallery = ({
                             sizes="(max-width: 920px) 100vw, 500px"
                             priority
                             decoding="async"
+                            loading="eager"
                             onLoad={() => setLoaded(true)}
                             className={cn(
                                 'h-fit w-full object-contain object-center md:h-full md:max-h-144',
