@@ -317,6 +317,7 @@ beforeEach(() => {
     // Operators authenticate through Clerk after the auth migration: the Convex tenant tier validates
     // the Clerk issuer (`CLERK_FRONTEND_API_URL`), and its operator identity getter FAILS CLOSED when
     // that env is unset, so it must be stubbed for the act-as identities to authenticate at all.
+    vi.stubEnv('CLERK_JWT_ISSUER_DOMAIN', CLERK_ISSUER);
     vi.stubEnv('CLERK_FRONTEND_API_URL', CLERK_ISSUER);
     // Frozen timers keep publish's `runAfter(0)` revalidation schedule PENDING
     // (`revalidate/onPublish` is deliberately absent from the module map — the

@@ -143,7 +143,7 @@ export default async function globalSetup(): Promise<void> {
     // `secretKey` is still read from `CLERK_SECRET_KEY` automatically.
     await clerkSetup({
         publishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
-        frontendApiUrl: process.env.CLERK_FRONTEND_API_URL,
+        frontendApiUrl: process.env.CLERK_JWT_ISSUER_DOMAIN || process.env.CLERK_FRONTEND_API_URL,
     });
     await seedE2eClerkOperator();
 
