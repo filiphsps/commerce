@@ -7,7 +7,7 @@ import { systemMutation } from '../lib/system';
 import schema from '../schema';
 import * as self from './self';
 
-const TRUSTED_ISSUER = 'https://storefront.test.nordcom.io';
+const CLERK_ISSUER = 'https://clerk.test.nordcom.io';
 
 /** Seeds a platform user directly through the system tier (unscoped write to a platform-global table). */
 const seedUser = systemMutation({
@@ -61,7 +61,7 @@ const updateRef = makeFunctionReference<'mutation', { name?: string; theme?: 'da
 );
 
 beforeEach(() => {
-    vi.stubEnv('CONVEX_AUTH_ISSUER', TRUSTED_ISSUER);
+    vi.stubEnv('CLERK_FRONTEND_API_URL', CLERK_ISSUER);
 });
 afterEach(() => {
     vi.unstubAllEnvs();
@@ -72,7 +72,7 @@ describe('account/self:get', () => {
         const t = convexTest(schema, modules);
         await t.mutation(seedUserRef, { email: 'op@example.com', name: 'Op Erator' });
 
-        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'op', email: 'op@example.com' });
+        const asOp = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'op', email: 'op@example.com' });
 
         await expect(asOp.query(getRef, {})).resolves.toMatchObject({
             name: 'Op Erator',
@@ -93,12 +93,12 @@ describe('account/self:get', () => {
             data: { code: AuthErrorCode.FORGED_IDENTITY },
         });
 
-        const asEmailless = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'x' });
+        const asEmailless = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'x' });
         await expect(asEmailless.query(getRef, {})).rejects.toMatchObject({
             data: { code: AuthErrorCode.IDENTITY_WITHOUT_EMAIL },
         });
 
-        const asStranger = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'x', email: 'stranger@example.com' });
+        const asStranger = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'x', email: 'stranger@example.com' });
         await expect(asStranger.query(getRef, {})).rejects.toMatchObject({
             data: { code: AuthErrorCode.UNKNOWN_USER },
         });
@@ -110,7 +110,7 @@ describe('account/self:update', () => {
         const t = convexTest(schema, modules);
         await t.mutation(seedUserRef, { email: 'op@example.com', name: 'Old Name' });
 
-        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'op', email: 'op@example.com' });
+        const asOp = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'op', email: 'op@example.com' });
 
         await expect(asOp.mutation(updateRef, { name: '  New Name  ', theme: 'dark' })).resolves.toMatchObject({
             name: 'New Name',
@@ -126,7 +126,7 @@ describe('account/self:update', () => {
         const t = convexTest(schema, modules);
         await t.mutation(seedUserRef, { email: 'op@example.com', name: 'Keep Me' });
 
-        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'op', email: 'op@example.com' });
+        const asOp = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'op', email: 'op@example.com' });
         await asOp.mutation(updateRef, { theme: 'system' });
 
         await expect(t.mutation(readUserRef, { email: 'op@example.com' })).resolves.toEqual({
@@ -139,7 +139,7 @@ describe('account/self:update', () => {
         const t = convexTest(schema, modules);
         await t.mutation(seedUserRef, { email: 'op@example.com', name: 'Old Name' });
 
-        const asOp = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'op', email: 'op@example.com' });
+        const asOp = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'op', email: 'op@example.com' });
         await expect(asOp.mutation(updateRef, { name: '   ' })).rejects.toMatchObject({
             data: { code: self.AccountErrorCode.INVALID_NAME },
         });
@@ -155,7 +155,7 @@ describe('account/self:update', () => {
         await t.mutation(seedUserRef, { email: 'a@example.com', name: 'A' });
         await t.mutation(seedUserRef, { email: 'b@example.com', name: 'B' });
 
-        const asA = t.withIdentity({ issuer: TRUSTED_ISSUER, subject: 'a', email: 'a@example.com' });
+        const asA = t.withIdentity({ issuer: CLERK_ISSUER, subject: 'a', email: 'a@example.com' });
         await asA.mutation(updateRef, { name: 'A Renamed', theme: 'dark' });
 
         await expect(t.mutation(readUserRef, { email: 'b@example.com' })).resolves.toEqual({ name: 'B', theme: null });

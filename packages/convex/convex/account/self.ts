@@ -1,6 +1,6 @@
 import { ConvexError, v } from 'convex/values';
 
-import { authedMutation, authedQuery } from '../_constructors';
+import { clerkMutation, clerkQuery } from '../_constructors';
 import { AuthErrorCode } from '../lib/auth';
 
 /**
@@ -74,14 +74,17 @@ function toAccountSelf(user: {
 
 /**
  * The identity-derived "my account" read behind `account/self:get`: zero client args — the caller is
- * whoever the validated bearer token says, never a spoofable argument. Built on {@link authedQuery},
- * whose customer-scoped db exposes exactly the caller's own email-keyed `users` row.
+ * whoever the validated bearer token says, never a spoofable argument. Built on {@link clerkQuery} —
+ * the operator's account page sends a Clerk operator token, so its identity MUST validate on the
+ * Clerk issuer path; the customer-tier `authedQuery` asserts the storefront `CONVEX_AUTH_ISSUER` and
+ * rejects the Clerk issuer as `FORGED_IDENTITY`. The handler reads only the row matching the trusted
+ * email claim, so exposing the raw (un-RLS-wrapped) `ctx.db` cannot leak another operator's row.
  *
  * @returns The caller's {@link AccountSelf}.
  * @throws {ConvexError} `UNAUTHENTICATED` / `FORGED_IDENTITY` / `IDENTITY_WITHOUT_EMAIL` from the
  *   constructor's identity resolution; `UNKNOWN_USER` when no `users` row backs the identity.
  */
-export const get = authedQuery({
+export const get = clerkQuery({
     args: {},
     handler: async (ctx): Promise<AccountSelf> => {
         const user = await ctx.db
@@ -100,9 +103,9 @@ export const get = authedQuery({
 
 /**
  * The self-update behind `account/self:update`: patches the caller's OWN display name and/or theme
- * preference. The row is resolved from the trusted email claim ({@link authedMutation}'s
- * customer-scoped writer can read/patch only that one row), so the args carry new VALUES only — never
- * a target id — and a forged or replayed call can never reshape another operator's row.
+ * preference. The row is resolved from the trusted email claim ({@link clerkMutation} validates the
+ * Clerk operator issuer and pins that claim), so the args carry new VALUES only — never a target id —
+ * and a forged or replayed call can never reshape another operator's row.
  *
  * Both args are optional (partial update): an absent `name` leaves the name untouched, an absent
  * `theme` leaves the preference untouched. A present `name` is trimmed and length-validated.
@@ -112,7 +115,7 @@ export const get = authedQuery({
  *   constructor; `UNKNOWN_USER` when no `users` row backs the identity; `ACCOUNT_INVALID_NAME` when a
  *   supplied name is empty, whitespace-only, or longer than {@link NAME_MAX_LENGTH}.
  */
-export const update = authedMutation({
+export const update = clerkMutation({
     args: {
         name: v.optional(v.string()),
         theme: v.optional(v.union(v.literal('dark'), v.literal('system'))),
