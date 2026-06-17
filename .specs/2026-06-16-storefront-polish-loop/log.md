@@ -471,6 +471,14 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   This also avoids biome's `noRedundantRoles` (no explicit `role="list"` needed).
 - Verified: biome clean, typecheck clean, cart-lines 4/4.
 
+### 42 — Footer link groups as lists
+
+- The footer's section-link, social-icon, and legal-link groups were flex `<div>`/`<section>`s of
+  anchors — no list semantics for the standard footer-nav pattern.
+- Converted all three to `<ul>`/`<li>` (flex containers already hide markers; default list-style kept
+  so Safari preserves the list role — same cross-engine reasoning as the cart list).
+- Verified: biome clean, typecheck clean, footer 3/3.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
