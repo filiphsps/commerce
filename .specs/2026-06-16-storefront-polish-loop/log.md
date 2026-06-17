@@ -451,6 +451,16 @@ primitives carry literal `aria-label`s. A proper i18n pass is its own multi-file
   `product-options/` primitives (Group/Value/Chip/Swatch/Overlay) are now the single option system.
 - Verified: typecheck clean (no dangling refs), biome clean, product-options 64/64.
 
+### 40 — Remove the superseded faceted-filter prototype
+
+- `actionable/filters.tsx` + `actionable/filter-values.tsx` (+ their tests) were an early faceted-filter
+  prototype with no production importers — the wired shared filter is `products/product-filters.tsx`
+  (`ProductFilters`, used by /products, collections, and search). They also still carried the
+  unimplemented BOOLEAN/PRICE_RANGE debug stubs.
+- Deleted all four files. (The LIST-toggle + a11y polish from iter 7 lived only on this dead component;
+  the production `ProductFilters` already handles availability + price facets.)
+- Verified: typecheck clean (no dangling refs), design-tokens gate 22/22.
+
 #### Notes / deferred
 
 - Confirmed `header-menu`'s mega-menu anchors to the trigger rect (overhaul spec #6 handled); it's a
