@@ -88,7 +88,7 @@
         "@nordcom/nordstar": "0.1.1"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.5.0",
+        "@biomejs/biome": "2.5.7",
         "@changesets/changelog-github": "0.7.0",
         "@changesets/cli": "2.31.0",
         "@types/node": "25.9.3",
