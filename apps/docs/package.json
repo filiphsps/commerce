@@ -38,7 +38,7 @@
         "@nordcom/commerce-shopify-html": "workspace:*",
         "@nordcom/nordstar": "0.1.1",
         "@vercel/analytics": "2.0.1",
-        "fumadocs-core": "16.10.2",
+        "fumadocs-core": "16.14.3",
         "fumadocs-mdx": "15.0.12",
         "fumadocs-ui": "16.10.2",
         "geist": "1.7.2",
