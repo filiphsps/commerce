@@ -50,7 +50,7 @@
     },
     "homepage": "https://github.com/filiphsps/commerce/",
     "dependencies": {
-        "@clerk/nextjs": "7.5.3",
+        "@clerk/nextjs": "7.7.3",
         "@tiptap/react": "3.26.0",
         "@tiptap/starter-kit": "3.26.0",
         "tailwind-merge": "3.6.0",
