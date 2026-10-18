@@ -40,7 +40,7 @@
         "@vercel/analytics": "2.0.1",
         "fumadocs-core": "16.10.2",
         "fumadocs-mdx": "15.0.12",
-        "fumadocs-ui": "16.10.2",
+        "fumadocs-ui": "16.14.3",
         "geist": "1.7.2",
         "next": "16.2.9",
         "react": "19.2.7",
