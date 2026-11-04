@@ -1,3 +1,5 @@
+
+
 <div align="center">
 
 # Nordcom Commerce
@@ -105,6 +107,7 @@ To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev
 | ------------------------------------ | -------------------------- | ------------------------------------------------------------------------ |
 | `@nordcom/commerce-db`               | `packages/db`              | Typed service layer over Convex for shops, users, sessions, identities.  |
 | `@nordcom/commerce-convex`           | `packages/convex`          | The Convex deployment: schema, tables, and the `db/*` + `cms/*` functions. |
+| `@nordcom/commerce-cms`              | `packages/cms`             | Descriptor-defined CMS blocks and structured documents.                  |
 | `@nordcom/commerce-test-convex`      | `packages/test-convex`     | Local Convex backend launcher + canonical seed fixtures for tests/e2e.   |
 | `@nordcom/commerce-errors`           | `packages/errors`          | Typed error classes with stable codes for API/UI/SDK consumers.          |
 | `@nordcom/commerce-shopify-graphql` | `packages/shopify-graphql` | Apollo transform that injects Shopify `@inContext(country, language)`.   |
